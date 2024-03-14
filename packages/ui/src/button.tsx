@@ -4,13 +4,12 @@ import { ReactNode } from "react";
 
 interface ButtonProps {
   children: ReactNode;
-  className?: string;
 }
 
-export const Button = ({ children, className }: ButtonProps) => {
+export const Button = ({ children }: ButtonProps) => {
   return (
     <button
-      className={className}
+      className="py-0"
       onClick={() => alert(`Hello from your ui library!`)}
     >
       {children}

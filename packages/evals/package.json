@@ -1,0 +1,13 @@
+{
+  "name": "@empiricalrun/evals",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "lint": "eslint . --max-warnings 0"
+  },
+  "devDependencies": {
+    "@empiricalrun/typescript-config": "workspace:*"
+  }
+}

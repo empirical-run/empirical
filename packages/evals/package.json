@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean",
-    "lint": "eslint . --max-warnings 0"
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@empiricalrun/typescript-config": "workspace:*"

@@ -22,7 +22,7 @@ program
   .description("initialise empirical")
   .action(() => {
     fs.writeFileSync(
-      `${path}/empirical.run.json`,
+      `${path}/empiricalrun.config.json`,
       JSON.stringify(config, null, 2),
     );
     console.log(

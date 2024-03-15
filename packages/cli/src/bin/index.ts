@@ -7,6 +7,8 @@ import packageJSON from "../../package.json";
 import { RunsConfig } from "../types";
 import { execute } from "@empiricalrun/core";
 
+const fileName = "empiricalrun.config.json";
+
 const path = process.cwd();
 const config = getDefaultRunsConfig(DefaultRunsConfigType.DEFAULT);
 
@@ -21,31 +23,29 @@ program
   .command("init")
   .description("initialise empirical")
   .action(() => {
-    fs.writeFileSync(
-      `${path}/empiricalrun.config.json`,
-      JSON.stringify(config, null, 2),
-    );
+    fs.writeFileSync(`${path}/${fileName}`, JSON.stringify(config, null, 2));
     console.log(
-      `${green("[Success]")} - created ${bold("empirical.run.json")} in ${path}`,
+      `${green("[Success]")} - created ${bold(`${fileName}`)} in ${path}`,
     );
   });
 
 program
   .command("run")
   .description("initiate a run to evaluate model complettions")
-  .action(() => {
+  .action(async () => {
     console.log(yellow("Initiating run..."));
-    fs.readFile(`${path}/empirical.run.json`, (err, data) => {
+    fs.readFile(`${path}/${fileName}`, async (err, data) => {
       if (err) {
-        console.log(`${red("[Error]")} Failed to read empirical.run.json file`);
+        console.log(`${red("[Error]")} Failed to read ${fileName} file`);
         console.log(yellow("Please ensure running init command first"));
         return;
       }
-      console.log(`${green("[Success]")} - read empirical.run.json file`);
+      console.log(`${green("[Success]")} - read ${fileName} file`);
       const jsonStr = data.toString();
       const jsonObj = JSON.parse(jsonStr) as RunsConfig;
       // TODO: add check here for empty runs config. Add validator of the file
-      execute(jsonObj.runs[0]!, jsonObj.dataset);
+      const completion = await execute(jsonObj.runs[0]!, jsonObj.dataset);
+      console.log(JSON.stringify(completion, null, 2));
     });
   });
 

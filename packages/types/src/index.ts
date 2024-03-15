@@ -30,6 +30,17 @@ export type Run = {
   assert?: Assert[];
 };
 
+export type RunCompletion = {
+  id: string;
+  name?: string;
+  model: Model;
+  prompt?: Prompt;
+  dataset_id: string;
+  assert?: Assert[];
+  samples: RunOutputSample[];
+  created_at: Date;
+};
+
 export type DatasetSampleInput = {
   name: string;
   value: string;
@@ -51,11 +62,12 @@ export enum ModelTypes {
 
 export type RunOutputSample = {
   id?: string;
-  annotations: string[];
+  annotations?: string[];
   scores: Score[];
-  output: {
-    // verify how to support assistants with this structure
-    answer: string;
+  inputs: DatasetSampleInput[];
+  output: string;
+  expected?: {
+    value: string;
   };
   dataset_sample_id: string;
   created_at?: Date;

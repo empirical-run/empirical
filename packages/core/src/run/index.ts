@@ -1,10 +1,20 @@
 import { getProvider } from "../models/providers";
-import { Dataset, Run } from "@empiricalrun/types";
+import {
+  Dataset,
+  Run,
+  RunCompletion,
+  RunOutputSample,
+} from "@empiricalrun/types";
 import { replacePlaceholders } from "../utils";
 import score from "@empiricalrun/evals";
 
-export async function execute(run: Run, dataset: Dataset) {
+export async function execute(
+  run: Run,
+  dataset: Dataset,
+): Promise<RunCompletion> {
   const { prompt, assert, model } = run;
+  const runCreationDate = new Date();
+  const sampleCompletions: RunOutputSample[] = [];
   if (model && prompt) {
     // TODO: modelName and completion function should be extracted from different function
     //@ts-ignore
@@ -29,16 +39,31 @@ export async function execute(run: Run, dataset: Dataset) {
         model: modelName,
         messages,
       });
-      console.log(completion);
       const output = completion.message.content;
-      console.log(output);
       const evaluationScores = await score({
         inputs: datasetSample.inputs,
         output,
         expected: datasetSample.expected,
         assert: assert,
       });
-      console.log(evaluationScores);
+      sampleCompletions.push({
+        inputs: datasetSample.inputs,
+        output: completion.message.content,
+        scores: evaluationScores,
+        dataset_sample_id: "", // TODO
+        created_at: new Date(),
+        run_id: "", // TODO
+      });
     }
   }
+  return {
+    id: "", // TODO
+    name: run.name,
+    dataset_id: "", // TODO
+    assert,
+    model,
+    prompt,
+    samples: sampleCompletions,
+    created_at: runCreationDate,
+  };
 }

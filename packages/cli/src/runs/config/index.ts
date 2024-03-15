@@ -13,7 +13,7 @@ export const getDefaultRunsConfig = (
   name: DefaultRunsConfigType,
 ): RunsConfig => {
   if (map.has(name)) {
-    return map.get(name)!;
+    return { ...map.get(name)! };
   } else {
     throw new Error(`No default runs config named "${name}".`);
   }

@@ -1,5 +1,5 @@
 <div align="center">
-![Empirical.run](https://www.empirical.run/images/og/default_og_image.png)
+<img src="https://www.empirical.run/images/og/default_og_image.png" width="500">
 
 # Empirical.run
 <!-- section for badges -->

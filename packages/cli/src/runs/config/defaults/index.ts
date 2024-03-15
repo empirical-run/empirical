@@ -10,7 +10,7 @@ export const config: RunsConfig = {
         "You are expected to respond with a JSON object, which has above keys and corresponding entities. If an entity is missing, respond with null. \\n\\n{{user_message}}",
       assert: [
         {
-          type: "isJSON",
+          type: "is-json",
         },
       ],
     },
@@ -21,7 +21,7 @@ export const config: RunsConfig = {
         "You are expected to respond with a JSON object, which has above keys and corresponding entities. If an entity is missing, respond with null. \\n\\n{{user_message}}",
       assert: [
         {
-          type: "isJSON",
+          type: "is-json",
         },
       ],
     },

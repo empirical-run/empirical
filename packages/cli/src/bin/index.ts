@@ -31,7 +31,7 @@ program
 
 program
   .command("run")
-  .description("initiate a run to evaluate model complettions")
+  .description("initiate a run to evaluate model completions")
   .action(async () => {
     console.log(yellow("Initiating run..."));
     fs.readFile(`${path}/${fileName}`, async (err, data) => {

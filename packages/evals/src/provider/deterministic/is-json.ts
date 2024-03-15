@@ -1,6 +1,6 @@
 import { Scorer } from "../../interface/scorer";
 
-export const name = "isJSON";
+export const name = "is-json";
 
 export const isJSON: Scorer = async (_, output) => {
   let isJSON = false;

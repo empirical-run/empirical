@@ -1,0 +1,34 @@
+{
+  "version": "0.0.1",
+  "runs": [
+    {
+      "name": "gpt-3.5-turbo run",
+      "model": "openai:gpt-3.5-turbo",
+      "prompt": "You are an SQLite expert who can convert natural language questions to SQL queries for the database schema given below.\n\nDatabase schema:\n{{schema}}\n\nAnswer the following question with only the SQL query.\n\nQuestion: {{question}}",
+      "assert": [
+        {
+          "type": "sql-syntax"
+        },
+        {
+          "type": "sql-semantic"
+        }
+      ]
+    },
+    {
+      "name": "gpt-4-turbo-preview run",
+      "model": "openai:gpt-4-turbo-preview",
+      "prompt": "You are an SQLite expert who can convert natural language questions to SQL queries for the database schema given below.\n\nDatabase schema:\n{{schema}}\n\nAnswer the following question with only the SQL query.\n\nQuestion: {{question}}",
+      "assert": [
+        {
+          "type": "sql-syntax"
+        },
+        {
+          "type": "sql-semantic"
+        }
+      ]
+    }
+  ],
+  "dataset": {
+    "path": "https://assets-staging.empirical.run/datasets/json/spider-tiny.json"
+  }
+}

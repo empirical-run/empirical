@@ -6,11 +6,20 @@ import { program } from "commander";
 import packageJSON from "../../package.json";
 import { RunsConfig } from "../types";
 import { execute } from "@empiricalrun/core";
+import { Dataset } from "@empiricalrun/types";
 
 const fileName = "empiricalrun.config.json";
 
 const path = process.cwd();
 const config = getDefaultRunsConfig(DefaultRunsConfigType.DEFAULT);
+
+async function downloadDataset(path: string): Promise<Dataset | undefined> {
+  if (path.startsWith("http")) {
+    const response = await fetch(path);
+    const body = await response.text();
+    return JSON.parse(body);
+  }
+}
 
 program
   .name("Empirical.run CLI")
@@ -43,8 +52,12 @@ program
       console.log(`${green("[Success]")} - read ${fileName} file`);
       const jsonStr = data.toString();
       const { runs, dataset } = JSON.parse(jsonStr) as RunsConfig;
+      if (dataset.path && !dataset.samples) {
+        const downloaded = await downloadDataset(dataset.path);
+        dataset.samples = downloaded?.samples;
+      }
       // TODO: add check here for empty runs config. Add validator of the file
-      const completion = await execute(runs[0]!, dataset);
+      const completion = await execute(runs[0]!, dataset.samples || []);
       console.log(JSON.stringify(completion, null, 2));
     });
   });

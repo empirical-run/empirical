@@ -1,0 +1,3 @@
+{
+  "extends": "@empiricalrun/typescript-config/base.json"
+}

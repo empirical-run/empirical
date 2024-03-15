@@ -1,0 +1,19 @@
+{
+  "name": "@empiricalrun/core",
+  "version": "0.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@empiricalrun/typescript-config": "workspace:*",
+    "@empiricalrun/types": "workspace:*"
+  },
+  "dependencies": {
+    "openai": "^4.29.0",
+    "@empiricalrun/evals": "workspace:*"
+  }
+}

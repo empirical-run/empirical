@@ -9,6 +9,8 @@ module.exports = {
     "prettier",
     require.resolve("@vercel/style-guide/eslint/next"),
     "eslint-config-turbo",
+    "prettier",
+    "unused-imports"
   ],
   globals: {
     React: true,
@@ -18,7 +20,7 @@ module.exports = {
     node: true,
     browser: true,
   },
-  plugins: ["only-warn"],
+  plugins: ["prettier", "unused-imports"],
   settings: {
     "import/resolver": {
       typescript: {
@@ -32,4 +34,12 @@ module.exports = {
     "node_modules/",
   ],
   overrides: [{ files: ["*.js?(x)", "*.ts?(x)"] }],
+  rules: {
+    "prettier/prettier": ["error"],
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+			"warn",
+			{ "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
+		]
+  }
 };

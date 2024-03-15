@@ -1,8 +1,0 @@
-{
-  "name": "@empiricalrun/tailwind-config",
-  "version": "0.0.0",
-  "private": true,
-  "files": [
-    "tailwind.config.css"
-  ]
-}

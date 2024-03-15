@@ -4,6 +4,8 @@ import { green, red, yellow, bold } from "picocolors";
 import fs from "fs";
 import { program } from "commander";
 import packageJSON from "../../package.json";
+import { RunsConfig } from "../types";
+import { execute } from "@empiricalrun/core";
 
 const path = process.cwd();
 const config = getDefaultRunsConfig(DefaultRunsConfigType.DEFAULT);
@@ -40,7 +42,10 @@ program
         return;
       }
       console.log(`${green("[Success]")} - read empirical.run.json file`);
-      console.log(data.toString());
+      const jsonStr = data.toString();
+      const jsonObj = JSON.parse(jsonStr) as RunsConfig;
+      // TODO: add check here for empty runs config. Add validator of the file
+      execute(jsonObj.runs[0]!, jsonObj.dataset);
     });
   });
 

@@ -27,8 +27,10 @@ export const config: RunsConfig = {
     },
   ],
   dataset: {
+    id: "dataset-1",
     samples: [
       {
+        id: "sample-1",
         inputs: [
           {
             name: "user_message",
@@ -38,6 +40,7 @@ export const config: RunsConfig = {
         ],
       },
       {
+        id: "sample-2",
         inputs: [
           {
             name: "user_message",

@@ -8,15 +8,19 @@ import { RunsConfig } from "../types";
 import { execute } from "@empiricalrun/core";
 import { RunCompletion } from "@empiricalrun/types";
 import cliProgress from "cli-progress";
+import express from "express";
+import path from "path";
 
 const configFileName = "empiricalrun.config.json";
-const path = process.cwd();
-const configFileFullPath = `${path}/${configFileName}`;
+const cwd = process.cwd();
+const configFileFullPath = `${cwd}/${configFileName}`;
 const config = getDefaultRunsConfig(DefaultRunsConfigType.DEFAULT);
 
 const outputFileName = "output.json";
 const cacheDir = ".empiricalrun";
-const outputFilePath = `${path}/${cacheDir}/${outputFileName}`;
+const outputFilePath = `${cwd}/${cacheDir}/${outputFileName}`;
+
+console.log(__dirname);
 
 function setupProgressBar(total: number) {
   const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
@@ -37,7 +41,7 @@ program
   .action(async () => {
     await fs.writeFile(configFileFullPath, JSON.stringify(config, null, 2));
     console.log(
-      `${green("[Success]")} - created ${bold(`${configFileName}`)} in ${path}`,
+      `${green("[Success]")} - created ${bold(`${configFileName}`)} in ${cwd}`,
     );
   });
 
@@ -70,9 +74,25 @@ program
       const data: { runs: RunCompletion[] } = {
         runs: completion,
       };
-      await fs.mkdir(`${path}/${cacheDir}`, { recursive: true });
+      await fs.mkdir(`${cwd}/${cacheDir}`, { recursive: true });
       await fs.writeFile(outputFilePath, JSON.stringify(data, null, 2));
     }
+  });
+
+program
+  .command("ui")
+  .description("visualise the results of a run")
+  .action(async () => {
+    console.log(yellow("Initiating webapp..."));
+    const app = express();
+    const port = 8000;
+    app.use(express.static(path.join(__dirname, "../webapp")));
+    app.get("/api/results", (req, res) => {
+      res.sendFile(outputFilePath);
+    });
+    app.listen(port, () => {
+      console.log(`Empirical app running on ${port}`);
+    });
   });
 
 program.parse();

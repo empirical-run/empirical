@@ -7,10 +7,15 @@ void watch({
       expression: [
         "allof",
         ["not", ["dirname", "node_modules"]],
-        ["match", "*.ts", "basename"],
+        [
+          "anyof",
+          ["match", "*.ts", "basename"],
+          ["match", "*.tsx", "basename"],
+        ],
       ],
       name: "build",
       onChange: async ({ spawn }) => {
+        await spawn`pnpm install`;
         await spawn`pnpm run build --force`;
         await spawn`pnpm install`;
       },

@@ -13,7 +13,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "build/types/**/*.ts"
+    "build/types/**/*.ts",
+    "../../packages/cli/dist/webapp/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

@@ -20,8 +20,17 @@ pnpm build
 To develop all apps and packages, run the following command:
 
 ```
-pnpm dev
+pnpm dev:packages
 ```
+To start web app, follow steps below:
+```
+cd /packages/cli
+npm i -g .
+npx @empiricalrun/cli init
+npx @empiricalrun/cli run
+npx @empiricalrun/cli ui
+```
+After following the above steps, the web app will be running on http://localhost:8000
 
 #### Adding new package
 To add new package run following command:

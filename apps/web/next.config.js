@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
-  distDir: "build",
+  output: "export",
+  distDir: "../../packages/cli/dist/webapp",
 };

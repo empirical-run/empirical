@@ -47,11 +47,13 @@ export type DatasetSampleInput = {
 };
 
 export type DatasetSample = {
+  id: string;
   inputs: DatasetSampleInput[];
   expected?: string;
 };
 
 export type Dataset = {
+  id: string;
   samples: DatasetSample[];
 };
 

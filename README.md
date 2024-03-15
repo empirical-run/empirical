@@ -11,6 +11,7 @@ Empirical is the fastest way to try different LLMs and prompt combinations, acro
 To build all apps and packages, run the following command:
 
 ```
+pnpm install
 pnpm build
 ```
 
@@ -24,6 +25,15 @@ pnpm dev
 
 #### Adding new package
 To add new package run following command:
+
 ```
-pnpn run gen:workspace
+pnpm run gen:workspace
+```
+
+### Test
+
+To run tests
+
+```
+pnpm test
 ```

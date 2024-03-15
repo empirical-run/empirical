@@ -7,6 +7,7 @@ import {
 } from "@empiricalrun/types";
 import { replacePlaceholders } from "../utils";
 import score from "@empiricalrun/evals";
+import crypto from "crypto";
 
 export async function execute(
   run: Run,

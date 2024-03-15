@@ -1,9 +1,11 @@
-import { Button } from "@empiricalrun/ui/button";
+import { Button } from "../components/ui/button";
+import { PageHeader } from "../components/ui/page-header";
 
 export default function Page(): JSX.Element {
   return (
     <main>
-      Hello World!<Button>Test</Button>
+      <PageHeader/>
+      <span>Hello from Empirical!</span>
     </main>
   );
 }

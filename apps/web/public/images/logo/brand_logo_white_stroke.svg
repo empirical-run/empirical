@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60pt" height="60pt" viewBox="0 0 60 60" version="1.1">
+<g id="surface1">
+<path style="fill:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke:#fff;stroke-opacity:1;stroke-miterlimit:10;" d="M 225 335 L 225 445 L 245 425 L 355 425 L 375 445 L 375 315 C 375 232.148438 307.851563 165 225 165 L 225 175 " transform="matrix(0.1,0,0,-0.1,0,60)"/>
+<path style="fill:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke:#fff;stroke-opacity:1;stroke-miterlimit:10;" d="M 300 335 C 300 375.039063 332.460938 407.5 372.5 407.5 " transform="matrix(0.1,0,0,-0.1,0,60)"/>
+<path style="fill:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke:#fff;stroke-opacity:1;stroke-miterlimit:10;" d="M 300 335 C 300 375.039063 267.539063 407.5 227.5 407.5 " transform="matrix(0.1,0,0,-0.1,0,60)"/>
+<path style="fill:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke:#fff;stroke-opacity:1;stroke-miterlimit:10;" d="M 355 355 C 355 346.71875 348.28125 340 340 340 C 331.71875 340 325 346.71875 325 355 C 325 363.28125 331.71875 370 340 370 C 348.28125 370 355 363.28125 355 355 Z M 355 355 " transform="matrix(0.1,0,0,-0.1,0,60)"/>
+<path style="fill:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke:#fff;stroke-opacity:1;stroke-miterlimit:10;" d="M 275 355 C 275 346.71875 268.28125 340 260 340 C 251.71875 340 245 346.71875 245 355 C 245 363.28125 251.71875 370 260 370 C 268.28125 370 275 363.28125 275 355 Z M 275 355 " transform="matrix(0.1,0,0,-0.1,0,60)"/>
+<path style="fill:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke:#fff;stroke-opacity:1;stroke-miterlimit:10;" d="M 195 185 L 195 282.5 C 195 300.429688 209.570313 315 227.5 315 C 245.429688 315 260 300.429688 260 282.5 L 260 250 C 260 214.101563 230.898438 185 195 185 Z M 195 185 " transform="matrix(0.1,0,0,-0.1,0,60)"/>
+<path style="fill:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke:#fff;stroke-opacity:1;stroke-miterlimit:10;" d="M 235 275 C 235 269.492188 230.507813 265 225 265 C 219.492188 265 215 269.492188 215 275 " transform="matrix(0.1,0,0,-0.1,0,60)"/>
+<path style="fill:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke:#fff;stroke-opacity:1;stroke-miterlimit:10;" d="M 230 235 C 230 229.492188 225.507813 225 220 225 C 214.492188 225 210 229.492188 210 235 " transform="matrix(0.1,0,0,-0.1,0,60)"/>
+</g>
+</svg>

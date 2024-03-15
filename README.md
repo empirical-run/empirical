@@ -27,7 +27,7 @@ pnpm dev
 To add new package run following command:
 
 ```
-pnpn run gen:workspace
+pnpm run gen:workspace
 ```
 
 ### Test

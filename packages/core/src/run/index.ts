@@ -57,7 +57,7 @@ export async function execute(
     }
   }
   return {
-    id: "", // TODO
+    id: crypto.randomUUID(), // TODO
     name: run.name,
     dataset_id: "", // TODO
     assert,

@@ -9,7 +9,6 @@ export const isJSON: Scorer = async (_, output) => {
     JSON.parse(output);
     isJSON = true;
   } catch (e) {
-    console.log(e);
     isJSON = false;
   }
   return {

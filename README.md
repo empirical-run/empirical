@@ -20,7 +20,7 @@ pnpm build
 To develop all apps and packages, run the following command:
 
 ```
-pnpm dev:packages
+pnpm dev
 ```
 To start web app, follow steps below:
 ```

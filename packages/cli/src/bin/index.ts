@@ -42,9 +42,9 @@ program
       }
       console.log(`${green("[Success]")} - read ${fileName} file`);
       const jsonStr = data.toString();
-      const jsonObj = JSON.parse(jsonStr) as RunsConfig;
+      const { runs, dataset } = JSON.parse(jsonStr) as RunsConfig;
       // TODO: add check here for empty runs config. Add validator of the file
-      const completion = await execute(jsonObj.runs[0]!, jsonObj.dataset);
+      const completion = await execute(runs[0]!, dataset);
       console.log(JSON.stringify(completion, null, 2));
     });
   });

@@ -54,7 +54,8 @@ export type DatasetSample = {
 
 export type Dataset = {
   id: string;
-  samples: DatasetSample[];
+  path?: string;
+  samples?: DatasetSample[];
 };
 
 // TODO: fix types. text generation and others how does that show up ?

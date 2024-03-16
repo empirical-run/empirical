@@ -13,7 +13,6 @@ import {
   DropdownMenuLabel,
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
   DropdownMenuCheckboxItem,
@@ -44,21 +43,17 @@ export default function SampleOutputCard({
   comparisonResults,
   comparisonSamples,
   isActiveColumn = false,
-  onSelectSample,
   onFetchCompletion,
   onClickCard = () => {},
-  evals = [],
 }: {
   baseResult?: RunCompletion;
   baseSample?: RunOutputSample;
   comparisonSamples?: RunOutputSample[];
   comparisonResults?: RunCompletion[];
   isActiveColumn?: boolean;
-  onSelectSample?: (runSample: RunOutputSample) => void;
   setSelections?: Dispatch<any>;
   onFetchCompletion?: (runResult: RunCompletion) => void;
   onClickCard?: () => void;
-  evals?: string[];
 }) {
   const [diffView, setDiffView] = useState<Diff>({
     text: "",
@@ -139,25 +134,24 @@ export default function SampleOutputCard({
         {baseResult && baseSample && (
           <CardTitle className="flex flex-row space-x-2 items-center">
             <div className="flex flex-1 flex-row space-x-2 justify-end">
-              {evals.map((key) => {
-                const evalData =
-                  baseSample?.scores?.[key as keyof typeof baseSample.scores];
-                if (!evalData) {
+              {baseSample.scores.map((s) => {
+                console.log(s);
+                if (!s) {
                   return null;
                 }
                 return (
                   <Badge
                     variant={
                       // @ts-ignore
-                      evalData.score ? "outline" : "destructive"
+                      s.score ? "outline" : "destructive"
                     }
-                    key={`${baseResult.model}-${baseResult.id}-${baseSample.id}-eval-${key}`}
+                    key={`${baseResult.model}-${baseResult.id}-${baseSample.id}-eval-${s.name}`}
                     className="flex flex-row space-x-1"
                   >
-                    <span>{key} </span>
+                    <span>{s.name} </span>
                     {
                       // @ts-ignore
-                      baseSample?.evaluations?.[key]?.score ? (
+                      s.score ? (
                         <CheckCircledIcon height={12} width={12} />
                       ) : (
                         <CrossCircledIcon height={12} width={12} />
@@ -171,12 +165,6 @@ export default function SampleOutputCard({
                   <DotsVerticalIcon />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    className="text-xs"
-                    onClick={() => onSelectSample?.(baseSample)}
-                  >
-                    Edit Prompt
-                  </DropdownMenuItem>
                   {showCompareAgainst ? (
                     <>
                       <DropdownMenuLabel className="text-xs">

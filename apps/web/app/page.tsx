@@ -24,6 +24,10 @@ export default function Page(): JSX.Element {
   const datasetInputNames = useMemo(() => {
     return dataset?.samples?.[0]?.inputs.map((i) => i.name) || [];
   }, [dataset]);
+  const runColumnHeaders = useMemo(
+    () => columnHeaders.filter((h) => h.type == "completion"),
+    [columnHeaders],
+  );
 
   return (
     <main>
@@ -43,10 +47,9 @@ export default function Page(): JSX.Element {
         )}
         <>
           {sampleIds?.map((r) => {
-            const sampleCells = columnHeaders
-              .filter((h) => !!h.runResult)
-              .map((h) => getSampleCell(r, h.runResult)!);
-            console.log(sampleCells);
+            const sampleCells = runColumnHeaders.map(
+              (h) => getSampleCell(r, h.runResult)!,
+            );
             const inputSample = dataset!.samples?.filter((s) => s.id === r)[0];
             return (
               <InViewElement
@@ -57,7 +60,7 @@ export default function Page(): JSX.Element {
                   <div className="flex items-stretch flex-1 min-w-[400px]">
                     <SampleCard
                       sample={inputSample!}
-                      mode={"edit"}
+                      mode={"view"}
                       inputTabs={datasetInputNames}
                       // onClickEditPrompt={() =>
                       //   setActiveRun(runColumnHeaders[0].runResult!)
@@ -70,19 +73,16 @@ export default function Page(): JSX.Element {
                       key={`sample-${r}-${i}`}
                     >
                       <SampleOutputCard
-                        baseResult={columnHeaders?.[i]?.runResult}
+                        baseResult={runColumnHeaders?.[i]?.runResult}
                         baseSample={sample}
-                        comparisonResults={columnHeaders.map(
+                        comparisonResults={runColumnHeaders.map(
                           (s) => s.runResult!,
                         )}
-                        // onSelectSample={() =>
-                        //   setActiveRunIfExisting(columnHeaders[i]?.runResult!)
-                        // }
                         // onClickCard={() =>
                         //   setActiveRunIfExisting(columnHeaders[i]?.runResult!)
                         // }
                         comparisonSamples={sampleCells}
-                        isActiveColumn={columnHeaders[i]?.active}
+                        isActiveColumn={runColumnHeaders[i]?.active}
                       />
                     </div>
                   ))}

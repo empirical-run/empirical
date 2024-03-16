@@ -12,7 +12,7 @@ import cliProgress from "cli-progress";
 import express from "express";
 import path from "path";
 
-const configFileName = "empiricalrun.rc.json";
+const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
 const configFileFullPath = `${cwd}/${configFileName}`;
 const config = getDefaultRunsConfig(DefaultRunsConfigType.DEFAULT);

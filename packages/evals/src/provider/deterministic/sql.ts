@@ -4,6 +4,7 @@ import { Scorer } from "../../interface/scorer";
 export const syntaxName = "sql-syntax";
 export const semanticName = "sql-semantic";
 
+//TODO: make this config driven
 const parserOpt = { database: "sqlite" };
 
 export const checkSqlSyntax: Scorer = async (_, output) => {

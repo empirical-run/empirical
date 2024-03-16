@@ -5,7 +5,7 @@ export enum LogoType {
   WHITE_STROKE = "white-stroke",
 }
 
-const logoMap = new Map([
+const logoMap = new Map<LogoType, string>([
   [LogoType.WHITE_FILL, "/images/logo/brand_logo_white_fill_cropped.svg"],
   [LogoType.WHITE_STROKE, "/images/logo/brand_logo_white_stroke.svg"],
 ]);

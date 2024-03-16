@@ -7,10 +7,12 @@ import {
 } from "@empiricalrun/types";
 import { replacePlaceholders } from "../utils";
 import score from "@empiricalrun/evals";
+import crypto from "crypto";
 
 export async function execute(
   run: Run,
   dataset: Dataset,
+  progressCallback: () => void,
 ): Promise<RunCompletion> {
   const { prompt, assert, model } = run;
   const runCreationDate = new Date();
@@ -46,6 +48,7 @@ export async function execute(
         expected: datasetSample.expected,
         assert: assert,
       });
+      progressCallback();
       sampleCompletions.push({
         inputs: datasetSample.inputs,
         output: completion.message.content,
@@ -57,7 +60,7 @@ export async function execute(
     }
   }
   return {
-    id: "", // TODO
+    id: crypto.randomUUID(), // TODO
     name: run.name,
     dataset_id: "", // TODO
     assert,

@@ -37,7 +37,7 @@ function setupProgressBar(total: number) {
 program
   .name("Empirical.run CLI")
   .description(
-    "CLI to compare and evaluate multiple AI model completions on different prompts and model",
+    "CLI to compare and evaluate multiple AI model completions on different prompts and models",
   )
   .version(packageJSON.version);
 

@@ -20,8 +20,6 @@ const outputFileName = "output.json";
 const cacheDir = ".empiricalrun";
 const outputFilePath = `${cwd}/${cacheDir}/${outputFileName}`;
 
-console.log(__dirname);
-
 function setupProgressBar(total: number) {
   const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
   bar.start(total, 0);

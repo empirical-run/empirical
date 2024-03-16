@@ -7,7 +7,7 @@ async function askLlmForEvalResult(
   const openai = new OpenAI();
   const completion = await openai.chat.completions.create({
     messages,
-    model: "gpt-3.5-turbo",
+    model: "gpt-4",
     tools: [
       {
         type: "function",
@@ -41,13 +41,25 @@ async function askLlmForEvalResult(
 
 export const name = "llm-criteria";
 
+const systemPrompt = `You are an expert evaluator who grades an output string based on a criteria. The output must fulfil the criteria to pass the evaluation.`;
+
 export const checkLlmCriteria: Scorer = async (sample, output, value) => {
-  const expected = sample.expected!;
-  console.log(value);
-  // TODO: use value to define criteria
-  // support {{ placeholders }} in the value
-  const prompt = `Are these two queries equivalent?\n\nQuery 1: ${output}\nQuery 2: ${expected}`;
-  const systemPrompt = "You are an expert evaluator";
+  let criteria = "";
+
+  if (value) {
+    let replacements: any = sample.inputs.reduce((agg, i) => {
+      return {
+        ...agg,
+        [i.name]: i.value,
+      };
+    }, {});
+    if (sample.expected) {
+      replacements.expected = sample.expected;
+    }
+    criteria = replacePlaceholders(value as string, replacements);
+  }
+
+  const prompt = `Output: ${output}\n\nCriteria: ${criteria}`;
   const messages: OpenAI.ChatCompletionMessageParam[] = [
     { role: "system", content: systemPrompt },
     { role: "user", content: prompt },
@@ -61,6 +73,9 @@ export const checkLlmCriteria: Scorer = async (sample, output, value) => {
   };
 };
 
-// LLM returns - function call
-// - reasoning
-// - response_choice (between Yes or No)
+// TODO: placeholder replacemnet is duplicated across core and evals package
+function replacePlaceholders(string: string, obj: any) {
+  return string.replace(/{{(\w+)}}/g, function (match, key) {
+    return obj[key];
+  });
+}

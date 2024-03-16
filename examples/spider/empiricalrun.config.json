@@ -29,6 +29,6 @@
     }
   ],
   "dataset": {
-    "path": "https://assets-staging.empirical.run/datasets/json/spider-tiny.json"
+    "path": "https://assets.empirical.run/datasets/json/spider-tiny.json"
   }
 }

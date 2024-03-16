@@ -46,7 +46,7 @@ export async function execute(
         inputs: datasetSample.inputs,
         output,
         expected: datasetSample.expected,
-        assert: assert,
+        assertions: assert,
       });
       progressCallback();
       sampleCompletions.push({

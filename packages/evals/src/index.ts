@@ -5,19 +5,20 @@ export default async function score({
   inputs,
   output,
   expected,
-  assert,
+  assertions,
 }: {
   inputs: DatasetSampleInput[];
   output: string;
   expected?: string;
-  assert: Assert[] | undefined;
+  assertions: Assert[] | undefined;
 }): Promise<Score[]> {
-  if (!assert) {
+  if (!assertions) {
     return [];
   }
-  const scoreFn = assert.map((s) => getScorer(s)).filter((s) => !!s);
+  // TODO: should raise if a scorer function is not found
+  const scoreFns = assertions.map((s) => getScorer(s)).filter((s) => !!s);
   const scores = await Promise.all(
-    scoreFn.map((s) => s!(inputs, output, expected)),
+    scoreFns.map((s) => s!(inputs, output, expected)),
   );
   return scores;
 }

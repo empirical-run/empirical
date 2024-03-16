@@ -1,16 +1,28 @@
 #!/usr/bin/env node
 import { DefaultRunsConfigType, getDefaultRunsConfig } from "../runs";
 import { green, red, yellow, bold } from "picocolors";
-import fs from "fs";
+import { promises as fs } from "fs";
 import { program } from "commander";
 import packageJSON from "../../package.json";
 import { RunsConfig } from "../types";
 import { execute } from "@empiricalrun/core";
+import { RunCompletion } from "@empiricalrun/types";
+import cliProgress from "cli-progress";
 
-const fileName = "empiricalrun.config.json";
-
+const configFileName = "empiricalrun.rc.json";
 const path = process.cwd();
+const configFileFullPath = `${path}/${configFileName}`;
 const config = getDefaultRunsConfig(DefaultRunsConfigType.DEFAULT);
+
+const outputFileName = "output.json";
+const cacheDir = ".empiricalrun";
+const outputFilePath = `${path}/${cacheDir}/${outputFileName}`;
+
+function setupProgressBar(total: number) {
+  const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+  bar.start(total, 0);
+  return bar;
+}
 
 program
   .name("Empirical.run CLI")
@@ -22,10 +34,10 @@ program
 program
   .command("init")
   .description("initialise empirical")
-  .action(() => {
-    fs.writeFileSync(`${path}/${fileName}`, JSON.stringify(config, null, 2));
+  .action(async () => {
+    await fs.writeFile(configFileFullPath, JSON.stringify(config, null, 2));
     console.log(
-      `${green("[Success]")} - created ${bold(`${fileName}`)} in ${path}`,
+      `${green("[Success]")} - created ${bold(`${configFileName}`)} in ${path}`,
     );
   });
 
@@ -34,19 +46,33 @@ program
   .description("initiate a run to evaluate model completions")
   .action(async () => {
     console.log(yellow("Initiating run..."));
-    fs.readFile(`${path}/${fileName}`, async (err, data) => {
-      if (err) {
-        console.log(`${red("[Error]")} Failed to read ${fileName} file`);
-        console.log(yellow("Please ensure running init command first"));
-        return;
-      }
-      console.log(`${green("[Success]")} - read ${fileName} file`);
-      const jsonStr = data.toString();
-      const { runs, dataset } = JSON.parse(jsonStr) as RunsConfig;
-      // TODO: add check here for empty runs config. Add validator of the file
-      const completion = await execute(runs[0]!, dataset);
-      console.log(JSON.stringify(completion, null, 2));
-    });
+    let data;
+    try {
+      data = await fs.readFile(configFileFullPath);
+    } catch (err) {
+      console.log(`${red("[Error]")} Failed to read ${configFileName} file`);
+      console.log(yellow("Please ensure running init command first"));
+      return;
+    }
+
+    console.log(`${green("[Success]")} - read ${configFileName} file`);
+    const jsonStr = data.toString();
+    const { runs, dataset } = JSON.parse(jsonStr) as RunsConfig;
+    // TODO: add check here for empty runs config. Add validator of the file
+
+    const progressBar = setupProgressBar(runs.length * dataset.samples.length);
+    const completion = await Promise.all(
+      runs.map((r) => execute(r, dataset, () => progressBar.increment())),
+    );
+    progressBar.stop();
+
+    if (process.env.CI !== "true") {
+      const data: { runs: RunCompletion[] } = {
+        runs: completion,
+      };
+      await fs.mkdir(`${path}/${cacheDir}`, { recursive: true });
+      await fs.writeFile(outputFilePath, JSON.stringify(data, null, 2));
+    }
   });
 
 program.parse();

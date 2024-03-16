@@ -8,10 +8,14 @@
     "build": "tsc --build",
     "clean": "tsc --build --clean",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
-    "@empiricalrun/typescript-config": "workspace:*",
-    "@empiricalrun/types": "workspace:*"
+    "@empiricalrun/types": "workspace:*",
+    "@empiricalrun/typescript-config": "workspace:*"
+  },
+  "dependencies": {
+    "node-sql-parser": "^4.18.0"
   }
 }

@@ -32,8 +32,9 @@ pnpm run gen:workspace
 
 ### Test
 
-To run tests
+To run tests (add `:watch` for watch mode )
 
 ```
 pnpm test
+pnpm test:watch
 ```

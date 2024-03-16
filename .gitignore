@@ -38,4 +38,5 @@ yarn-error.log*
 *.pem
 
 # Empirical
+empiricalrun.rc.json
 .empiricalrun

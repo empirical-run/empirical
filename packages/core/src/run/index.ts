@@ -12,6 +12,7 @@ import crypto from "crypto";
 export async function execute(
   run: Run,
   samples: DatasetSample[],
+  progressCallback: () => void,
 ): Promise<RunCompletion> {
   const { prompt, assert, model } = run;
   const runCreationDate = new Date();
@@ -47,6 +48,7 @@ export async function execute(
         expected: datasetSample.expected,
         assert: assert,
       });
+      progressCallback();
       sampleCompletions.push({
         inputs: datasetSample.inputs,
         output: completion.message.content,

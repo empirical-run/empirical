@@ -1,7 +1,17 @@
 import { Scorer } from "../interface/scorer";
-import { isJSON, name as JSONScorerName } from "./deterministic/is-json";
+import { isJson, name as jsonName } from "./deterministic/json";
+import {
+  syntaxName,
+  checkSqlSyntax,
+  semanticName,
+  checkSqlSemantic,
+} from "./deterministic/sql";
 
-const map = new Map<string, Scorer>([[JSONScorerName, isJSON]]);
+const map = new Map<string, Scorer>([
+  [jsonName, isJson],
+  [syntaxName, checkSqlSyntax],
+  [semanticName, checkSqlSemantic],
+]);
 
 export default function getScorer({
   type,

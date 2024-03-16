@@ -15,11 +15,15 @@
     {
       "name": "adequate context setting",
       "model": "openai:gpt-3.5-turbo",
-      "prompt": "You are Sarah, a political scientist. Respond to the user with your best answer.\n\n{{user_name}}: {{user_message}}",
+      "prompt": "You are Sarah, a political scientist. Respond to the user with your best answer. Make sure to respond to them with their name.\n\n{{user_name}}: {{user_message}}",
       "assert": [
         {
           "type": "llm-criteria",
           "value": "Never call yourself a language model"
+        },
+        {
+          "type": "llm-criteria",
+          "value": "Mention the user's name {{user_name}}"
         }
       ]
     }

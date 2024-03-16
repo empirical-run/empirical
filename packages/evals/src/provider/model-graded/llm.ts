@@ -1,4 +1,4 @@
-import { Scorer } from "../interface/scorer";
+import { Scorer } from "../../interface/scorer";
 import OpenAI from "openai";
 
 async function askLlmForEvalResult(
@@ -41,7 +41,11 @@ async function askLlmForEvalResult(
 
 export const name = "llm-criteria";
 
-export const checkLlmCriteria: Scorer = async (inputs, output, expected) => {
+export const checkLlmCriteria: Scorer = async (sample, output, value) => {
+  const expected = sample.expected!;
+  console.log(value);
+  // TODO: use value to define criteria
+  // support {{ placeholders }} in the value
   const prompt = `Are these two queries equivalent?\n\nQuery 1: ${output}\nQuery 2: ${expected}`;
   const systemPrompt = "You are an expert evaluator";
   const messages: OpenAI.ChatCompletionMessageParam[] = [

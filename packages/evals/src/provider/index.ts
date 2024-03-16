@@ -6,11 +6,13 @@ import {
   semanticName,
   checkSqlSemantic,
 } from "./deterministic/sql";
+import { name as llmName, checkLlmCriteria } from "./model-graded/llm";
 
 const map = new Map<string, Scorer>([
   [jsonName, isJson],
   [syntaxName, checkSqlSyntax],
   [semanticName, checkSqlSemantic],
+  [llmName, checkLlmCriteria],
 ]);
 
 export default function getScorer({

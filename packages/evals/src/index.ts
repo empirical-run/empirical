@@ -1,24 +1,30 @@
-import { Assert, DatasetSampleInput, Score } from "@empiricalrun/types";
+import { Assert, Score, DatasetSample } from "@empiricalrun/types";
 import getScorer from "./provider";
 
 export default async function score({
-  inputs,
+  sample,
   output,
-  expected,
   assertions,
 }: {
-  inputs: DatasetSampleInput[];
+  sample: DatasetSample;
   output: string;
-  expected?: string;
   assertions: Assert[] | undefined;
 }): Promise<Score[]> {
   if (!assertions) {
     return [];
   }
-  // TODO: should raise if a scorer function is not found
-  const scoreFns = assertions.map((s) => getScorer(s)).filter((s) => !!s);
+
   const scores = await Promise.all(
-    scoreFns.map((s) => s!(inputs, output, expected)),
+    assertions.map((assert) => {
+      const scoringFn = getScorer(assert);
+      if (scoringFn) {
+        // TODO: should raise if a scorer function is not found
+        return scoringFn(sample, output, assert.value);
+      } else {
+        return undefined;
+      }
+    }),
   );
-  return scores;
+
+  return scores.filter((item) => item !== undefined) as Score[];
 }

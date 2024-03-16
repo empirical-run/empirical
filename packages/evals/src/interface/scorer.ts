@@ -1,9 +1,5 @@
-import { Score, DatasetSampleInput } from "@empiricalrun/types";
+import { Score, DatasetSample } from "@empiricalrun/types";
 
 export interface Scorer {
-  (
-    inputs: DatasetSampleInput[],
-    output: string,
-    expected?: string,
-  ): Promise<Score>;
+  (sample: DatasetSample, output: string, value?: string): Promise<Score>;
 }

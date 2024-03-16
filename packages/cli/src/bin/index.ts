@@ -9,10 +9,12 @@ import { execute } from "@empiricalrun/core";
 import { Dataset } from "@empiricalrun/types";
 import { RunCompletion } from "@empiricalrun/types";
 import cliProgress from "cli-progress";
+import express from "express";
+import path from "path";
 
-const configFileName = "empiricalrun.rc.json";
-const path = process.cwd();
-const configFileFullPath = `${path}/${configFileName}`;
+const configFileName = "empiricalrc.json";
+const cwd = process.cwd();
+const configFileFullPath = `${cwd}/${configFileName}`;
 const config = getDefaultRunsConfig(DefaultRunsConfigType.DEFAULT);
 
 async function downloadDataset(path: string): Promise<Dataset | undefined> {
@@ -24,7 +26,7 @@ async function downloadDataset(path: string): Promise<Dataset | undefined> {
 }
 const outputFileName = "output.json";
 const cacheDir = ".empiricalrun";
-const outputFilePath = `${path}/${cacheDir}/${outputFileName}`;
+const outputFilePath = `${cwd}/${cacheDir}/${outputFileName}`;
 
 function setupProgressBar(total: number) {
   const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
@@ -35,7 +37,7 @@ function setupProgressBar(total: number) {
 program
   .name("Empirical.run CLI")
   .description(
-    "CLI to compare and evaluate multiple AI model completions on different prompts and model",
+    "CLI to compare and evaluate multiple AI model completions on different prompts and models",
   )
   .version(packageJSON.version);
 
@@ -45,7 +47,7 @@ program
   .action(async () => {
     await fs.writeFile(configFileFullPath, JSON.stringify(config, null, 2));
     console.log(
-      `${green("[Success]")} - created ${bold(`${configFileName}`)} in ${path}`,
+      `${green("[Success]")} - created ${bold(`${configFileName}`)} in ${cwd}`,
     );
   });
 
@@ -87,9 +89,25 @@ program
       const data: { runs: RunCompletion[] } = {
         runs: completion,
       };
-      await fs.mkdir(`${path}/${cacheDir}`, { recursive: true });
+      await fs.mkdir(`${cwd}/${cacheDir}`, { recursive: true });
       await fs.writeFile(outputFilePath, JSON.stringify(data, null, 2));
     }
+  });
+
+program
+  .command("ui")
+  .description("visualise the results of a run")
+  .action(async () => {
+    console.log(yellow("Initiating webapp..."));
+    const app = express();
+    const port = 8000;
+    app.use(express.static(path.join(__dirname, "../webapp")));
+    app.get("/api/results", (req, res) => {
+      res.sendFile(outputFilePath);
+    });
+    app.listen(port, () => {
+      console.log(`Empirical app running on ${port}`);
+    });
   });
 
 program.parse();

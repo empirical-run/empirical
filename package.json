@@ -3,13 +3,12 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "test": "turbo test",
-    "test:watch": "turbo run test:watch",
+    "dev": "npm exec turbowatch turbowatch.ts",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "gen:workspace": "turbo gen workspace",
-    "dev:packages": "npm exec turbowatch turbowatch.ts"
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "test:watch": "turbo run test:watch"
   },
   "devDependencies": {
     "@empiricalrun/eslint-config": "workspace:*",

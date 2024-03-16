@@ -1,6 +1,6 @@
 import { getProvider } from "../models/providers";
 import {
-  Dataset,
+  DatasetSample,
   Run,
   RunCompletion,
   RunOutputSample,
@@ -11,7 +11,7 @@ import crypto from "crypto";
 
 export async function execute(
   run: Run,
-  dataset: Dataset,
+  samples: DatasetSample[],
   progressCallback: () => void,
 ): Promise<RunCompletion> {
   const { prompt, assert, model } = run;
@@ -21,7 +21,7 @@ export async function execute(
     // TODO: modelName and completion function should be extracted from different function
     //@ts-ignore
     const { modelName, completionFunction } = getProvider(model);
-    for (const datasetSample of dataset.samples) {
+    for (const datasetSample of samples) {
       const messages = [
         {
           role: "user",

@@ -7,7 +7,8 @@ async function askLlmForEvalResult(
   const openai = new OpenAI();
   const completion = await openai.chat.completions.create({
     messages,
-    model: "gpt-4",
+    model: "gpt-3.5-turbo",
+    temperature: 0.1,
     tools: [
       {
         type: "function",
@@ -59,7 +60,7 @@ export const checkLlmCriteria: Scorer = async (sample, output, value) => {
     criteria = replacePlaceholders(value as string, replacements);
   }
 
-  const prompt = `Output: ${output}\n\nCriteria: ${criteria}`;
+  const prompt = `Criteria: ${criteria}\n\nOutput: ${output}`;
   const messages: OpenAI.ChatCompletionMessageParam[] = [
     { role: "system", content: systemPrompt },
     { role: "user", content: prompt },

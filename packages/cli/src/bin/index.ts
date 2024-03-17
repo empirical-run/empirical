@@ -75,8 +75,9 @@ program
     progressBar.stop();
 
     if (process.env.CI !== "true") {
-      const data: { runs: RunCompletion[] } = {
+      const data: { runs: RunCompletion[]; dataset: Dataset } = {
         runs: completion,
+        dataset: dataset,
       };
       await fs.mkdir(`${cwd}/${cacheDir}`, { recursive: true });
       await fs.writeFile(outputFilePath, JSON.stringify(data, null, 2));
@@ -91,12 +92,8 @@ program
     const app = express();
     const port = 8000;
     app.use(express.static(path.join(__dirname, "../webapp")));
-    app.get("/api/results", (req, res) => {
-      res.sendFile(outputFilePath);
-    });
-    app.listen(port, () => {
-      console.log(`Empirical app running on ${port}`);
-    });
+    app.get("/api/results", (req, res) => res.sendFile(outputFilePath));
+    app.listen(port, () => console.log(`Empirical app running on ${port}`));
   });
 
 program.parse();

@@ -5,9 +5,8 @@ import {
   RunCompletion,
   RunOutputSample,
 } from "@empiricalrun/types";
-import { replacePlaceholders } from "../utils";
+import { generateHex, replacePlaceholders } from "../utils";
 import score from "@empiricalrun/evals";
-import crypto from "crypto";
 
 export async function execute(
   run: Run,
@@ -17,6 +16,7 @@ export async function execute(
   const { prompt, assert, model } = run;
   const runCreationDate = new Date();
   const sampleCompletions: RunOutputSample[] = [];
+  const runId = generateHex(4);
   if (model && prompt) {
     // TODO: modelName and completion function should be extracted from different function
     //@ts-ignore
@@ -53,14 +53,14 @@ export async function execute(
         inputs: datasetSample.inputs,
         output: completion.message.content,
         scores: evaluationScores,
-        dataset_sample_id: "", // TODO
+        dataset_sample_id: datasetSample.id || "",
         created_at: new Date(),
-        run_id: "", // TODO
+        run_id: runId,
       });
     }
   }
   return {
-    id: crypto.randomUUID(), // TODO
+    id: runId,
     name: run.name,
     dataset_id: "", // TODO
     assert,

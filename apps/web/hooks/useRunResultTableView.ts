@@ -15,25 +15,22 @@ export function useRunResultTableView({
   runs: RunCompletion[];
 }) {
   const [activeRun, setActiveRun] = useState<RunCompletion | undefined>();
-  const getTableHeaders = useCallback(
-    ({ showExpectedHeader }: { showExpectedHeader: boolean }) => {
-      const tableHeaders: RunResultTableHeader[] = [
-        { title: "Inputs", type: "input" },
-      ];
-      runs?.forEach((run) => {
-        if (run) {
-          tableHeaders.push({
-            title: run.model,
-            runResult: run,
-            type: "completion",
-            active: activeRun?.id === run.id,
-          });
-        }
-      });
-      return tableHeaders;
-    },
-    [runs, activeRun],
-  );
+  const getTableHeaders = useCallback(() => {
+    const tableHeaders: RunResultTableHeader[] = [
+      { title: "Inputs", type: "input" },
+    ];
+    runs?.forEach((run) => {
+      if (run) {
+        tableHeaders.push({
+          title: run.model,
+          runResult: run,
+          type: "completion",
+          active: activeRun?.id === run.id,
+        });
+      }
+    });
+    return tableHeaders;
+  }, [runs, activeRun]);
 
   const getTableRowSamples = useCallback((runs: RunCompletion[]) => {
     return Array.from(
@@ -43,7 +40,9 @@ export function useRunResultTableView({
 
   const getSampleCell = useCallback(
     (id: string, run: RunCompletion | undefined) => {
-      return run?.samples.filter((sample) => sample.id === id)?.[0];
+      return run?.samples.filter(
+        (sample) => sample.dataset_sample_id === id,
+      )?.[0];
     },
     [],
   );

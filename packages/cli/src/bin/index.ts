@@ -6,8 +6,8 @@ import { program } from "commander";
 import packageJSON from "../../package.json";
 import { RunsConfig } from "../types";
 import { execute } from "@empiricalrun/core";
-import { Dataset } from "@empiricalrun/types";
-import { RunCompletion } from "@empiricalrun/types";
+import { loadDataset } from "./dataset";
+import { Dataset, RunCompletion } from "@empiricalrun/types";
 import cliProgress from "cli-progress";
 import express from "express";
 import path from "path";
@@ -17,13 +17,6 @@ const cwd = process.cwd();
 const configFileFullPath = `${cwd}/${configFileName}`;
 const config = getDefaultRunsConfig(DefaultRunsConfigType.DEFAULT);
 
-async function downloadDataset(path: string): Promise<Dataset | undefined> {
-  if (path.startsWith("http")) {
-    const response = await fetch(path);
-    const body = await response.text();
-    return JSON.parse(body);
-  }
-}
 const outputFileName = "output.json";
 const cacheDir = ".empiricalrun";
 const outputFilePath = `${cwd}/${cacheDir}/${outputFileName}`;
@@ -67,12 +60,11 @@ program
 
     console.log(`${green("[Success]")} - read ${configFileName} file`);
     const jsonStr = data.toString();
-    const { runs, dataset } = JSON.parse(jsonStr) as RunsConfig;
+    const { runs, dataset: datasetConfig } = JSON.parse(jsonStr) as RunsConfig;
     // TODO: add check here for empty runs config. Add validator of the file
-
-    if (dataset.path && !dataset.samples) {
-      const downloaded = await downloadDataset(dataset.path);
-      dataset.samples = downloaded?.samples;
+    const dataset = await loadDataset(datasetConfig);
+    if (!dataset) {
+      return;
     }
 
     const progressBar = setupProgressBar(

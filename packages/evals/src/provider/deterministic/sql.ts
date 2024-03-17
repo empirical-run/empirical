@@ -24,11 +24,12 @@ export const checkSqlSyntax: Scorer = async (_, output) => {
   };
 };
 
-export const checkSqlSemantic: Scorer = async (_, output, expected) => {
+export const checkSqlSemantic: Scorer = async (sample, output) => {
   const parser = new Parser();
+  const expected = sample.expected!;
   try {
     const parsedOutput = parser.parse(cleanQuery(output), parserOpt);
-    const parsedExpected = parser.parse(cleanQuery(expected!), parserOpt);
+    const parsedExpected = parser.parse(cleanQuery(expected), parserOpt);
     cleanColumns(parsedOutput.ast as Select);
     cleanColumns(parsedExpected.ast as Select);
     const isEquivalent =

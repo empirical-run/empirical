@@ -104,7 +104,8 @@ program
     const port = 8000;
     app.use(express.static(path.join(__dirname, "../webapp")));
     app.get("/api/results", (req, res) => res.sendFile(outputFilePath));
-    app.listen(port, () => console.log(`Empirical app running on ${port}`));
+    const fullUrl = `http://localhost:${port}`;
+    app.listen(port, () => console.log(`Empirical app running on ${fullUrl}`));
   });
 
 program.parse();

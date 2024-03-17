@@ -22,12 +22,11 @@ async function downloadDataset(path: string): Promise<Dataset | undefined> {
         if (line.length === 0) {
           continue;
         }
-        let inputs: DatasetSampleInput[] = [];
         try {
           const parsedLine = JSON.parse(line);
-          Object.keys(parsedLine).forEach((key) => {
-            inputs.push({ name: key, value: parsedLine[key] });
-          });
+          const inputs: DatasetSampleInput[] = Object.keys(parsedLine).map(
+            (key) => ({ name: key, value: parsedLine[key] }),
+          );
           samples.push({ id: index.toString(), inputs: inputs });
         } catch (error) {
           console.log(

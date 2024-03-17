@@ -133,6 +133,8 @@ importers:
         specifier: ^5.3.3
         version: 5.3.3
 
+  packages/ai: {}
+
   packages/cli:
     dependencies:
       '@empiricalrun/core':

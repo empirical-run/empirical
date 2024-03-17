@@ -135,7 +135,6 @@ export default function SampleOutputCard({
           <CardTitle className="flex flex-row space-x-2 items-center">
             <div className="flex flex-1 flex-row space-x-2 justify-end">
               {baseSample.scores.map((s) => {
-                console.log(s);
                 if (!s) {
                   return null;
                 }

@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { RunColumnHeaders } from "../components/run-completion-header";
 import { PageHeader } from "../components/ui/page-header";
 import PageLoader from "../components/ui/page-loader";
@@ -8,25 +8,35 @@ import { useRunResultTableView } from "../hooks/useRunResultTableView";
 import InViewElement from "../components/ui/in-view";
 import SampleCard from "../components/sample-card";
 import SampleOutputCard from "../components/sample-output-card";
+import { RunCompletion } from "@empiricalrun/types";
+import { RunDetails } from "../components/run-details";
 
 export default function Page(): JSX.Element {
   const { runResults, dataset } = useRunResults();
   const { getTableHeaders, getSampleCell } = useRunResultTableView({
     runs: runResults,
   });
-  const columnHeaders = useMemo(
-    () => getTableHeaders(), // TODO: make it basis if dataset has expected fields
-    [runResults],
+  const columnHeaders = useMemo(() => getTableHeaders(), [runResults]);
+  const sampleIds = useMemo(
+    () => (dataset?.samples || [])?.map((s) => s.id),
+    [dataset],
   );
-  const sampleIds = useMemo(() => {
-    return (dataset?.samples || [])?.map((s) => s.id);
-  }, [dataset]);
-  const datasetInputNames = useMemo(() => {
-    return dataset?.samples?.[0]?.inputs.map((i) => i.name) || [];
-  }, [dataset]);
+  const datasetInputNames = useMemo(
+    () => dataset?.samples?.[0]?.inputs.map((i) => i.name) || [],
+    [dataset],
+  );
   const runColumnHeaders = useMemo(
     () => columnHeaders.filter((h) => h.type == "completion"),
     [columnHeaders],
+  );
+  const [activeRun, setActiveRun] = useState<RunCompletion | undefined>();
+  const showRunDetails = useCallback(
+    (run: RunCompletion, showOnlyIfActive: boolean = false) => {
+      if ((showOnlyIfActive && activeRun) || !showOnlyIfActive) {
+        setActiveRun(run);
+      }
+    },
+    [activeRun],
   );
 
   return (
@@ -36,15 +46,22 @@ export default function Page(): JSX.Element {
         (!runResults.length && (
           <PageLoader className="mt-4" description="Loading results" />
         ))}
+      {activeRun && (
+        <RunDetails
+          runResult={activeRun!}
+          onClose={() => setActiveRun(undefined)}
+        />
+      )}
       <section className=" overflow-scroll relative h-full">
         {runResults?.length > 0 && (
           <div className="flex bg-zinc-900 sticky top-[-1px] z-20 min-w-fit">
             <RunColumnHeaders
-              // showPrompt={setActiveRun}
+              showPrompt={(run: RunCompletion) => showRunDetails(run)}
               headers={columnHeaders}
             />
           </div>
         )}
+
         <>
           {sampleIds?.map((r) => {
             const sampleCells = runColumnHeaders.map(
@@ -60,11 +77,7 @@ export default function Page(): JSX.Element {
                   <div className="flex items-stretch flex-1 min-w-[400px]">
                     <SampleCard
                       sample={inputSample!}
-                      mode={"view"}
                       inputTabs={datasetInputNames}
-                      // onClickEditPrompt={() =>
-                      //   setActiveRun(runColumnHeaders[0].runResult!)
-                      // }
                     />
                   </div>
                   {sampleCells.map((sample, i) => (
@@ -78,9 +91,9 @@ export default function Page(): JSX.Element {
                         comparisonResults={runColumnHeaders.map(
                           (s) => s.runResult!,
                         )}
-                        // onClickCard={() =>
-                        //   setActiveRunIfExisting(columnHeaders[i]?.runResult!)
-                        // }
+                        onClickCard={() =>
+                          showRunDetails(columnHeaders[i]?.runResult!, true)
+                        }
                         comparisonSamples={sampleCells}
                         isActiveColumn={runColumnHeaders[i]?.active}
                       />

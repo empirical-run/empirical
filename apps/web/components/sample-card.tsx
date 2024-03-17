@@ -1,14 +1,9 @@
-import { useCallback, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import CodeViewer from "./ui/code-viewer";
-import { DatasetSample, DatasetSampleInput } from "@empiricalrun/types";
-import {
-  ArrowTopRightIcon,
-  MinusCircledIcon,
-  PlusCircledIcon,
-  TriangleRightIcon,
-} from "@radix-ui/react-icons";
+import { DatasetSample } from "@empiricalrun/types";
+import { ArrowTopRightIcon } from "@radix-ui/react-icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import {
   Sheet,
@@ -22,53 +17,22 @@ import { useSyncedTabs } from "../hooks/useSyncedTab";
 
 export default function SampleCard({
   sample,
-  mode = "view",
-  onSampleInputUpdate,
-  onSampleRemove,
-  onSampleAdd,
-  hasMissingCompletion = false,
-  onClickRunOnAllModels,
   inputTabs,
-  onClickEditPrompt,
 }: {
   sample: DatasetSample;
-  mode?: "edit" | "view";
-  onSampleInputUpdate?: (
-    sampleId: string,
-    sampleInput: DatasetSampleInput,
-  ) => void;
-  onSampleRemove?: (sample: DatasetSample) => void;
-  onSampleAdd?: (sample: DatasetSample) => void;
-  hasMissingCompletion?: boolean;
-  onClickRunOnAllModels?: (sample: DatasetSample) => void;
   inputTabs?: string[];
-  onClickEditPrompt?: () => void;
 }) {
-  const [inputEdited, setInputEdited] = useState(false);
   const tabs = useMemo(
     () => inputTabs || sample?.inputs.map((i) => i.name) || [],
     [sample, inputTabs],
   );
   const { activeTab, onChangeTab } = useSyncedTabs(tabs);
-
-  const showRunOnAllModels = useMemo(
-    () => inputEdited || hasMissingCompletion,
-    [hasMissingCompletion, inputEdited],
-  );
-
-  const onClickRunAll = useCallback(() => {
-    setInputEdited(false);
-    onClickRunOnAllModels?.(sample);
-  }, [onClickRunOnAllModels, sample]);
-
   const activeInput = useMemo(() => {
     if (activeTab && sample?.inputs) {
       return sample.inputs.filter((i) => i.name === activeTab)[0];
     }
     return undefined;
   }, [activeTab, sample.inputs]);
-
-  const isEditMode = useMemo(() => mode === "edit", [mode]);
 
   return (
     <Card
@@ -96,50 +60,13 @@ export default function SampleCard({
                   <div className="py-4 h-full">
                     <CodeViewer
                       value={activeInput.value}
-                      readOnly={mode === "view"}
-                      onChange={(value) => {
-                        setInputEdited(true);
-                        onSampleInputUpdate?.(sample.id, {
-                          ...activeInput,
-                          value: value || "",
-                        });
-                      }}
+                      readOnly
                       scrollable
+                      language="text"
                     />
                   </div>
                 </SheetContent>
               </Sheet>
-            )}
-            {showRunOnAllModels && (
-              <Button
-                variant={"secondary"}
-                size={"xs"}
-                className="flex flex-row pl-1"
-                onClick={onClickRunAll}
-              >
-                <TriangleRightIcon width={18} height={18} />
-                <span>Run all</span>
-              </Button>
-            )}
-            {isEditMode && onSampleAdd && (
-              <Button
-                variant={"link"}
-                size={"xs"}
-                onClick={() => onSampleAdd?.(sample)}
-                className=" self-end justify-end p-0"
-              >
-                <PlusCircledIcon />
-              </Button>
-            )}
-            {isEditMode && onSampleRemove && (
-              <Button
-                variant={"link"}
-                size={"xs"}
-                onClick={() => onSampleRemove?.(sample)}
-                className=" self-end justify-end p-0"
-              >
-                <MinusCircledIcon />
-              </Button>
             )}
           </>
         </div>
@@ -172,14 +99,7 @@ export default function SampleCard({
                   <CodeViewer
                     value={input.value}
                     language="text"
-                    readOnly={mode === "view"}
-                    onChange={(value) => {
-                      setInputEdited(true);
-                      onSampleInputUpdate?.(sample.id, {
-                        ...input,
-                        value: value || "",
-                      });
-                    }}
+                    readOnly
                     scrollable
                   />
                 </TabsContent>
@@ -187,9 +107,7 @@ export default function SampleCard({
             })}
           </Tabs>
         )}
-        {!sample?.inputs?.length && (
-          <ZeroStateSampleCard onClickCTA={onClickEditPrompt} />
-        )}
+        {!sample?.inputs?.length && <ZeroStateSampleCard />}
       </CardContent>
       {/* {(sample?.annotations || []).length > 0 && (
         <CardFooter className="px-2 mt-4 flex flex-col flex-wrap items-start gap-4">

@@ -1,7 +1,7 @@
 import { PlopTypes } from "@turbo/gen";
 
 export default function generator(plop: PlopTypes.NodePlopAPI): void {
-  plop.setGenerator("library", {
+  plop.setGenerator("pkg:lib", {
     description: "Adds a new ts library to packages",
     prompts: [
       {

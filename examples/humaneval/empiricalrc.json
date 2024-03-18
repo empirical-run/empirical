@@ -8,7 +8,7 @@
       "assert": [
         {
           "type": "py-script",
-          "value": "eval.py {{output}} {{test}} {{entry_point}}"
+          "value": "eval.py"
         }
       ]
     }

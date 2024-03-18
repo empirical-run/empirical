@@ -1,8 +1,35 @@
 # HumanEval
 
-This example runs OpenAI's [HumanEval](https://github.com/openai/human-eval) benchmark on Empirical.
+This example shows a `py-script` evaluator with OpenAI's [HumanEval](https://github.com/openai/human-eval) benchmark. This example requires Python.
 
-## Usage
+## Python evaluators
+
+You can configure a custom Python evaluator by specifying a `py-script` evaluator in the `assert` section of the configuration. The `value` key should be the path to the Python script.
+
+```json
+"assert": [
+  {
+    "type": "py-script",
+    "value": "eval.py"
+  }
+]
+```
+
+In the script, you need to define an `evaluate` method, with the following signature
+
+- Arguments: output (string) and inputs (dict of key-value pairs from the dataset sample)
+- Returns: dict with score (0 or 1), message (string) and name (string)
+
+```python
+
+def evaluate(output, inputs):
+    # ...
+    return {"score": 1, "message": "Reason for eval result", "name": "name-for-evaluator"}
+
+```
+
+
+## Run the example
 
 1. Download the dataset from [this link](https://github.com/openai/human-eval/blob/master/data/HumanEval.jsonl.gz)
 
@@ -12,11 +39,3 @@ This example runs OpenAI's [HumanEval](https://github.com/openai/human-eval) ben
     ```
     npx @empiricalrun/cli run
     ```
-
-## Development
-
-To run the python eval script locally, run:
-
-```sh
-python eval.py "def truncate_number(number):\n    integer_part = int(number)\n    decimal_part = number - integer_part\n    return decimal_part" "\n\nMETADATA = {\n    'author': 'jt',\n    'dataset': 'test'\n}\n\n\ndef check(candidate):\n    assert candidate(3.5) == 0.5\n    assert abs(candidate(1.33) - 0.33) < 1e-6\n    assert abs(candidate(123.456) - 0.456) < 1e-6\n" "truncate_number"
-```

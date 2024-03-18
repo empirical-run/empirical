@@ -1,12 +1,32 @@
 import { Scorer } from "../../interface/scorer";
-import { inputsForReplacements, replacePlaceholders } from "../../utils";
+import { inputsForReplacements } from "../../utils";
 import { PythonShell } from "python-shell";
+import path from "path";
 
 export const name = "py-script";
 
-export const scoreWithPythonScript: Scorer = async (sample, output, value) => {
-  // Value is the path of the script, and has placeholders
-  if (!value) {
+const pythonWrapper = (basePath: string, moduleName: string) => {
+  // This method locates the evaluate method from the python script file
+  // and calls it with the args: evaluate(output, inputs)
+  return `
+import json
+import sys
+
+import sys
+sys.path.append('${basePath}')
+from ${moduleName} import evaluate
+
+result = evaluate(sys.argv[1], json.loads(sys.argv[2]))
+print(json.dumps(result))
+`;
+};
+
+export const scoreWithPythonScript: Scorer = async (
+  sample,
+  output,
+  scriptPath,
+) => {
+  if (!scriptPath) {
     return {
       score: 0,
       name,
@@ -19,18 +39,17 @@ export const scoreWithPythonScript: Scorer = async (sample, output, value) => {
     // This scorer supports {{expected}} as placeholder
     replacements.expected = sample.expected;
   }
-  if (output) {
-    // This scorer supports {{output}} as placeholder
-    replacements.output = output;
-  }
+  let basePath = path.dirname(scriptPath);
+  let moduleName = path.basename(scriptPath).replace(".py", "");
 
-  const allArgs = value.split(" ");
-  const scriptPath = allArgs.shift();
-  const args = allArgs.map((arg) => replacePlaceholders(arg, replacements));
+  const runOutput = await PythonShell.runString(
+    pythonWrapper(basePath, moduleName),
+    {
+      args: [output, JSON.stringify(replacements)],
+    },
+  );
 
-  const runOutput = await PythonShell.run(scriptPath!, {
-    args,
-  });
+  // runOutput has stdout from execution of the Python script
   const result = runOutput[runOutput.length - 1];
   return JSON.parse(result);
 };

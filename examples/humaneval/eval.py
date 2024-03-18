@@ -1,28 +1,15 @@
-import sys
-import json
 
 
-def evaluate(output, test, func_name):
-    # Concat the output and tests (from input)
-    code = output + "\n\n" + test
+def evaluate(output, inputs):
+    # Concat the output and tests (from inputs)
+    code = output + "\n\n" + inputs["test"]
     # Concat code to run the tests
-    code += f"\ncheck({func_name})"
-    passed = 0
-    reason = ""
+    code += f"\ncheck({inputs['entry_point']})"
+    passed, reason = 0, ""
     try:
         exec(code)
         passed = 1
     except Exception as e:
         reason = str(e)
         passed = 0
-    return json.dumps({"score": passed, "message": reason, "name": "unit-tests"})
-
-
-if __name__ == "__main__":
-    print(
-        evaluate(
-            sys.argv[1],
-            sys.argv[2],
-            sys.argv[3],
-        )
-    )
+    return {"score": passed, "message": reason, "name": "unit-tests"}

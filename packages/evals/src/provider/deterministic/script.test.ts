@@ -11,8 +11,7 @@ const humanEval = {
 
 // Using relative path to use the python script from HumanEval example
 // Tests run out of the $root/packages/evals directory
-const scriptPath =
-  "../../examples/humaneval/eval.py {{output}} {{test}} {{entry_point}}";
+const scriptPath = "../../examples/humaneval/eval.py";
 
 test("script scorer works for a correct humaneval output", async () => {
   const sample: DatasetSample = {

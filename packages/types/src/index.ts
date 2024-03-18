@@ -12,6 +12,7 @@ export type ChatPrompt = {
 export type Assert = {
   type: string;
   threshold?: number;
+  value?: string;
 };
 
 export type Prompt = string | ChatPrompt[];

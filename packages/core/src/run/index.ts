@@ -43,10 +43,9 @@ export async function execute(
       });
       const output = completion.message.content;
       const evaluationScores = await score({
-        inputs: datasetSample.inputs,
+        sample: datasetSample,
         output,
-        expected: datasetSample.expected,
-        assert: assert,
+        assertions: assert,
       });
       progressCallback();
       sampleCompletions.push({

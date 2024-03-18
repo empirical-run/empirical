@@ -24,7 +24,7 @@ pnpm dev
 ```
 To start web app, follow steps below:
 ```
-cd /packages/cli
+cd packages/cli
 npm i -g .
 npx @empiricalrun/cli init
 npx @empiricalrun/cli run
@@ -41,7 +41,7 @@ pnpm run gen:workspace
 
 ### Test
 
-To run tests (add `:watch` for watch mode )
+To run tests (add `:watch` for watch mode)
 
 ```
 pnpm test

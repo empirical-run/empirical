@@ -2,9 +2,9 @@ import { Scorer } from "../../interface/scorer";
 import { inputsForReplacements, replacePlaceholders } from "../../utils";
 import { PythonShell } from "python-shell";
 
-export const name = "script";
+export const name = "py-script";
 
-export const scoreWithScript: Scorer = async (sample, output, value) => {
+export const scoreWithPythonScript: Scorer = async (sample, output, value) => {
   // Value is the path of the script, and has placeholders
   if (!value) {
     return {
@@ -25,8 +25,6 @@ export const scoreWithScript: Scorer = async (sample, output, value) => {
   }
 
   const allArgs = value.split(" ");
-  allArgs.shift(); // python
-
   const scriptPath = allArgs.shift();
   const args = allArgs.map((arg) => replacePlaceholders(arg, replacements));
 

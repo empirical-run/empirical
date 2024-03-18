@@ -1,6 +1,9 @@
 import { Scorer } from "../interface/scorer";
 import { isJson, name as jsonName } from "./deterministic/json";
-import { scoreWithScript, name as scriptName } from "./deterministic/script";
+import {
+  scoreWithPythonScript,
+  name as scriptName,
+} from "./deterministic/script";
 import {
   syntaxName,
   checkSqlSyntax,
@@ -14,7 +17,7 @@ const map = new Map<string, Scorer>([
   [syntaxName, checkSqlSyntax],
   [semanticName, checkSqlSemantic],
   [llmName, checkLlmCriteria],
-  [scriptName, scoreWithScript],
+  [scriptName, scoreWithPythonScript],
 ]);
 
 export default function getScorer({

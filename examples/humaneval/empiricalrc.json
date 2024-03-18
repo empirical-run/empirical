@@ -7,8 +7,8 @@
       "prompt": "I will give you an incomplete Python function. Complete the function body such that it follows the specifications in the docstring. Use the exact same function names and parameters. Do not import any third-party modules. Do not return any backticks in your response. Output the complete function with your additions.\n\n```python\n{{prompt}}\n```",
       "assert": [
         {
-          "type": "script",
-          "value": "python eval.py {{output}} {{test}} {{entry_point}}"
+          "type": "py-script",
+          "value": "eval.py {{output}} {{test}} {{entry_point}}"
         }
       ]
     }

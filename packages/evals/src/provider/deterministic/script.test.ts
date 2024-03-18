@@ -1,6 +1,6 @@
 import { DatasetSample } from "@empiricalrun/types";
 import { expect, test } from "vitest";
-import { scoreWithScript } from "./script";
+import { scoreWithPythonScript } from "./script";
 
 const humanEval = {
   output:
@@ -12,7 +12,7 @@ const humanEval = {
 // Using relative path to use the python script from HumanEval example
 // Tests run out of the $root/packages/evals directory
 const scriptPath =
-  "python ../../examples/humaneval/eval.py {{output}} {{test}} {{entry_point}}";
+  "../../examples/humaneval/eval.py {{output}} {{test}} {{entry_point}}";
 
 test("script scorer works for a correct humaneval output", async () => {
   const sample: DatasetSample = {
@@ -30,7 +30,7 @@ test("script scorer works for a correct humaneval output", async () => {
   };
 
   expect(
-    await scoreWithScript(sample, humanEval.output, scriptPath),
+    await scoreWithPythonScript(sample, humanEval.output, scriptPath),
   ).toStrictEqual({
     score: 1,
     name: "unit-tests",
@@ -54,7 +54,7 @@ test("script scorer works for a incorrect humaneval output", async () => {
   };
 
   expect(
-    await scoreWithScript(sample, humanEval.output, scriptPath),
+    await scoreWithPythonScript(sample, humanEval.output, scriptPath),
   ).toStrictEqual({
     score: 0,
     name: "unit-tests",
@@ -78,7 +78,7 @@ test("script scorer works for a humaneval output that has backticks", async () =
   };
 
   expect(
-    await scoreWithScript(
+    await scoreWithPythonScript(
       sample,
       "```python\n" + humanEval.output + "\n```",
       scriptPath,

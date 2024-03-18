@@ -12,7 +12,6 @@ const pythonWrapper = (basePath: string, moduleName: string) => {
 import json
 import sys
 
-import sys
 sys.path.append('${basePath}')
 from ${moduleName} import evaluate
 

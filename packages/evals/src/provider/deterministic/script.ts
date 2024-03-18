@@ -34,7 +34,6 @@ export const scoreWithPythonScript: Scorer = async (
     };
   }
   let replacements: any = inputsForReplacements(sample.inputs);
-
   if (sample.expected) {
     // This scorer supports {{expected}} as placeholder
     replacements.expected = sample.expected;

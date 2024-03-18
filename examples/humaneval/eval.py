@@ -21,11 +21,8 @@ def evaluate(output, test, func_name):
 if __name__ == "__main__":
     print(
         evaluate(
-            # Passing code over sys args requires this fix
-            # Can we do something better on the Nodejs side?
-            # https://stackoverflow.com/a/65009698
-            sys.argv[1].replace("\\n", "\n"),
-            sys.argv[2].replace("\\n", "\n"),
-            sys.argv[3].replace("\\n", "\n"),
+            sys.argv[1],
+            sys.argv[2],
+            sys.argv[3],
         )
     )

@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "node-sql-parser": "^4.18.0",
-    "openai": "^4.29.0"
+    "openai": "^4.29.0",
+    "python-shell": "^5.0.0"
   }
 }

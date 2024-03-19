@@ -1,5 +1,6 @@
 import { Scorer } from "../../interface/scorer";
 import OpenAI from "openai";
+import { inputsForReplacements, replacePlaceholders } from "../../utils";
 
 async function askLlmForEvalResult(
   messages: OpenAI.ChatCompletionMessageParam[],
@@ -48,13 +49,9 @@ export const checkLlmCriteria: Scorer = async (sample, output, value) => {
   let criteria = "";
 
   if (value) {
-    let replacements: any = sample.inputs.reduce((agg, i) => {
-      return {
-        ...agg,
-        [i.name]: i.value,
-      };
-    }, {});
+    let replacements: any = inputsForReplacements(sample.inputs);
     if (sample.expected) {
+      // llm-criteria supports {{expected}} as placeholder
       replacements.expected = sample.expected;
     }
     criteria = replacePlaceholders(value as string, replacements);
@@ -73,10 +70,3 @@ export const checkLlmCriteria: Scorer = async (sample, output, value) => {
     message: reason,
   };
 };
-
-// TODO: placeholder replacemnet is duplicated across core and evals package
-function replacePlaceholders(string: string, obj: any) {
-  return string.replace(/{{(\w+)}}/g, function (match, key) {
-    return obj[key];
-  });
-}

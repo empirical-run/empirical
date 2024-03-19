@@ -10,7 +10,7 @@ Empirical is the fastest way to try different LLMs and prompt combinations, acro
 
 To build all apps and packages, run the following command:
 
-```
+```sh
 pnpm install
 pnpm build
 ```
@@ -19,11 +19,11 @@ pnpm build
 
 To develop all apps and packages, run the following command:
 
-```
+```sh
 pnpm dev
 ```
 To start web app, follow steps below:
-```
+```sh
 cd packages/cli
 npm i -g .
 npx @empiricalrun/cli init
@@ -35,7 +35,7 @@ After following the above steps, the web app will be running on http://localhost
 #### Adding new package
 To add new package run following command:
 
-```
+```sh
 pnpm run gen:workspace
 ```
 
@@ -43,7 +43,13 @@ pnpm run gen:workspace
 
 To run tests (add `:watch` for watch mode)
 
-```
+```sh
 pnpm test
 pnpm test:watch
+```
+
+To run some tests (e.g. from `script.test.ts`), use the `-t` flag
+
+```sh
+pnpm test:watch -- -t script
 ```

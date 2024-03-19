@@ -51,6 +51,7 @@ export class Batch {
       this.tickerId = setInterval(() => {
         if (this.jobQueue.length === 0) {
           clearInterval(this.tickerId as string);
+          this.tickerId = undefined;
         } else if (
           this.jobQueue.length > 0 &&
           this.jobInProgress.length === 0 &&

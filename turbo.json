@@ -1,17 +1,19 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
-  "globalEnv": ["CI"],
+  "globalEnv": ["CI", "MISTRAL_API_KEY", "GEMINI_API_KEY"],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": ["GEMINI_API_KEY", "MISTRAL_API_KEY"]
     },
     "lint": {
       "dependsOn": ["^lint"]
     },
     "dev": {
       "cache": false,
+      "dotEnv": [".env.local", ".env"],
       "persistent": true
     },
     "test": {},

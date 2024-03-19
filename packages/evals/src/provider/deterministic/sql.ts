@@ -11,6 +11,13 @@ export const checkSqlSyntax: Scorer = async (_, output) => {
   let isSQLQuery = false;
   let inValidSQLMsg = "SQL is invalid";
   const parser = new Parser();
+  if (!output) {
+    return {
+      score: 0,
+      name: syntaxName,
+      message: "output is empty",
+    };
+  }
   try {
     parser.parse(output, parserOpt);
     isSQLQuery = true;
@@ -27,6 +34,13 @@ export const checkSqlSyntax: Scorer = async (_, output) => {
 export const checkSqlSemantic: Scorer = async (sample, output) => {
   const parser = new Parser();
   const expected = sample.expected!;
+  if (!output) {
+    return {
+      score: 0,
+      name: semanticName,
+      message: "output is empty",
+    };
+  }
   try {
     const parsedOutput = parser.parse(cleanQuery(output), parserOpt);
     const parsedExpected = parser.parse(cleanQuery(expected), parserOpt);

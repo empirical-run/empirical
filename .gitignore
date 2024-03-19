@@ -37,6 +37,9 @@ yarn-error.log*
 .DS_Store
 *.pem
 
+# Python
+__pycache__/
+
 # Empirical
 packages/**/empiricalrc.json
 .empiricalrun

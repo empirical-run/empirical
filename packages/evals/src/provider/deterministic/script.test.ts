@@ -88,3 +88,19 @@ test("script scorer works for a humaneval output that has backticks", async () =
     message: "invalid syntax (<string>, line 1)",
   });
 });
+
+test.skip("script scorer times out a long running script", async () => {
+  const sample: DatasetSample = {
+    id: "1",
+    inputs: [],
+  };
+  const longRunningScript = "test-assets/long_running.py";
+
+  expect(
+    await scoreWithPythonScript(sample, "", longRunningScript),
+  ).toStrictEqual({
+    score: 0,
+    name: "unit-tests",
+    message: "invalid syntax (<string>, line 1)",
+  });
+});

@@ -31,7 +31,7 @@ const massageOpenAIMessagesToGoogleAI = function (
     let role: Role = "user";
     let parts: Part[] = [];
     if (m.role === "assistant") {
-      role = "user";
+      role = "model";
     } else if (m.role === "tool" || m.role === "function") {
       role = "function";
     }

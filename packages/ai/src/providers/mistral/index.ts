@@ -6,7 +6,7 @@ import {
 import { Batch } from "../../utils/batch";
 import { ToolCalls } from "@mistralai/mistralai";
 
-type MistralChatMessages = {
+type MistralChatMessage = {
   role: string;
   name?: string;
   content: string | string[];
@@ -26,7 +26,7 @@ const createChatCompletion: ICreateChatCompletion = async function (body) {
   const { executionDone } = await batch.waitForTurn();
   const { model, messages } = body;
   // typecasting as there is a minor difference in role being openai enum vs string
-  const mistralMessages = messages as MistralChatMessages[];
+  const mistralMessages = messages as MistralChatMessage[];
   // no retry needed as mistral internally handles it well
   // TODO: handle API failures from models
   const completions = await mistralai.chat({

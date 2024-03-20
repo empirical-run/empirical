@@ -1,12 +1,12 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
-  "globalEnv": ["CI", "MISTRAL_API_KEY", "GEMINI_API_KEY"],
+  "globalEnv": ["CI", "MISTRAL_API_KEY", "GEMINI_API_KEY", "OPENAI_API_KEY"],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**"],
-      "env": ["GEMINI_API_KEY", "MISTRAL_API_KEY"]
+      "env": ["GEMINI_API_KEY", "MISTRAL_API_KEY", "OPENAI_API_KEY"]
     },
     "lint": {
       "dependsOn": ["^lint"]

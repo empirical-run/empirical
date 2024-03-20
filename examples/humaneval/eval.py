@@ -10,6 +10,6 @@ def evaluate(output, inputs):
         exec(code)
         passed = 1
     except Exception as e:
-        reason = str(e)
+        reason = repr(e)
         passed = 0
     return {"score": passed, "message": reason, "name": "unit-tests"}

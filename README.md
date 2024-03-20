@@ -8,8 +8,12 @@ Empirical is the fastest way to try different LLMs and prompt combinations, acro
 
 ### Setup
 
-To build all apps and packages, run the following command:
+Setup package manager
+```sh
+corepack install
+```
 
+To install and build apps and packages, run the following command:
 ```sh
 pnpm install
 pnpm build
@@ -24,10 +28,13 @@ pnpm dev
 ```
 To start web app, follow steps below:
 ```sh
-cd packages/cli
-npm i -g .
-npx @empiricalrun/cli init
+# link cli 
+pnpm link ./packages/cli
+# pick an example
+cd ./examples/basic
+# run against an example
 npx @empiricalrun/cli run
+# view the output on a webapp
 npx @empiricalrun/cli ui
 ```
 After following the above steps, the web app will be running on http://localhost:8000

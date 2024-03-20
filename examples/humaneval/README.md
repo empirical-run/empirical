@@ -31,11 +31,16 @@ def evaluate(output, inputs):
 
 ## Run the example
 
-1. Download the dataset from [this link](https://github.com/openai/human-eval/blob/master/data/HumanEval.jsonl.gz)
-
-1. Extract and keep the dataset as `HumanEval.jsonl` 
+If you have Node.js version >= 18
+1. Run `node download-dataset.mjs`
 
 1. Run with Empirical
     ```
     npx @empiricalrun/cli run
     ```
+
+You can also manually download dataset
+
+1. Download the dataset from [this link](https://github.com/openai/human-eval/blob/master/data/HumanEval.jsonl.gz)
+
+1. Extract and keep the dataset as `HumanEval.jsonl` 

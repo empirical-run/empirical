@@ -57,7 +57,7 @@ test("script scorer works for a incorrect humaneval output", async () => {
   ).toStrictEqual({
     score: 0,
     name: "unit-tests",
-    message: "name 'truncate_number123' is not defined",
+    message: "NameError(\"name 'truncate_number123' is not defined\")",
   });
 });
 
@@ -85,7 +85,8 @@ test("script scorer works for a humaneval output that has backticks", async () =
   ).toStrictEqual({
     score: 0,
     name: "unit-tests",
-    message: "invalid syntax (<string>, line 1)",
+    message:
+      "SyntaxError('invalid syntax', ('<string>', 1, 1, '```python\\n', 1, 2))",
   });
 });
 

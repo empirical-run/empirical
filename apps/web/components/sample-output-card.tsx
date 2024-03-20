@@ -134,7 +134,7 @@ export default function SampleOutputCard({
         {baseResult && baseSample && (
           <CardTitle className="flex flex-row space-x-2 items-center">
             <div className="flex flex-1 flex-row space-x-2 justify-end">
-              {baseSample.scores.map((s) => {
+              {baseSample.scores?.map((s) => {
                 if (!s) {
                   return null;
                 }
@@ -205,7 +205,7 @@ export default function SampleOutputCard({
                             onCheckedChange={() => {
                               enableDiffView({
                                 type: result?.id || "",
-                                text: s?.output,
+                                text: s?.output || "",
                               });
                             }}
                           >
@@ -234,7 +234,7 @@ export default function SampleOutputCard({
       <CardContent className="h-full p-2" ref={containerWrapper}>
         {diffView.enabled && baseSample && (
           <DiffEditor
-            original={baseSample?.output}
+            original={baseSample?.output || ""}
             modified={diffView.text}
             height={`${
               containerWrapper.current?.clientHeight

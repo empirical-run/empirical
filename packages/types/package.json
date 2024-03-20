@@ -11,5 +11,8 @@
   },
   "devDependencies": {
     "@empiricalrun/typescript-config": "workspace:*"
+  },
+  "dependencies": {
+    "openai": "^4.29.0"
   }
 }

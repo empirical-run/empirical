@@ -9,11 +9,12 @@
     "lint": "eslint ."
   },
   "devDependencies": {
-    "@empiricalrun/typescript-config": "workspace:*",
-    "@empiricalrun/types": "workspace:*"
+    "@empiricalrun/types": "workspace:*",
+    "@empiricalrun/typescript-config": "workspace:*"
   },
   "dependencies": {
-    "openai": "^4.29.0",
-    "@empiricalrun/evals": "workspace:*"
+    "@empiricalrun/ai": "workspace:^",
+    "@empiricalrun/evals": "workspace:*",
+    "openai": "^4.29.0"
   }
 }

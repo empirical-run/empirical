@@ -1,11 +1,12 @@
-import { getProvider } from "../models/providers";
 import {
   DatasetSample,
   Run,
   RunCompletion,
   RunOutputSample,
 } from "@empiricalrun/types";
-import { generateHex, replacePlaceholders } from "../utils";
+import { generateHex } from "../utils";
+import { EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import score from "@empiricalrun/evals";
 
 export async function execute(
@@ -17,12 +18,14 @@ export async function execute(
   const runCreationDate = new Date();
   const sampleCompletions: RunOutputSample[] = [];
   const runId = generateHex(4);
+
   if (model && prompt) {
-    // TODO: modelName and completion function should be extracted from different function
-    //@ts-ignore
-    const { modelName, completionFunction } = getProvider(model);
+    // TODO: move this logic to cli
+    const [providerName, modelName] = model.split(":");
+    const ai = new EmpiricalAI(providerName);
+    const completionsPromises = [];
     for (const datasetSample of samples) {
-      const messages = [
+      const messages: ChatCompletionMessageParam[] = [
         {
           role: "user",
           content: replacePlaceholders(
@@ -36,26 +39,57 @@ export async function execute(
           ),
         },
       ];
-      // TODO: fix types of completion
-      const completion = await completionFunction({
-        model: modelName,
-        messages,
-      });
-      const output = completion.message.content;
-      const evaluationScores = await score({
-        sample: datasetSample,
-        output,
-        assertions: assert,
-      });
-      progressCallback();
-      sampleCompletions.push({
-        inputs: datasetSample.inputs,
-        output: completion.message.content,
-        scores: evaluationScores,
-        dataset_sample_id: datasetSample.id || "",
-        created_at: new Date(),
-        run_id: runId,
-      });
+
+      // TODO: handle promise rejection due to error
+      // if llm error then add to the completion object but if something else throw error and stop the run
+      completionsPromises.push(
+        ai.chat.completions
+          .create({
+            model: modelName!,
+            messages,
+          })
+          .then((completion) => {
+            const output = completion.choices[0]?.message.content;
+            progressCallback();
+            sampleCompletions.push({
+              inputs: datasetSample.inputs,
+              output,
+              dataset_sample_id: datasetSample.id || "",
+              created_at: new Date(),
+              run_id: runId,
+            });
+          })
+          .catch((e) => {
+            console.log(e);
+          }),
+      );
+    }
+    if (completionsPromises.length) {
+      await Promise.allSettled(completionsPromises);
+    }
+
+    const datasetMap = samples.reduce((agg, sample) => {
+      agg.set(sample.id, sample);
+      return agg;
+    }, new Map<string, DatasetSample>());
+    const evalPromises = [];
+    if (assert && assert.length) {
+      for (const s of sampleCompletions) {
+        (function (sampleCompletion) {
+          evalPromises.push(
+            score({
+              sample: datasetMap.get(sampleCompletion.dataset_sample_id)!,
+              output: sampleCompletion.output,
+              assertions: assert,
+            }).then((scores) => {
+              sampleCompletion.scores = scores;
+            }),
+          );
+        })(s);
+      }
+    }
+    if (evalPromises.length) {
+      await Promise.allSettled(evalPromises);
     }
   }
   return {

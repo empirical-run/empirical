@@ -43,7 +43,7 @@ export const scoreWithPythonScript: Scorer = async (
   const runOutput = await PythonShell.runString(
     pythonWrapper(basePath, moduleName),
     {
-      args: [output, JSON.stringify(replacements)],
+      args: [output || "", JSON.stringify(replacements)],
     },
   );
 

@@ -7,7 +7,7 @@ export default async function score({
   assertions,
 }: {
   sample: DatasetSample;
-  output: string;
+  output: string | null | undefined;
   assertions: Assert[] | undefined;
 }): Promise<Score[]> {
   if (!assertions) {

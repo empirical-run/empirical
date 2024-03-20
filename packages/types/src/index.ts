@@ -1,3 +1,5 @@
+export * from "./ai";
+
 export enum RoleType {
   USER = "user",
   SYSTEM = "system",
@@ -67,9 +69,9 @@ export enum ModelTypes {
 export type RunOutputSample = {
   id?: string;
   annotations?: string[];
-  scores: Score[];
+  scores?: Score[];
   inputs: DatasetSampleInput[];
-  output: string;
+  output: string | null | undefined;
   expected?: {
     value: string;
   };

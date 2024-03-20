@@ -1,12 +1,13 @@
 import { Scorer } from "../../interface/scorer";
 import OpenAI from "openai";
-import { inputsForReplacements, replacePlaceholders } from "../../utils";
+import { EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
+import { inputsForReplacements } from "../../utils";
 
 async function askLlmForEvalResult(
   messages: OpenAI.ChatCompletionMessageParam[],
 ): Promise<{ reason: string; result: "Yes" | "No" }> {
-  const openai = new OpenAI();
-  const completion = await openai.chat.completions.create({
+  const ai = new EmpiricalAI("openai");
+  const completion = await ai.chat.completions.create({
     messages,
     model: "gpt-3.5-turbo",
     temperature: 0.1,

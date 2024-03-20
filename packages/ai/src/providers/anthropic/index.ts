@@ -3,7 +3,7 @@ import { IAIProvider, ICreateChatCompletion } from "@empiricalrun/types";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions.mjs";
 
 const convertOpenAIToAnthropicAI = function (
-  messages: ChatCompletionMessageParam[]
+  messages: ChatCompletionMessageParam[],
 ): Anthropic.MessageParam[] {
   const [systemMessage] = messages.filter((m) => m.role === "system");
   let systemMessageContent = "";

@@ -12,11 +12,11 @@ import {
 } from "@google/generative-ai";
 //TODO: fix this import to empirical types
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
-import { Batch } from "../../utils/batch";
+import { BatchTaskManager } from "../../utils";
 import crypto from "crypto";
 import promiseRetry from "promise-retry";
 
-const batch = new Batch(5, 1000);
+const batch = new BatchTaskManager(5);
 
 const massageOpenAIMessagesToGoogleAI = function (
   messages: ChatCompletionMessageParam[],

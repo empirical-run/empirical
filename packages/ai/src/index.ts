@@ -7,6 +7,7 @@ import {
 } from "@empiricalrun/types";
 import { chatProvider } from "./providers";
 import { OpenAIProvider } from "./providers/openai";
+export * from "./utils";
 
 class ChatCompletions implements IChatCompletions {
   constructor(private provider: string) {}

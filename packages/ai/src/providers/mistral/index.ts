@@ -3,7 +3,7 @@ import {
   IChatCompletion,
   ICreateChatCompletion,
 } from "@empiricalrun/types";
-import { Batch } from "../../utils/batch";
+import { BatchTaskManager } from "../../utils";
 import { ToolCalls } from "@mistralai/mistralai";
 
 type MistralChatMessage = {
@@ -13,7 +13,7 @@ type MistralChatMessage = {
   tool_calls?: ToolCalls[];
 };
 
-const batch = new Batch(5, 1000);
+const batch = new BatchTaskManager(5);
 
 const importMistral = async function () {
   const { default: MistralClient } = await import("@mistralai/mistralai");

@@ -4,8 +4,8 @@ import {
   RunCompletion,
   RunOutputSample,
 } from "@empiricalrun/types";
-import { generateHex, replacePlaceholders } from "../utils";
-import { EmpiricalAI } from "@empiricalrun/ai";
+import { generateHex } from "../utils";
+import { EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import score from "@empiricalrun/evals";
 

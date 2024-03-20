@@ -1,7 +1,7 @@
 import { Scorer } from "../../interface/scorer";
 import OpenAI from "openai";
-import { EmpiricalAI } from "@empiricalrun/ai";
-import { inputsForReplacements, replacePlaceholders } from "../../utils";
+import { EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
+import { inputsForReplacements } from "../../utils";
 
 async function askLlmForEvalResult(
   messages: OpenAI.ChatCompletionMessageParam[],

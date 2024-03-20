@@ -27,7 +27,10 @@ jobs:
  
       - name: Install dependencies
         run: pnpm install
- 
+      
+      - name: Link
+        run: pnpm lint
+      
       - name: Build
         run: pnpm build
  

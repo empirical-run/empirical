@@ -20,14 +20,21 @@ export function useRunResultTableView({
       { title: "Inputs", type: "input" },
     ];
     runs?.forEach((run) => {
-      if (run) {
-        tableHeaders.push({
-          title: run.model,
-          runResult: run,
-          type: "completion",
-          active: activeRun?.id === run.id,
-        });
+      if (!run) {
+        return;
       }
+      let title = "";
+      if (run.run_config.type === "model") {
+        title = run.run_config.name || run.run_config.model || "NA";
+      } else {
+        title = run.run_config.name || "NA";
+      }
+      tableHeaders.push({
+        title,
+        runResult: run,
+        type: "completion",
+        active: activeRun?.id === run.id,
+      });
     });
     return tableHeaders;
   }, [runs, activeRun]);

@@ -1,7 +1,7 @@
-import { Run, Dataset } from "@empiricalrun/types";
+import { IRunConfig, Dataset } from "@empiricalrun/types";
 
 export type RunsConfig = {
   version: string;
-  runs: Run[];
+  runs: IRunConfig[];
   dataset: Dataset;
 };

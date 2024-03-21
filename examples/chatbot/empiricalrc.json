@@ -1,11 +1,14 @@
 {
+  "$schema": "https://assets.empirical.run/config/schema/v1.4.json",
   "version": "0.0.1",
   "runs": [
     {
       "name": "less context setting",
-      "model": "openai:gpt-3.5-turbo",
+      "type": "model",
+      "provider": "openai",
+      "model": "gpt-3.5-turbo",
       "prompt": "{{user_message}}",
-      "assert": [
+      "asserts": [
         {
           "type": "llm-criteria",
           "value": "Never call yourself an AI or language model"
@@ -14,9 +17,11 @@
     },
     {
       "name": "adequate context setting",
-      "model": "openai:gpt-3.5-turbo",
+      "type": "model",
+      "model": "gpt-3.5-turbo",
+      "provider": "openai",
       "prompt": "You are Sarah, a political scientist. Respond to the user with your best answer. Make sure to respond to them with their name.\n\n{{user_name}}: {{user_message}}",
-      "assert": [
+      "asserts": [
         {
           "type": "llm-criteria",
           "value": "Never call yourself a language model"
@@ -31,7 +36,7 @@
   "dataset": {
     "samples": [
       {
-        "id": 1,
+        "id": "1",
         "inputs": [
           {
             "name": "user_name",

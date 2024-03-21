@@ -144,7 +144,7 @@ export default function SampleOutputCard({
                       // @ts-ignore
                       s.score ? "outline" : "destructive"
                     }
-                    key={`${baseResult.model}-${baseResult.id}-${baseSample.id}-eval-${s.name}`}
+                    key={`${baseResult.id}-${baseSample.id}-eval-${s.name}`}
                     className="flex flex-row space-x-1"
                   >
                     <span>{s.name} </span>
@@ -198,7 +198,7 @@ export default function SampleOutputCard({
                         }
                         return (
                           <DropdownMenuCheckboxItem
-                            key={`${baseResult.model}-${baseResult.id}-${baseSample.id}-comparison-${i}`}
+                            key={`${baseResult.id}-${baseSample.id}-comparison-${i}`}
                             checked={
                               diffView.enabled && diffView.type === result?.id
                             }
@@ -209,7 +209,9 @@ export default function SampleOutputCard({
                               });
                             }}
                           >
-                            <span className="text-xs">{result?.model}</span>
+                            <span className="text-xs">
+                              {result?.run_config.name}
+                            </span>
                             <span className=" text-muted-foreground ml-2 font-light">
                               {" "}
                               #{result?.id}

@@ -32,7 +32,7 @@ export const scoreWithPythonScript: Scorer = async (
     JSON.stringify(inputsAsMap),
   ];
 
-  const wrapper: Promise<string[]> = new Promise((resolve) => {
+  const runOutput = await new Promise<string[]>((resolve) => {
     let runOutput: string[] = [];
     const shell = new PythonShell(wrapperScriptFile, {
       scriptPath: wrapperScriptDirectory,

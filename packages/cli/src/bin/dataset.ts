@@ -45,7 +45,7 @@ export async function loadDataset(dsConfig: any): Promise<Dataset | undefined> {
     try {
       const downloaded = await downloadDataset(dsConfig.path);
       if (downloaded) {
-        dataset.samples = downloaded.samples;
+        dataset.samples = downloaded.samples?.splice(0, 2);
         console.log(
           `${green("[Success]")} Dataset fetched from ${dsConfig.path}`,
         );

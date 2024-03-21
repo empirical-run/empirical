@@ -66,7 +66,6 @@ export const scoreWithPythonScript: Scorer = async (
     });
   });
 
-  const runOutput = await wrapper;
   const result = runOutput[runOutput.length - 1];
   return JSON.parse(result!);
 };

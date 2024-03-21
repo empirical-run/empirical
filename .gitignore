@@ -43,6 +43,3 @@ __pycache__/
 # Empirical
 packages/**/empiricalrc.json
 .empiricalrun
-
-# Example datasets
-examples/**/*.jsonl

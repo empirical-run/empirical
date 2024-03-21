@@ -1,6 +1,6 @@
 import {
   DatasetSample,
-  Run,
+  IRunConfig,
   RunCompletion,
   RunOutputSample,
 } from "@empiricalrun/types";
@@ -10,19 +10,18 @@ import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import score from "@empiricalrun/evals";
 
 export async function execute(
-  run: Run,
+  run: IRunConfig,
   samples: DatasetSample[],
   progressCallback: () => void,
 ): Promise<RunCompletion> {
-  const { prompt, assert, model } = run;
   const runCreationDate = new Date();
   const sampleCompletions: RunOutputSample[] = [];
   const runId = generateHex(4);
 
-  if (model && prompt) {
+  if (run.type === "model") {
     // TODO: move this logic to cli
-    const [providerName, modelName] = model.split(":");
-    const ai = new EmpiricalAI(providerName);
+    const { prompt, asserts, model, provider } = run;
+    const ai = new EmpiricalAI(provider);
     const completionsPromises = [];
     for (const datasetSample of samples) {
       const messages: ChatCompletionMessageParam[] = [
@@ -44,10 +43,7 @@ export async function execute(
       // if llm error then add to the completion object but if something else throw error and stop the run
       completionsPromises.push(
         ai.chat.completions
-          .create({
-            model: modelName!,
-            messages,
-          })
+          .create({ model, messages })
           .then((completion) => {
             const output = completion.choices[0]?.message.content;
             progressCallback();
@@ -73,14 +69,14 @@ export async function execute(
       return agg;
     }, new Map<string, DatasetSample>());
     const evalPromises = [];
-    if (assert && assert.length) {
+    if (asserts && asserts.length) {
       for (const s of sampleCompletions) {
         (function (sampleCompletion) {
           evalPromises.push(
             score({
               sample: datasetMap.get(sampleCompletion.dataset_sample_id)!,
               output: sampleCompletion.output,
-              assertions: assert,
+              assertions: asserts,
             }).then((scores) => {
               sampleCompletion.scores = scores;
             }),
@@ -94,11 +90,10 @@ export async function execute(
   }
   return {
     id: runId,
-    name: run.name,
-    dataset_id: "", // TODO
-    assert,
-    model,
-    prompt,
+    run_config: run,
+    dataset_config: {
+      id: "", // TODO
+    },
     samples: sampleCompletions,
     created_at: runCreationDate,
   };

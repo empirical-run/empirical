@@ -21,7 +21,7 @@ export const RunDetails = ({
       <CardHeader className="flex flex-row w-full justify-between pb-0">
         <div className="flex flex-col">
           <CardTitle className="flex flex-row space-x-1 items-center">
-            <span>{runResult.model}</span>
+            <span>{runResult.run_config.name}</span>
             <Badge
               variant={"secondary"}
               className=" text-xs text-muted-foreground whitespace-nowrap"
@@ -44,11 +44,13 @@ export const RunDetails = ({
             </TabsTrigger>
           </TabsList>
           <TabsContent value="prompt">
-            <CodeViewer
-              value={runResult.prompt as string}
-              language="prompt"
-              readOnly
-            />
+            {runResult.run_config.type === "model" && (
+              <CodeViewer
+                value={runResult.run_config.prompt as string}
+                language="prompt"
+                readOnly
+              />
+            )}
           </TabsContent>
           <TabsContent value="configuration" />
           <TabsContent value="tools" />

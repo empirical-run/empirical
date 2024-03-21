@@ -85,7 +85,7 @@ export const RunColumnHeaders = ({
           <section className="flex flex-row my-2 mx-4 justify-center">
             <section className=" font-semibold text-sm flex flex-1 w-full items-center">
               <ModelTitle
-                model={header.runResult?.model}
+                model={header.runResult?.run_config.name}
                 className="text-muted-foreground"
               />
               <Badge

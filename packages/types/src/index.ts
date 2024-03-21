@@ -19,30 +19,43 @@ export type Assert = {
 
 export type Prompt = string | ChatPrompt[];
 
-export type Model = string;
-
 export type Provider = {
   type: string;
   value: string;
 };
 
-export type Run = {
-  name: string;
-  model: Model;
-  prompt?: Prompt;
-  assert?: Assert[];
-};
-
-export type RunCompletion = {
-  id: string;
+interface RunConfigBase {
+  type: string;
   name?: string;
-  model: Model;
+  asserts?: Assert[];
+  metadata?: object;
+}
+
+export interface IModelRunConfig extends RunConfigBase {
+  type: "model";
+  provider: "openai" | "mistral" | "google";
+  model: string;
   prompt?: Prompt;
-  dataset_id: string;
-  assert?: Assert[];
+}
+
+export interface IScriptRunConfig extends RunConfigBase {
+  type: "py-script" | "js-script";
+  value: string;
+}
+
+export type IRunConfig = IModelRunConfig | IScriptRunConfig;
+
+export interface IDatasetConfig {
+  id: string;
+}
+
+export interface RunCompletion {
+  id: string;
+  run_config: IRunConfig;
+  dataset_config: IDatasetConfig;
   samples: RunOutputSample[];
   created_at: Date;
-};
+}
 
 export type DatasetSampleInput = {
   name: string;

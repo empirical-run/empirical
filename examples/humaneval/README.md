@@ -31,8 +31,10 @@ def evaluate(output, inputs):
 
 ## Run the example
 
-If you have Node.js version >= 18
-1. Run `node download-dataset.mjs`
+1. Run this script to prepare the dataset in `.empiricalrun/HumanEval.jsonl` 
+    ```
+    python prepare.py
+    ```
 
 1. Run with Empirical
     ```

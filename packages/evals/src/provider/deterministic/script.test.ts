@@ -90,18 +90,32 @@ test("script scorer works for a humaneval output that has backticks", async () =
   });
 });
 
-test.skip("script scorer times out a long running script", async () => {
+test("script scorer times out a long running script", async () => {
   const sample: DatasetSample = {
-    id: "1",
+    id: "0",
     inputs: [],
   };
-  const longRunningScript = "test-assets/long_running.py";
-
+  const longRunningScript = __dirname + "/test-assets/long_running.py";
   expect(
     await scoreWithPythonScript(sample, "", longRunningScript),
   ).toStrictEqual({
     score: 0,
-    name: "unit-tests",
-    message: "invalid syntax (<string>, line 1)",
+    name: "py-script",
+    message: "Eval script timed out",
+  });
+});
+
+test("script scorer works with a python script that throws", async () => {
+  const sample: DatasetSample = {
+    id: "0",
+    inputs: [],
+  };
+  const scriptWithError = __dirname + "/test-assets/throws.py";
+  expect(
+    await scoreWithPythonScript(sample, "", scriptWithError),
+  ).toStrictEqual({
+    score: 0,
+    name: "py-script",
+    message: "Eval script error: Error: NameError: name 'time' is not defined",
   });
 });

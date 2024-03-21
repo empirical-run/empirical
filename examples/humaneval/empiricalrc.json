@@ -17,6 +17,6 @@
     }
   ],
   "dataset": {
-    "path": "HumanEval.jsonl"
+    "path": ".empiricalrun/HumanEval.jsonl"
   }
 }

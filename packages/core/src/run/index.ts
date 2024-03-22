@@ -67,11 +67,11 @@ export async function execute(
             metadata: sampleCompletion.metadata,
             assertions: asserts,
             options: {
-              pythonPath: run.type === "py-script" ? run.pythonPath : undefined
-            }
+              pythonPath: run.type === "py-script" ? run.pythonPath : undefined,
+            },
           }).then((scores) => {
             sampleCompletion.scores = scores;
-          })
+          }),
         );
       })(s);
     }

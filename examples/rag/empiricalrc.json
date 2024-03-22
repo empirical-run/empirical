@@ -12,7 +12,7 @@
                 }
             ],
             "value": "rag.py",
-            "pythonPath": "/Users/saikatmitra/Library/Caches/pypoetry/virtualenvs/rag-ugSv88MR-py3.12/bin/python"
+            "pythonPath": "SET_PYTHON_PATH"
         }
     ],
     "dataset": {

@@ -59,10 +59,14 @@ export default function SampleCard({
                   </SheetHeader>
                   <div className="py-4 h-full">
                     <CodeViewer
-                      value={activeInput.value}
+                      value={
+                        typeof activeInput.value === "string"
+                          ? activeInput.value
+                          : JSON.stringify(activeInput.value, null, 2)
+                      }
                       readOnly
                       scrollable
-                      language="text"
+                      language="json"
                     />
                   </div>
                 </SheetContent>
@@ -89,6 +93,8 @@ export default function SampleCard({
             </TabsList>
 
             {sample?.inputs.map((input) => {
+              console.log(input.name);
+              console.log(input.value);
               return (
                 <TabsContent
                   key={input.name}
@@ -97,8 +103,12 @@ export default function SampleCard({
                   className="h-[calc(100%-3rem)]"
                 >
                   <CodeViewer
-                    value={input.value}
-                    language="text"
+                    value={
+                      typeof input.value === "string"
+                        ? input.value
+                        : JSON.stringify(input.value, null, 2)
+                    }
+                    language="json"
                     readOnly
                     scrollable
                   />

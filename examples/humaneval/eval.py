@@ -1,5 +1,3 @@
-
-
 def evaluate(output, inputs):
     # Concat the output and tests (from inputs)
     code = output + "\n\n" + inputs["test"]
@@ -12,4 +10,4 @@ def evaluate(output, inputs):
     except Exception as e:
         reason = repr(e)
         passed = 0
-    return {"score": passed, "message": reason, "name": "unit-tests"}
+    return [{"score": passed, "message": reason, "name": "unit-tests"}]

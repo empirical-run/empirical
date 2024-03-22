@@ -5,10 +5,16 @@ export default async function score({
   sample,
   output,
   assertions,
+  metadata,
+  options,
 }: {
   sample: DatasetSample;
   output: string | null | undefined;
   assertions: Assert[] | undefined;
+  metadata?: object | undefined;
+  options?: {
+    pythonPath?: string;
+  };
 }): Promise<Score[]> {
   if (!assertions) {
     return [];
@@ -19,12 +25,20 @@ export default async function score({
       const scoringFn = getScorer(assert);
       if (scoringFn) {
         // TODO: should raise if a scorer function is not found
-        return scoringFn(sample, output, assert.value);
+        return scoringFn({
+          sample,
+          output,
+          value: assert.value,
+          metadata,
+          options,
+        });
       } else {
         return undefined;
       }
     }),
   );
 
-  return scores.filter((item) => item !== undefined) as Score[];
+  return scores
+    .flatMap((s) => s)
+    .filter((item) => item !== undefined) as Score[];
 }

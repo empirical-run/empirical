@@ -2,7 +2,7 @@ import { Scorer } from "../../interface/scorer";
 
 export const name = "is-json";
 
-export const isJson: Scorer = async (_, output) => {
+export const isJson: Scorer = async ({ output }) => {
   let isValid = false;
   let invalidMsg = "JSON is invalid";
   if (output !== undefined && output !== null) {

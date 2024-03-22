@@ -1,0 +1,21 @@
+{
+    "$schema": "https://assets.empirical.run/config/schema/v1.4.json",
+    "runs": [
+        {
+            "name": "rag script run",
+            "type": "py-script",
+            "asserts": [
+                {
+                    "type": "py-script",
+                    "value": "score.py"
+
+                }
+            ],
+            "value": "rag.py",
+            "pythonPath": "/Users/saikatmitra/Library/Caches/pypoetry/virtualenvs/rag-ugSv88MR-py3.12/bin/python"
+        }
+    ],
+    "dataset": {
+        "path": ".empiricalrun/dataset.jsonl"
+    }
+}

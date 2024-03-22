@@ -5,15 +5,17 @@ import path from "path";
 
 export const name = "py-script";
 
-const scriptTimeout = 2000;
+const scriptTimeout = 30000;
 const wrapperScriptDirectory = path.join(__dirname, "..", "..", "python");
 const wrapperScriptFile = "wrapper.py";
 
-export const scoreWithPythonScript: Scorer = async (
+export const scoreWithPythonScript: Scorer = async ({
   sample,
   output,
-  userScriptPath,
-) => {
+  value: userScriptPath,
+  metadata,
+  options,
+}) => {
   if (!userScriptPath) {
     return {
       score: 0,
@@ -30,12 +32,14 @@ export const scoreWithPythonScript: Scorer = async (
     moduleName,
     output || "",
     JSON.stringify(inputsAsMap),
+    JSON.stringify(metadata || "{}"),
   ];
 
   const runOutput = await new Promise<string[]>((resolve) => {
     let runOutput: string[] = [];
     const shell = new PythonShell(wrapperScriptFile, {
       scriptPath: wrapperScriptDirectory,
+      pythonPath: options?.pythonPath,
       args: pythonArgs,
     });
 

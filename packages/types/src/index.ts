@@ -38,12 +38,21 @@ export interface IModelRunConfig extends RunConfigBase {
   prompt?: Prompt;
 }
 
-export interface IScriptRunConfig extends RunConfigBase {
-  type: "py-script" | "js-script";
+export interface JSScriptRunConfig extends RunConfigBase {
+  type: "js-script";
   value: string;
 }
 
-export type IRunConfig = IModelRunConfig | IScriptRunConfig;
+export interface IPyScriptRunConfig extends RunConfigBase {
+  type: "py-script";
+  value: string;
+  pythonPath?: string;
+}
+
+export type IRunConfig =
+  | IModelRunConfig
+  | IPyScriptRunConfig
+  | JSScriptRunConfig;
 
 export interface IDatasetConfig {
   id: string;
@@ -88,6 +97,11 @@ export type RunOutputSample = {
   expected?: {
     value: string;
   };
+  error?: {
+    code?: string;
+    message: string;
+  };
+  metadata?: object | undefined;
   dataset_sample_id: string;
   created_at?: Date;
   run_id: string;

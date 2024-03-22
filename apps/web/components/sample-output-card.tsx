@@ -34,7 +34,7 @@ type Diff = {
 
 export const languageMap = new Map([
   ["text-to-sql", "mysql"],
-  ["text-to-json", "text"],
+  ["text-to-json", "json"],
 ]);
 
 export default function SampleOutputCard({
@@ -243,7 +243,7 @@ export default function SampleOutputCard({
                 ? containerWrapper.current?.clientHeight - 24 // reduce the padding value
                 : 100
             }px`}
-            language={"text"}
+            language={"json"}
             onMount={handleDiffOnMount}
             theme="tomorrow-night-blue"
             width="100%"
@@ -251,7 +251,7 @@ export default function SampleOutputCard({
           />
         )}
         {baseSample && baseSample.output && !diffView.enabled && (
-          <CodeViewer value={baseSample?.output} language="text" readOnly />
+          <CodeViewer value={baseSample?.output} language="json" readOnly />
         )}
       </CardContent>
     </Card>

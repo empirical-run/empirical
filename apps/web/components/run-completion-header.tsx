@@ -96,18 +96,23 @@ export const RunColumnHeaders = ({
               </Badge>
             </section>
           </section>
-          <Separator orientation="horizontal" className={`${overlayBg}`} />
-          <section className="flex flex-row space-x-2 text-muted-foreground items-center justify-center ml-2">
-            <Button
-              variant={"link"}
-              onClick={() => showPrompt?.(header.runResult!)}
-              className="p-0 h-6"
-              size={"sm"}
-            >
-              <span>View Prompt</span>
-              <ArrowTopRightIcon />
-            </Button>
-          </section>
+
+          {header.runResult?.run_config.type === "model" && (
+            <>
+              <Separator orientation="horizontal" className={`${overlayBg}`} />
+              <section className="flex flex-row space-x-2 text-muted-foreground items-center justify-center ml-2">
+                <Button
+                  variant={"link"}
+                  onClick={() => showPrompt?.(header.runResult!)}
+                  className="p-0 h-6"
+                  size={"sm"}
+                >
+                  <span>View Prompt</span>
+                  <ArrowTopRightIcon />
+                </Button>
+              </section>
+            </>
+          )}
         </section>
       </div>
     );

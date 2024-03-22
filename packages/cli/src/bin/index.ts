@@ -72,7 +72,9 @@ program
     );
     const completion = await Promise.all(
       runs.map((r) =>
-        execute(r, dataset.samples || [], () => progressBar.increment()),
+        execute(r, dataset.samples || [], () => {
+          progressBar.increment();
+        }),
       ),
     );
     progressBar.stop();

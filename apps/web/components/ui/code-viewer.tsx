@@ -41,7 +41,7 @@ function initializeMonaco(monaco: Monaco) {
 
 export default function CodeViewer({
   value,
-  language = "text",
+  language = "json",
   readOnly = false,
   onChange,
   customCommands,
@@ -56,6 +56,7 @@ export default function CodeViewer({
   focus?: boolean;
   scrollable?: boolean;
 }) {
+  console.log(language);
   const monaco = useMonaco();
   const containerRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<any>();

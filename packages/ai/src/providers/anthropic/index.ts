@@ -4,20 +4,12 @@ import { ChatCompletionMessageParam } from "openai/resources/chat/completions.mj
 
 const convertOpenAIToAnthropicAI = function (
   messages: ChatCompletionMessageParam[],
-): Anthropic.MessageParam[] {
+): { contents: Anthropic.MessageParam[]; systemPrompt: string } {
   const [systemMessage] = messages.filter((m) => m.role === "system");
-  let systemMessageContent = "";
-  if (systemMessage) {
-    systemMessageContent = systemMessage.content as string; // TODO: right now assuming system messages are string
-  }
   const filteredMessages = messages.filter((m) => m.role !== "system");
   const contents = filteredMessages.map((m) => {
     let role = m.role === "assistant" ? "assistant" : "user";
     let content = "";
-
-    if (role === "user" && systemMessageContent) {
-      content = systemMessageContent;
-    }
 
     // TODO: right now only supporting text formats
     if (typeof m.content === "string") {
@@ -28,24 +20,29 @@ const convertOpenAIToAnthropicAI = function (
       content,
     };
   });
-  // @ts-ignore missing enum for role = 'user' | 'assistant'
-  return contents;
+  // @ts-ignore - role enums
+  return { contents, systemPrompt: systemMessage?.content?.toString() || "" };
 };
 
-// @ts-ignore finish_reason enums is different
+// @ts-ignore finish_reason and stop_reason enums are different
 const createChatCompletion: ICreateChatCompletion = async (body) => {
   const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
     maxRetries: 5,
   });
   const { model, messages, max_tokens } = body;
+  const { contents, systemPrompt } = convertOpenAIToAnthropicAI(messages);
   const response = await anthropic.messages.create({
     max_tokens: max_tokens || 1024,
     model,
-    messages: convertOpenAIToAnthropicAI(messages),
+    messages: contents,
+    system: systemPrompt,
   });
-  const convertedResponse = {
-    id: response.id,
+
+  return {
+    ...response,
+    object: "chat.completion",
+    created: Date.now() / 1000,
     choices: [
       {
         finish_reason: "stop",
@@ -54,11 +51,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
         logprobs: null,
       },
     ],
-    object: "chat.completion",
-    created: Date.now() / 1000,
-    model,
   };
-  return convertedResponse;
 };
 
 export const AnthropicAIProvider: IAIProvider = {

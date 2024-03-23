@@ -10,7 +10,8 @@ test("llm-criteria works with sql semantics", async () => {
         "SELECT country, COUNT(*) as NumberOfSingers\nFROM singer\nGROUP BY country;",
     },
     output: "SELECT country ,  count(*) FROM singer GROUP BY country",
-    value: "The output query is semantically equivalent to {{expected}}",
+    value:
+      "The output query is semantically (ignoring aliases) equivalent to {{expected}}",
   });
   expect(scoreResult.score).toBe(1);
   expect(scoreResult.name).toBe("llm-criteria");

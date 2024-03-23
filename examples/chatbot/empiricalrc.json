@@ -1,6 +1,5 @@
 {
-  "$schema": "https://assets.empirical.run/config/schema/v1.4.json",
-  "version": "0.0.1",
+  "$schema": "https://assets.empirical.run/config/schema/v1.7.json",
   "runs": [
     {
       "name": "less context setting",

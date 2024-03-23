@@ -1,6 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { IAIProvider, ICreateChatCompletion } from "@empiricalrun/types";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions.mjs";
+import promiseRetry from "promise-retry";
+import { BatchTaskManager } from "../../utils";
+
+const batchTaskManager = new BatchTaskManager(5);
 
 const finishReaonReverseMap = new Map<
   "end_turn" | "max_tokens" | "stop_sequence" | null,
@@ -40,12 +44,37 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   });
   const { model, messages, max_tokens } = body;
   const { contents, systemPrompt } = convertOpenAIToAnthropicAI(messages);
-  const response = await anthropic.messages.create({
-    max_tokens: max_tokens || 1024,
-    model,
-    messages: contents,
-    system: systemPrompt,
-  });
+  const { executionDone } = await batchTaskManager.waitForTurn();
+  const response = await promiseRetry<Anthropic.Messages.Message>(
+    (retry) => {
+      return anthropic.messages
+        .create({
+          max_tokens: max_tokens || 1024,
+          model,
+          messages: contents,
+          system: systemPrompt,
+        })
+        .catch((err) => {
+          if (
+            err instanceof Anthropic.RateLimitError ||
+            err instanceof Anthropic.APIConnectionError ||
+            err instanceof Anthropic.APIConnectionTimeoutError ||
+            err instanceof Anthropic.InternalServerError
+          ) {
+            retry(err);
+            throw err;
+          }
+          return err;
+        });
+    },
+    {
+      randomize: true,
+      minTimeout: 1000,
+    },
+  );
+
+  // TODO: handle for error
+  executionDone();
 
   return {
     id: response.id,

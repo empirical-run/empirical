@@ -2,7 +2,6 @@ import nest_asyncio
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
 from llama_index.llms.openai import OpenAI as LlamaOpenAI
 from llama_index.core.node_parser import SentenceSplitter
-import json
 
 nest_asyncio.apply()
 
@@ -10,7 +9,6 @@ nest_asyncio.apply()
 def execute(inputs):
     # load documents
     question = inputs["question"]
-    ground_truth = inputs["ground_truth"]
     reader = SimpleDirectoryReader("./arxiv-papers/", num_files_limit=30)
     documents = reader.load_data()
 
@@ -30,5 +28,5 @@ def execute(inputs):
 
     return {
         "output": output,
-        "metadata": {"contexts": contexts, "ground_truth": ground_truth},
+        "metadata": {"contexts": contexts},
     }

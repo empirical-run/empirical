@@ -1,4 +1,4 @@
-def evaluate(output, inputs):
+def evaluate(output, inputs, metadata):
     # Concat the output and tests (from inputs)
     code = output + "\n\n" + inputs["test"]
     # Concat code to run the tests

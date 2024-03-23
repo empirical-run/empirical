@@ -11,5 +11,5 @@ export type ScoreInputType = {
 };
 
 export interface Scorer {
-  (input: ScoreInputType): Promise<Score | Score[]>;
+  (input: ScoreInputType): Promise<Score[]>;
 }

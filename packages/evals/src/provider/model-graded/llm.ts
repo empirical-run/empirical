@@ -65,9 +65,11 @@ export const checkLlmCriteria: Scorer = async ({ sample, output, value }) => {
   ];
 
   const { result, reason } = await askLlmForEvalResult(messages);
-  return {
-    score: result === "Yes" ? 1 : 0,
-    name: name,
-    message: reason,
-  };
+  return [
+    {
+      score: result === "Yes" ? 1 : 0,
+      name: name,
+      message: reason,
+    },
+  ];
 };

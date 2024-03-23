@@ -22,7 +22,7 @@ In the script, you need to define an `evaluate` method, with the following signa
 
 ```python
 
-def evaluate(output, inputs):
+def evaluate(output, inputs, metadata):
     # ...
     return {"score": 1, "message": "Reason for eval result", "name": "name-for-evaluator"}
 

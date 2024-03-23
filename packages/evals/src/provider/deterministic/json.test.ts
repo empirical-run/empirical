@@ -2,9 +2,16 @@ import { expect, test } from "vitest";
 import { isJson } from "./json";
 
 test("is-json on empty json", async () => {
-  expect(await isJson({ id: "1", inputs: [] }, "{}")).toStrictEqual({
-    score: 1,
-    name: "is-json",
-    message: "",
-  });
+  expect(
+    await isJson({
+      sample: { id: "1", inputs: [] },
+      output: "{}",
+    }),
+  ).toStrictEqual([
+    {
+      score: 1,
+      name: "is-json",
+      message: "",
+    },
+  ]);
 });

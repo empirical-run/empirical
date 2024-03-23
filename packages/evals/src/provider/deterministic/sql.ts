@@ -12,11 +12,13 @@ export const checkSqlSyntax: Scorer = async ({ output }) => {
   let inValidSQLMsg = "SQL is invalid";
   const parser = new Parser();
   if (!output) {
-    return {
-      score: 0,
-      name: syntaxName,
-      message: "output is empty",
-    };
+    return [
+      {
+        score: 0,
+        name: syntaxName,
+        message: "output is empty",
+      },
+    ];
   }
   try {
     parser.parse(output, parserOpt);
@@ -24,22 +26,26 @@ export const checkSqlSyntax: Scorer = async ({ output }) => {
   } catch (e) {
     isSQLQuery = false;
   }
-  return {
-    score: isSQLQuery ? 1 : 0,
-    name: syntaxName,
-    message: isSQLQuery ? "" : inValidSQLMsg,
-  };
+  return [
+    {
+      score: isSQLQuery ? 1 : 0,
+      name: syntaxName,
+      message: isSQLQuery ? "" : inValidSQLMsg,
+    },
+  ];
 };
 
 export const checkSqlSemantic: Scorer = async ({ sample, output }) => {
   const parser = new Parser();
   const expected = sample.expected!;
   if (!output) {
-    return {
-      score: 0,
-      name: semanticName,
-      message: "output is empty",
-    };
+    return [
+      {
+        score: 0,
+        name: semanticName,
+        message: "output is empty",
+      },
+    ];
   }
   try {
     const parsedOutput = parser.parse(cleanQuery(output), parserOpt);
@@ -48,17 +54,21 @@ export const checkSqlSemantic: Scorer = async ({ sample, output }) => {
     cleanColumns(parsedExpected.ast as Select);
     const isEquivalent =
       JSON.stringify(parsedOutput) === JSON.stringify(parsedExpected);
-    return {
-      score: isEquivalent ? 1 : 0,
-      name: semanticName,
-      message: "",
-    };
+    return [
+      {
+        score: isEquivalent ? 1 : 0,
+        name: semanticName,
+        message: "",
+      },
+    ];
   } catch (err) {
-    return {
-      score: 0,
-      name: semanticName,
-      message: `${err}`,
-    };
+    return [
+      {
+        score: 0,
+        name: semanticName,
+        message: `${err}`,
+      },
+    ];
   }
 };
 

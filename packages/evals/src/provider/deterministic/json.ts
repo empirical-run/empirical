@@ -17,9 +17,11 @@ export const isJson: Scorer = async ({ output }) => {
     invalidMsg = "Output is null or undefined";
   }
 
-  return {
-    score: isValid ? 1 : 0,
-    name,
-    message: isValid ? "" : invalidMsg,
-  };
+  return [
+    {
+      score: isValid ? 1 : 0,
+      name,
+      message: isValid ? "" : invalidMsg,
+    },
+  ];
 };

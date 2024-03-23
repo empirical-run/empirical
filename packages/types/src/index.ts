@@ -33,7 +33,7 @@ interface RunConfigBase {
 
 export interface IModelRunConfig extends RunConfigBase {
   type: "model";
-  provider: "openai" | "mistral" | "google";
+  provider: "openai" | "mistral" | "google" | "anthropic";
   model: string;
   prompt?: Prompt;
 }

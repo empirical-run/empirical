@@ -1,3 +1,4 @@
+import os
 import nest_asyncio
 from llama_index.core import SimpleDirectoryReader
 from ragas.testset.generator import TestsetGenerator
@@ -23,7 +24,13 @@ def generate_dataset():
     # generate testset
     testset = generator.generate_with_llamaindex_docs(documents, 2, distributions)
     test_df = testset.to_pandas()
-    test_df.to_json(".empiricalrun/dataset.jsonl", orient="records", lines=True)
+
+    file_name = "dataset.jsonl"
+    destination_dir = ".empiricalrun"
+    os.makedirs(destination_dir, exist_ok=True)
+    full_path = os.path.join(destination_dir, file_name)
+
+    test_df.to_json(full_path, orient="records", lines=True)
 
 
 if __name__ == "__main__":

@@ -6,22 +6,22 @@ The setup is inspired by [RAGAS doc on comparing different LLMs](https://docs.ra
 ## Setup
 Ensure Poetry is installed on your machine. If not, install it using the instructions [here](https://python-poetry.org/docs/#installing-with-pipx)
 
-Install project dependencies:
-```
-poetry install
-```
+- Install project dependencies:
+    ```
+    poetry install
+    ```
 
-To evaluate RAG, configure a document loader and generate questions from an arXiv paper:
-```
-poetry run python prepare.py
-```
+- To evaluate RAG, configure a document loader and generate questions from an arXiv paper:
+    ```
+    poetry run python prepare.py
+    ```
 
-Generate a dataset of relevant questions, context, and ground truth:
+- Generate a dataset of relevant questions, context, and ground truth:
+    ```
+    poetry run python dataset_generator.py
+    ```
 
-```
-poetry run python dataset_generator.py
-```
-By now you should see a dataset inside the folder `.empiricalrun` with the name `dataset.jsonl`.
+By now you should see a dataset file named `dataset.jsonl` inside `.empiricalrun` directory.
 
 ## Running the example
 

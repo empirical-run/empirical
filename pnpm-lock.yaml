@@ -1,9 +1,5 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 importers:
 
   .:
@@ -200,9 +196,9 @@ importers:
       '@empiricalrun/ai':
         specifier: workspace:^
         version: link:../ai
-      '@empiricalrun/evals':
+      '@empiricalrun/scorer':
         specifier: workspace:*
-        version: link:../evals
+        version: link:../scorer
       openai:
         specifier: ^4.29.0
         version: 4.29.0
@@ -247,7 +243,7 @@ importers:
         specifier: ^5.3.3
         version: 5.3.3
 
-  packages/evals:
+  packages/scorer:
     dependencies:
       '@empiricalrun/ai':
         specifier: workspace:^
@@ -6934,3 +6930,7 @@ packages:
       which: 3.0.1
       yaml: 2.4.1
     dev: true
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false

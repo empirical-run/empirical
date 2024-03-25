@@ -7,16 +7,17 @@ from ragas.metrics import (
 from datasets import Dataset
 
 
-def evaluate(output, inputs, metadata):
+def evaluate(output, inputs):
     metrics = [
         faithfulness,
         answer_relevancy,
         answer_correctness,
     ]
+    metadata = output["metadata"]
     result_dict = {
         "question": [inputs["question"]],
-        "ground_truth": [metadata["ground_truth"]],
-        "answer": [output],
+        "ground_truth": [inputs["ground_truth"]],
+        "answer": [output["value"]],
         "contexts": [metadata["contexts"]],
     }
     result_ds = Dataset.from_dict(result_dict)

@@ -7,7 +7,7 @@ export const isJson: Scorer = async ({ output }) => {
   let invalidMsg = "JSON is invalid";
   if (output !== undefined && output !== null) {
     try {
-      JSON.parse(output);
+      JSON.parse(output.value!);
       isValid = true;
     } catch (e) {
       isValid = false;

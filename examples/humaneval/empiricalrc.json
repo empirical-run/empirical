@@ -1,5 +1,5 @@
 {
-  "$schema": "https://assets.empirical.run/config/schema/v1.8.json",
+  "$schema": "https://assets.empirical.run/config/schema/v1.9.json",
   "runs": [
     {
       "name": "gpt-3.5-turbo run",
@@ -7,7 +7,7 @@
       "provider": "openai",
       "model": "gpt-3.5-turbo",
       "prompt": "You are a Python programmer. You will be given a function definition with a docstring that describes the behavior of the function. Your task is to write the function body such that it follows the specifications in the docstring. Use the exact same function names and parameters.\n\nInstructions:\n- Do not import any third-party modules\n- Write import strings for types (e.g. List) if required\n- Do not return any markdown backticks in your response\n- Output the complete function with your additions\n\nPython function:\n{{prompt}}",
-      "asserts": [
+      "scorers": [
         {
           "type": "py-script",
           "value": "eval.py"

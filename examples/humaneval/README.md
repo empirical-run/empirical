@@ -4,10 +4,10 @@ This example shows a `py-script` evaluator with OpenAI's [HumanEval](https://git
 
 ## Python evaluators
 
-You can configure a custom Python evaluator by specifying a `py-script` evaluator in the `assert` section of the configuration. The `value` key should be the path to the Python script.
+You can configure a custom Python evaluator by specifying a `py-script` evaluator in the `scorers` section of the configuration. The `value` key should be the path to the Python script.
 
 ```json
-"assert": [
+"scorers": [
   {
     "type": "py-script",
     "value": "eval.py"
@@ -22,7 +22,7 @@ In the script, you need to define an `evaluate` method, with the following signa
 
 ```python
 
-def evaluate(output, inputs, metadata):
+def evaluate(output, inputs):
     # ...
     return {"score": 1, "message": "Reason for eval result", "name": "name-for-evaluator"}
 

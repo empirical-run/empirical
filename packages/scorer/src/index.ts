@@ -1,34 +1,39 @@
-import { Assert, Score, DatasetSample } from "@empiricalrun/types";
+import {
+  Scorer,
+  Score,
+  DatasetSample,
+  RunOutputType,
+} from "@empiricalrun/types";
 import getScorer from "./provider";
 
 export default async function score({
   sample,
   output,
-  assertions,
+  scorers,
   metadata,
   options,
 }: {
   sample: DatasetSample;
-  output: string | null | undefined;
-  assertions: Assert[] | undefined;
+  output: RunOutputType;
+  scorers: Scorer[] | undefined;
   metadata?: object | undefined;
   options?: {
     pythonPath?: string;
   };
 }): Promise<Score[]> {
-  if (!assertions) {
+  if (!scorers) {
     return [];
   }
 
   const scores = await Promise.all(
-    assertions.map((assert) => {
-      const scoringFn = getScorer(assert);
+    scorers.map((scorer) => {
+      const scoringFn = getScorer(scorer);
       if (scoringFn) {
         // TODO: should raise if a scorer function is not found
         return scoringFn({
           sample,
           output,
-          value: assert.value,
+          value: scorer.value,
           metadata,
           options,
         });

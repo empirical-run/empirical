@@ -14,7 +14,6 @@ export const scoreWithPythonScript: Scorer = async ({
   sample,
   output,
   value: userScriptPath,
-  metadata,
   options,
 }): Promise<Score[]> => {
   if (!userScriptPath) {
@@ -33,9 +32,8 @@ export const scoreWithPythonScript: Scorer = async ({
   let pythonArgs = [
     basePath,
     moduleName,
-    output || "",
+    JSON.stringify(output) || "",
     JSON.stringify(inputsAsMap),
-    JSON.stringify(metadata || "{}"),
   ];
 
   const runOutput = await new Promise<string[]>((resolve) => {
@@ -49,7 +47,9 @@ export const scoreWithPythonScript: Scorer = async ({
     const pythonKiller = setTimeout(function () {
       console.log("timing out!!");
       runOutput.push(
-        JSON.stringify([{ score: 0, name, message: "Eval script timed out" }]),
+        JSON.stringify([
+          { score: 0, name, message: "Scorer script timed out" },
+        ]),
       );
       shell.childProcess.kill();
     }, scriptTimeout);
@@ -64,7 +64,7 @@ export const scoreWithPythonScript: Scorer = async ({
           {
             score: 0,
             name,
-            message: `Eval script error: ${message}`,
+            message: `Scorer script error: ${message}`,
           },
         ]),
       );

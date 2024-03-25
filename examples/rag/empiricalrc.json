@@ -1,10 +1,10 @@
 {
-    "$schema": "https://assets.empirical.run/config/schema/v1.8.json",
+    "$schema": "https://assets.empirical.run/config/schema/v1.9.json",
     "runs": [
         {
             "name": "rag script run",
             "type": "py-script",
-            "asserts": [
+            "scorers": [
                 {
                     "type": "py-script",
                     "value": "score.py"

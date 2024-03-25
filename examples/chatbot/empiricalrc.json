@@ -1,5 +1,5 @@
 {
-  "$schema": "https://assets.empirical.run/config/schema/v1.8.json",
+  "$schema": "https://assets.empirical.run/config/schema/v1.9.json",
   "runs": [
     {
       "name": "less context setting",
@@ -7,7 +7,7 @@
       "provider": "openai",
       "model": "gpt-3.5-turbo",
       "prompt": "{{user_message}}",
-      "asserts": [
+      "scorers": [
         {
           "type": "llm-criteria",
           "value": "Never call yourself an AI or language model"
@@ -20,7 +20,7 @@
       "model": "gpt-3.5-turbo",
       "provider": "openai",
       "prompt": "You are Sarah, a political scientist. Respond to the user with your best answer. Make sure to respond to them with their name.\n\n{{user_name}}: {{user_message}}",
-      "asserts": [
+      "scorers": [
         {
           "type": "llm-criteria",
           "value": "Never call yourself a language model"

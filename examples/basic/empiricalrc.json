@@ -1,5 +1,5 @@
 {
-  "$schema": "https://assets.empirical.run/config/schema/v1.8.json",
+  "$schema": "https://assets.empirical.run/config/schema/v1.9.json",
   "runs": [
     {
       "type": "model",
@@ -7,7 +7,7 @@
       "provider": "openai",
       "model": "gpt-3.5-turbo",
       "prompt": "You are expected to respond with a JSON object, which has above keys and corresponding entities. If an entity is missing, respond with null. \\n\\n{{user_message}}",
-      "asserts": [
+      "scorers": [
         {
           "type": "is-json"
         }
@@ -19,7 +19,7 @@
       "provider": "openai",
       "model": "gpt-4-turbo-preview",
       "prompt": "You are expected to respond with a JSON object, which has above keys and corresponding entities. If an entity is missing, respond with null. \\n\\n{{user_message}}",
-      "asserts": [
+      "scorers": [
         {
           "type": "is-json"
         }

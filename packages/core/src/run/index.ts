@@ -5,7 +5,7 @@ import {
   RunOutputSample,
 } from "@empiricalrun/types";
 import { generateHex } from "../utils";
-import score from "@empiricalrun/evals";
+import score from "@empiricalrun/scorer";
 import { getExecutor } from "./executors";
 
 export async function execute(
@@ -16,7 +16,7 @@ export async function execute(
   const runCreationDate = new Date();
   const sampleCompletions: RunOutputSample[] = [];
   const runId = generateHex(4);
-  const { asserts } = run;
+  const { scorers } = run;
   const completionsPromises = [];
   for (const datasetSample of samples) {
     const executor = getExecutor(run);
@@ -36,8 +36,10 @@ export async function execute(
             }
             sampleCompletions.push({
               inputs: datasetSample.inputs,
-              output,
-              metadata,
+              output: {
+                value: output,
+                metadata,
+              },
               dataset_sample_id: datasetSample.id || "",
               created_at: new Date(),
               error,
@@ -56,16 +58,15 @@ export async function execute(
     agg.set(sample.id, sample);
     return agg;
   }, new Map<string, DatasetSample>());
-  const evalPromises = [];
-  if (asserts && asserts.length) {
+  const scorerPromises = [];
+  if (scorers && scorers.length) {
     for (const s of sampleCompletions) {
       (function (sampleCompletion) {
-        evalPromises.push(
+        scorerPromises.push(
           score({
             sample: datasetMap.get(sampleCompletion.dataset_sample_id)!,
             output: sampleCompletion.output,
-            metadata: sampleCompletion.metadata,
-            assertions: asserts,
+            scorers,
             options: {
               pythonPath: run.type === "py-script" ? run.pythonPath : undefined,
             },
@@ -76,8 +77,8 @@ export async function execute(
       })(s);
     }
   }
-  if (evalPromises.length) {
-    await Promise.allSettled(evalPromises);
+  if (scorerPromises.length) {
+    await Promise.allSettled(scorerPromises);
   }
   return {
     id: runId,

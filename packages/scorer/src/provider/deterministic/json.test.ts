@@ -5,7 +5,7 @@ test("is-json on empty json", async () => {
   expect(
     await isJson({
       sample: { id: "1", inputs: [] },
-      output: "{}",
+      output: { value: "{}" },
     }),
   ).toStrictEqual([
     {

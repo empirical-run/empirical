@@ -1,5 +1,5 @@
 {
-  "$schema": "https://assets.empirical.run/config/schema/v1.6.json",
+  "$schema": "https://assets.empirical.run/config/schema/v1.9.json",
   "runs": [
     {
       "name": "gpt-3.5-turbo run",
@@ -7,7 +7,7 @@
       "type": "model",
       "model": "gpt-3.5-turbo",
       "prompt": "You are an SQLite expert who can convert natural language questions to SQL queries for the database schema given below.\n\nDatabase schema:\n{{schema}}\n\nAnswer the following question with only the SQL query.\n\nQuestion: {{question}}",
-      "asserts": [
+      "scorers": [
         {
           "type": "sql-syntax"
         },
@@ -22,7 +22,7 @@
       "provider": "anthropic",
       "model": "claude-2.1",
       "prompt": "You are an SQLite expert who can convert natural language questions to SQL queries for the database schema given below.\n\nDatabase schema:\n{{schema}}\n\nAnswer the following question with only the SQL query.\n\nQuestion: {{question}}",
-      "asserts": [
+      "scorers": [
         {
           "type": "sql-syntax"
         },

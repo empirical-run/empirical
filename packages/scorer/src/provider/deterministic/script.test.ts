@@ -31,7 +31,9 @@ test("script scorer works for a correct humaneval output", async () => {
   expect(
     await scoreWithPythonScript({
       sample,
-      output: humanEval.output,
+      output: {
+        value: humanEval.output,
+      },
       value: scriptPath,
     }),
   ).toStrictEqual([
@@ -61,7 +63,7 @@ test("script scorer works for a incorrect humaneval output", async () => {
   expect(
     await scoreWithPythonScript({
       sample,
-      output: humanEval.output,
+      output: { value: humanEval.output },
       value: scriptPath,
     }),
   ).toStrictEqual([
@@ -91,7 +93,9 @@ test("script scorer works for a humaneval output that has backticks", async () =
   expect(
     await scoreWithPythonScript({
       sample,
-      output: "```python\n" + humanEval.output + "\n```",
+      output: {
+        value: "```python\n" + humanEval.output + "\n```",
+      },
       value: scriptPath,
     }),
   ).toStrictEqual([
@@ -115,14 +119,14 @@ test(
     expect(
       await scoreWithPythonScript({
         sample,
-        output: "",
+        output: { value: "" },
         value: longRunningScript,
       }),
     ).toStrictEqual([
       {
         score: 0,
         name: "py-script",
-        message: "Eval script timed out",
+        message: "Scorer script timed out",
       },
     ]);
   },
@@ -137,7 +141,7 @@ test("script scorer works with a python script that throws", async () => {
   const scriptWithError = __dirname + "/test-assets/throws.py";
   const [score] = await scoreWithPythonScript({
     sample,
-    output: "",
+    output: { value: "" },
     value: scriptWithError,
   });
 

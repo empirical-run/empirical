@@ -21,7 +21,7 @@ export const checkSqlSyntax: Scorer = async ({ output }) => {
     ];
   }
   try {
-    parser.parse(output, parserOpt);
+    parser.parse(output.value!, parserOpt);
     isSQLQuery = true;
   } catch (e) {
     isSQLQuery = false;
@@ -48,7 +48,7 @@ export const checkSqlSemantic: Scorer = async ({ sample, output }) => {
     ];
   }
   try {
-    const parsedOutput = parser.parse(cleanQuery(output), parserOpt);
+    const parsedOutput = parser.parse(cleanQuery(output.value!), parserOpt);
     const parsedExpected = parser.parse(cleanQuery(expected), parserOpt);
     cleanColumns(parsedOutput.ast as Select);
     cleanColumns(parsedExpected.ast as Select);

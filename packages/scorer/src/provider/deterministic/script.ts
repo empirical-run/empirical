@@ -9,7 +9,7 @@ export const name = "py-script";
 const scriptTimeout = 10000;
 const wrapperScriptDirectory = path.join(__dirname, "..", "..", "python");
 const wrapperScriptFile = "wrapper.py";
-const executionOutputIdentifier = "execution_output:";
+const executionOutputIdentifier = "scorer_output:";
 
 export const scoreWithPythonScript: Scorer = async ({
   sample,

@@ -2,4 +2,5 @@
 module.exports = {
   output: "export",
   distDir: "../../packages/cli/dist/webapp",
+  productionBrowserSourceMaps: true,
 };

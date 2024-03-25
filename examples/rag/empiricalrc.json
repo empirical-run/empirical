@@ -1,0 +1,20 @@
+{
+    "$schema": "https://assets.empirical.run/config/schema/v1.9.json",
+    "runs": [
+        {
+            "name": "rag script run",
+            "type": "py-script",
+            "scorers": [
+                {
+                    "type": "py-script",
+                    "value": "score.py"
+
+                }
+            ],
+            "value": "rag.py"
+        }
+    ],
+    "dataset": {
+        "path": ".empiricalrun/dataset.jsonl"
+    }
+}

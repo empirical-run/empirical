@@ -46,7 +46,7 @@ export const name = "llm-criteria";
 
 const systemPrompt = `You are an expert evaluator who grades an output string based on a criteria. The output must fulfil the criteria to pass the evaluation.`;
 
-export const checkLlmCriteria: Scorer = async (sample, output, value) => {
+export const checkLlmCriteria: Scorer = async ({ sample, output, value }) => {
   let criteria = "";
 
   if (value) {
@@ -65,9 +65,11 @@ export const checkLlmCriteria: Scorer = async (sample, output, value) => {
   ];
 
   const { result, reason } = await askLlmForEvalResult(messages);
-  return {
-    score: result === "Yes" ? 1 : 0,
-    name: name,
-    message: reason,
-  };
+  return [
+    {
+      score: result === "Yes" ? 1 : 0,
+      name: name,
+      message: reason,
+    },
+  ];
 };

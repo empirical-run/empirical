@@ -1,4 +1,4 @@
-## Example for LLM graded evals
+## Example for LLM graded scorer
 
 ```
 npx @empiricalrun/cli run

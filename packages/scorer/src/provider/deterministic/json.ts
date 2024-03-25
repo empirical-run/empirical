@@ -2,12 +2,12 @@ import { Scorer } from "../../interface/scorer";
 
 export const name = "is-json";
 
-export const isJson: Scorer = async (_, output) => {
+export const isJson: Scorer = async ({ output }) => {
   let isValid = false;
   let invalidMsg = "JSON is invalid";
   if (output !== undefined && output !== null) {
     try {
-      JSON.parse(output);
+      JSON.parse(output.value!);
       isValid = true;
     } catch (e) {
       isValid = false;
@@ -17,9 +17,11 @@ export const isJson: Scorer = async (_, output) => {
     invalidMsg = "Output is null or undefined";
   }
 
-  return {
-    score: isValid ? 1 : 0,
-    name,
-    message: isValid ? "" : invalidMsg,
-  };
+  return [
+    {
+      score: isValid ? 1 : 0,
+      name,
+      message: isValid ? "" : invalidMsg,
+    },
+  ];
 };

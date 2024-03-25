@@ -5,9 +5,8 @@ import {
   RunOutputSample,
 } from "@empiricalrun/types";
 import { generateHex } from "../utils";
-import { EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
-import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
-import score from "@empiricalrun/evals";
+import score from "@empiricalrun/scorer";
+import { getExecutor } from "./executors";
 
 export async function execute(
   run: IRunConfig,
@@ -17,76 +16,66 @@ export async function execute(
   const runCreationDate = new Date();
   const sampleCompletions: RunOutputSample[] = [];
   const runId = generateHex(4);
-
-  if (run.type === "model") {
-    // TODO: move this logic to cli
-    const { prompt, asserts, model, provider } = run;
-    const ai = new EmpiricalAI(provider);
-    const completionsPromises = [];
-    for (const datasetSample of samples) {
-      const messages: ChatCompletionMessageParam[] = [
-        {
-          role: "user",
-          content: replacePlaceholders(
-            prompt as string,
-            datasetSample.inputs.reduce((agg, i) => {
-              return {
-                ...agg,
-                [i.name]: i.value,
-              };
-            }, {}),
-          ),
-        },
-      ];
-
+  const { scorers } = run;
+  const completionsPromises = [];
+  for (const datasetSample of samples) {
+    const executor = getExecutor(run);
+    if (executor) {
       // TODO: handle promise rejection due to error
       // if llm error then add to the completion object but if something else throw error and stop the run
       completionsPromises.push(
-        ai.chat.completions
-          .create({ model, messages })
-          .then((completion) => {
-            const output = completion.choices[0]?.message.content;
-            progressCallback();
+        executor(run, datasetSample)
+          .then(({ output, error }) => {
+            if (error) {
+              console.warn(
+                `[${error.message}]`,
+                "Failed to fetch output for sample id::",
+                datasetSample.id,
+              );
+              console.warn(error.message);
+            }
             sampleCompletions.push({
               inputs: datasetSample.inputs,
               output,
               dataset_sample_id: datasetSample.id || "",
               created_at: new Date(),
+              error,
               run_id: runId,
             });
           })
-          .catch((e) => {
-            console.log(e);
-          }),
+          .finally(() => progressCallback()),
       );
     }
-    if (completionsPromises.length) {
-      await Promise.allSettled(completionsPromises);
-    }
+  }
+  if (completionsPromises.length) {
+    await Promise.allSettled(completionsPromises);
+  }
 
-    const datasetMap = samples.reduce((agg, sample) => {
-      agg.set(sample.id, sample);
-      return agg;
-    }, new Map<string, DatasetSample>());
-    const evalPromises = [];
-    if (asserts && asserts.length) {
-      for (const s of sampleCompletions) {
-        (function (sampleCompletion) {
-          evalPromises.push(
-            score({
-              sample: datasetMap.get(sampleCompletion.dataset_sample_id)!,
-              output: sampleCompletion.output,
-              assertions: asserts,
-            }).then((scores) => {
-              sampleCompletion.scores = scores;
-            }),
-          );
-        })(s);
-      }
+  const datasetMap = samples.reduce((agg, sample) => {
+    agg.set(sample.id, sample);
+    return agg;
+  }, new Map<string, DatasetSample>());
+  const scorerPromises = [];
+  if (scorers && scorers.length) {
+    for (const s of sampleCompletions) {
+      (function (sampleCompletion) {
+        scorerPromises.push(
+          score({
+            sample: datasetMap.get(sampleCompletion.dataset_sample_id)!,
+            output: sampleCompletion.output,
+            scorers,
+            options: {
+              pythonPath: run.type === "py-script" ? run.pythonPath : undefined,
+            },
+          }).then((scores) => {
+            sampleCompletion.scores = scores;
+          }),
+        );
+      })(s);
     }
-    if (evalPromises.length) {
-      await Promise.allSettled(evalPromises);
-    }
+  }
+  if (scorerPromises.length) {
+    await Promise.allSettled(scorerPromises);
   }
   return {
     id: runId,

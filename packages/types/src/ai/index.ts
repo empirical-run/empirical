@@ -28,6 +28,11 @@ export interface AI {
   };
 }
 
+export interface IEmpiricalAIError extends Error {
+  code: string;
+  message: string;
+}
+
 export interface IAIProvider {
   name: string;
   chat: ICreateChatCompletion;

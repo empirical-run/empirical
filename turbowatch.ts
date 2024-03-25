@@ -11,6 +11,7 @@ void watch({
           "anyof",
           ["match", "*.ts", "basename"],
           ["match", "*.tsx", "basename"],
+          ["match", "*.py", "basename"],
         ],
       ],
       name: "build",

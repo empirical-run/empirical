@@ -32,11 +32,6 @@ type Diff = {
   enabled: boolean;
 };
 
-export const languageMap = new Map([
-  ["text-to-sql", "mysql"],
-  ["text-to-json", "text"],
-]);
-
 export default function SampleOutputCard({
   baseResult,
   baseSample,
@@ -144,7 +139,7 @@ export default function SampleOutputCard({
                       // @ts-ignore
                       s.score ? "outline" : "destructive"
                     }
-                    key={`${baseResult.id}-${baseSample.id}-eval-${s.name}`}
+                    key={`${baseResult.id}-${baseSample.id}-score-${s.name}`}
                     className="flex flex-row space-x-1"
                   >
                     <span>{s.name} </span>
@@ -205,7 +200,7 @@ export default function SampleOutputCard({
                             onCheckedChange={() => {
                               enableDiffView({
                                 type: result?.id || "",
-                                text: s?.output || "",
+                                text: s?.output.value || "",
                               });
                             }}
                           >
@@ -236,14 +231,14 @@ export default function SampleOutputCard({
       <CardContent className="h-full p-2" ref={containerWrapper}>
         {diffView.enabled && baseSample && (
           <DiffEditor
-            original={baseSample?.output || ""}
+            original={baseSample?.output.value || ""}
             modified={diffView.text}
             height={`${
               containerWrapper.current?.clientHeight
                 ? containerWrapper.current?.clientHeight - 24 // reduce the padding value
                 : 100
             }px`}
-            language={"text"}
+            language={"json"}
             onMount={handleDiffOnMount}
             theme="tomorrow-night-blue"
             width="100%"
@@ -251,7 +246,11 @@ export default function SampleOutputCard({
           />
         )}
         {baseSample && baseSample.output && !diffView.enabled && (
-          <CodeViewer value={baseSample?.output} language="text" readOnly />
+          <CodeViewer
+            value={baseSample?.output.value || ""}
+            language="json"
+            readOnly
+          />
         )}
       </CardContent>
     </Card>

@@ -1,0 +1,59 @@
+---
+title: 'Python scorer'
+description: 'Write a custom scoring function with Python'
+---
+
+You can configure a custom Python evaluator by specifying a `py-script` evaluator in
+the `scorers` section of the configuration. The `value` key should be the path to the Python script.
+
+```json
+"scorers": [
+  {
+    "type": "py-script",
+    "value": "eval.py"
+  }
+]
+```
+
+In the script, you need to define an `evaluate` method, with the following signature:
+
+- Arguments
+  - output: dict with key `value` to get the output value (string) and key `metadata` to get metadata (dict)
+  - inputs: dict of key-value pairs from the dataset sample
+- Returns
+  - List of results: each result is dict with score (0 or 1), message (string) and name (string)
+
+```python
+def evaluate(output, inputs):
+    # ...
+    return [
+        {
+            "score": 1,
+            "message": "Reason for this score",
+            "name": "name-for-evaluator"
+        }
+    ]
+```
+
+## Example
+
+The [HumanEval example](https://github.com/empirical-run/empirical/tree/main/examples/humaneval) uses this scorer.
+
+
+## Capabilities
+
+The Python script is executed on your machine using `python` available in `PATH`. This
+determines the Python version that is used.
+
+The Python script can use any Python modules (built-in or third party). If you are
+using third-party libraries or want to use a specific version of Python, override
+the Python path while running the CLI.
+
+```sh
+npx @empiricalrun/cli run --python-path PATH_TO_PYTHON_BINARY
+```
+
+## Limitations
+
+- The Python script must complete execution within 10 seconds
+- `async` Python functions are not supported

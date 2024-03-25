@@ -1,0 +1,23 @@
+---
+title: 'Custom model or app'
+description: 'Specify your application or model with a Python entrypoint'
+---
+
+
+
+```python
+def execute(inputs):
+    # ...
+    return {
+        "output": output,
+        "metadata": {
+            "key": value
+        }
+    }
+```
+
+
+## Example
+
+The [RAG example](https://github.com/empirical-run/empirical/tree/main/examples/rag)
+uses this model provider to test a RAG application.

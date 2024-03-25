@@ -1,0 +1,68 @@
+---
+title: 'Basics'
+description: 'How to specify the dataset to test on'
+---
+
+Testing LLM apps would be incomplete without the scenarios to test on. You
+can specify these scenarios in your **test dataset**.
+
+Each dataset consists of **samples**. Each sample has
+
+- id (string; optional): Unique identifier for the sample
+- inputs (list of objects with name and value): Input parameters that define
+  this scenario. Any number of keys and corresponding values can be specified
+- expected (string; optional): Used as the ground truth for this sample
+
+Datasets can be specified in the configuration file directly, or imported from
+a file or HTTP endpoint.
+
+## Specify dataset directly
+
+```json
+"dataset": {
+  "samples": [
+    {
+      "inputs": [
+        {
+          "name": "user_message",
+          "value": "Hi my name is John Doe."
+        }
+      ],
+      "expected": "{\"name\": \"John Doe\"}"
+    },
+    {
+      "inputs": [
+        {
+          "name": "user_message",
+          "value": "This is Alice."
+        }
+      ],
+      "expected": "{\"name\": \"Alice\"}"
+    }
+  ]
+}
+```
+
+## Import from JSONL file
+
+Specify a path to the JSONL file. Each line of the file should be a valid JSON object.
+On import, the keys of this JSON will be converted into inputs of the sample.
+
+If using relative paths, the path is treated relatively to the configuration file.
+
+```json
+"dataset": {
+  "path": "HumanEval.jsonl"
+}
+```
+
+## Import Empirical JSON format
+
+If your dataset follows the Empirical JSON format, you can import that from
+a file or HTTP endpoint.
+
+```json
+"dataset": {
+  "path": "https://assets.empirical.run/datasets/json/spider-tiny.json"
+}
+```

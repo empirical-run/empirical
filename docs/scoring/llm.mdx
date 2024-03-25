@@ -1,0 +1,42 @@
+---
+title: 'LLM as scorer'
+description: 'Ask an LLM to score your outputs based on your criteria'
+---
+
+Use the `llm-criteria` scorer type to ask an LLM to score the output based on
+your criteria. Specify the criteria in the `value` parameter.
+
+```json
+"scorers": [
+  {
+    "type": "llm-criteria",
+    "value": "Never call yourself a language model"
+  }
+]
+```
+
+## Example
+
+The [chatbot example](https://github.com/empirical-run/empirical/tree/main/examples/chatbot) uses this scorer.
+
+## Placeholders
+
+You can customise the criteria based on the dataset sample.
+
+To do this, specify placeholders in the criteria with the handlebar syntax. All input
+keys in the sample (e.g. `{{user_name}}`) and expected value (as `{{expected}}`) are
+valid placeholders. These placeholders will be replaced with actual values at the time of execution.
+
+```json
+"scorers": [
+  {
+    "type": "llm-criteria",
+    "value": "Mention the user's name {{user_name}}"
+  }
+]
+```
+
+## Known limitations
+
+- We use `gpt-3.5-turbo` as the LLM behind this scorer
+- LLM scorers only return 0 or 1 currently

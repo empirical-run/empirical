@@ -80,7 +80,6 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
         minTimeout: 2000,
       },
     );
-    // TODO: handle for errors
     executionDone();
     const response: IChatCompletion = {
       id: crypto.randomUUID(),

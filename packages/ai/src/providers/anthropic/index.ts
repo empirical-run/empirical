@@ -81,7 +81,6 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       },
     );
 
-    // TODO: handle for error
     executionDone();
 
     return {

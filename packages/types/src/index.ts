@@ -28,7 +28,6 @@ interface RunConfigBase {
   type: string;
   name?: string;
   scorers?: Scorer[];
-  metadata?: object;
 }
 
 export interface IModelRunConfig extends RunConfigBase {

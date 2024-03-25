@@ -3,6 +3,7 @@ import { IAIProvider, ICreateChatCompletion } from "@empiricalrun/types";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions.mjs";
 import promiseRetry from "promise-retry";
 import { BatchTaskManager } from "../../utils";
+import { AIError, AIErrorEnum } from "../../error";
 
 const batchTaskManager = new BatchTaskManager(5);
 
@@ -39,7 +40,10 @@ const convertOpenAIToAnthropicAI = function (
 
 const createChatCompletion: ICreateChatCompletion = async (body) => {
   if (!process.env.ANTHROPIC_API_KEY) {
-    throw Error("missing ANTHROPIC_API_KEY in environment variables");
+    throw new AIError(
+      AIErrorEnum.MISSING_PARAMETERS,
+      "process.env.ANTHROPIC_API_KEY is not set",
+    );
   }
   const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
@@ -48,55 +52,63 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const { model, messages, max_tokens } = body;
   const { contents, systemPrompt } = convertOpenAIToAnthropicAI(messages);
   const { executionDone } = await batchTaskManager.waitForTurn();
-  const response = await promiseRetry<Anthropic.Messages.Message>(
-    (retry) => {
-      return anthropic.messages
-        .create({
-          max_tokens: max_tokens || 1024,
-          model,
-          messages: contents,
-          system: systemPrompt,
-        })
-        .catch((err) => {
-          if (
-            err instanceof Anthropic.RateLimitError ||
-            err instanceof Anthropic.APIConnectionError ||
-            err instanceof Anthropic.APIConnectionTimeoutError ||
-            err instanceof Anthropic.InternalServerError
-          ) {
-            retry(err);
-            throw err;
-          }
-          return err;
-        });
-    },
-    {
-      randomize: true,
-      minTimeout: 1000,
-    },
-  );
-
-  // TODO: handle for error
-  executionDone();
-
-  return {
-    id: response.id,
-    model,
-    object: "chat.completion",
-    created: Date.now() / 1000,
-    choices: [
-      {
-        finish_reason:
-          finishReaonReverseMap.get(response.stop_reason) || "stop",
-        index: 0,
-        message: {
-          content: response.content[0]?.text || null,
-          role: response.role,
-        },
-        logprobs: null,
+  try {
+    const response = await promiseRetry<Anthropic.Messages.Message>(
+      (retry) => {
+        return anthropic.messages
+          .create({
+            max_tokens: max_tokens || 1024,
+            model,
+            messages: contents,
+            system: systemPrompt,
+          })
+          .catch((err) => {
+            if (
+              err instanceof Anthropic.RateLimitError ||
+              err instanceof Anthropic.APIConnectionError ||
+              err instanceof Anthropic.APIConnectionTimeoutError ||
+              err instanceof Anthropic.InternalServerError
+            ) {
+              retry(err);
+              throw err;
+            }
+            return err;
+          });
       },
-    ],
-  };
+      {
+        randomize: true,
+        minTimeout: 1000,
+      },
+    );
+
+    // TODO: handle for error
+    executionDone();
+
+    return {
+      id: response.id,
+      model,
+      object: "chat.completion",
+      created: Date.now() / 1000,
+      choices: [
+        {
+          finish_reason:
+            finishReaonReverseMap.get(response.stop_reason) || "stop",
+          index: 0,
+          message: {
+            content: response.content[0]?.text || null,
+            role: response.role,
+          },
+          logprobs: null,
+        },
+      ],
+    };
+  } catch (e) {
+    executionDone();
+    throw new AIError(
+      AIErrorEnum.DEFAULT_FAILED_CHAT_COMPLETION,
+      `failed to get completion for model ${body.model} with message ${(e as Error).message} `,
+    );
+  }
 };
 
 export const AnthropicAIProvider: IAIProvider = {

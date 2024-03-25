@@ -8,7 +8,7 @@ export const config: RunsConfig = {
       provider: "openai",
       model: "gpt-3.5-turbo",
       prompt:
-        "You are expected to respond with a JSON object, which has above keys and corresponding entities. If an entity is missing, respond with null. \\n\\n{{user_message}}",
+        "You are expected to respond with a JSON object, which has above keys and corresponding entities. If an entity is missing, respond with null. \n\n{{user_message}}",
       scorers: [
         {
           type: "is-json",
@@ -21,7 +21,7 @@ export const config: RunsConfig = {
       provider: "openai",
       model: "gpt-4-turbo-preview",
       prompt:
-        "You are expected to respond with a JSON object, which has above keys and corresponding entities. If an entity is missing, respond with null. \\n\\n{{user_message}}",
+        "You are expected to respond with a JSON object, which has above keys and corresponding entities. If an entity is missing, respond with null. \n\n{{user_message}}",
       scorers: [
         {
           type: "is-json",

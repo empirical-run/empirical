@@ -11,7 +11,7 @@ import { getExecutor } from "./executors";
 export async function execute(
   run: IRunConfig,
   samples: DatasetSample[],
-  progressCallback: () => void,
+  progressCallback: (sample: RunOutputSample) => void,
 ): Promise<RunCompletion> {
   const runCreationDate = new Date();
   const sampleCompletions: RunOutputSample[] = [];
@@ -21,29 +21,28 @@ export async function execute(
   for (const datasetSample of samples) {
     const executor = getExecutor(run);
     if (executor) {
-      // TODO: handle promise rejection due to error
       // if llm error then add to the completion object but if something else throw error and stop the run
       completionsPromises.push(
-        executor(run, datasetSample)
-          .then(({ output, error }) => {
-            if (error) {
-              console.warn(
-                `[${error.message}]`,
-                "Failed to fetch output for sample id::",
-                datasetSample.id,
-              );
-              console.warn(error.message);
-            }
-            sampleCompletions.push({
-              inputs: datasetSample.inputs,
-              output,
-              dataset_sample_id: datasetSample.id || "",
-              created_at: new Date(),
-              error,
-              run_id: runId,
-            });
-          })
-          .finally(() => progressCallback()),
+        executor(run, datasetSample).then(({ output, error }) => {
+          const sample: RunOutputSample = {
+            inputs: datasetSample.inputs,
+            output,
+            dataset_sample_id: datasetSample.id || "",
+            created_at: new Date(),
+            error,
+            run_id: runId,
+          };
+
+          sampleCompletions.push(sample);
+
+          try {
+            progressCallback(sample);
+          } catch (e) {
+            console.error(e);
+          }
+
+          return sample;
+        }),
       );
     }
   }

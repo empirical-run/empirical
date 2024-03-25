@@ -64,12 +64,24 @@ export const checkLlmCriteria: Scorer = async ({ sample, output, value }) => {
     { role: "user", content: prompt },
   ];
 
-  const { result, reason } = await askLlmForEvalResult(messages);
-  return [
-    {
-      score: result === "Yes" ? 1 : 0,
-      name: name,
-      message: reason,
-    },
-  ];
+  try {
+    const { result, reason } = await askLlmForEvalResult(messages);
+    return [
+      {
+        score: result === "Yes" ? 1 : 0,
+        name: name,
+        message: reason,
+      },
+    ];
+  } catch (err) {
+    return [
+      {
+        score: 0,
+        name,
+        message:
+          (err as Error).message ||
+          "Failed to call LLM using @empiricalrun/ai package",
+      },
+    ];
+  }
 };

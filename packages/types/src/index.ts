@@ -88,7 +88,7 @@ export enum ModelTypes {
   CHAT = "chat",
 }
 
-export type RunOutputType = {
+export type RunOutput = {
   value: string | null | undefined;
   metadata?: object | undefined;
 };
@@ -98,7 +98,7 @@ export type RunOutputSample = {
   annotations?: string[];
   scores?: Score[];
   inputs: DatasetSampleInput[];
-  output: RunOutputType;
+  output: RunOutput;
   expected?: {
     value: string;
   };

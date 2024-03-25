@@ -1,11 +1,11 @@
-import { DatasetSample, IRunConfig, RunOutputType } from "@empiricalrun/types";
+import { DatasetSample, IRunConfig, RunOutput } from "@empiricalrun/types";
 
 export interface Executor {
   (
     runConfig: IRunConfig,
     sample: DatasetSample,
   ): Promise<{
-    output: RunOutputType;
+    output: RunOutput;
     error?: {
       code?: string;
       message: string;

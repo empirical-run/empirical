@@ -1,9 +1,4 @@
-import {
-  Scorer,
-  Score,
-  DatasetSample,
-  RunOutputType,
-} from "@empiricalrun/types";
+import { Scorer, Score, DatasetSample, RunOutput } from "@empiricalrun/types";
 import getScorer from "./provider";
 
 export default async function score({
@@ -14,7 +9,7 @@ export default async function score({
   options,
 }: {
   sample: DatasetSample;
-  output: RunOutputType;
+  output: RunOutput;
   scorers: Scorer[] | undefined;
   metadata?: object | undefined;
   options?: {

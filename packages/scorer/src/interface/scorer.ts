@@ -1,8 +1,8 @@
-import { Score, DatasetSample, RunOutputType } from "@empiricalrun/types";
+import { Score, DatasetSample, RunOutput } from "@empiricalrun/types";
 
 export type ScoreInputType = {
   sample: DatasetSample;
-  output: RunOutputType;
+  output: RunOutput;
   value?: string;
   metadata?: object | undefined;
   options?: {

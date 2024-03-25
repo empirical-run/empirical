@@ -32,11 +32,6 @@ type Diff = {
   enabled: boolean;
 };
 
-export const languageMap = new Map([
-  ["text-to-sql", "mysql"],
-  ["text-to-json", "json"],
-]);
-
 export default function SampleOutputCard({
   baseResult,
   baseSample,

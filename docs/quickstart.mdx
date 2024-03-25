@@ -1,86 +1,42 @@
 ---
-title: 'Write your first test'
-description: 'Set up empirical.run on your project'
+title: 'Quick start'
+description: 'Try Empirical in 3 steps'
 ---
 
-## Setup your development
+Empirical bundles together a CLI and a web app. The CLI handles running tests and
+the web app visualizes results.
 
-Learn how to update your docs locally and and deploy them to the public.
+Everything runs locally, with a JSON configuration file, `empiricalrc.json`.
 
-### Edit and preview
+Required: [Node.js](https://nodejs.org/en) 20+ needs to be installed on your system.
 
-<AccordionGroup>
-  <Accordion icon="github" title="Clone your docs locally">
-    During the onboarding process, we created a repository on your Github with
-    your docs content. You can find this repository on our
-    [dashboard](https://dashboard.mintlify.com). To clone the repository
-    locally, follow these
-    [instructions](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
-    in your terminal.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Preview changes">
-    Previewing helps you make sure your changes look as intended. We built a
-    command line interface to render these changes locally. 1. Install the
-    [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the
-    documentation changes locally with this command: ``` npm i -g mintlify ```
-    2. Run the following command at the root of your documentation (where
-    `mint.json` is): ``` mintlify dev ```
-  </Accordion>
-</AccordionGroup>
+## Start with a basic example
 
-### Deploy your changes
+This example converts incoming unstructured user messages into structured JSON objects
+using an LLM.
 
-<AccordionGroup>
+1. Use the CLI to create a sample configuration file called `empiricalrc.json`.
 
-<Accordion icon="message-bot" title="Install our Github app">
-  Our Github app automatically deploys your changes to your docs site, so you
-  don't need to manage deployments yourself. You can find the link to install on
-  your [dashboard](https://dashboard.mintlify.com). Once the bot has been
-  successfully installed, there should be a check mark next to the commit hash
-  of the repo.
-</Accordion>
-<Accordion icon="rocket" title="Push your changes">
-  [Commit and push your changes to
-  Git](https://docs.github.com/en/get-started/using-git/pushing-commits-to-a-remote-repository#about-git-push)
-  for your changes to update in your docs site. If you push and don't see that
-  the Github app successfully deployed your changes, you can also manually
-  update your docs through our [dashboard](https://dashboard.mintlify.com).
-</Accordion>
+    ```sh
+    npx @empiricalrun/cli init
+    ```
 
-</AccordionGroup>
+2. Run the test samples against the models with the `run` command.
 
-## Update your docs
+    ```sh
+    npx @empiricalrun/cli run
+    ```
 
-Add content directly in your files with MDX syntax and React components. You can use any of our components, or even build your own.
+3. Use the `ui` command to open the reporter web app in your web browser and see side-by-side results.
 
-<CardGroup>
+    ```sh
+    npx @empiricalrun/cli ui
+    ```
 
-<Card title="Style Your Docs" icon="paintbrush" href="/settings/global">
-  Add flair to your docs with personalized branding.
-</Card>
+## Make it yours
 
-<Card
-  title="Add API Endpoints"
-  icon="square-code"
-  href="/api-playground/configuration"
->
-  Implement your OpenAPI spec and enable API user interaction.
-</Card>
+Edit the `empiricalrc.json` file to make Empirical work for your use-case.
 
-<Card
-  title="Integrate Analytics"
-  icon="chart-mixed"
-  href="/analytics/supported-integrations"
->
-  Draw insights from user interactions with your documentation.
-</Card>
-
-<Card
-  title="Host on a Custom Domain"
-  icon="browser"
-  href="/settings/custom-domain/subdomain"
->
-  Keep your docs on your own website's subdomain.
-</Card>
-
-</CardGroup>
+- Configure which [models to use](./models/basics)
+- Configure [your test dataset](./dataset/basics)
+- Configure [scoring functions](./scoring/basics) to grade output quality

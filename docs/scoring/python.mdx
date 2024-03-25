@@ -17,10 +17,10 @@ the `scorers` section of the configuration. The `value` key should be the path t
 
 In the script, you need to define an `evaluate` method, with the following signature:
 
-- Arguments
+- **Arguments**
   - output: dict with key `value` to get the output value (string) and key `metadata` to get metadata (dict)
   - inputs: dict of key-value pairs from the dataset sample
-- Returns
+- **Returns**
   - List of results: each result is dict with score (0 or 1), message (string) and name (string)
 
 ```python

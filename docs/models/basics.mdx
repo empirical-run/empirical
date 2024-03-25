@@ -3,18 +3,47 @@ title: 'Basics'
 description: 'Choose model providers to test with'
 ---
 
+Empirical tests how different models and model configurations work for your
+application. Choose the models and configurations by defining the configuration
+for model providers.
 
-## Run configuration
+Empirical supports two types of model providers:
 
-```json
+- `model`: API calls to off-the-shelf LLMs, like OpenAI's GPT4
+- `py-script`: Custom models or applications defined by a Python module
 
+To configure a custom model with Python, see [the Python guide](./custom).
+
+The rest of this doc focuses on the `model` type.
+
+## Run configuration for LLMs
+
+Specify the `provider`, `model` and `prompt` keys to configure this. See below
+for supported providers.
+
+Use placeholders in the prompt (like `{{user_name}}`) to replace the placeholder with the
+actual value from the sample inputs. See [dataset](../dataset/basics) to learn more about
+sample inputs.
+
+You can configure as many model providers as you like. These models will be shown in a 
+side-by-side comparison view in the web reporter.
+
+```json empiricalrc.json
+"runs": [
+  {
+    "type": "model",
+    "provider": "openai",
+    "model": "gpt-3.5-turbo",
+    "prompt": "Hey I'm {{user_name}}"
+  },
+]
 ```
 
-## Supported off-the-shelf providers
+## Supported providers
 
 | Provider | Description |
 |----------|-------------|
-| `openai` | |
-| `anthropic` | |
-| `mistral` | |
-| `google` | |
+| `openai` | All chat models are supported. Requires `OPENAI_API_KEY` environment variable. |
+| `anthropic` | Claude 3 models are supported. Requires `ANTHROPIC_API_KEY` environment variable. |
+| `mistral` | All chat models are supported. Requires `MISTRAL_API_KEY` environment variable. |
+| `google` | Gemini Pro models are supported. Requires `GEMINI_API_KEY` environment variable. |

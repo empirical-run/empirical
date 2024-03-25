@@ -3,49 +3,43 @@
 [![npm](https://img.shields.io/npm/v/@empiricalrun/cli)](https://npmjs.com/package/@empiricalrun/cli)
 [![Discord](https://dcbadge.vercel.app/api/server/NeR6jj8dw9?style=flat&compact=true)](https://discord.gg/NeR6jj8dw9)
 
-Empirical is the fastest way to test different LLMs, prompts and other configurations, across all the scenarios that matter.
+Empirical is the fastest way to test different LLMs, prompts and other model configurations, across all the scenarios
+that matter for your application.
 
 With Empirical, you can:
 
 - Run your test datasets locally against off-the-shelf models
-- Test your own models and RAG applications (see [how to](todo))
+- Test your own custom models and RAG applications (see [how-to](https://docs.empirical.run/models/custom))
 - Reports to view, compare, analyze run results with the UI
-- Score your outputs with [scoring functions](todo)
+- Score your outputs with [scoring functions](https://docs.empirical.run/scoring/basics)
 - Run tests on CI/CD (coming soon!)
 
-[Watch a 2 mins demo video](https://www.loom.com/share/5992fdf0edc443e282f44936e6c32672) | [See docs](https://docs.empirical.run)
+[Watch demo video](https://www.loom.com/share/5992fdf0edc443e282f44936e6c32672) | [See all docs](https://docs.empirical.run)
 
 
 ## Usage
 
-1. Create a sample configuration file called `empiricalrc.json`. See [config file API reference](todo).
+1. Use the CLI to create a sample configuration file called `empiricalrc.json`.
 
     ```sh
     npx @empiricalrun/cli init
     ```
 
-1. Make a run
+2. Run the test samples against the models with the `run` command.
 
     ```sh
     npx @empiricalrun/cli run
     ```
 
-1. Open the UI 
+3. Use the `ui` command to open the reporter web app and see side-by-side results.
 
     ```sh
     npx @empiricalrun/cli ui
     ```
 
-## Examples
+## Contribution guide
 
-- Retrieval augmented generation (RAG): see this for custom run provider
-- Text-to-SQL
-- Code generation
-- Chatbot: see this for llm-criteria scorer
-
-## Contribute
-
-Follow these steps to set up the repository for development and contribution.
+Follow these steps to set up this monorepo for development.
 
 ### Setup
 

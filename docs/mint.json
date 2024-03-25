@@ -2,8 +2,8 @@
   "$schema": "https://mintlify.com/schema.json",
   "name": "empirical.run",
   "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
+    "dark": "/logo/brand_logo_white_fill_cropped.svg",
+    "light": "/logo/brand_logo_white_fill_cropped.svg"
   },
   "favicon": "/logo/favicon.svg",
   "colors": {
@@ -32,7 +32,7 @@
   "anchors": [
     {
       "name": "Request a feature",
-      "icon": "newspaper",
+      "icon": "code-pull-request",
       "url": "https://github.com/empirical-run/empirical/issues/new"
     }
   ],

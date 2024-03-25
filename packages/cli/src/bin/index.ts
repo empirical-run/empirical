@@ -47,7 +47,11 @@ program
 program
   .command("run")
   .description("initiate a run to evaluate model completions")
-  .action(async () => {
+  .option(
+    "-pyp, --python-path <char>",
+    "Provide the python executable patg for the python scripts",
+  )
+  .action(async (options) => {
     console.log(yellow("Initiating run..."));
     let data;
     try {
@@ -71,9 +75,14 @@ program
       runs.length * (dataset.samples || []).length,
     );
     const completion = await Promise.all(
-      runs.map((r) =>
-        execute(r, dataset.samples || [], () => progressBar.increment()),
-      ),
+      runs.map((r) => {
+        if (r.type === "py-script") {
+          r.pythonPath = options.pythonPath;
+        }
+        return execute(r, dataset.samples || [], () => {
+          progressBar.increment();
+        });
+      }),
     );
     progressBar.stop();
 

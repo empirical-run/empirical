@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "rag"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+llama-index = "^0.10.20"
+ragas = "^0.1.5"
+llama-index-llms-huggingface = "^0.1.4"
+transformers = {extras = ["torch"], version = "^4.39.0"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

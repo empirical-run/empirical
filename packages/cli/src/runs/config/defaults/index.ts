@@ -1,7 +1,6 @@
 import { RunsConfig } from "../../../types";
 
 export const config: RunsConfig = {
-  version: "0.0.1",
   runs: [
     {
       name: "gpt-3.5-turbo run",
@@ -10,7 +9,7 @@ export const config: RunsConfig = {
       model: "gpt-3.5-turbo",
       prompt:
         "You are expected to respond with a JSON object, which has above keys and corresponding entities. If an entity is missing, respond with null. \\n\\n{{user_message}}",
-      asserts: [
+      scorers: [
         {
           type: "is-json",
         },
@@ -23,7 +22,7 @@ export const config: RunsConfig = {
       model: "gpt-4-turbo-preview",
       prompt:
         "You are expected to respond with a JSON object, which has above keys and corresponding entities. If an entity is missing, respond with null. \\n\\n{{user_message}}",
-      asserts: [
+      scorers: [
         {
           type: "is-json",
         },

@@ -7,58 +7,68 @@ export const semanticName = "sql-semantic";
 //TODO: make this config driven
 const parserOpt = { database: "sqlite" };
 
-export const checkSqlSyntax: Scorer = async (_, output) => {
+export const checkSqlSyntax: Scorer = async ({ output }) => {
   let isSQLQuery = false;
   let inValidSQLMsg = "SQL is invalid";
   const parser = new Parser();
   if (!output) {
-    return {
-      score: 0,
-      name: syntaxName,
-      message: "output is empty",
-    };
+    return [
+      {
+        score: 0,
+        name: syntaxName,
+        message: "output is empty",
+      },
+    ];
   }
   try {
-    parser.parse(output, parserOpt);
+    parser.parse(output.value!, parserOpt);
     isSQLQuery = true;
   } catch (e) {
     isSQLQuery = false;
   }
-  return {
-    score: isSQLQuery ? 1 : 0,
-    name: syntaxName,
-    message: isSQLQuery ? "" : inValidSQLMsg,
-  };
+  return [
+    {
+      score: isSQLQuery ? 1 : 0,
+      name: syntaxName,
+      message: isSQLQuery ? "" : inValidSQLMsg,
+    },
+  ];
 };
 
-export const checkSqlSemantic: Scorer = async (sample, output) => {
+export const checkSqlSemantic: Scorer = async ({ sample, output }) => {
   const parser = new Parser();
   const expected = sample.expected!;
   if (!output) {
-    return {
-      score: 0,
-      name: semanticName,
-      message: "output is empty",
-    };
+    return [
+      {
+        score: 0,
+        name: semanticName,
+        message: "output is empty",
+      },
+    ];
   }
   try {
-    const parsedOutput = parser.parse(cleanQuery(output), parserOpt);
+    const parsedOutput = parser.parse(cleanQuery(output.value!), parserOpt);
     const parsedExpected = parser.parse(cleanQuery(expected), parserOpt);
     cleanColumns(parsedOutput.ast as Select);
     cleanColumns(parsedExpected.ast as Select);
     const isEquivalent =
       JSON.stringify(parsedOutput) === JSON.stringify(parsedExpected);
-    return {
-      score: isEquivalent ? 1 : 0,
-      name: semanticName,
-      message: "",
-    };
+    return [
+      {
+        score: isEquivalent ? 1 : 0,
+        name: semanticName,
+        message: "",
+      },
+    ];
   } catch (err) {
-    return {
-      score: 0,
-      name: semanticName,
-      message: `${err}`,
-    };
+    return [
+      {
+        score: 0,
+        name: semanticName,
+        message: `${err}`,
+      },
+    ];
   }
 };
 

@@ -11,7 +11,7 @@ export type ChatPrompt = {
   comment: string;
 };
 
-export type Assert = {
+export type Scorer = {
   type: string;
   threshold?: number;
   value?: string;
@@ -27,7 +27,7 @@ export type Provider = {
 interface RunConfigBase {
   type: string;
   name?: string;
-  asserts?: Assert[];
+  scorers?: Scorer[];
   metadata?: object;
 }
 
@@ -38,12 +38,21 @@ export interface IModelRunConfig extends RunConfigBase {
   prompt?: Prompt;
 }
 
-export interface IScriptRunConfig extends RunConfigBase {
-  type: "py-script" | "js-script";
+export interface IJSScriptRunConfig extends RunConfigBase {
+  type: "js-script";
   value: string;
 }
 
-export type IRunConfig = IModelRunConfig | IScriptRunConfig;
+export interface IPyScriptRunConfig extends RunConfigBase {
+  type: "py-script";
+  value: string;
+  pythonPath?: string;
+}
+
+export type IRunConfig =
+  | IModelRunConfig
+  | IPyScriptRunConfig
+  | IJSScriptRunConfig;
 
 export interface IDatasetConfig {
   id: string;
@@ -79,14 +88,23 @@ export enum ModelTypes {
   CHAT = "chat",
 }
 
+export type RunOutput = {
+  value: string | null | undefined;
+  metadata?: object | undefined;
+};
+
 export type RunOutputSample = {
   id?: string;
   annotations?: string[];
   scores?: Score[];
   inputs: DatasetSampleInput[];
-  output: string | null | undefined;
+  output: RunOutput;
   expected?: {
     value: string;
+  };
+  error?: {
+    code?: string;
+    message: string;
   };
   dataset_sample_id: string;
   created_at?: Date;

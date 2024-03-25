@@ -41,7 +41,7 @@ function initializeMonaco(monaco: Monaco) {
 
 export default function CodeViewer({
   value,
-  language = "text",
+  language = "json",
   readOnly = false,
   onChange,
   customCommands,

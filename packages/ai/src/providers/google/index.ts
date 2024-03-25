@@ -60,7 +60,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const { executionDone } = await batch.waitForTurn();
   const completion = await promiseRetry<GenerateContentResult>(
     (retry) => {
-      return modelInstance.generateContent({ contents }).catch((err) => {
+      return modelInstance.generateContent({ contents }).catch((err: Error) => {
         retry(err);
         throw err;
       });

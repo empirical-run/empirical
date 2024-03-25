@@ -19,6 +19,18 @@ With Empirical, you can:
 
 ## Usage
 
+Empirical bundles together a CLI and a web app. The CLI handles running tests and
+the web app visualizes results.
+
+Everything runs locally, with a JSON configuration file, `empiricalrc.json`.
+
+> Required: [Node.js](https://nodejs.org/en) 20+ needs to be installed on your system.
+
+### Start with a basic example
+
+This example converts incoming unstructured user messages into structured JSON objects
+using an LLM.
+
 1. Use the CLI to create a sample configuration file called `empiricalrc.json`.
 
     ```sh
@@ -36,6 +48,15 @@ With Empirical, you can:
     ```sh
     npx @empiricalrun/cli ui
     ```
+
+### Make it yours
+
+Edit the `empiricalrc.json` file to make Empirical work for your use-case.
+
+- Configure which [models to use](https://docs.empirical.run/models/basics)
+- Configure [your test dataset](https://docs.empirical.run/dataset/basics)
+- Configure [scoring functions](https://docs.empirical.run/scoring/basics) to grade output quality
+
 
 ## Contribution guide
 

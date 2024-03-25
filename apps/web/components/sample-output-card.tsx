@@ -25,6 +25,12 @@ import {
   DotsVerticalIcon,
 } from "@radix-ui/react-icons";
 import EmptySampleCompletion from "./empty-sample-completion";
+import {
+  TooltipProvider,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 type Diff = {
   type: string;
@@ -134,24 +140,33 @@ export default function SampleOutputCard({
                   return null;
                 }
                 return (
-                  <Badge
-                    variant={
-                      // @ts-ignore
-                      s.score ? "outline" : "destructive"
-                    }
-                    key={`${baseResult.id}-${baseSample.id}-score-${s.name}`}
-                    className="flex flex-row space-x-1"
-                  >
-                    <span>{s.name} </span>
-                    {
-                      // @ts-ignore
-                      s.score ? (
-                        <CheckCircledIcon height={12} width={12} />
-                      ) : (
-                        <CrossCircledIcon height={12} width={12} />
-                      )
-                    }
-                  </Badge>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Badge
+                          variant={
+                            // @ts-ignore
+                            s.score ? "outline" : "destructive"
+                          }
+                          key={`${baseResult.id}-${baseSample.id}-score-${s.name}`}
+                          className="flex flex-row space-x-1"
+                        >
+                          <span>{s.name} </span>
+                          {
+                            // @ts-ignore
+                            s.score ? (
+                              <CheckCircledIcon height={12} width={12} />
+                            ) : (
+                              <CrossCircledIcon height={12} width={12} />
+                            )
+                          }
+                        </Badge>
+                      </TooltipTrigger>
+                      {s.message && (
+                        <TooltipContent>{s.message}</TooltipContent>
+                      )}
+                    </Tooltip>
+                  </TooltipProvider>
                 );
               })}
               <DropdownMenu>

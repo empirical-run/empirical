@@ -38,6 +38,9 @@ const convertOpenAIToAnthropicAI = function (
 };
 
 const createChatCompletion: ICreateChatCompletion = async (body) => {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    throw Error("missing ANTHROPIC_API_KEY in environment variables");
+  }
   const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
     maxRetries: 5,

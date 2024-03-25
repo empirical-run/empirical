@@ -32,7 +32,7 @@ By now you should see a dataset inside the folder `.empiricalrun` with the name 
 
 1. Replace `SET_PYTHON_PATH` placeholder in .empiricalrun.json with the virtual env path.
 
-1. Run RAG using Empirical:
+1. Evaluate RAG pipeline using Empirical:
     ```
     npx @empiricalrun/cli run
     ```

@@ -93,8 +93,6 @@ export default function SampleCard({
             </TabsList>
 
             {sample?.inputs.map((input) => {
-              console.log(input.name);
-              console.log(input.value);
               return (
                 <TabsContent
                   key={input.name}

@@ -2,7 +2,7 @@ import os
 from urllib.request import urlretrieve
 
 
-def download_and_extract():
+def download_doc():
     file_name = "2403.10153.pdf"
     dataset_url = f"https://arxiv.org/pdf/{file_name}"
     destination_dir = "arxiv-papers"
@@ -12,4 +12,4 @@ def download_and_extract():
 
 
 if __name__ == "__main__":
-    download_and_extract()
+    download_doc()

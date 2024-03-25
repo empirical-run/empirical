@@ -1,44 +1,42 @@
-# RAG
+# RAG Pipeline Usage Example
+This repository demonstrates the usage of `py-script` for running a RAG pipeline. It utilizes [RAGAS](https://docs.ragas.io/en/stable/index.html), [LangChain](https://www.langchain.com/), and [LlamaIndex](https://www.llamaindex.ai/) for question generation and pipeline setup.
 
-This example shows `py-script` runner and evaluator. This example requires Python.
+The setup is inspired by [RAGAS doc on comparing different LLMs](https://docs.ragas.io/en/stable/concepts/metrics/answer_relevance.html).
 
 ## Setup
-In order to initialise the setup, run the following command.
+Ensure Poetry is installed on your machine. If not, install it using the instructions [here](https://python-poetry.org/docs/#installing-with-pipx)
 
+Install project dependencies:
 ```
 poetry install
 ```
 
-For RAG, we first need to configure a document loader and generate question based on the document.
-For document, we chose an arxiv paper which can be downloaded by running the following command
-
+To evaluate RAG, configure a document loader and generate questions from an arXiv paper:
 ```
-poetry run python prepary.py
+poetry run python prepare.py
 ```
 
-Once the document is downloaded in path `./arxiv-papers` we need to generate a dataset which contains questions based on the document downloaded. 
-Run the following command to generate dataset.
+Generate a dataset of relevant questions, context, and ground truth:
 
 ```
 poetry run python dataset_generator.py
 ```
-
-This command will generate a dataset inside the folder `.empiricalrun` with the name `dataset.jsonl`. 
+By now you should see a dataset inside the folder `.empiricalrun` with the name `dataset.jsonl`.
 
 ## Running the example
 
-1. Run the command to get the path for python virtual env
+1. Get the path for Python virtual env:
     ```
-    poetry env info
+    poetry env info -e
     ```
 
-1. Copy the virtual env path for Python and replace the placeholder `SET_PYTHON_PATH` in the `.empiricalrun.json`
+1. Replace `SET_PYTHON_PATH` placeholder in .empiricalrun.json with the virtual env path.
 
-1. Run using Empirical
+1. Run RAG using Empirical:
     ```
     npx @empiricalrun/cli run
     ```
-1. Visualise the output
+1. Visualize the output:
     ```
     npx @empiricalrun/cli ui
     ```

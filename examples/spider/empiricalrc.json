@@ -13,9 +13,6 @@
         },
         {
           "type": "sql-semantic"
-        },
-        {
-          "type": "is-json"
         }
       ]
     },
@@ -31,9 +28,6 @@
         },
         {
           "type": "sql-semantic"
-        },
-        {
-          "type": "is-json"
         }
       ]
     }

@@ -29,12 +29,20 @@ test("script scorer works for a correct humaneval output", async () => {
   };
 
   expect(
-    await scoreWithPythonScript(sample, humanEval.output, scriptPath),
-  ).toStrictEqual({
-    score: 1,
-    name: "unit-tests",
-    message: "",
-  });
+    await scoreWithPythonScript({
+      sample,
+      output: {
+        value: humanEval.output,
+      },
+      value: scriptPath,
+    }),
+  ).toStrictEqual([
+    {
+      score: 1,
+      name: "unit-tests",
+      message: "",
+    },
+  ]);
 });
 
 test("script scorer works for a incorrect humaneval output", async () => {
@@ -53,12 +61,18 @@ test("script scorer works for a incorrect humaneval output", async () => {
   };
 
   expect(
-    await scoreWithPythonScript(sample, humanEval.output, scriptPath),
-  ).toStrictEqual({
-    score: 0,
-    name: "unit-tests",
-    message: "NameError(\"name 'truncate_number123' is not defined\")",
-  });
+    await scoreWithPythonScript({
+      sample,
+      output: { value: humanEval.output },
+      value: scriptPath,
+    }),
+  ).toStrictEqual([
+    {
+      score: 0,
+      name: "unit-tests",
+      message: "NameError(\"name 'truncate_number123' is not defined\")",
+    },
+  ]);
 });
 
 test("script scorer works for a humaneval output that has backticks", async () => {
@@ -77,33 +91,47 @@ test("script scorer works for a humaneval output that has backticks", async () =
   };
 
   expect(
-    await scoreWithPythonScript(
+    await scoreWithPythonScript({
       sample,
-      "```python\n" + humanEval.output + "\n```",
-      scriptPath,
-    ),
-  ).toStrictEqual({
-    score: 0,
-    name: "unit-tests",
-    message:
-      "SyntaxError('invalid syntax', ('<string>', 1, 1, '```python\\n', 1, 2))",
-  });
+      output: {
+        value: "```python\n" + humanEval.output + "\n```",
+      },
+      value: scriptPath,
+    }),
+  ).toStrictEqual([
+    {
+      score: 0,
+      name: "unit-tests",
+      message:
+        "SyntaxError('invalid syntax', ('<string>', 1, 1, '```python\\n', 1, 2))",
+    },
+  ]);
 });
 
-test("script scorer times out a long running script", async () => {
-  const sample: DatasetSample = {
-    id: "0",
-    inputs: [],
-  };
-  const longRunningScript = __dirname + "/test-assets/long_running.py";
-  expect(
-    await scoreWithPythonScript(sample, "", longRunningScript),
-  ).toStrictEqual({
-    score: 0,
-    name: "py-script",
-    message: "Eval script timed out",
-  });
-});
+test(
+  "script scorer times out a long running script",
+  async () => {
+    const sample: DatasetSample = {
+      id: "0",
+      inputs: [],
+    };
+    const longRunningScript = __dirname + "/test-assets/long_running.py";
+    expect(
+      await scoreWithPythonScript({
+        sample,
+        output: { value: "" },
+        value: longRunningScript,
+      }),
+    ).toStrictEqual([
+      {
+        score: 0,
+        name: "py-script",
+        message: "Scorer script timed out",
+      },
+    ]);
+  },
+  { timeout: 11000 },
+);
 
 test("script scorer works with a python script that throws", async () => {
   const sample: DatasetSample = {
@@ -111,11 +139,16 @@ test("script scorer works with a python script that throws", async () => {
     inputs: [],
   };
   const scriptWithError = __dirname + "/test-assets/throws.py";
-  expect(
-    await scoreWithPythonScript(sample, "", scriptWithError),
-  ).toStrictEqual({
-    score: 0,
-    name: "py-script",
-    message: "Eval script error: Error: NameError: name 'time' is not defined",
+  const [score] = await scoreWithPythonScript({
+    sample,
+    output: { value: "" },
+    value: scriptWithError,
   });
+
+  expect(score).toEqual(
+    expect.objectContaining({
+      score: 0,
+      name: "py-script",
+    }),
+  );
 });

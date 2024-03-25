@@ -9,10 +9,10 @@ const wrapperScriptFile = "executor_wrapper.py";
 const executionOutputIdentifier = "execution_output:";
 
 export const scriptExecutor: Executor = async (runConfig, sample) => {
-  let output = "";
+  let output = { value: "" };
   if (runConfig.type !== "py-script") {
     return {
-      output: "",
+      output,
       error: {
         code: "EX_102",
         message: "Incorrect selection of run execution.",
@@ -76,7 +76,9 @@ export const scriptExecutor: Executor = async (runConfig, sample) => {
   const result = JSON.parse(runOutput[0]!);
 
   return {
-    output: result["output"],
-    metadata: result["metadata"],
+    output: {
+      value: result["output"],
+      metadata: result["metadata"],
+    },
   };
 };

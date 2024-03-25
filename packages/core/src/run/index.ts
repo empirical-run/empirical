@@ -25,7 +25,7 @@ export async function execute(
       // if llm error then add to the completion object but if something else throw error and stop the run
       completionsPromises.push(
         executor(run, datasetSample)
-          .then(({ output, error, metadata }) => {
+          .then(({ output, error }) => {
             if (error) {
               console.warn(
                 `[${error.message}]`,
@@ -36,10 +36,7 @@ export async function execute(
             }
             sampleCompletions.push({
               inputs: datasetSample.inputs,
-              output: {
-                value: output,
-                metadata,
-              },
+              output,
               dataset_sample_id: datasetSample.id || "",
               created_at: new Date(),
               error,

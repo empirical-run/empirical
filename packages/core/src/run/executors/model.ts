@@ -9,7 +9,9 @@ export const modelExecutor: Executor = async function (
 ) {
   if (runConfig.type !== "model") {
     return {
-      output: "",
+      output: {
+        value: "",
+      },
     };
   }
   const { prompt, model, provider } = runConfig;
@@ -28,14 +30,16 @@ export const modelExecutor: Executor = async function (
     },
   ];
   const ai = new EmpiricalAI(provider);
-  let output = "";
+  let outputValue = "";
   try {
     const completion = await ai.chat.completions.create({ model, messages });
-    output = completion.choices[0]?.message.content || "";
+    outputValue = completion.choices[0]?.message.content || "";
   } catch (e: unknown) {
     console.warn("Failed to get completion from model::", e);
     return {
-      output,
+      output: {
+        value: outputValue,
+      },
       error: {
         code: "RUN_EX_DEF",
         message: (e as Error).message || (e as Error).stack || "",
@@ -43,6 +47,8 @@ export const modelExecutor: Executor = async function (
     };
   }
   return {
-    output,
+    output: {
+      value: outputValue,
+    },
   };
 };

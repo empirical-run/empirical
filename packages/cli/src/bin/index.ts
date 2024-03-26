@@ -11,6 +11,7 @@ import { Dataset, RunCompletion } from "@empiricalrun/types";
 import cliProgress from "cli-progress";
 import express from "express";
 import path from "path";
+import opener from "opener";
 
 const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
@@ -98,7 +99,7 @@ program
 
 program
   .command("ui")
-  .description("visualise the results of a run")
+  .description("visualise the results of a run in your web browser")
   .action(async () => {
     console.log(yellow("Initiating webapp..."));
     const app = express();
@@ -106,7 +107,10 @@ program
     app.use(express.static(path.join(__dirname, "../webapp")));
     app.get("/api/results", (req, res) => res.sendFile(outputFilePath));
     const fullUrl = `http://localhost:${port}`;
-    app.listen(port, () => console.log(`Empirical app running on ${fullUrl}`));
+    app.listen(port, () => {
+      console.log(`Empirical app running on ${fullUrl}`);
+      opener(fullUrl);
+    });
   });
 
 program.parse();

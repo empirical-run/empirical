@@ -3,7 +3,9 @@ name: Build and Test
 on:
   pull_request:
     types: [opened, synchronize]
- 
+    paths-ignore:
+       - 'docs/**'
+
 jobs:
   build:
     name: Build and Test

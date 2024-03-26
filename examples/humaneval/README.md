@@ -1,33 +1,6 @@
 # HumanEval
 
-This example shows a `py-script` evaluator with OpenAI's [HumanEval](https://github.com/openai/human-eval) benchmark. This example requires Python.
-
-## Python evaluators
-
-You can configure a custom Python evaluator by specifying a `py-script` evaluator in the `scorers` section of the configuration. The `value` key should be the path to the Python script.
-
-```json
-"scorers": [
-  {
-    "type": "py-script",
-    "value": "eval.py"
-  }
-]
-```
-
-In the script, you need to define an `evaluate` method, with the following signature
-
-- Arguments: output (string) and inputs (dict of key-value pairs from the dataset sample)
-- Returns: dict with score (0 or 1), message (string) and name (string)
-
-```python
-
-def evaluate(output, inputs):
-    # ...
-    return {"score": 1, "message": "Reason for eval result", "name": "name-for-evaluator"}
-
-```
-
+This example shows a `py-script` scorer with OpenAI's [HumanEval](https://github.com/openai/human-eval) benchmark. This example requires Python.
 
 ## Run the example
 

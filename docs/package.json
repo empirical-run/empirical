@@ -1,0 +1,14 @@
+{
+  "name": "empirical-docs",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "mintlify dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mintlify": "^4.0.135"
+  }
+}

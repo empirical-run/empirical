@@ -53,7 +53,7 @@
       ]
     },
     {
-      "group": "Dataset",
+      "group": "Test dataset",
       "pages": [
         "dataset/basics"
       ]

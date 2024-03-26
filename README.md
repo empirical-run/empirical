@@ -10,7 +10,7 @@ With Empirical, you can:
 
 - Run your test datasets locally against off-the-shelf models
 - Test your own custom models and RAG applications (see [how-to](https://docs.empirical.run/models/custom))
-- Reports to view, compare, analyze run results with the UI
+- Reports to view, compare, analyze outputs on a web UI
 - Score your outputs with [scoring functions](https://docs.empirical.run/scoring/basics)
 - Run tests on CI/CD (coming soon!)
 

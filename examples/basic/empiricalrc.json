@@ -29,7 +29,6 @@
   "dataset": {
     "samples": [
       {
-        "id": "1",
         "inputs": [
           {
             "name": "user_message",
@@ -38,7 +37,6 @@
         ]
       },
       {
-        "id": "2",
         "inputs": [
           {
             "name": "user_message",

@@ -3,8 +3,8 @@ name: Build and Test
 on:
   pull_request:
     types: [opened, synchronize]
-    paths:
-       - '!docs/**'
+    paths-ignore:
+       - 'docs/**'
 
 jobs:
   build:

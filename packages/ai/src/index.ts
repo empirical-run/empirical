@@ -18,7 +18,7 @@ class ChatCompletions implements IChatCompletions {
     if (!provider) {
       throw new AIError(
         AIErrorEnum.INCORRECT_PARAMETERS,
-        ` ${this.provider} ai provider is not available`,
+        ` ${this.provider} ai provider is not supported`,
       );
     }
     try {
@@ -28,7 +28,7 @@ class ChatCompletions implements IChatCompletions {
       if (err instanceof AIError) {
         throw err;
       } else {
-        const message = `Failed to get completion for ${this.provider} provider ${body.model} model`;
+        const message = `Failed chat completion for ${this.provider} provider ${body.model} model`;
         throw new AIError(AIErrorEnum.UNKNOWN, message);
       }
     }

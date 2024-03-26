@@ -38,7 +38,7 @@ export async function execute(
           try {
             progressCallback(sample);
           } catch (e) {
-            console.error(e);
+            console.warn(e);
           }
 
           return sample;

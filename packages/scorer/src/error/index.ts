@@ -1,8 +1,7 @@
 import { IEmpiricalAIError } from "@empiricalrun/types";
 
 export enum ScorerErrorEnum {
-  NONE = "",
-  // parameter based errors
+  // parameter errors
   INCORRECT_PARAMETERS = "SC101",
   MISSING_PARAMETERS = "SC102",
 }

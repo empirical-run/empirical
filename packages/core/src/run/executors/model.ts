@@ -40,7 +40,7 @@ export const modelExecutor: Executor = async function (
     value = completion.choices?.[0]?.message.content || "";
   } catch (e: any) {
     const error = {
-      code: "RUN_EX_DEF",
+      code: "RE101",
       message: e.message,
     };
     if (e instanceof AIError) {

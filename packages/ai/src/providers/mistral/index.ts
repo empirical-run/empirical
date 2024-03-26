@@ -36,7 +36,6 @@ const createChatCompletion: ICreateChatCompletion = async function (body) {
     // typecasting as there is a minor difference in role being openai enum vs string
     const mistralMessages = messages as MistralChatMessage[];
     // no retry needed as mistral internally handles it well
-    // TODO: handle API failures from models
     const completions = await mistralai.chat({
       model,
       messages: mistralMessages,
@@ -48,8 +47,8 @@ const createChatCompletion: ICreateChatCompletion = async function (body) {
   } catch (err) {
     executionDone();
     throw new AIError(
-      AIErrorEnum.DEFAULT_FAILED_CHAT_COMPLETION,
-      `failed to get completion for model ${body.model} with message ${(err as Error).message}`,
+      AIErrorEnum.FAILED_CHAT_COMPLETION,
+      `failed chat completion for model ${body.model} with message ${(err as Error).message}`,
     );
   }
 };

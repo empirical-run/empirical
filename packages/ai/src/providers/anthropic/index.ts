@@ -104,8 +104,8 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   } catch (e) {
     executionDone();
     throw new AIError(
-      AIErrorEnum.DEFAULT_FAILED_CHAT_COMPLETION,
-      `failed to get completion for model ${body.model} with message ${(e as Error).message} `,
+      AIErrorEnum.FAILED_CHAT_COMPLETION,
+      `failed chat completion for model ${body.model} with message ${(e as Error).message} `,
     );
   }
 };

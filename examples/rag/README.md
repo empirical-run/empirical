@@ -1,7 +1,7 @@
 # RAG Pipeline Usage Example
 This repository demonstrates the usage of `py-script` for running a RAG pipeline. It utilizes [RAGAS](https://docs.ragas.io/en/stable/index.html), [LangChain](https://www.langchain.com/), and [LlamaIndex](https://www.llamaindex.ai/) for question generation and pipeline setup.
 
-The setup is inspired by [RAGAS doc on comparing different LLMs](https://docs.ragas.io/en/stable/concepts/metrics/answer_relevance.html).
+The setup is inspired by [RAGAS doc on comparing different LLMs](https://docs.ragas.io/en/stable/howtos/applications/compare_llms.html).
 
 ## Setup
 Ensure Poetry is installed on your machine. If not, install it using the instructions [here](https://python-poetry.org/docs/#installing-with-pipx)

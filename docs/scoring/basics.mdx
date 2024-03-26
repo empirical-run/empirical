@@ -1,0 +1,42 @@
+---
+title: 'Basics'
+description: 'Automated evaluation of output quality with scorers'
+---
+
+Scorers are functions that rate model outputs between 0 and 1. These scores
+are visible on the terminal after a run completes, or in the web reporter.
+
+Choose the right scoring functions for your use-case by defining the
+`scorers` field in your configuration files. You can define as many scorers
+as you like.
+
+```json empiricalrc.json
+{
+    "type": "model",
+    "name": "gpt-3.5-turbo run",
+    "provider": "openai",
+    "model": "gpt-3.5-turbo",
+    "prompt": "Always respond with a JSON object.",
+    "scorers": [
+        {
+            "type": "is-json"
+        }
+    ]
+}
+```
+
+You can choose from a built-in scoring function, or define a custom scorer.
+
+## Built-in scorers
+
+### Check for structural integrity
+
+- `is-json`: Returns 1 if output is a valid JSON object, 0 otherwise
+- `sql-syntax`: Returns 1 if output is a valid JSON object, 0 otherwise
+
+## Custom scorers
+
+There are two ways to build a custom scorer.
+
+- `llm-criteria`: Let an LLM score your output, based on your criteria ([configure this](./llm))
+- `py-script`: Write a custom scoring function in Python ([configure this](./python))

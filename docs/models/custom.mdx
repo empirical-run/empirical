@@ -1,0 +1,51 @@
+---
+title: 'Custom model or app'
+description: 'Specify your application or model with a Python entrypoint'
+---
+
+Using a Python function as entrypoint, you can define a **custom model** to test
+with Empirical. This method can be also used to **test an application**, which 
+does pre or post-processing around the LLM call or chains multiple LLM calls together.
+
+## Run configuration
+
+In your config file, set `type` as `py-script` and specify the Python file
+path in the `value` field.
+
+```json
+"runs": [
+  {
+    "type": "py-script",
+    "value": "rag.py"
+  }
+]
+```
+
+The Python file is expected to have a method called `execute` with the following
+signature:
+
+- **Arguments**
+  - inputs: dict of key-value pairs with [sample inputs](../dataset/basics)
+- **Returns**: a dict with
+  - output (string): The response from the model/application
+  - metadata (dict): Custom key-value pairs that are passed on to the scorer and
+    web reporter
+
+
+```python rag.py
+def execute(inputs):
+    # ...
+    return {
+        "output": output,
+        "metadata": {
+            "key": value
+        }
+    }
+```
+
+In a RAG application, `metadata` can be used to capture the retrieved context.
+
+## Example
+
+The [RAG example](https://github.com/empirical-run/empirical/tree/main/examples/rag)
+uses this model provider to test a RAG application.

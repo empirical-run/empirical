@@ -1,0 +1,42 @@
+---
+title: 'Quick start'
+description: 'Try Empirical in 3 steps'
+---
+
+Empirical bundles together a CLI and a web app. The CLI handles running tests and
+the web app visualizes results.
+
+Everything runs locally, with a JSON configuration file, `empiricalrc.json`.
+
+Required: [Node.js](https://nodejs.org/en) 20+ needs to be installed on your system.
+
+## Start with a basic example
+
+This example converts incoming unstructured user messages into structured JSON objects
+using an LLM.
+
+1. Use the CLI to create a sample configuration file called `empiricalrc.json`.
+
+    ```sh
+    npx @empiricalrun/cli init
+    ```
+
+2. Run the test samples against the models with the `run` command.
+
+    ```sh
+    npx @empiricalrun/cli run
+    ```
+
+3. Use the `ui` command to open the reporter web app in your web browser and see side-by-side results.
+
+    ```sh
+    npx @empiricalrun/cli ui
+    ```
+
+## Make it yours
+
+Edit the `empiricalrc.json` file to make Empirical work for your use-case.
+
+- Configure which [models to use](./models/basics)
+- Configure [your test dataset](./dataset/basics)
+- Configure [scoring functions](./scoring/basics) to grade output quality

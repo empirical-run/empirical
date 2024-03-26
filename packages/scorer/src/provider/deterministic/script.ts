@@ -9,6 +9,7 @@ export const name = "py-script";
 const scriptTimeout = 10000;
 const wrapperScriptDirectory = path.join(__dirname, "..", "..", "python");
 const wrapperScriptFile = "wrapper.py";
+const executionOutputIdentifier = "scorer_output:";
 
 export const scoreWithPythonScript: Scorer = async ({
   sample,
@@ -21,7 +22,7 @@ export const scoreWithPythonScript: Scorer = async ({
       {
         score: 0,
         name,
-        message: "Script path is empty",
+        message: "Python script path is not provided for running the scorer",
       },
     ];
   }
@@ -45,7 +46,6 @@ export const scoreWithPythonScript: Scorer = async ({
     });
 
     const pythonKiller = setTimeout(function () {
-      console.log("timing out!!");
       runOutput.push(
         JSON.stringify([
           { score: 0, name, message: "Scorer script timed out" },
@@ -55,10 +55,15 @@ export const scoreWithPythonScript: Scorer = async ({
     }, scriptTimeout);
 
     shell.on("message", function (message) {
-      runOutput.push(message);
+      if (message.indexOf(executionOutputIdentifier) === 0) {
+        runOutput.push(message.replace(executionOutputIdentifier, ""));
+      } else {
+        console.log(message);
+      }
     });
 
     shell.on("pythonError", function (message) {
+      console.error(message);
       runOutput.push(
         JSON.stringify([
           {

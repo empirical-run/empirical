@@ -15,6 +15,7 @@ import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { BatchTaskManager } from "../../utils";
 import crypto from "crypto";
 import promiseRetry from "promise-retry";
+import { AIError, AIErrorEnum } from "../../error";
 
 const batch = new BatchTaskManager(5);
 
@@ -53,43 +54,58 @@ const massageOpenAIMessagesToGoogleAI = function (
 };
 
 const createChatCompletion: ICreateChatCompletion = async (body) => {
+  if (!process.env.GEMINI_API_KEY) {
+    throw new AIError(
+      AIErrorEnum.MISSING_PARAMETERS,
+      "process.env.GEMINI_API_KEY is not set",
+    );
+  }
   const { model, messages } = body;
   const googleAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
   const modelInstance = googleAI.getGenerativeModel({ model });
   const contents = massageOpenAIMessagesToGoogleAI(messages);
   const { executionDone } = await batch.waitForTurn();
-  const completion = await promiseRetry<GenerateContentResult>(
-    (retry) => {
-      return modelInstance.generateContent({ contents }).catch((err: Error) => {
-        retry(err);
-        throw err;
-      });
-    },
-    {
-      randomize: true,
-      minTimeout: 2000,
-    },
-  );
-  // TODO: handle for errors
-  executionDone();
-  const response: IChatCompletion = {
-    id: crypto.randomUUID(),
-    choices: [
-      {
-        finish_reason: "stop",
-        index: 0,
-        message: {
-          content: completion.response.text(),
-          role: "assistant",
-        },
-        logprobs: null,
+  try {
+    const completion = await promiseRetry<GenerateContentResult>(
+      (retry) => {
+        return modelInstance
+          .generateContent({ contents })
+          .catch((err: Error) => {
+            retry(err);
+            throw err;
+          });
       },
-    ],
-    object: "chat.completion",
-    created: Date.now(),
-    model,
-  };
-  return response;
+      {
+        randomize: true,
+        minTimeout: 2000,
+      },
+    );
+    executionDone();
+    const response: IChatCompletion = {
+      id: crypto.randomUUID(),
+      choices: [
+        {
+          finish_reason: "stop",
+          index: 0,
+          message: {
+            content: completion.response.text(),
+            role: "assistant",
+          },
+          logprobs: null,
+        },
+      ],
+      object: "chat.completion",
+      created: Date.now(),
+      model,
+    };
+    return response;
+  } catch (e) {
+    executionDone();
+    throw new AIError(
+      AIErrorEnum.FAILED_CHAT_COMPLETION,
+      `failed chat completion for model ${body.model} with message ${(e as Error).message}`,
+    );
+  }
 };
 
 export const GoogleAIProvider: IAIProvider = {

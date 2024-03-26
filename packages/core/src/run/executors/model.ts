@@ -1,7 +1,7 @@
 import { IRunConfig } from "@empiricalrun/types";
 import { Executor } from "./interface";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
-import { EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
+import { AIError, EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
 
 export const modelExecutor: Executor = async function (
   runConfig: IRunConfig,
@@ -11,6 +11,10 @@ export const modelExecutor: Executor = async function (
     return {
       output: {
         value: "",
+      },
+      error: {
+        code: "",
+        message: `wrong executor selection. selected ${runConfig.type} and got model`,
       },
     };
   }
@@ -30,25 +34,29 @@ export const modelExecutor: Executor = async function (
     },
   ];
   const ai = new EmpiricalAI(provider);
-  let outputValue = "";
+  let value = "";
   try {
     const completion = await ai.chat.completions.create({ model, messages });
-    outputValue = completion.choices[0]?.message.content || "";
-  } catch (e: unknown) {
-    console.warn("Failed to get completion from model::", e);
+    value = completion.choices?.[0]?.message.content || "";
+  } catch (e: any) {
+    const error = {
+      code: "RE101",
+      message: e.message,
+    };
+    if (e instanceof AIError) {
+      error.code = e.code;
+      error.message = e.message;
+    }
     return {
       output: {
-        value: outputValue,
+        value,
       },
-      error: {
-        code: "RUN_EX_DEF",
-        message: (e as Error).message || (e as Error).stack || "",
-      },
+      error,
     };
   }
   return {
     output: {
-      value: outputValue,
+      value,
     },
   };
 };

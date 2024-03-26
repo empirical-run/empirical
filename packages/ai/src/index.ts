@@ -7,17 +7,31 @@ import {
 } from "@empiricalrun/types";
 import { chatProvider } from "./providers";
 import { OpenAIProvider } from "./providers/openai";
+import { AIError, AIErrorEnum } from "./error";
 export * from "./utils";
+export * from "./error";
 
 class ChatCompletions implements IChatCompletions {
   constructor(private provider: string) {}
   create: ICreateChatCompletion = async (body) => {
     const provider = chatProvider.get(this.provider);
     if (!provider) {
-      throw Error(`ai provider not available:: ${this.provider}`);
+      throw new AIError(
+        AIErrorEnum.INCORRECT_PARAMETERS,
+        ` ${this.provider} ai provider is not supported`,
+      );
     }
-    const completion = await provider(body);
-    return completion;
+    try {
+      const completion = await provider(body);
+      return completion;
+    } catch (err) {
+      if (err instanceof AIError) {
+        throw err;
+      } else {
+        const message = `Failed chat completion for ${this.provider} provider ${body.model} model`;
+        throw new AIError(AIErrorEnum.UNKNOWN, message);
+      }
+    }
   };
 }
 

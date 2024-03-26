@@ -1,5 +1,6 @@
 import { Scorer, Score, DatasetSample, RunOutput } from "@empiricalrun/types";
 import getScorer from "./provider";
+import { ScorerError, ScorerErrorEnum } from "./error";
 
 export default async function score({
   sample,
@@ -20,25 +21,32 @@ export default async function score({
     return [];
   }
 
-  const scores = await Promise.all(
-    scorers.map((scorer) => {
-      const scoringFn = getScorer(scorer);
-      if (scoringFn) {
-        // TODO: should raise if a scorer function is not found
-        return scoringFn({
-          sample,
-          output,
-          value: scorer.value,
-          metadata,
-          options,
-        });
-      } else {
-        return undefined;
-      }
-    }),
-  );
-
-  return scores
-    .flatMap((s) => s)
-    .filter((item) => item !== undefined) as Score[];
+  try {
+    const scores = await Promise.all(
+      scorers
+        .filter((s) => !!s)
+        .map((scorer) => {
+          const scoringFn = getScorer(scorer);
+          if (!scoringFn) {
+            throw new ScorerError(
+              ScorerErrorEnum.INCORRECT_PARAMETERS,
+              `Incorrect scorer name "${scorer}" provided.`,
+            );
+          }
+          return scoringFn({
+            sample,
+            output,
+            value: scorer.value,
+            metadata,
+            options,
+          });
+        }),
+    );
+    return scores
+      .flatMap((s) => s)
+      .filter((item) => item !== undefined) as Score[];
+  } catch (err) {
+    console.error((err as Error).message);
+    return [];
+  }
 }

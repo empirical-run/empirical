@@ -9,8 +9,8 @@ can specify these scenarios in your **test dataset**.
 Each dataset consists of **samples**. Each sample has
 
 - id (string; optional): Unique identifier for the sample
-- inputs (list of objects with name and value): Input parameters that define
-  this scenario. Any number of keys and corresponding values can be specified
+- inputs (object): Input parameters that define a scenario. The key is the
+  name of the parameter, and the value is the value of the parameter for the sample
 - expected (string; optional): Used as the ground truth for this sample
 
 Datasets can be specified in the configuration file directly, or imported from
@@ -24,8 +24,7 @@ a file or HTTP endpoint.
     {
       "inputs": [
         {
-          "name": "user_message",
-          "value": "Hi my name is John Doe."
+          "user_message": "Hi my name is John Doe."
         }
       ],
       "expected": "{\"name\": \"John Doe\"}"
@@ -33,8 +32,7 @@ a file or HTTP endpoint.
     {
       "inputs": [
         {
-          "name": "user_message",
-          "value": "This is Alice."
+          "user_message": "This is Alice."
         }
       ],
       "expected": "{\"name\": \"Alice\"}"

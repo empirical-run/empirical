@@ -23,13 +23,13 @@ export default function SampleCard({
   inputTabs?: string[];
 }) {
   const tabs = useMemo(
-    () => inputTabs || sample?.inputs.map((i) => i.name) || [],
+    () => inputTabs || Object.keys(sample?.inputs || {}),
     [sample, inputTabs],
   );
   const { activeTab, onChangeTab } = useSyncedTabs(tabs);
   const activeInput = useMemo(() => {
     if (activeTab && sample?.inputs) {
-      return sample.inputs.filter((i) => i.name === activeTab)[0];
+      return sample.inputs[activeTab];
     }
     return undefined;
   }, [activeTab, sample.inputs]);
@@ -74,37 +74,37 @@ export default function SampleCard({
             )}
           </>
         </div>
-        {sample?.inputs?.length > 0 && (
+        {Object.keys(sample?.inputs || {}).length > 0 && (
           <Tabs
             value={activeTab}
             className="h-full"
             onValueChange={onChangeTab}
           >
             <TabsList className=" rounded-sm">
-              {sample?.inputs.map((input) => (
+              {Object.entries(sample?.inputs).map((el) => (
                 <TabsTrigger
-                  key={input.name}
-                  value={input.name}
+                  key={el[0]}
+                  value={el[1]}
                   className="text-xs rounded-sm"
                 >
-                  {input.name}
+                  {el[0]}
                 </TabsTrigger>
               ))}
             </TabsList>
 
-            {sample?.inputs.map((input) => {
+            {Object.entries(sample?.inputs).map((el) => {
               return (
                 <TabsContent
-                  key={input.name}
-                  value={input.name}
+                  key={el[0]}
+                  value={el[1]}
                   // 2.25rem as the height of the tabs is h-9 by default. change this if tab height changes
                   className="h-[calc(100%-3rem)]"
                 >
                   <CodeViewer
                     value={
-                      typeof input.value === "string"
-                        ? input.value
-                        : JSON.stringify(input.value, null, 2)
+                      typeof el[1] === "string"
+                        ? el[1]
+                        : JSON.stringify(el[1], null, 2)
                     }
                     language="json"
                     readOnly
@@ -115,7 +115,7 @@ export default function SampleCard({
             })}
           </Tabs>
         )}
-        {!sample?.inputs?.length && <ZeroStateSampleCard />}
+        {!Object.keys(sample?.inputs).length && <ZeroStateSampleCard />}
       </CardContent>
       {/* {(sample?.annotations || []).length > 0 && (
         <CardFooter className="px-2 mt-4 flex flex-col flex-wrap items-start gap-4">

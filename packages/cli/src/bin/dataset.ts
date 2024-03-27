@@ -1,4 +1,4 @@
-import { Dataset, DatasetSampleInput } from "@empiricalrun/types";
+import { Dataset, DatasetSample } from "@empiricalrun/types";
 import { red, green } from "picocolors";
 import { promises as fs } from "fs";
 
@@ -17,16 +17,13 @@ async function downloadDataset(path: string): Promise<Dataset | undefined> {
       // and builds up the Empirical dataset format
       const data = await fs.readFile(path);
       const lines = data.toString().split("\n");
-      let samples = [];
+      let samples: DatasetSample[] = [];
       for (let [index, line] of lines.entries()) {
         if (line.length === 0) {
           continue;
         }
         try {
-          const parsedLine = JSON.parse(line);
-          const inputs: DatasetSampleInput[] = Object.keys(parsedLine).map(
-            (key) => ({ name: key, value: parsedLine[key] }),
-          );
+          const inputs = JSON.parse(line);
           samples.push({ id: index.toString(), inputs: inputs });
         } catch (error) {
           console.log(

@@ -18,24 +18,25 @@ a file or HTTP endpoint.
 
 ## Specify dataset directly
 
+In this example, the LLM is asked to extract the user's name from an incoming message. The
+message is provided under the `user_message` parameter in the dataset.
+
+The LLM prompt can use this value in the prompt through the `{{user_message}}` placeholder.
+
 ```json
 "dataset": {
   "samples": [
     {
-      "inputs": [
-        {
-          "user_message": "Hi my name is John Doe."
-        }
-      ],
-      "expected": "{\"name\": \"John Doe\"}"
+      "inputs": {
+        "user_message": "Hi my name is John Doe."
+      },
+      "expected": "John Doe"
     },
     {
-      "inputs": [
-        {
-          "user_message": "This is Alice."
-        }
-      ],
-      "expected": "{\"name\": \"Alice\"}"
+      "inputs": {
+        "user_message": "This is Alice. Is anybody here?"
+      },
+      "expected": "Alice"
     }
   ]
 }

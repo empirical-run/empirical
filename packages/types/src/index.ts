@@ -67,7 +67,7 @@ export interface RunCompletion {
 
 export type DatasetSample = {
   id: string;
-  inputs: object;
+  inputs: { [key: string]: string };
   expected?: string;
 };
 

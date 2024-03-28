@@ -1,4 +1,4 @@
-import { Scorer } from "../../interface/scorer";
+import { ScoringFn } from "../../interface/scorer";
 import OpenAI from "openai";
 import { EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
 import { inputsForReplacements } from "../../utils";
@@ -46,16 +46,28 @@ export const name = "llm-criteria";
 
 const systemPrompt = `You are an expert evaluator who grades an output string based on a criteria. The output must fulfil the criteria to pass the evaluation.`;
 
-export const checkLlmCriteria: Scorer = async ({ sample, output, value }) => {
+export const checkLlmCriteria: ScoringFn = async ({
+  sample,
+  output,
+  config,
+}) => {
   let criteria = "";
-
-  if (value) {
+  if (config.type !== "llm-criteria") {
+    return [
+      {
+        name,
+        score: 0,
+        message: "invalid scoring function detected",
+      },
+    ];
+  }
+  if (config.criteria) {
     let replacements: any = inputsForReplacements(sample.inputs);
     if (sample.expected) {
       // llm-criteria supports {{expected}} as placeholder
       replacements.expected = sample.expected;
     }
-    criteria = replacePlaceholders(value as string, replacements);
+    criteria = replacePlaceholders(config.criteria, replacements);
   }
 
   const prompt = `Criteria: ${criteria}\n\nOutput: ${output}`;
@@ -69,7 +81,7 @@ export const checkLlmCriteria: Scorer = async ({ sample, output, value }) => {
     return [
       {
         score: result === "Yes" ? 1 : 0,
-        name: name,
+        name: config.name || name,
         message: reason,
       },
     ];
@@ -77,7 +89,7 @@ export const checkLlmCriteria: Scorer = async ({ sample, output, value }) => {
     return [
       {
         score: 0,
-        name,
+        name: config.name || name,
         message:
           (err as Error).message ||
           "Failed to call LLM using @empiricalrun/ai package",

@@ -1,15 +1,12 @@
-import { Score, DatasetSample, RunOutput } from "@empiricalrun/types";
+import { Score, DatasetSample, RunOutput, Scorer } from "@empiricalrun/types";
 
-export type ScoreInputType = {
+export interface ScoringInputBase {
   sample: DatasetSample;
   output: RunOutput;
-  value?: string;
-  metadata?: object | undefined;
-  options?: {
-    pythonPath?: string;
-  };
-};
+  config: Scorer;
+  options?: any;
+}
 
-export interface Scorer {
-  (input: ScoreInputType): Promise<Score[]>;
+export interface ScoringFn {
+  (args: ScoringInputBase): Promise<Score[]>;
 }

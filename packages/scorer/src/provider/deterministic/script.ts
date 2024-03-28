@@ -1,4 +1,4 @@
-import { Scorer } from "../../interface/scorer";
+import { ScoringFn } from "../../interface/scorer";
 import { inputsForReplacements } from "../../utils";
 import { PythonShell } from "python-shell";
 import path from "path";
@@ -11,13 +11,22 @@ const wrapperScriptDirectory = path.join(__dirname, "..", "..", "python");
 const wrapperScriptFile = "wrapper.py";
 const executionOutputIdentifier = "scorer_output:";
 
-export const scoreWithPythonScript: Scorer = async ({
+export const scoreWithPythonScript: ScoringFn = async ({
   sample,
   output,
-  value: userScriptPath,
+  config,
   options,
 }): Promise<Score[]> => {
-  if (!userScriptPath) {
+  if (config.type !== "py-script") {
+    return [
+      {
+        score: 0,
+        name,
+        message: "invalid scorer function detected",
+      },
+    ];
+  }
+  if (!config.path) {
     return [
       {
         score: 0,
@@ -28,8 +37,8 @@ export const scoreWithPythonScript: Scorer = async ({
   }
 
   let inputsAsMap: any = inputsForReplacements(sample.inputs);
-  let basePath = path.dirname(userScriptPath);
-  let moduleName = path.basename(userScriptPath).replace(".py", "");
+  let basePath = path.dirname(config.path);
+  let moduleName = path.basename(config.path).replace(".py", "");
   let pythonArgs = [
     basePath,
     moduleName,
@@ -48,7 +57,11 @@ export const scoreWithPythonScript: Scorer = async ({
     const pythonKiller = setTimeout(function () {
       runOutput.push(
         JSON.stringify([
-          { score: 0, name, message: "Scorer script timed out" },
+          {
+            score: 0,
+            name,
+            message: "Scorer script timed out",
+          },
         ]),
       );
       shell.childProcess.kill();

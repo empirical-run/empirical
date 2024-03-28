@@ -6,6 +6,9 @@ test("is-json on empty json", async () => {
     await isJson({
       sample: { id: "1", inputs: [] },
       output: { value: "{}" },
+      config: {
+        type: "is-json",
+      },
     }),
   ).toStrictEqual([
     {

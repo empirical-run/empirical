@@ -141,7 +141,7 @@ export default function SampleOutputCard({
                 }
                 return (
                   <TooltipProvider>
-                    <Tooltip>
+                    <Tooltip delayDuration={100}>
                       <TooltipTrigger>
                         <Badge
                           variant={

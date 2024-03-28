@@ -33,7 +33,6 @@ export default function SampleCard({
     }
     return undefined;
   }, [activeTab, sample.inputs]);
-
   return (
     <Card
       className={`flex flex-1 flex-col rounded-md items-stretch border-zinc-900`}
@@ -81,30 +80,31 @@ export default function SampleCard({
             onValueChange={onChangeTab}
           >
             <TabsList className=" rounded-sm">
-              {Object.entries(sample?.inputs).map((el) => (
+              {Object.keys(sample?.inputs || {}).map((name) => (
                 <TabsTrigger
-                  key={el[0]}
-                  value={el[1]}
+                  key={name}
+                  value={name}
                   className="text-xs rounded-sm"
                 >
-                  {el[0]}
+                  {name}
                 </TabsTrigger>
               ))}
             </TabsList>
 
-            {Object.entries(sample?.inputs).map((el) => {
+            {Object.entries(sample?.inputs || {}).map((el) => {
+              const [key, value] = el;
               return (
                 <TabsContent
-                  key={el[0]}
-                  value={el[1]}
+                  key={key}
+                  value={value}
                   // 2.25rem as the height of the tabs is h-9 by default. change this if tab height changes
                   className="h-[calc(100%-3rem)]"
                 >
                   <CodeViewer
                     value={
-                      typeof el[1] === "string"
-                        ? el[1]
-                        : JSON.stringify(el[1], null, 2)
+                      typeof value === "string"
+                        ? value
+                        : JSON.stringify(value, null, 2)
                     }
                     language="json"
                     readOnly

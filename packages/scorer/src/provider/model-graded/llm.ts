@@ -57,7 +57,7 @@ export const checkLlmCriteria: Scorer = async ({ sample, output, value }) => {
     criteria = replacePlaceholders(value as string, replacements);
   }
 
-  const prompt = `Criteria: ${criteria}\n\nOutput: ${output}`;
+  const prompt = `Criteria: ${criteria}\n\nOutput: ${output.value}`;
   const messages: OpenAI.ChatCompletionMessageParam[] = [
     { role: "system", content: systemPrompt },
     { role: "user", content: prompt },

@@ -91,7 +91,7 @@ export type RunOutputSample = {
   id?: string;
   annotations?: string[];
   scores?: Score[];
-  inputs: object;
+  inputs: { [key: string]: string };
   output: RunOutput;
   expected?: {
     value: string;

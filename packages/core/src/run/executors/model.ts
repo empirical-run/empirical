@@ -22,15 +22,7 @@ export const modelExecutor: Executor = async function (
   const messages: ChatCompletionMessageParam[] = [
     {
       role: "user",
-      content: replacePlaceholders(
-        prompt as string,
-        sample.inputs.reduce((agg, i) => {
-          return {
-            ...agg,
-            [i.name]: i.value,
-          };
-        }, {}),
-      ),
+      content: replacePlaceholders(prompt as string, sample.inputs),
     },
   ];
   const ai = new EmpiricalAI(provider);

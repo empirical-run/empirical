@@ -1,5 +1,4 @@
 import { Scorer } from "../../interface/scorer";
-import { inputsForReplacements } from "../../utils";
 import { PythonShell } from "python-shell";
 import path from "path";
 import { Score } from "@empiricalrun/types";
@@ -27,14 +26,13 @@ export const scoreWithPythonScript: Scorer = async ({
     ];
   }
 
-  let inputsAsMap: any = inputsForReplacements(sample.inputs);
   let basePath = path.dirname(userScriptPath);
   let moduleName = path.basename(userScriptPath).replace(".py", "");
   let pythonArgs = [
     basePath,
     moduleName,
     JSON.stringify(output) || "",
-    JSON.stringify(inputsAsMap),
+    JSON.stringify(sample.inputs),
   ];
 
   const runOutput = await new Promise<string[]>((resolve) => {

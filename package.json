@@ -8,9 +8,11 @@
     "gen:pkg:lib": "turbo gen pkg:lib",
     "lint": "turbo lint",
     "test": "turbo test",
-    "test:watch": "turbo run test:watch"
+    "test:watch": "turbo run test:watch",
+    "changeset": "changeset"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.1",
     "@empiricalrun/eslint-config": "workspace:*",
     "@empiricalrun/typescript-config": "workspace:*",
     "autoprefixer": "^10.4.18",

@@ -1,60 +1,74 @@
-# Contribution
+# Contribution Guidelines
 
-Follow these steps to set up this monorepo for development.
+Follow these concise steps to set up and contribute to this monorepo:
 
 ### Setup
 
-Setup package manager
-```sh
-corepack install
-```
+1. **Install Corepack**:
+   ```
+   corepack install
+   ```
 
-To install and build apps and packages, run the following command:
-```sh
-pnpm install
-pnpm build
-```
+2. **Install Dependencies and Build**:
+   ```
+   pnpm install
+   pnpm build
+   ```
 
-### Develop
+### Development
 
-To develop all apps and packages, run the following command:
+- **Start Development Server**:
+  ```
+  pnpm dev
+  ```
 
-```sh
-pnpm dev
-```
-To start web app, follow steps below:
+- **Start Web App**:
+  ```sh
+  # Link CLI 
+  pnpm link ./packages/cli
+  # Navigate to an example
+  cd ./examples/basic
+  # Run against the example
+  npx @empiricalrun/cli run
+  # View the output on a web app
+  npx @empiricalrun/cli ui
+  ```
 
-```sh
-# link cli 
-pnpm link ./packages/cli
-# pick an example
-cd ./examples/basic
-# run against an example
-npx @empiricalrun/cli run
-# view the output on a webapp
-npx @empiricalrun/cli ui
-```
+  The web app will be accessible at http://localhost:8000 after completing the above steps.
 
-After following the above steps, the web app will be running on http://localhost:8000
+- **Adding a New Package**:
+  To add a new package, execute:
+  ```
+  pnpm run gen:workspace
+  ```
 
-#### Adding new package
-To add new package run following command:
+### Testing
 
-```sh
-pnpm run gen:workspace
-```
+- **Run Tests**:
+  ```
+  pnpm test
+  ```
 
-### Test
+- **Run Tests in Watch Mode**:
+  ```
+  pnpm test:watch
+  ```
 
-To run tests (add `:watch` for watch mode)
+- **Run Specific Tests**:
+  Use the `-t` flag to run specific tests. For example, to run tests from `script.test.ts`:
+  ```
+  pnpm test:watch -- -t script
+  ```
 
-```sh
-pnpm test
-pnpm test:watch
-```
+### Pull Request Guidelines
 
-To run some tests (e.g. from `script.test.ts`), use the `-t` flag
+Before creating a pull request (PR), follow these steps:
 
-```sh
-pnpm test:watch -- -t script
-```
+- **Generate a Changeset**: Include a changeset corresponding to the modifications made in your PR by running:
+  ```
+  pnpm changeset
+  ```
+
+  Follow the prompts presented by the changeset CLI to add the changeset to your PR.
+
+  > Note: If the changes do not require a version upgrade for the packages, you may skip adding a changeset.

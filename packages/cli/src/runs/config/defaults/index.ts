@@ -34,23 +34,17 @@ export const config: RunsConfig = {
     samples: [
       {
         id: "sample-1",
-        inputs: [
-          {
-            name: "user_message",
-            value:
-              "Hi my name is John Doe. I'm 26 years old and I work in real estate.",
-          },
-        ],
+        inputs: {
+          user_message:
+            "Hi my name is John Doe. I'm 26 years old and I work in real estate.",
+        },
       },
       {
         id: "sample-2",
-        inputs: [
-          {
-            name: "user_message",
-            value:
-              "This is Alice. I am a nurse from Maryland. I was born in 1990.",
-          },
-        ],
+        inputs: {
+          user_message:
+            "This is Alice. I am a nurse from Maryland. I was born in 1990.",
+        },
       },
     ],
   },

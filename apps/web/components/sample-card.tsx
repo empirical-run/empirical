@@ -23,17 +23,16 @@ export default function SampleCard({
   inputTabs?: string[];
 }) {
   const tabs = useMemo(
-    () => inputTabs || sample?.inputs.map((i) => i.name) || [],
+    () => inputTabs || Object.keys(sample?.inputs || {}),
     [sample, inputTabs],
   );
   const { activeTab, onChangeTab } = useSyncedTabs(tabs);
-  const activeInput = useMemo(() => {
+  const activeInputValue = useMemo(() => {
     if (activeTab && sample?.inputs) {
-      return sample.inputs.filter((i) => i.name === activeTab)[0];
+      return sample.inputs[activeTab];
     }
     return undefined;
   }, [activeTab, sample.inputs]);
-
   return (
     <Card
       className={`flex flex-1 flex-col rounded-md items-stretch border-zinc-900`}
@@ -41,7 +40,7 @@ export default function SampleCard({
       <CardContent className="flex flex-col flex-1 p-2 mt-2 pb-0 items-stretch relative">
         <div className="flex flex-row space-x-2 justify-end absolute right-4 top-4">
           <>
-            {activeInput && (
+            {activeInputValue && (
               <Sheet>
                 <SheetTrigger asChild>
                   <Button
@@ -55,14 +54,14 @@ export default function SampleCard({
                 </SheetTrigger>
                 <SheetContent className="w-[400px] sm:w-[540px]">
                   <SheetHeader>
-                    <SheetTitle>{activeInput.name}</SheetTitle>
+                    <SheetTitle>{activeTab}</SheetTitle>
                   </SheetHeader>
                   <div className="py-4 h-full">
                     <CodeViewer
                       value={
-                        typeof activeInput.value === "string"
-                          ? activeInput.value
-                          : JSON.stringify(activeInput.value, null, 2)
+                        typeof activeInputValue === "string"
+                          ? activeInputValue
+                          : JSON.stringify(activeInputValue, null, 2)
                       }
                       readOnly
                       scrollable
@@ -74,37 +73,38 @@ export default function SampleCard({
             )}
           </>
         </div>
-        {sample?.inputs?.length > 0 && (
+        {Object.keys(sample?.inputs || {}).length > 0 && (
           <Tabs
             value={activeTab}
             className="h-full"
             onValueChange={onChangeTab}
           >
             <TabsList className=" rounded-sm">
-              {sample?.inputs.map((input) => (
+              {Object.keys(sample?.inputs || {}).map((name) => (
                 <TabsTrigger
-                  key={input.name}
-                  value={input.name}
+                  key={name}
+                  value={name}
                   className="text-xs rounded-sm"
                 >
-                  {input.name}
+                  {name}
                 </TabsTrigger>
               ))}
             </TabsList>
 
-            {sample?.inputs.map((input) => {
+            {Object.entries(sample?.inputs || {}).map((el) => {
+              const [key, value] = el;
               return (
                 <TabsContent
-                  key={input.name}
-                  value={input.name}
+                  key={key}
+                  value={value}
                   // 2.25rem as the height of the tabs is h-9 by default. change this if tab height changes
                   className="h-[calc(100%-3rem)]"
                 >
                   <CodeViewer
                     value={
-                      typeof input.value === "string"
-                        ? input.value
-                        : JSON.stringify(input.value, null, 2)
+                      typeof value === "string"
+                        ? value
+                        : JSON.stringify(value, null, 2)
                     }
                     language="json"
                     readOnly
@@ -115,7 +115,7 @@ export default function SampleCard({
             })}
           </Tabs>
         )}
-        {!sample?.inputs?.length && <ZeroStateSampleCard />}
+        {!Object.keys(sample?.inputs).length && <ZeroStateSampleCard />}
       </CardContent>
       {/* {(sample?.annotations || []).length > 0 && (
         <CardFooter className="px-2 mt-4 flex flex-col flex-wrap items-start gap-4">

@@ -8,13 +8,11 @@ async function parseDataset(
 ): Promise<Dataset | undefined> {
   if (path.endsWith("json")) {
     // This assumes the json is a well-formed Empirical dataset
-    const data = await fs.readFile(path);
-    return JSON.parse(data.toString());
+    return JSON.parse(contents);
   } else if (path.endsWith("jsonl")) {
     // This assumes the jsonl has 1 set of inputs per line
     // and builds up the Empirical dataset format
-    const data = await fs.readFile(path);
-    const lines = data.toString().split("\n");
+    const lines = contents.split("\n");
     let samples: DatasetSample[] = [];
     for (let [index, line] of lines.entries()) {
       if (line.length === 0) {

@@ -1,6 +1,6 @@
 {
   "name": "@empiricalrun/cli",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "private": true,
   "main": "dist/bin/index.js",
   "bin": {

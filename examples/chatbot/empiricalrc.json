@@ -1,5 +1,5 @@
 {
-  "$schema": "https://assets.empirical.run/config/schema/v1.9.json",
+  "$schema": "https://assets.empirical.run/config/schema/v1.10.json",
   "runs": [
     {
       "name": "less context setting",
@@ -36,16 +36,10 @@
     "samples": [
       {
         "id": "1",
-        "inputs": [
-          {
-            "name": "user_name",
-            "value": "Jason"
-          },
-          {
-            "name": "user_message",
-            "value": "How do you feel about the death of democracy?"
-          }
-        ]
+        "inputs": {
+          "user_name": "Jason",
+          "user_message": "How do you feel about the death of democracy?"
+        }
       }
     ]
   }

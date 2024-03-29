@@ -16,16 +16,10 @@ const scriptPath = "../../examples/humaneval/eval.py";
 test("script scorer works for a correct humaneval output", async () => {
   const sample: DatasetSample = {
     id: "1",
-    inputs: [
-      {
-        name: "test",
-        value: humanEval.test,
-      },
-      {
-        name: "entry_point",
-        value: humanEval.funcName,
-      },
-    ],
+    inputs: {
+      test: humanEval.test,
+      entry_point: humanEval.funcName,
+    },
   };
 
   expect(
@@ -48,16 +42,10 @@ test("script scorer works for a correct humaneval output", async () => {
 test("script scorer works for a incorrect humaneval output", async () => {
   const sample: DatasetSample = {
     id: "1",
-    inputs: [
-      {
-        name: "test",
-        value: humanEval.test,
-      },
-      {
-        name: "entry_point",
-        value: humanEval.funcName + "123", // wrong function name
-      },
-    ],
+    inputs: {
+      test: humanEval.test,
+      entry_point: humanEval.funcName + "123", // wrong function name
+    },
   };
 
   expect(
@@ -78,16 +66,10 @@ test("script scorer works for a incorrect humaneval output", async () => {
 test("script scorer works for a humaneval output that has backticks", async () => {
   const sample: DatasetSample = {
     id: "1",
-    inputs: [
-      {
-        name: "test",
-        value: humanEval.test,
-      },
-      {
-        name: "entry_point",
-        value: humanEval.funcName,
-      },
-    ],
+    inputs: {
+      test: humanEval.test,
+      entry_point: humanEval.funcName,
+    },
   };
 
   expect(
@@ -113,7 +95,7 @@ test(
   async () => {
     const sample: DatasetSample = {
       id: "0",
-      inputs: [],
+      inputs: {},
     };
     const longRunningScript = __dirname + "/test-assets/long_running.py";
     expect(
@@ -136,7 +118,7 @@ test(
 test("script scorer works with a python script that throws", async () => {
   const sample: DatasetSample = {
     id: "0",
-    inputs: [],
+    inputs: {},
   };
   const scriptWithError = __dirname + "/test-assets/throws.py";
   const [score] = await scoreWithPythonScript({

@@ -22,7 +22,7 @@ export default function Page(): JSX.Element {
     [dataset],
   );
   const datasetInputNames = useMemo(
-    () => dataset?.samples?.[0]?.inputs.map((i) => i.name) || [],
+    () => Object.keys(dataset?.samples?.[0]?.inputs || {}),
     [dataset],
   );
   const runColumnHeaders = useMemo(

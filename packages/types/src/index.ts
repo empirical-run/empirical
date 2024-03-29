@@ -65,14 +65,9 @@ export interface RunCompletion {
   created_at: Date;
 }
 
-export type DatasetSampleInput = {
-  name: string;
-  value: string;
-};
-
 export type DatasetSample = {
   id: string;
-  inputs: DatasetSampleInput[];
+  inputs: { [key: string]: string };
   expected?: string;
 };
 
@@ -96,7 +91,7 @@ export type RunOutputSample = {
   id?: string;
   annotations?: string[];
   scores?: Score[];
-  inputs: DatasetSampleInput[];
+  inputs: { [key: string]: string };
   output: RunOutput;
   expected?: {
     value: string;

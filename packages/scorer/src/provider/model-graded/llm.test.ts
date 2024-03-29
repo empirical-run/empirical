@@ -5,11 +5,13 @@ test("llm-criteria works with sql semantics", async () => {
   const [scoreResult] = await checkLlmCriteria({
     sample: {
       id: "1",
-      inputs: [],
+      inputs: {},
       expected:
         "SELECT country, COUNT(*) as NumberOfSingers\nFROM singer\nGROUP BY country;",
     },
-    output: "SELECT country ,  count(*) FROM singer GROUP BY country",
+    output: {
+      value: "SELECT country ,  count(*) FROM singer GROUP BY country",
+    },
     value:
       "The output query is semantically (ignoring aliases) equivalent to {{expected}}",
   });
@@ -21,10 +23,12 @@ test("llm-criteria can detect ai self-referencing in the response", async () => 
   const [scoreResult] = await checkLlmCriteria({
     sample: {
       id: "1",
-      inputs: [],
+      inputs: {},
     },
-    output:
-      "As a language model I cannot tell the difference between this query and this one",
+    output: {
+      value:
+        "As a language model I cannot tell the difference between this query and this one",
+    },
     value: "Never call yourself a language model",
   });
   expect(scoreResult.score).toBe(0);

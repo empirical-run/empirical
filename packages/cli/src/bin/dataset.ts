@@ -2,34 +2,50 @@ import { Dataset, DatasetSample } from "@empiricalrun/types";
 import { red, green } from "picocolors";
 import { promises as fs } from "fs";
 
+type LoaderFunction = (contents: string) => Dataset;
+
+function jsonLoader(contents: string): Dataset {
+  return JSON.parse(contents);
+}
+
+// TODO: humaneval inputs not loading - check why?
+function jsonlLoader(contents: string): Dataset {
+  // This assumes the jsonl has 1 set of inputs per line
+  // and builds up the Empirical dataset format
+  const lines = contents.split("\n");
+  let samples: DatasetSample[] = [];
+  for (let [index, line] of lines.entries()) {
+    if (line.length === 0) {
+      continue;
+    }
+    try {
+      const inputs = JSON.parse(line);
+      samples.push({ id: index.toString(), inputs: inputs });
+    } catch (error) {
+      console.log(`${red("[Error]")} Failed to parse line: ${line}`);
+    }
+  }
+  return { id: "1", samples: samples };
+}
+
+let loaders = new Map<string, LoaderFunction>([
+  ["jsonl", jsonlLoader],
+  ["json", jsonLoader],
+]);
+
 async function parseDataset(
   path: string,
   contents: string,
 ): Promise<Dataset | undefined> {
-  if (path.endsWith("json")) {
-    // This assumes the json is a well-formed Empirical dataset
-    return JSON.parse(contents);
-  } else if (path.endsWith("jsonl")) {
-    // This assumes the jsonl has 1 set of inputs per line
-    // and builds up the Empirical dataset format
-    const lines = contents.split("\n");
-    let samples: DatasetSample[] = [];
-    for (let [index, line] of lines.entries()) {
-      if (line.length === 0) {
-        continue;
-      }
-      try {
-        const inputs = JSON.parse(line);
-        samples.push({ id: index.toString(), inputs: inputs });
-      } catch (error) {
-        console.log(
-          `${red("[Error]")} Failed to parse line in ${path}: ${line}`,
-        );
-      }
-    }
-    return { id: path, samples: samples };
-  } else if (path.endsWith("csv")) {
-    throw new Error("csv files are not supported.");
+  const extension = path.split(".").pop();
+
+  if (extension && loaders.has(extension)) {
+    const loaderFn = loaders.get(extension)!;
+    // const dataset = await
+    // await addSampleIds(dataset);
+    return loaderFn(contents);
+  } else {
+    throw new Error(`${extension} files are not supported.`);
   }
 }
 

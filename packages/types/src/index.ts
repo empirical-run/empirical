@@ -53,15 +53,10 @@ export type IRunConfig =
   | IPyScriptRunConfig
   | IJSScriptRunConfig;
 
-export interface IDatasetConfig {
-  // TODO: what to do about this
-  id: string;
-}
-
 export interface RunCompletion {
   id: string;
   run_config: IRunConfig;
-  dataset_config: IDatasetConfig;
+  dataset_config: { id: string };
   samples: RunOutputSample[];
   created_at: Date;
 }

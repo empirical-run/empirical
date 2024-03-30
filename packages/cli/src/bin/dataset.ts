@@ -49,7 +49,7 @@ export async function loadDataset(
       }
     } catch (error) {
       console.log(
-        `${red("[Error]")} Failed to fetch dataset at ${config.path}\nError: ${error}`,
+        `${red("[Error]")} Failed to parse dataset at ${config.path}\nError: ${error}`,
       );
       return;
     }
@@ -59,8 +59,6 @@ export async function loadDataset(
     );
   }
 
-  // Check if this is a known dataset from what we have
-  // parsed already
   return {
     id: config.id || hashContents(contents),
     samples,

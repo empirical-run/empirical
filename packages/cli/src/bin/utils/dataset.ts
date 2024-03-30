@@ -4,10 +4,24 @@ import crypto from "crypto";
 
 type LoaderFunction = (contents: string) => DatasetSample[];
 
-// TODO: fix this since we've changed the format
-// function jsonLoader(contents: string): Dataset {
-//   return JSON.parse(contents);
-// }
+function jsonLoader(contents: string): DatasetSample[] {
+  const parsed = JSON.parse(contents);
+  const oldSamples = parsed.samples;
+  // Converting old format to the new format (for Spider example)
+  return oldSamples.map((sample: any, index: number) => {
+    const inputs = sample.inputs.reduce((agg: any, i: any) => {
+      return {
+        ...agg,
+        [i.name]: i.value,
+      };
+    }, {});
+    return {
+      id: sample.id || (index + 1).toString(),
+      expected: sample.expected?.value || "",
+      inputs,
+    };
+  });
+}
 
 function jsonlLoader(contents: string): DatasetSample[] {
   // This assumes the jsonl has 1 set of inputs per line
@@ -15,7 +29,6 @@ function jsonlLoader(contents: string): DatasetSample[] {
   const lines = contents.split("\n");
   let samples: DatasetSample[] = [];
   for (let [index, line] of lines.entries()) {
-    if (index > 5) break; // TODO: remove this sampling
     if (line.length === 0) {
       continue;
     }
@@ -31,7 +44,7 @@ function jsonlLoader(contents: string): DatasetSample[] {
 
 export const loaders = new Map<string, LoaderFunction>([
   ["jsonl", jsonlLoader],
-  // ["json", jsonLoader],
+  ["json", jsonLoader],
 ]);
 
 export function hashContents(contents: string) {

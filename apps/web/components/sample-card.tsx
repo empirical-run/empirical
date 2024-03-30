@@ -96,7 +96,7 @@ export default function SampleCard({
               return (
                 <TabsContent
                   key={key}
-                  value={value}
+                  value={key}
                   // 2.25rem as the height of the tabs is h-9 by default. change this if tab height changes
                   className="h-[calc(100%-3rem)]"
                 >

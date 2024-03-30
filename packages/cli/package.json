@@ -9,7 +9,9 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "@empiricalrun/typescript-config": "workspace:*",

@@ -54,6 +54,7 @@ export type IRunConfig =
   | IJSScriptRunConfig;
 
 export interface IDatasetConfig {
+  // TODO: what to do about this
   id: string;
 }
 
@@ -73,9 +74,27 @@ export type DatasetSample = {
 
 export type Dataset = {
   id: string;
-  path?: string;
-  samples?: DatasetSample[];
+  samples: DatasetSample[];
 };
+
+export type DatasetSampleConfig = {
+  id?: string;
+  inputs: { [key: string]: string };
+  expected?: string;
+};
+
+export type DatasetConfig = {
+  id?: string;
+  path?: string;
+  samples?: DatasetSampleConfig[];
+} & (
+  | {
+      samples: DatasetSampleConfig[];
+    }
+  | {
+      path: string;
+    }
+);
 
 // TODO: fix types. text generation and others how does that show up ?
 export enum ModelTypes {

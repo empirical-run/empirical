@@ -80,7 +80,7 @@ program
         if (r.type === "py-script") {
           r.pythonPath = options.pythonPath;
         }
-        return execute(r, dataset.samples || [], () => {
+        return execute(r, dataset, () => {
           progressBar.increment();
         });
       }),

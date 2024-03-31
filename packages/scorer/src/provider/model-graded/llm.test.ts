@@ -12,11 +12,14 @@ test("llm-criteria works with sql semantics", async () => {
     output: {
       value: "SELECT country ,  count(*) FROM singer GROUP BY country",
     },
-    value:
-      "The output query is semantically (ignoring aliases) equivalent to {{expected}}",
+    config: {
+      type: "llm-criteria",
+      criteria:
+        "The output query is semantically (ignoring aliases) equivalent to {{expected}}",
+    },
   });
-  expect(scoreResult.score).toBe(1);
-  expect(scoreResult.name).toBe("llm-criteria");
+  expect(scoreResult?.score).toBe(1);
+  expect(scoreResult?.name).toBe("llm-criteria");
 });
 
 test("llm-criteria can detect ai self-referencing in the response", async () => {
@@ -29,8 +32,11 @@ test("llm-criteria can detect ai self-referencing in the response", async () => 
       value:
         "As a language model I cannot tell the difference between this query and this one",
     },
-    value: "Never call yourself a language model",
+    config: {
+      type: "llm-criteria",
+      criteria: "Never call yourself a language model",
+    },
   });
-  expect(scoreResult.score).toBe(0);
-  expect(scoreResult.name).toBe("llm-criteria");
+  expect(scoreResult?.score).toBe(0);
+  expect(scoreResult?.name).toBe("llm-criteria");
 });

@@ -1,4 +1,4 @@
-import { Scorer } from "../interface/scorer";
+import { ScoringFn } from "../interface/scorer";
 import { isJson, name as jsonName } from "./deterministic/json";
 import {
   scoreWithPythonScript,
@@ -12,7 +12,7 @@ import {
 } from "./deterministic/sql";
 import { name as llmName, checkLlmCriteria } from "./model-graded/llm";
 
-const map = new Map<string, Scorer>([
+const map = new Map<string, ScoringFn>([
   [jsonName, isJson],
   [syntaxName, checkSqlSyntax],
   [semanticName, checkSqlSemantic],
@@ -20,10 +20,10 @@ const map = new Map<string, Scorer>([
   [scriptName, scoreWithPythonScript],
 ]);
 
-export default function getScorer({
+export default function getScoringFn({
   type,
 }: {
   type: string;
-}): Scorer | undefined {
+}): ScoringFn | undefined {
   return map.get(type);
 }

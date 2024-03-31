@@ -7,7 +7,7 @@ import packageJSON from "../../package.json";
 import { RunsConfig } from "../types";
 import { execute } from "@empiricalrun/core";
 import { loadDataset } from "./dataset";
-import { Dataset, RunCompletion } from "@empiricalrun/types";
+import { RunsFileStore } from "./store";
 import cliProgress from "cli-progress";
 import express from "express";
 import path from "path";
@@ -18,9 +18,7 @@ const cwd = process.cwd();
 const configFileFullPath = `${cwd}/${configFileName}`;
 const config = getDefaultRunsConfig(DefaultRunsConfigType.DEFAULT);
 
-const outputFileName = "output.json";
-const cacheDir = ".empiricalrun";
-const outputFilePath = `${cwd}/${cacheDir}/${outputFileName}`;
+const fileStore = new RunsFileStore();
 
 function setupProgressBar(total: number) {
   const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
@@ -70,6 +68,10 @@ program
     const dataset = await loadDataset(datasetConfig);
     if (!dataset) {
       return;
+    } else {
+      if (process.env.CI !== "true") {
+        await fileStore.storeDataset(dataset);
+      }
     }
 
     const progressBar = setupProgressBar(
@@ -88,12 +90,7 @@ program
     progressBar.stop();
 
     if (process.env.CI !== "true") {
-      const data: { runs: RunCompletion[]; dataset: Dataset } = {
-        runs: completion,
-        dataset: dataset,
-      };
-      await fs.mkdir(`${cwd}/${cacheDir}`, { recursive: true });
-      await fs.writeFile(outputFilePath, JSON.stringify(data, null, 2));
+      await fileStore.storeRunsForDatasetId(completion, dataset);
     }
   });
 
@@ -105,7 +102,18 @@ program
     const app = express();
     const port = 8000;
     app.use(express.static(path.join(__dirname, "../webapp")));
-    app.get("/api/results", (req, res) => res.sendFile(outputFilePath));
+
+    app.get("/api/results", async (req, res) =>
+      res.send(await fileStore.getResults()),
+    );
+    app.get("/api/runs", async (req, res) => {
+      res.send(await fileStore.getRuns());
+    });
+    app.get("/api/runs/:runId", async (req, res) => {
+      const { runId } = req.params;
+      res.sendFile(await fileStore.getRunFilePath(runId));
+    });
+
     const fullUrl = `http://localhost:${port}`;
     app.listen(port, () => {
       console.log(`Empirical app running on ${fullUrl}`);

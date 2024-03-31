@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 import { ScoringFn } from "../../interface/scorer";
-import { inputsForReplacements } from "../../utils";
-=======
-import { Scorer } from "../../interface/scorer";
->>>>>>> 29e7aaecb7f2fb84d57c2ea28c6526da90047541
 import { PythonShell } from "python-shell";
 import path from "path";
 import { Score } from "@empiricalrun/types";

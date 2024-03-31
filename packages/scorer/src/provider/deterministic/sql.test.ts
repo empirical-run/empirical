@@ -4,7 +4,7 @@ import { checkSqlSyntax, checkSqlSemantic } from "./sql";
 test("sql-syntax works with backticks", async () => {
   expect(
     await checkSqlSyntax({
-      sample: { id: "1", inputs: [] },
+      sample: { id: "1", inputs: {} },
       output: {
         value: "SELECT `column` FROM `table`",
       },
@@ -24,7 +24,7 @@ test("sql-syntax works with backticks", async () => {
 test("sql-syntax works with markdown", async () => {
   expect(
     await checkSqlSyntax({
-      sample: { id: "1", inputs: [] },
+      sample: { id: "1", inputs: {} },
       output: { value: "```SELECT table * FROM" },
       config: {
         type: "sql-syntax",
@@ -44,7 +44,7 @@ test("sql-semantic works with column aliases", async () => {
     await checkSqlSemantic({
       sample: {
         id: "1",
-        inputs: [],
+        inputs: {},
         expected:
           "SELECT country, COUNT(*) as NumberOfSingers\nFROM singer\nGROUP BY country;",
       },
@@ -69,7 +69,7 @@ test.fails("sql-semantic works with column reordering", async () => {
     await checkSqlSemantic({
       sample: {
         id: "1",
-        inputs: [],
+        inputs: {},
         expected: "SELECT a + b, c, d",
       },
       output: { value: "SELECT a + b, d, c" },
@@ -91,7 +91,7 @@ test.fails("sql-semantic works with explicit column names", async () => {
     await checkSqlSemantic({
       sample: {
         id: "1",
-        inputs: [],
+        inputs: {},
         expected:
           "SELECT Highschooler.name, Highschooler.grade\nFROM Highschooler;",
       },
@@ -116,7 +116,7 @@ test.fails(
       await checkSqlSemantic({
         sample: {
           id: "1",
-          inputs: [],
+          inputs: {},
           expected:
             "SELECT avg(age) ,  min(age) ,  max(age) FROM singer WHERE country  =  'France'",
         },
@@ -143,7 +143,7 @@ test.fails("sql-semantic works with table joins", async () => {
     await checkSqlSemantic({
       sample: {
         id: "1",
-        inputs: [],
+        inputs: {},
         expected:
           "SELECT DISTINCT Student.Fname, Student.Age\n FROM Student\n JOIN Has_Pet ON Student.StuID = Has_Pet.StuID;",
       },

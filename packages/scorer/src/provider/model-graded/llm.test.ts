@@ -5,7 +5,7 @@ test("llm-criteria works with sql semantics", async () => {
   const [scoreResult] = await checkLlmCriteria({
     sample: {
       id: "1",
-      inputs: [],
+      inputs: {},
       expected:
         "SELECT country, COUNT(*) as NumberOfSingers\nFROM singer\nGROUP BY country;",
     },
@@ -26,7 +26,7 @@ test("llm-criteria can detect ai self-referencing in the response", async () => 
   const [scoreResult] = await checkLlmCriteria({
     sample: {
       id: "1",
-      inputs: [],
+      inputs: {},
     },
     output: {
       value:

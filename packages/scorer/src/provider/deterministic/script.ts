@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import { ScoringFn } from "../../interface/scorer";
 import { inputsForReplacements } from "../../utils";
+=======
+import { Scorer } from "../../interface/scorer";
+>>>>>>> 29e7aaecb7f2fb84d57c2ea28c6526da90047541
 import { PythonShell } from "python-shell";
 import path from "path";
 import { Score } from "@empiricalrun/types";
@@ -36,14 +40,13 @@ export const scoreWithPythonScript: ScoringFn = async ({
     ];
   }
 
-  let inputsAsMap: any = inputsForReplacements(sample.inputs);
   let basePath = path.dirname(config.path);
   let moduleName = path.basename(config.path).replace(".py", "");
   let pythonArgs = [
     basePath,
     moduleName,
     JSON.stringify(output) || "",
-    JSON.stringify(inputsAsMap),
+    JSON.stringify(sample.inputs),
   ];
 
   const runOutput = await new Promise<string[]>((resolve) => {

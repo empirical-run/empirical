@@ -29,17 +29,10 @@ export const scriptExecutor: Executor = async (runConfig, sample) => {
       },
     };
   }
-  const inputsMap = sample.inputs.reduce((map, i) => {
-    map.set(i.name, i.value);
-    return map;
-  }, new Map<string, string>());
+
   let basePath = path.dirname(scriptPath);
   let moduleName = path.basename(scriptPath).replace(".py", "");
-  let pythonArgs = [
-    basePath,
-    moduleName,
-    JSON.stringify(Object.fromEntries(inputsMap)),
-  ];
+  let pythonArgs = [basePath, moduleName, JSON.stringify(sample.inputs)];
 
   const runOutput = await new Promise<string[]>((resolve) => {
     let output: string[] = [];

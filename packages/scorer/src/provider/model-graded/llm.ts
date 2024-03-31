@@ -1,7 +1,6 @@
 import { ScoringFn } from "../../interface/scorer";
 import OpenAI from "openai";
 import { EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
-import { inputsForReplacements } from "../../utils";
 
 async function askLlmForEvalResult(
   messages: OpenAI.ChatCompletionMessageParam[],
@@ -62,7 +61,7 @@ export const checkLlmCriteria: ScoringFn = async ({
     ];
   }
   if (config.criteria) {
-    let replacements: any = inputsForReplacements(sample.inputs);
+    let replacements: any = { ...sample.inputs };
     if (sample.expected) {
       // llm-criteria supports {{expected}} as placeholder
       replacements.expected = sample.expected;
@@ -70,7 +69,7 @@ export const checkLlmCriteria: ScoringFn = async ({
     criteria = replacePlaceholders(config.criteria, replacements);
   }
 
-  const prompt = `Criteria: ${criteria}\n\nOutput: ${output}`;
+  const prompt = `Criteria: ${criteria}\n\nOutput: ${output.value}`;
   const messages: OpenAI.ChatCompletionMessageParam[] = [
     { role: "system", content: systemPrompt },
     { role: "user", content: prompt },

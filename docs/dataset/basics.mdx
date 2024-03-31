@@ -9,8 +9,8 @@ can specify these scenarios in your **test dataset**.
 Each dataset consists of **samples**. Each sample has
 
 - id (string; optional): Unique identifier for the sample
-- inputs (list of objects with name and value): Input parameters that define
-  this scenario. Any number of keys and corresponding values can be specified
+- inputs (object): Input parameters that define a scenario. The key is the
+  name of the parameter, and the value is the value of the parameter for the sample
 - expected (string; optional): Used as the ground truth for this sample
 
 Datasets can be specified in the configuration file directly, or imported from
@@ -18,26 +18,25 @@ a file or HTTP endpoint.
 
 ## Specify dataset directly
 
+In this example, the LLM is asked to extract the user's name from an incoming message. The
+message is provided under the `user_message` parameter in the dataset.
+
+The LLM prompt can use this value in the prompt through the `{{user_message}}` placeholder.
+
 ```json
 "dataset": {
   "samples": [
     {
-      "inputs": [
-        {
-          "name": "user_message",
-          "value": "Hi my name is John Doe."
-        }
-      ],
-      "expected": "{\"name\": \"John Doe\"}"
+      "inputs": {
+        "user_message": "Hi my name is John Doe."
+      },
+      "expected": "John Doe"
     },
     {
-      "inputs": [
-        {
-          "name": "user_message",
-          "value": "This is Alice."
-        }
-      ],
-      "expected": "{\"name\": \"Alice\"}"
+      "inputs": {
+        "user_message": "This is Alice. Is anybody here?"
+      },
+      "expected": "Alice"
     }
   ]
 }

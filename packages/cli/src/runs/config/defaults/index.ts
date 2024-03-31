@@ -32,14 +32,12 @@ export const config: RunsConfig = {
   dataset: {
     samples: [
       {
-        id: "sample-1",
         inputs: {
           user_message:
             "Hi my name is John Doe. I'm 26 years old and I work in real estate.",
         },
       },
       {
-        id: "sample-2",
         inputs: {
           user_message:
             "This is Alice. I am a nurse from Maryland. I was born in 1990.",

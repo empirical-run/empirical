@@ -15,7 +15,7 @@ function parseDataset(
   } else {
     throw new DatasetError(
       DatasetErrorEnum.UNSUPPORTED_FILE_EXTENSION,
-      `No loader for file extension: ${extension}`,
+      `Unsupported file extension for path: ${path}`,
     );
   }
 }

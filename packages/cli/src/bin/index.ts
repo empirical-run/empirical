@@ -65,7 +65,6 @@ program
       return;
     }
 
-    
     console.log(`${green("[Success]")} - read ${configFileName} file`);
     const jsonStr = data.toString();
     const { runs, dataset: datasetConfig } = JSON.parse(jsonStr) as RunsConfig;
@@ -93,10 +92,14 @@ program
     setRunSummary(completion);
     printStatsSummary(completion);
 
-    console.log(bold("Total dataset samples:"), dataset.samples?.length || 0)
+    console.log(bold("Total dataset samples:"), dataset.samples?.length || 0);
     const endTime = performance.now();
-    console.log(bold("Done in"), yellow(((endTime - startTime)/1000).toFixed(2)), "seconds")
-    
+    console.log(
+      bold("Done in"),
+      yellow(((endTime - startTime) / 1000).toFixed(2)),
+      "seconds",
+    );
+
     if (process.env.CI !== "true") {
       const data: { runs: RunCompletion[]; dataset: Dataset } = {
         runs: completion,

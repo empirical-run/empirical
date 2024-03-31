@@ -67,10 +67,6 @@ export interface PyScriptRunConfig extends RunConfigBase {
 
 export type IRunConfig = ModelRunConfig | PyScriptRunConfig | JSScriptRunConfig;
 
-export interface DatasetConfig {
-  id: string;
-}
-
 export interface ScoreStats {
   name: string;
   count: number;
@@ -89,7 +85,7 @@ export interface RunOutputStats {
 export interface RunCompletion {
   id: string;
   run_config: IRunConfig;
-  dataset_config: DatasetConfig;
+  dataset_config: { id: string };
   samples: RunOutputSample[];
   stats?: RunOutputStats;
   created_at: Date;
@@ -103,9 +99,22 @@ export type DatasetSample = {
 
 export type Dataset = {
   id: string;
-  path?: string;
-  samples?: DatasetSample[];
+  samples: DatasetSample[];
 };
+
+export type DatasetSampleConfig = {
+  id?: string;
+  inputs: { [key: string]: string };
+  expected?: string;
+};
+
+export type DatasetConfig =
+  | {
+      samples: DatasetSampleConfig[];
+    }
+  | {
+      path: string;
+    };
 
 // TODO: fix types. text generation and others how does that show up ?
 export enum ModelTypes {

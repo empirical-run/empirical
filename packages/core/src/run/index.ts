@@ -1,4 +1,5 @@
 import {
+  Dataset,
   DatasetSample,
   IRunConfig,
   RunCompletion,
@@ -10,7 +11,7 @@ import { getExecutor } from "./executors";
 
 export async function execute(
   run: IRunConfig,
-  samples: DatasetSample[],
+  dataset: Dataset,
   progressCallback: (sample: RunOutputSample) => void,
 ): Promise<RunCompletion> {
   const runCreationDate = new Date();
@@ -18,7 +19,7 @@ export async function execute(
   const runId = generateHex(4);
   const { scorers } = run;
   const completionsPromises = [];
-  for (const datasetSample of samples) {
+  for (const datasetSample of dataset.samples) {
     const executor = getExecutor(run);
     if (executor) {
       // if llm error then add to the completion object but if something else throw error and stop the run
@@ -50,7 +51,7 @@ export async function execute(
     await Promise.allSettled(completionsPromises);
   }
 
-  const datasetMap = samples.reduce((agg, sample) => {
+  const datasetMap = dataset.samples.reduce((agg, sample) => {
     agg.set(sample.id, sample);
     return agg;
   }, new Map<string, DatasetSample>());
@@ -80,7 +81,7 @@ export async function execute(
     id: runId,
     run_config: run,
     dataset_config: {
-      id: "", // TODO
+      id: dataset.id,
     },
     samples: sampleCompletions,
     created_at: runCreationDate,

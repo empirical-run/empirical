@@ -7,6 +7,7 @@ import packageJSON from "../../package.json";
 import { RunsConfig } from "../types";
 import { execute } from "@empiricalrun/core";
 import { loadDataset } from "./dataset";
+import { DatasetError } from "../error";
 import { Dataset, RunCompletion } from "@empiricalrun/types";
 import cliProgress from "cli-progress";
 import express from "express";
@@ -69,9 +70,17 @@ program
     const jsonStr = data.toString();
     const { runs, dataset: datasetConfig } = JSON.parse(jsonStr) as RunsConfig;
     // TODO: add check here for empty runs config. Add validator of the file
-    const dataset = await loadDataset(datasetConfig);
-    if (!dataset) {
-      return;
+
+    let dataset: Dataset;
+    try {
+      dataset = await loadDataset(datasetConfig);
+    } catch (error) {
+      if (error instanceof DatasetError) {
+        console.log(`${red("[Error]")} ${error.message}`);
+        return;
+      } else {
+        throw error;
+      }
     }
 
     const progressBar = setupProgressBar(
@@ -82,7 +91,7 @@ program
         if (r.type === "py-script") {
           r.pythonPath = options.pythonPath;
         }
-        return execute(r, dataset.samples || [], () => {
+        return execute(r, dataset, () => {
           progressBar.increment();
         });
       }),

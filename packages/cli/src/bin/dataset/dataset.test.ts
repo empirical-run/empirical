@@ -1,5 +1,5 @@
 import { expect, test, vi } from "vitest";
-import { loadDataset } from "./dataset";
+import { loadDataset } from "./index";
 
 test("can load dataset without any ids", async () => {
   const dataset = await loadDataset({
@@ -10,20 +10,6 @@ test("can load dataset without any ids", async () => {
     ],
   });
   expect(dataset?.id).toBe("0d41a81e415558e36aef80cbbaf9a61a");
-  const sample = dataset?.samples[0];
-  expect(sample?.id).toBe("1");
-});
-
-test("can load dataset which has an id", async () => {
-  const dataset = await loadDataset({
-    id: "test-dataset-id",
-    samples: [
-      {
-        inputs: {},
-      },
-    ],
-  });
-  expect(dataset?.id).toBe("test-dataset-id");
   const sample = dataset?.samples[0];
   expect(sample?.id).toBe("1");
 });

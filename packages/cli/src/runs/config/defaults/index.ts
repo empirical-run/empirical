@@ -30,7 +30,6 @@ export const config: RunsConfig = {
     },
   ],
   dataset: {
-    id: "dataset-1",
     samples: [
       {
         id: "sample-1",

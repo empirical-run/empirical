@@ -78,18 +78,13 @@ export type DatasetSampleConfig = {
   expected?: string;
 };
 
-export type DatasetConfig = {
-  id?: string;
-  path?: string;
-  samples?: DatasetSampleConfig[];
-} & (
+export type DatasetConfig =
   | {
       samples: DatasetSampleConfig[];
     }
   | {
       path: string;
-    }
-);
+    };
 
 // TODO: fix types. text generation and others how does that show up ?
 export enum ModelTypes {

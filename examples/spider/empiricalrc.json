@@ -33,6 +33,6 @@
     }
   ],
   "dataset": {
-    "path": "https://assets.empirical.run/datasets/json/spider-tiny.json"
+    "path": "https://assets.empirical.run/datasets/v2/json/spider-tiny.json"
   }
 }

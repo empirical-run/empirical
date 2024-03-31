@@ -11,11 +11,28 @@ export type ChatPrompt = {
   comment: string;
 };
 
-export type Scorer = {
+export interface ScorerBase {
   type: string;
   threshold?: number;
-  value?: string;
-};
+}
+
+export interface LLMScorer extends ScorerBase {
+  type: "llm-criteria";
+  name?: string;
+  criteria?: string;
+}
+
+export interface DeterministicScorer extends ScorerBase {
+  type: "is-json" | "sql-syntax" | "sql-semantic";
+}
+
+export interface ScriptScorer extends ScorerBase {
+  type: "py-script";
+  name?: string;
+  path?: string;
+}
+
+export type Scorer = LLMScorer | DeterministicScorer | ScriptScorer;
 
 export type Prompt = string | ChatPrompt[];
 
@@ -30,38 +47,51 @@ interface RunConfigBase {
   scorers?: Scorer[];
 }
 
-export interface IModelRunConfig extends RunConfigBase {
+export interface ModelRunConfig extends RunConfigBase {
   type: "model";
   provider: "openai" | "mistral" | "google" | "anthropic";
   model: string;
   prompt?: Prompt;
 }
 
-export interface IJSScriptRunConfig extends RunConfigBase {
+export interface JSScriptRunConfig extends RunConfigBase {
   type: "js-script";
   value: string;
 }
 
-export interface IPyScriptRunConfig extends RunConfigBase {
+export interface PyScriptRunConfig extends RunConfigBase {
   type: "py-script";
   value: string;
   pythonPath?: string;
 }
 
-export type IRunConfig =
-  | IModelRunConfig
-  | IPyScriptRunConfig
-  | IJSScriptRunConfig;
+export type IRunConfig = ModelRunConfig | PyScriptRunConfig | JSScriptRunConfig;
 
-export interface IDatasetConfig {
+export interface DatasetConfig {
   id: string;
+}
+
+export interface ScoreStats {
+  name: string;
+  count: number;
+  avgScore: number;
+}
+
+export interface RunOutputStats {
+  outputs: {
+    count: number;
+    success: number;
+    failed: number;
+  };
+  scores: ScoreStats[];
 }
 
 export interface RunCompletion {
   id: string;
   run_config: IRunConfig;
-  dataset_config: IDatasetConfig;
+  dataset_config: DatasetConfig;
   samples: RunOutputSample[];
+  stats?: RunOutputStats;
   created_at: Date;
 }
 

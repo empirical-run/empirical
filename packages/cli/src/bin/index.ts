@@ -12,6 +12,7 @@ import cliProgress from "cli-progress";
 import express from "express";
 import path from "path";
 import opener from "opener";
+import { printStatsSummary, setRunSummary } from "../stats";
 
 const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
@@ -55,6 +56,7 @@ program
   .action(async (options) => {
     console.log(yellow("Initiating run..."));
     let data;
+    const startTime = performance.now();
     try {
       data = await fs.readFile(configFileFullPath);
     } catch (err) {
@@ -86,6 +88,17 @@ program
       }),
     );
     progressBar.stop();
+
+    setRunSummary(completion);
+    printStatsSummary(completion);
+
+    console.log(bold("Total dataset samples:"), dataset.samples?.length || 0);
+    const endTime = performance.now();
+    console.log(
+      bold("Done in"),
+      yellow(((endTime - startTime) / 1000).toFixed(2)),
+      "seconds",
+    );
 
     if (process.env.CI !== "true") {
       const data: { runs: RunCompletion[]; dataset: Dataset } = {

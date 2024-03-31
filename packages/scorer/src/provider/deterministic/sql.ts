@@ -1,5 +1,5 @@
 import { Parser, Select } from "node-sql-parser";
-import { Scorer } from "../../interface/scorer";
+import { ScoringFn } from "../../interface/scorer";
 
 export const syntaxName = "sql-syntax";
 export const semanticName = "sql-semantic";
@@ -7,7 +7,7 @@ export const semanticName = "sql-semantic";
 //TODO: make this config driven
 const parserOpt = { database: "sqlite" };
 
-export const checkSqlSyntax: Scorer = async ({ output }) => {
+export const checkSqlSyntax: ScoringFn = async ({ output }) => {
   let isSQLQuery = false;
   let inValidSQLMsg = "SQL is invalid";
   const parser = new Parser();
@@ -35,7 +35,7 @@ export const checkSqlSyntax: Scorer = async ({ output }) => {
   ];
 };
 
-export const checkSqlSemantic: Scorer = async ({ sample, output }) => {
+export const checkSqlSemantic: ScoringFn = async ({ sample, output }) => {
   const parser = new Parser();
   const expected = sample.expected!;
   if (!output) {

@@ -1,8 +1,17 @@
-import { Scorer } from "../../interface/scorer";
+import { ScoringFn } from "../../interface/scorer";
 
 export const name = "is-json";
 
-export const isJson: Scorer = async ({ output }) => {
+export const isJson: ScoringFn = async ({ output, config }) => {
+  if (config.type !== name) {
+    return [
+      {
+        score: 0,
+        name,
+        message: "invalid type of scorer detected",
+      },
+    ];
+  }
   let isValid = false;
   let invalidMsg = "JSON is invalid";
   if (output !== undefined && output !== null) {

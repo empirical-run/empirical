@@ -8,7 +8,7 @@
       "scorers": [
         {
           "type": "py-script",
-          "value": "score.py"
+          "path": "score.py"
         }
       ]
     }

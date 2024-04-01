@@ -1,15 +1,25 @@
-/* eslint-disable no-unused-vars */
 import { ScoringFn } from "../../interface/scorer";
 import OpenAI from "openai";
 import { EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
 
 export const name = "llm-faithfulness";
 
-const prompt = `Prompt: Natural language inference
-Consider the given context and following statements, then determine whether they are supported by the information present in the context.Provide a brief explanation for each statement before arriving at the verdict (Yes/No). Provide a final verdict for each statement in order at the end in the given format. Do not deviate from the specified format.
+const prompt = `Consider the given context and following statements, determine whether they are supported by
+ the information present in the context. Provide a brief explanation for each statement before arriving at the
+ verdict (Yes/No). Provide a final verdict for each statement in order at the end in the given format.
+ Do not deviate from the specified format.
 
-Context:\nJohn is a student at XYZ University. He is pursuing a degree in Computer Science. He is enrolled in several courses this semester, including Data Structures, Algorithms, and Database Management. John is a diligent student and spends a significant amount of time studying and completing assignments. He often stays late in the library to work on his projects.
-statements:\n1. John is majoring in Biology.\n2. John is taking a course on Artificial Intelligence.\n3. John is a dedicated student.\n4. John has a part-time job.\n5. John is interested in computer programming.\n
+Context:\nJohn is a student at XYZ University. He is pursuing a degree in Computer Science. He is enrolled in
+ several courses this semester, including Data Structures, Algorithms, and Database Management. John is a
+ diligent student and spends a significant amount of time studying and completing assignments. He often
+ stays late in the library to work on his projects.
+
+Statements:
+1. John is majoring in Biology.
+2. John is taking a course on Artificial Intelligence.
+3. John is a dedicated student.
+4. John has a part-time job.
+5. John is interested in computer programming.\n
 Answer:
 1. John is majoring in Biology.
 Explanation: John's major is explicitly mentioned as Computer Science. There is no information suggesting he is majoring in Biology.  Verdict: No.
@@ -22,17 +32,19 @@ Explanation: There is no information given in the context about John having a pa
 5. John is interested in computer programming.
 Explanation: The context states that John is pursuing a degree in Computer Science, which implies an interest in computer programming. Verdict: Yes.
 Final verdict for each statement in order: No. No. Yes. No. Yes.
-context:\n{{context}}
+
+Context:\n{{context}}
 {{statements}}
 Answer:
 `;
 
 export const checkLlmFaithfulness: ScoringFn = async ({
   sample,
+  // eslint-disable-next-line no-unused-vars
   output,
   config,
 }) => {
-  // let context = "";
+  let context = "";
   if (config.type !== "llm-faithfulness") {
     return [
       {
@@ -42,38 +54,47 @@ export const checkLlmFaithfulness: ScoringFn = async ({
       },
     ];
   }
-  // if (config.criteria) {
-  //   let replacements: any = { ...sample.inputs };
-  //   if (sample.expected) {
-  //     // llm-criteria supports {{expected}} as placeholder
-  //     replacements.expected = sample.expected;
-  //   }
-  //   criteria = replacePlaceholders(config.criteria, replacements);
-  // }
+  if (config.context) {
+    let replacements: any = { ...sample.inputs };
+    if (sample.expected) {
+      replacements.expected = sample.expected;
+    }
+    context = replacePlaceholders(config.context, replacements);
+  }
 
-  // TODO: placeholders for context and claims
+  // TODO: Figure out how to use placeholders for this scorer
+  // Output is not used currently, nor are claims replaced with placeholders
   const messages: OpenAI.ChatCompletionMessageParam[] = [
-    // { role: "system", content: systemPrompt },
     {
       role: "user",
       content: replacePlaceholders(prompt, {
-        context: config.context,
+        context,
         statements: config.claims.reduce((agg, claim, index) => {
-          return `${agg}\nstatement ${index}: ${claim}`;
+          return `${agg}\nstatement ${index + 1}: ${claim}`;
         }, ""),
       }),
     },
   ];
-  console.log(messages);
 
   try {
-    const response = await askLlmForEvalResult(messages);
-    console.log(response);
+    const response = await askLlmForEvalResult(messages, config.claims.length);
+    const totalScore = Object.entries(response).reduce(
+      // eslint-disable-next-line no-unused-vars
+      (totalScore, [_, verdict]) => totalScore + (verdict === "Yes" ? 1 : 0),
+      0,
+    );
+    const reasonsForNo = Object.entries(response).reduce(
+      (aggReason: string[], [key, value]) =>
+        value === "No"
+          ? [...aggReason, response[`explanation_${key.split("_").pop()}`]]
+          : aggReason,
+      [],
+    );
     return [
       {
-        score: 0, // TODO: calculate it as average of all verdicts
+        score: totalScore / config.claims.length,
         name: config.name || name,
-        message: "reason", // TODO: aggregate explanations, maybe ones that are "No"
+        message: reasonsForNo.join("\n"),
       },
     ];
   } catch (err) {
@@ -91,8 +112,25 @@ export const checkLlmFaithfulness: ScoringFn = async ({
 
 async function askLlmForEvalResult(
   messages: OpenAI.ChatCompletionMessageParam[],
+  numStatements: number,
 ): Promise<any> {
   const ai = new EmpiricalAI("openai");
+  const properties = [...Array(numStatements).keys()].reduce(
+    (agg: any, index) => {
+      agg[`explanation_${index + 1}`] = {
+        type: "string",
+        description: `Explanation for the evaluation of statement ${index + 1}, shared as a step-by-step chain of thought`,
+      };
+      agg[`verdict_${index + 1}`] = {
+        type: "string",
+        enum: ["Yes", "No"],
+        description: `Verdict for statement ${index + 1}`,
+      };
+      return agg;
+    },
+    {},
+  );
+  const required = Object.keys(properties);
   const completion = await ai.chat.completions.create({
     messages,
     model: "gpt-3.5-turbo",
@@ -104,36 +142,9 @@ async function askLlmForEvalResult(
           name: "set_evaluator_response",
           description: "Sets the response of the evaluation",
           parameters: {
-            // TODO: make properties depend on number of statements
             type: "object",
-            properties: {
-              explanation_1: {
-                type: "string",
-                description:
-                  "Explanation for the evaluation of statement 1, shared as a step-by-step chain of thought",
-              },
-              verdict_1: {
-                type: "string",
-                enum: ["Yes", "No"],
-                description: "Verdict for statement 1",
-              },
-              explanation_2: {
-                type: "string",
-                description:
-                  "Explanation for the evaluation of statement 2, shared as a step-by-step chain of thought",
-              },
-              verdict_2: {
-                type: "string",
-                enum: ["Yes", "No"],
-                description: "Verdict for statement 2",
-              },
-            },
-            required: [
-              "explanation_1",
-              "verdict_1",
-              "explanation_2",
-              "verdict_2",
-            ],
+            properties,
+            required,
           },
         },
       },

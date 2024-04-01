@@ -20,7 +20,7 @@ async function prepareOutputForPRComment(
     // https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
     await fs.appendFile(
       process.env.GITHUB_OUTPUT,
-      `result<<EOF\n${markdownSummary(completion)}\n${datasetLength}\n${failedSummary}\nEOF`,
+      `result<<EOF\n${markdownSummary(completion)}\n${datasetLength}\n\n${failedSummary}\nEOF`,
     );
   }
 }

@@ -1,5 +1,11 @@
 # @empiricalrun/cli
 
+## 0.2.0
+
+### Minor Changes
+
+- 844981c: feat: cli can use env vars from dotenv files in cwd or custom path
+
 ## 0.1.0
 
 ### Minor Changes

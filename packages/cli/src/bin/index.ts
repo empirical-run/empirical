@@ -132,7 +132,7 @@ program
     if (process.env.GITHUB_ACTIONS === "true") {
       // echo "### Hello world! :rocket:" >> $GITHUB_STEP_SUMMARY
       await fs.appendFile(
-        process.env.GITHUB_OUTPUT,
+        process.env.GITHUB_OUTPUT!,
         `result<<EOF\n${markdownSummary(completion)}\nEOF`,
       );
     }

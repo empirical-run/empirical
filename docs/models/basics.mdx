@@ -47,3 +47,15 @@ side-by-side comparison view in the web reporter.
 | `anthropic` | Claude 3 models are supported. Requires `ANTHROPIC_API_KEY` environment variable. |
 | `mistral` | All chat models are supported. Requires `MISTRAL_API_KEY` environment variable. |
 | `google` | Gemini Pro models are supported. Requires `GEMINI_API_KEY` environment variable. |
+
+### Environment variables
+
+API calls to model providers require API keys, which are stored as environment variables. The CLI can work with:
+
+- Existing environment variables (using `process.env`)
+- Environment variables defined in `.env` or `.env.local` files, in the current working directory
+  - For .env files that are located elsewhere, you can pass the `--env-file` flag
+
+```sh
+npx @empiricalrun/cli --env-file <PATH_TO_ENV_FILE>
+```

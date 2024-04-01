@@ -1,7 +1,16 @@
 {
+<<<<<<< Updated upstream
   "name": "@empiricalrun/core",
   "version": "0.0.0",
   "private": true,
+=======
+  "name": "@empiricalrun/core-test",
+  "version": "0.1.0",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+>>>>>>> Stashed changes
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc --build && cp -r src/python/ dist/python/",

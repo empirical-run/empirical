@@ -1,7 +1,15 @@
 {
   "name": "@empiricalrun/types",
+<<<<<<< Updated upstream
   "version": "0.0.0",
   "private": true,
+=======
+  "version": "0.1.0",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+>>>>>>> Stashed changes
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

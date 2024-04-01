@@ -37,5 +37,23 @@ jobs:
       - name: Run Empirical
         run: "npx ./../../packages/cli run"
         working-directory: ./examples/basic
+        id: empirical-run
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v3
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Empirical Run Summary
+
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ${{ steps.empirical-run.outputs.result }}
+          edit-mode: replace

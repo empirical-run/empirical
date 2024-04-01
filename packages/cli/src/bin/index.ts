@@ -131,10 +131,10 @@ program
 
     if (process.env.GITHUB_ACTIONS === "true") {
       // echo "### Hello world! :rocket:" >> $GITHUB_STEP_SUMMARY
-      if (process.env.GITHUB_ACTIONS && process.env.GITHUB_STEP_SUMMARY) {
+      if (process.env.GITHUB_ACTIONS && process.env.GITHUB_OUTPUT) {
         await fs.appendFile(
-          process.env.GITHUB_STEP_SUMMARY,
-          markdownSummary(completion),
+          process.env.GITHUB_OUTPUT,
+          `result=${markdownSummary(completion)}`,
         );
       }
     }

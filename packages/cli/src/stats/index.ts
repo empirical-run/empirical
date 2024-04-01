@@ -28,7 +28,9 @@ function runStatsSummary(
   return [
     [
       enableColors ? bold("Stats") : "Stats",
-      ...runs.map((c) => bold(c.run_config.name)),
+      ...runs.map((c) =>
+        enableColors ? bold(c.run_config.name) : c.run_config.name!,
+      ),
     ],
     [
       enableColors ? bold("outputs") : "outputs",

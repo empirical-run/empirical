@@ -48,4 +48,7 @@ jobs:
 
       - name: Publish
         run: pnpm publish-packages
+
+      - name: Add git tag
+        run: git push --follow-tags
         

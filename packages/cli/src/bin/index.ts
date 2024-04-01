@@ -1,18 +1,19 @@
 #!/usr/bin/env node
-import { DefaultRunsConfigType, getDefaultRunsConfig } from "../runs";
 import { green, red, yellow, bold } from "picocolors";
 import { promises as fs } from "fs";
 import { program } from "commander";
-import packageJSON from "../../package.json";
-import { RunsConfig } from "../types";
-import { execute } from "@empiricalrun/core";
-import { loadDataset } from "./dataset";
-import { DatasetError } from "../error";
-import { Dataset, RunCompletion } from "@empiricalrun/types";
 import cliProgress from "cli-progress";
 import express from "express";
 import path from "path";
 import opener from "opener";
+import dotenv from "dotenv";
+import packageJSON from "../../package.json";
+import { execute } from "@empiricalrun/core";
+import { RunsConfig } from "../types";
+import { loadDataset } from "./dataset";
+import { DatasetError } from "../error";
+import { DefaultRunsConfigType, getDefaultRunsConfig } from "../runs";
+import { Dataset, RunCompletion } from "@empiricalrun/types";
 import { printStatsSummary, setRunSummary } from "../stats";
 
 const configFileName = "empiricalrc.json";
@@ -52,10 +53,16 @@ program
   .description("initiate a run to evaluate model completions")
   .option(
     "-pyp, --python-path <char>",
-    "Provide the python executable patg for the python scripts",
+    "Provide the python executable path for the python scripts",
+  )
+  .option(
+    "-env, --env-file <char>",
+    "Provide path to .env file to load environment variables",
   )
   .action(async (options) => {
+    dotenv.config({ path: options.envFile || [".env.local", ".env"] });
     console.log(yellow("Initiating run..."));
+
     let data;
     const startTime = performance.now();
     try {

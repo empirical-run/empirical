@@ -24,17 +24,6 @@
           "type": "is-json"
         }
       ]
-    },
-    {
-      "type": "model",
-      "provider": "anthropic",
-      "model": "claude-3-haiku",
-      "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
-      "scorers": [
-        {
-          "type": "is-json"
-        }
-      ]
     }
   ],
   "dataset": {

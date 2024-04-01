@@ -1,10 +1,10 @@
 name: Run example with Empirical
- 
+
 on:
   pull_request:
     types: [opened, synchronize]
     paths:
-      - 'examples/basic/**'
+      - 'examples/**'
       - '.github/workflows/example.yml'
 
 jobs:
@@ -18,24 +18,14 @@ jobs:
         with:
           fetch-depth: 1
  
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 8.5
- 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
  
-      - name: Install dependencies
-        run: pnpm install
-      
-      - name: Build
-        run: pnpm build
-
       - name: Run Empirical
-        run: "npx ./../../packages/cli run"
+        run: npx @empiricalrun/cli run
         working-directory: ./examples/basic
         id: empirical-run
         env:

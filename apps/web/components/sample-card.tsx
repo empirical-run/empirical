@@ -52,7 +52,7 @@ export default function SampleCard({
                     <ArrowTopRightIcon height={12} width={12} />
                   </Button>
                 </SheetTrigger>
-                <SheetContent className="w-[400px] sm:w-[540px]">
+                <SheetContent className="w-[700px] sm:w-[540px]">
                   <SheetHeader>
                     <SheetTitle>{activeTab}</SheetTitle>
                   </SheetHeader>

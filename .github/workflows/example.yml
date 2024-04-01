@@ -23,10 +23,8 @@ jobs:
         with:
           node-version: 20
  
-      - name: Basic example
-        run: cd examples/basic
-      
       - name: Run Empirical
         run: npx @empiricalrun/cli run
+        working-directory: ./examples/basic
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

@@ -14,7 +14,7 @@ import { loadDataset } from "./dataset";
 import { DatasetError } from "../error";
 import { DefaultRunsConfigType, getDefaultRunsConfig } from "../runs";
 import { Dataset, RunCompletion } from "@empiricalrun/types";
-import { printStatsSummary, setRunSummary } from "../stats";
+import { markdownSummary, printStatsSummary, setRunSummary } from "../stats";
 
 const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
@@ -70,7 +70,7 @@ program
     } catch (err) {
       console.log(`${red("[Error]")} Failed to read ${configFileName} file`);
       console.log(yellow("Please ensure running init command first"));
-      return;
+      process.exit(1);
     }
 
     console.log(`${green("[Success]")} - read ${configFileName} file`);
@@ -84,7 +84,7 @@ program
     } catch (error) {
       if (error instanceof DatasetError) {
         console.log(`${red("[Error]")} ${error.message}`);
-        return;
+        process.exit(1);
       } else {
         throw error;
       }
@@ -99,6 +99,7 @@ program
           r.pythonPath = options.pythonPath;
         }
         return execute(r, dataset, () => {
+          // TODO: check if error - throw
           progressBar.increment();
         });
       }),
@@ -108,6 +109,7 @@ program
     setRunSummary(completion);
     printStatsSummary(completion);
 
+    // TODO: this is not sent in CI report
     console.log(bold("Total dataset samples:"), dataset.samples?.length || 0);
     const endTime = performance.now();
     console.log(
@@ -123,6 +125,18 @@ program
       };
       await fs.mkdir(`${cwd}/${cacheDir}`, { recursive: true });
       await fs.writeFile(outputFilePath, JSON.stringify(data, null, 2));
+    }
+
+    console.log(markdownSummary(completion));
+
+    if (process.env.GITHUB_ACTIONS === "true") {
+      // echo "### Hello world! :rocket:" >> $GITHUB_STEP_SUMMARY
+      if (process.env.GITHUB_ACTIONS && process.env.GITHUB_STEP_SUMMARY) {
+        await fs.appendFile(
+          process.env.GITHUB_STEP_SUMMARY,
+          markdownSummary(completion),
+        );
+      }
     }
 
     // If outputs are not 100%, then return exit code 1 to indicate failure

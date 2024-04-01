@@ -19,10 +19,10 @@ export function setRunSummary(runs: RunCompletion[]) {
   runs.forEach((r) => (r.stats = getStatsForRun(r)));
 }
 
-export function printStatsSummary(runs: RunCompletion[]) {
+function runStatsSummary(runs: RunCompletion[]): string[][] {
   // TODO: should get rid of this once config has separate scorer object
   const scorerNames = runs[0]?.stats?.scores.map((s) => s.name) || [];
-  const runStatsSummary = [
+  return [
     [bold("Stats"), ...runs.map((c) => bold(c.run_config.name))],
     [
       bold("outputs"),
@@ -46,8 +46,35 @@ export function printStatsSummary(runs: RunCompletion[]) {
       ];
     }),
   ];
+}
+
+export function markdownSummary(runs: RunCompletion[]): string {
+  const markdownTable = table(runStatsSummary(runs), {
+    border: {
+      topBody: "",
+      topJoin: "",
+      topLeft: "",
+      topRight: "",
+      bottomBody: "",
+      bottomJoin: "",
+      bottomLeft: "",
+      bottomRight: "",
+      bodyLeft: "|",
+      bodyRight: "|",
+      bodyJoin: "|",
+      joinBody: "-",
+      joinLeft: "|",
+      joinRight: "|",
+      joinJoin: "|",
+    },
+    drawHorizontalLine: (index) => index === 1,
+  });
+  return `## Empirical Run Summary\n${markdownTable}`;
+}
+
+export function printStatsSummary(runs: RunCompletion[]) {
   console.log(
-    table(runStatsSummary, {
+    table(runStatsSummary(runs), {
       header: {
         alignment: "center",
         content: bold(cyan("Empirical Run Summary")),

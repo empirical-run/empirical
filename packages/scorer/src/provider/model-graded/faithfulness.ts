@@ -4,10 +4,12 @@ import { EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
 
 export const name = "llm-faithfulness";
 
-const prompt = `Consider the given context and following statements, determine whether they are supported by
+// The few shot example is based on the implementation from Ragas
+// https://github.com/explodinggradients/ragas/blob/main/src/ragas/metrics/_faithfulness.py
+// TODO: add their license to satisfy Apache 2.0 conditions
+const prompt = `Given the following context, determine whether the statements are supported by
  the information present in the context. Provide a brief explanation for each statement before arriving at the
  verdict (Yes/No). Provide a final verdict for each statement in order at the end in the given format.
- Do not deviate from the specified format.
 
 Context:\nJohn is a student at XYZ University. He is pursuing a degree in Computer Science. He is enrolled in
  several courses this semester, including Data Structures, Algorithms, and Database Management. John is a

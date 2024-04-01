@@ -1,5 +1,11 @@
 # @empiricalrun/core
 
+## 0.1.1
+
+### Patch Changes
+
+- 41e3e94: feat: default name for run if not specified
+
 ## 0.1.0
 
 ### Minor Changes

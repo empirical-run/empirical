@@ -79,11 +79,21 @@ export async function execute(
   }
   return {
     id: runId,
-    run_config: run,
+    run_config: { ...run, name: run.name || getDefaultRunName(run, runId) },
     dataset_config: {
       id: dataset.id,
     },
     samples: sampleCompletions,
     created_at: runCreationDate,
   };
+}
+
+function getDefaultRunName(run: IRunConfig, id: string): string {
+  let name = "";
+  if (run.type === "model") {
+    name = run.model;
+  } else if (run.type === "py-script" || run.type === "js-script") {
+    name = run.value;
+  }
+  return `Run #${id}: ${name}`;
 }

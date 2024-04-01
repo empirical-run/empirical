@@ -46,8 +46,13 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish
-        run: pnpm publish-packages
+      - name: Publish to npm
+        uses: changesets/action@v1
+        with:
+          publish: pnpm publish-packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Add git tag
         run: git push --follow-tags

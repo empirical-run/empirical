@@ -5,6 +5,7 @@ on:
     types: [opened, synchronize]
     paths-ignore:
        - 'docs/**'
+       - '.changeset/**'
 
 jobs:
   build:

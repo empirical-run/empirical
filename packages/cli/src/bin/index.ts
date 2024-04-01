@@ -134,10 +134,11 @@ program
       if (process.env.GITHUB_ACTIONS && process.env.GITHUB_OUTPUT) {
         await fs.appendFile(
           process.env.GITHUB_OUTPUT,
-          `result=${markdownSummary(completion)}`,
+          `result<<EOF\n${markdownSummary(completion)}\nEOF`,
         );
       }
     }
+    // https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
 
     // If outputs are not 100%, then return exit code 1 to indicate failure
     // This can be extended to score values

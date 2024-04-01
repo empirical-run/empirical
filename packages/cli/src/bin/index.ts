@@ -131,12 +131,10 @@ program
 
     if (process.env.GITHUB_ACTIONS === "true") {
       // echo "### Hello world! :rocket:" >> $GITHUB_STEP_SUMMARY
-      if (process.env.GITHUB_ACTIONS && process.env.GITHUB_OUTPUT) {
-        await fs.appendFile(
-          process.env.GITHUB_OUTPUT,
-          `result<<EOF\n${markdownSummary(completion)}\nEOF`,
-        );
-      }
+      await fs.appendFile(
+        process.env.GITHUB_OUTPUT,
+        `result<<EOF\n${markdownSummary(completion)}\nEOF`,
+      );
     }
     // https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
 

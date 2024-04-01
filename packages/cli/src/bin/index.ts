@@ -124,6 +124,23 @@ program
       await fs.mkdir(`${cwd}/${cacheDir}`, { recursive: true });
       await fs.writeFile(outputFilePath, JSON.stringify(data, null, 2));
     }
+
+    // If outputs are not 100%, then return exit code 1 to indicate failure
+    // This can be extended to score values
+    const failedOutputs = completion
+      .filter((run) => {
+        return run.stats?.outputs.failed && run.stats?.outputs.failed > 0;
+      })
+      .map((run) => {
+        return run.samples;
+      })
+      .flat();
+    if (failedOutputs.length > 0) {
+      console.log("[Error] Some runs failed to complete successfully:");
+      const example = failedOutputs[0];
+      console.log(`${example?.error?.code}: ${example?.error?.message}`);
+      process.exit(1);
+    }
   });
 
 program

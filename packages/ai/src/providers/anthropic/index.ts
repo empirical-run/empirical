@@ -17,6 +17,15 @@ const finishReaonReverseMap = new Map<
   [null, "stop"],
 ]);
 
+const canonicalModelName = (modelName: string) => {
+  const canonicalNames: { [key: string]: string } = {
+    "claude-3-haiku": "claude-3-haiku-20240307",
+    "claude-3-sonnet": "claude-3-sonnet-20240229",
+    "claude-3-opus": "claude-3-opus-20240229",
+  };
+  return canonicalNames[modelName] || modelName;
+};
+
 const convertOpenAIToAnthropicAI = function (
   messages: ChatCompletionMessageParam[],
 ): { contents: Anthropic.MessageParam[]; systemPrompt: string } {
@@ -58,7 +67,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
         return anthropic.messages
           .create({
             max_tokens: max_tokens || 1024,
-            model,
+            model: canonicalModelName(model),
             messages: contents,
             system: systemPrompt,
           })

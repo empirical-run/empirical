@@ -1,21 +1,17 @@
 import { Scorer, Score, DatasetSample, RunOutput } from "@empiricalrun/types";
-import getScorer from "./provider";
 import { ScorerError, ScorerErrorEnum } from "./error";
+import getScoringFn from "./provider";
 
 export default async function score({
   sample,
   output,
   scorers,
-  metadata,
   options,
 }: {
   sample: DatasetSample;
   output: RunOutput;
   scorers: Scorer[] | undefined;
-  metadata?: object | undefined;
-  options?: {
-    pythonPath?: string;
-  };
+  options?: object;
 }): Promise<Score[]> {
   if (!scorers) {
     return [];
@@ -26,7 +22,7 @@ export default async function score({
       scorers
         .filter((s) => !!s)
         .map((scorer) => {
-          const scoringFn = getScorer(scorer);
+          const scoringFn = getScoringFn(scorer);
           if (!scoringFn) {
             throw new ScorerError(
               ScorerErrorEnum.INCORRECT_PARAMETERS,
@@ -34,10 +30,9 @@ export default async function score({
             );
           }
           return scoringFn({
+            config: scorer,
             sample,
             output,
-            value: scorer.value,
-            metadata,
             options,
           });
         }),

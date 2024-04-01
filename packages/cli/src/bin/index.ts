@@ -8,10 +8,13 @@ import { RunsConfig } from "../types";
 import { execute } from "@empiricalrun/core";
 import { loadDataset } from "./dataset";
 import { RunsFileStore } from "./store";
+import { DatasetError } from "../error";
+import { Dataset } from "@empiricalrun/types";
 import cliProgress from "cli-progress";
 import express from "express";
 import path from "path";
 import opener from "opener";
+import { printStatsSummary, setRunSummary } from "../stats";
 
 const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
@@ -53,6 +56,7 @@ program
   .action(async (options) => {
     console.log(yellow("Initiating run..."));
     let data;
+    const startTime = performance.now();
     try {
       data = await fs.readFile(configFileFullPath);
     } catch (err) {
@@ -65,12 +69,16 @@ program
     const jsonStr = data.toString();
     const { runs, dataset: datasetConfig } = JSON.parse(jsonStr) as RunsConfig;
     // TODO: add check here for empty runs config. Add validator of the file
-    const dataset = await loadDataset(datasetConfig);
-    if (!dataset) {
-      return;
-    } else {
-      if (process.env.CI !== "true") {
-        await fileStore.storeDataset(dataset);
+
+    let dataset: Dataset;
+    try {
+      dataset = await loadDataset(datasetConfig);
+    } catch (error) {
+      if (error instanceof DatasetError) {
+        console.log(`${red("[Error]")} ${error.message}`);
+        return;
+      } else {
+        throw error;
       }
     }
 
@@ -88,6 +96,17 @@ program
       }),
     );
     progressBar.stop();
+
+    setRunSummary(completion);
+    printStatsSummary(completion);
+
+    console.log(bold("Total dataset samples:"), dataset.samples?.length || 0);
+    const endTime = performance.now();
+    console.log(
+      bold("Done in"),
+      yellow(((endTime - startTime) / 1000).toFixed(2)),
+      "seconds",
+    );
 
     if (process.env.CI !== "true") {
       await fileStore.storeRunsForDatasetId(completion, dataset);

@@ -1,7 +1,10 @@
 {
   "name": "@empiricalrun/ai",
   "version": "0.0.0",
-  "private": true,
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc --build",

@@ -19,7 +19,7 @@ export interface ScorerBase {
 export interface LLMScorer extends ScorerBase {
   type: "llm-criteria";
   name?: string;
-  criteria?: string;
+  criteria: string;
 }
 
 export interface DeterministicScorer extends ScorerBase {
@@ -29,7 +29,7 @@ export interface DeterministicScorer extends ScorerBase {
 export interface ScriptScorer extends ScorerBase {
   type: "py-script";
   name?: string;
-  path?: string;
+  path: string;
 }
 
 export type Scorer = LLMScorer | DeterministicScorer | ScriptScorer;

@@ -3,12 +3,12 @@ import { RunsConfig } from "../../../types";
 export const config: RunsConfig = {
   runs: [
     {
-      name: "gpt-3.5-turbo run",
       type: "model",
+      name: "gpt-3.5-turbo run",
       provider: "openai",
       model: "gpt-3.5-turbo",
       prompt:
-        "You are expected to respond with a JSON object, which has above keys and corresponding entities. If an entity is missing, respond with null. \n\n{{user_message}}",
+        "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
       scorers: [
         {
           type: "is-json",
@@ -16,12 +16,12 @@ export const config: RunsConfig = {
       ],
     },
     {
-      name: "gpt-4-turbo-preview run",
       type: "model",
+      name: "gpt-4-turbo-preview run",
       provider: "openai",
       model: "gpt-4-turbo-preview",
       prompt:
-        "You are expected to respond with a JSON object, which has above keys and corresponding entities. If an entity is missing, respond with null. \n\n{{user_message}}",
+        "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
       scorers: [
         {
           type: "is-json",

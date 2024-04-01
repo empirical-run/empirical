@@ -5,7 +5,7 @@ import { Score } from "@empiricalrun/types";
 
 export const name = "py-script";
 
-const scriptTimeout = 10000;
+const scriptTimeout = 20000;
 const wrapperScriptDirectory = path.join(__dirname, "..", "..", "python");
 const wrapperScriptFile = "wrapper.py";
 const executionOutputIdentifier = "scorer_output:";

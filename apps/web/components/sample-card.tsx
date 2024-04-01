@@ -37,7 +37,7 @@ export default function SampleCard({
     <Card
       className={`flex flex-1 flex-col rounded-md items-stretch border-zinc-900`}
     >
-      <CardContent className="flex flex-col flex-1 p-2 mt-2 pb-0 items-stretch relative">
+      <CardContent className="flex flex-col flex-1 p-2 pb-0 items-stretch relative">
         <div className="flex flex-row space-x-2 justify-end absolute right-4 top-4">
           <>
             {activeInputValue && (
@@ -45,7 +45,7 @@ export default function SampleCard({
                 <SheetTrigger asChild>
                   <Button
                     variant={"outline"}
-                    className="right-5 top-0 z-10 capitalize text-xs"
+                    className="right-2 top-0 z-10 capitalize text-xs"
                     size={"xs"}
                   >
                     Expand

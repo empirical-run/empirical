@@ -26,7 +26,7 @@ export const RunDetails = ({
               variant={"secondary"}
               className=" text-xs text-muted-foreground whitespace-nowrap"
             >
-              Run #{runResult.id}
+              #{runResult.id}
             </Badge>
           </CardTitle>
         </div>

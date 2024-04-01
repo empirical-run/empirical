@@ -16,10 +16,17 @@ export interface ScorerBase {
   threshold?: number;
 }
 
-export interface LLMScorer extends ScorerBase {
+export interface LLMCriteriaScorer extends ScorerBase {
   type: "llm-criteria";
   name?: string;
   criteria?: string;
+}
+
+export interface LLMFaithfulnessScorer extends ScorerBase {
+  type: "llm-faithfulness";
+  name?: string;
+  context: string;
+  claims: string[];
 }
 
 export interface DeterministicScorer extends ScorerBase {
@@ -32,7 +39,11 @@ export interface ScriptScorer extends ScorerBase {
   path?: string;
 }
 
-export type Scorer = LLMScorer | DeterministicScorer | ScriptScorer;
+export type Scorer =
+  | LLMCriteriaScorer
+  | LLMFaithfulnessScorer
+  | DeterministicScorer
+  | ScriptScorer;
 
 export type Prompt = string | ChatPrompt[];
 

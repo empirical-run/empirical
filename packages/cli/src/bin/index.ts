@@ -14,7 +14,12 @@ import { loadDataset } from "./dataset";
 import { DatasetError } from "../error";
 import { DefaultRunsConfigType, getDefaultRunsConfig } from "../runs";
 import { Dataset, RunCompletion } from "@empiricalrun/types";
-import { markdownSummary, printStatsSummary, setRunSummary } from "../stats";
+import {
+  failedOutputsSummary,
+  printStatsSummary,
+  setRunSummary,
+} from "../stats";
+import { reportOnCI } from "../reporters/ci";
 
 const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
@@ -99,7 +104,6 @@ program
           r.pythonPath = options.pythonPath;
         }
         return execute(r, dataset, () => {
-          // TODO: check if error - throw
           progressBar.increment();
         });
       }),
@@ -125,34 +129,17 @@ program
       };
       await fs.mkdir(`${cwd}/${cacheDir}`, { recursive: true });
       await fs.writeFile(outputFilePath, JSON.stringify(data, null, 2));
+    } else {
+      await reportOnCI(completion, dataset);
     }
 
-    console.log(markdownSummary(completion));
-
-    if (process.env.GITHUB_ACTIONS === "true") {
-      // echo "### Hello world! :rocket:" >> $GITHUB_STEP_SUMMARY
-      const datasetLength = `Total dataset samples: ${dataset.samples?.length || 0}`;
-      await fs.appendFile(
-        process.env.GITHUB_OUTPUT!,
-        `result<<EOF\n${markdownSummary(completion)}\n${datasetLength}\nEOF`,
+    const failedOutputs = failedOutputsSummary(completion);
+    if (failedOutputs) {
+      const { code, message } = failedOutputs;
+      console.log(
+        `${red("[Error]")} Some outputs were not generated successfully`,
       );
-    }
-    // https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#multiline-strings
-
-    // If outputs are not 100%, then return exit code 1 to indicate failure
-    // This can be extended to score values
-    const failedOutputs = completion
-      .filter((run) => {
-        return run.stats?.outputs.failed && run.stats?.outputs.failed > 0;
-      })
-      .map((run) => {
-        return run.samples;
-      })
-      .flat();
-    if (failedOutputs.length > 0) {
-      console.log("[Error] Some runs failed to complete successfully:");
-      const example = failedOutputs[0];
-      console.log(`${example?.error?.code}: ${example?.error?.message}`);
+      console.log(`${red("[Error]")} ${code}: ${message}`);
       process.exit(1);
     }
   });

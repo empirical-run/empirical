@@ -81,7 +81,7 @@ export function markdownSummary(runs: RunCompletion[]): string {
     },
     drawHorizontalLine: (index) => index === 1,
   });
-  return `## Empirical Run Summary\n${markdownTable}`;
+  return `### Empirical Run Summary\n${markdownTable}`;
 }
 
 export function printStatsSummary(runs: RunCompletion[]) {
@@ -105,4 +105,21 @@ export function printStatsSummary(runs: RunCompletion[]) {
       columns: [{ alignment: "left" }],
     }),
   );
+}
+
+export function failedOutputsSummary(runs: RunCompletion[]):
+  | {
+      code?: string;
+      message: string;
+    }
+  | undefined {
+  const failedOutputs = runs
+    .filter((run) => run.stats?.outputs.failed && run.stats?.outputs.failed > 0)
+    .map((run) => run.samples)
+    .flat();
+  // TODO: Better summary of errors, maybe through the progress callback
+  // TODO: Ensure error is not undefined
+  if (failedOutputs.length > 0 && failedOutputs[0]!.error) {
+    return { ...failedOutputs[0]!.error };
+  }
 }

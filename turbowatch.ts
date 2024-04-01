@@ -1,6 +1,9 @@
 import { watch } from "turbowatch";
 
 void watch({
+  debounce: {
+    wait: 0,
+  },
   project: __dirname,
   triggers: [
     {
@@ -20,6 +23,7 @@ void watch({
         await spawn`pnpm run build`;
         await spawn`pnpm install`;
       },
+      interruptible: true,
     },
   ],
 });

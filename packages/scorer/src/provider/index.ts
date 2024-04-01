@@ -13,7 +13,7 @@ import {
 import {
   name as llmFaithfulnessName,
   checkLlmFaithfulness,
-} from "./model-graded/Faithfulness";
+} from "./model-graded/faithfulness";
 import {
   name as llmCriteriaName,
   checkLlmCriteria,

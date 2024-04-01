@@ -19,26 +19,36 @@ export function setRunSummary(runs: RunCompletion[]) {
   runs.forEach((r) => (r.stats = getStatsForRun(r)));
 }
 
-function runStatsSummary(runs: RunCompletion[]): string[][] {
+function runStatsSummary(
+  runs: RunCompletion[],
+  enableColors: boolean,
+): string[][] {
   // TODO: should get rid of this once config has separate scorer object
   const scorerNames = runs[0]?.stats?.scores.map((s) => s.name) || [];
   return [
-    [bold("Stats"), ...runs.map((c) => bold(c.run_config.name))],
     [
-      bold("outputs"),
+      enableColors ? bold("Stats") : "Stats",
+      ...runs.map((c) => bold(c.run_config.name)),
+    ],
+    [
+      enableColors ? bold("outputs") : "outputs",
       ...runs.map((c) => {
         const metric = percentStr((c?.stats?.outputs.success || 0) * 100);
-        return setMetricColor(metric, c?.stats?.outputs.success || 0);
+        return enableColors
+          ? setMetricColor(metric, c?.stats?.outputs.success || 0)
+          : metric;
       }),
     ],
     ...scorerNames.map((sn) => {
       return [
-        bold(sn),
+        enableColors ? bold(sn) : sn,
         ...runs.map((c) => {
           const scoreStats = c.stats?.scores.filter((s) => s.name === sn)[0];
           if (scoreStats) {
             const metric = percentStr(scoreStats.avgScore * 100);
-            return setMetricColor(metric, scoreStats.avgScore);
+            return enableColors
+              ? setMetricColor(metric, scoreStats.avgScore)
+              : metric;
           } else {
             return percentStr(0);
           }
@@ -49,7 +59,7 @@ function runStatsSummary(runs: RunCompletion[]): string[][] {
 }
 
 export function markdownSummary(runs: RunCompletion[]): string {
-  const markdownTable = table(runStatsSummary(runs), {
+  const markdownTable = table(runStatsSummary(runs, false), {
     border: {
       topBody: "",
       topJoin: "",
@@ -74,7 +84,7 @@ export function markdownSummary(runs: RunCompletion[]): string {
 
 export function printStatsSummary(runs: RunCompletion[]) {
   console.log(
-    table(runStatsSummary(runs), {
+    table(runStatsSummary(runs, true), {
       header: {
         alignment: "center",
         content: bold(cyan("Empirical Run Summary")),

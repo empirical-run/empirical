@@ -35,7 +35,7 @@ jobs:
         run: pnpm build
 
       - name: Link packages
-        run: pnpm link . --global
+        run: pnpm link .
         working-directory: ./packages/cli
 
       - name: Run Empirical

@@ -1,16 +1,10 @@
 {
-<<<<<<< Updated upstream
   "name": "@empiricalrun/scorer",
   "version": "0.0.0",
-  "private": true,
-=======
-  "name": "@empiricalrun/scorer-test",
-  "version": "0.1.0",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
->>>>>>> Stashed changes
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {

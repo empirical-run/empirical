@@ -6,6 +6,8 @@
     "access": "public"
   },
   "main": "dist/index.js",
+  "author": "Empirical.run Team <hey@empirical.run>",
+  "license": "MIT",
   "scripts": {
     "build": "tsc --build && cp -r src/python/ dist/python/",
     "clean": "tsc --build --clean",

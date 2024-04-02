@@ -1,11 +1,11 @@
-name: Build and Publish
+name: Publish packages
  
 on:
   workflow_dispatch
 
 jobs:
   publish:
-    name: Build and publish
+    name: Publish packages
     timeout-minutes: 8
     runs-on: ubuntu-latest
     steps:
@@ -50,10 +50,8 @@ jobs:
         uses: changesets/action@v1
         with:
           publish: pnpm publish-packages
+          createGithubReleases: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Add git tag
-        run: git push --follow-tags
         

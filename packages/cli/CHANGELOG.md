@@ -1,5 +1,14 @@
 # @empiricalrun/cli
 
+## 0.2.3
+
+### Patch Changes
+
+- 571986a: chore: update npm package license
+- Updated dependencies [571986a]
+  - @empiricalrun/types@0.1.1
+  - @empiricalrun/core@0.1.3
+
 ## 0.2.2
 
 ### Patch Changes

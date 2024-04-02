@@ -1,5 +1,11 @@
 # web
 
+## 0.2.0
+
+### Minor Changes
+
+- 424f994: feat: add run summary in the header
+
 ## 0.1.0
 
 ### Minor Changes

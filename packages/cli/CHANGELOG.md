@@ -1,5 +1,11 @@
 # @empiricalrun/cli
 
+## 0.2.4
+
+### Patch Changes
+
+- f7de133: fix: reduce bundled size of cli package
+
 ## 0.2.3
 
 ### Patch Changes

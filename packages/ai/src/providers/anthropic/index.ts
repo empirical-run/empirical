@@ -56,7 +56,6 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   }
   const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
-    maxRetries: 5,
   });
   const { model, messages, max_tokens } = body;
   const { contents, systemPrompt } = convertOpenAIToAnthropicAI(messages);

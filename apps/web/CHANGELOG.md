@@ -1,5 +1,11 @@
 # web
 
+## 0.2.1
+
+### Patch Changes
+
+- 4a858f5: fix: monaco instances block page scroll
+
 ## 0.2.0
 
 ### Minor Changes

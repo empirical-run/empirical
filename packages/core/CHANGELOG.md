@@ -1,5 +1,15 @@
 # @empiricalrun/core
 
+## 0.1.3
+
+### Patch Changes
+
+- 571986a: chore: update npm package license
+- Updated dependencies [571986a]
+- Updated dependencies [4a858f5]
+  - @empiricalrun/scorer@0.1.2
+  - @empiricalrun/ai@0.1.1
+
 ## 0.1.2
 
 ### Patch Changes

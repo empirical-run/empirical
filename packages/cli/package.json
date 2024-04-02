@@ -9,6 +9,8 @@
   "bin": {
     "@empiricalrun/cli": "./dist/bin/index.js"
   },
+  "author": "Empirical.run Team <hey@empirical.run>",
+  "license": "MIT",
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean",

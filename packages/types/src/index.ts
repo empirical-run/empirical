@@ -51,7 +51,7 @@ type ResponseFormat = {
   type: "json_object" | "text";
 };
 
-interface ModelConfigOptions {
+interface ModelConfigParams {
   // From OpenAI config: see OpenAI.ChatCompletionCreateParamsNonStreaming
   // TODO: This does not support logit_bias, tools, tool_choice, user, stream
   temperature?: number;
@@ -76,7 +76,7 @@ export interface ModelRunConfig extends RunConfigBase {
   provider: "openai" | "mistral" | "google" | "anthropic" | "fireworks";
   model: string;
   prompt?: Prompt;
-  config?: ModelConfigOptions;
+  config?: ModelConfigParams;
 }
 
 export interface JSScriptRunConfig extends RunConfigBase {

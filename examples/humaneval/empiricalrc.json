@@ -1,24 +1,24 @@
 {
-    "$schema": "https://assets.empirical.run/config/schema/v1.12.json",
-    "runs": [
-      {
-        "type": "model",
-        "provider": "openai",
-        "model": "gpt-3.5-turbo",
-        "prompt": "Complete the following python function. Return only the completed function so that it can be directly run on a Python shell, including imports like from typing import List.\n```python\n{{prompt}}\n```",
-        "parameters": {
-          "temperature": 0.1
-        },
-        "scorers": [
-          {
-            "type": "py-script",
-            "path": "score.py",
-            "name": "unit-tests"
-          }
-        ]
-      }
-    ],
-    "dataset": {
-      "path": "HumanEval.jsonl"
+  "$schema": "https://assets.empirical.run/config/schema/v1.12.json",
+  "runs": [
+    {
+      "type": "model",
+      "provider": "openai",
+      "model": "gpt-3.5-turbo",
+      "prompt": "Complete the following python function. Return only the completed function so that it can be directly run on a Python shell, including imports like from typing import List.\n```python\n{{prompt}}\n```",
+      "parameters": {
+        "temperature": 0.1
+      },
+      "scorers": [
+        {
+          "type": "py-script",
+          "path": "score.py",
+          "name": "unit-tests"
+        }
+      ]
     }
+  ],
+  "dataset": {
+    "path": "HumanEval.jsonl"
   }
+}

@@ -18,7 +18,7 @@ export const modelExecutor: Executor = async function (
       },
     };
   }
-  let passthroughConfig: { [key: string]: any } = {};
+  let passthroughParams: { [key: string]: any } = {};
   const { prompt, model, provider, parameters } = runConfig;
   if (parameters) {
     const knownParameters = [
@@ -39,7 +39,7 @@ export const modelExecutor: Executor = async function (
         return knownParameters.indexOf(key) < 0;
       })
       .forEach((key) => {
-        passthroughConfig[key] = parameters[key];
+        passthroughParams[key] = parameters[key];
         parameters[key] = undefined;
       });
   }
@@ -58,7 +58,7 @@ export const modelExecutor: Executor = async function (
         messages,
         ...parameters,
       },
-      passthroughConfig,
+      passthroughParams,
     );
     value = completion.choices?.[0]?.message.content || "";
   } catch (e: any) {

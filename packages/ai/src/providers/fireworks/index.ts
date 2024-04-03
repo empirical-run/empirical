@@ -11,7 +11,7 @@ const batchTaskManager = new BatchTaskManager(10);
 
 const createChatCompletion: ICreateChatCompletion = async (
   body,
-  passthroughConfig,
+  passthroughParams,
 ) => {
   const { model, messages, ...config } = body;
   const payload = JSON.stringify({
@@ -25,7 +25,7 @@ const createChatCompletion: ICreateChatCompletion = async (
     n: config.n,
     stop: config.stop,
     response_format: config.response_format,
-    ...passthroughConfig,
+    ...passthroughParams,
   });
   const apiKey = process.env.FIREWORKS_API_KEY;
   if (!apiKey) {

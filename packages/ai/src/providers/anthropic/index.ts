@@ -49,7 +49,7 @@ const convertOpenAIToAnthropicAI = function (
 
 const createChatCompletion: ICreateChatCompletion = async (
   body,
-  passthroughConfig,
+  passthroughParams,
 ) => {
   if (!process.env.ANTHROPIC_API_KEY) {
     throw new AIError(
@@ -79,7 +79,7 @@ const createChatCompletion: ICreateChatCompletion = async (
                 ? [config.stop]
                 : undefined,
             top_p: config.top_p || undefined,
-            ...passthroughConfig,
+            ...passthroughParams,
           })
           .catch((err) => {
             if (

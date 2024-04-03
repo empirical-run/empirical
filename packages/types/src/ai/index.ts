@@ -8,7 +8,7 @@ export interface IChatCompletion extends OpenAI.ChatCompletion {}
 export interface ICreateChatCompletion {
   (
     body: IChatCompletionCreateParams,
-    passthroughConfig: object,
+    passthroughParams: object,
   ): Promise<IChatCompletion>;
 }
 

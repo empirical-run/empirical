@@ -23,7 +23,7 @@ const importMistral = async function () {
 
 const createChatCompletion: ICreateChatCompletion = async function (
   body,
-  passthroughConfig,
+  passthroughParams,
 ) {
   if (!process.env.MISTRAL_API_KEY) {
     throw new AIError(
@@ -47,7 +47,7 @@ const createChatCompletion: ICreateChatCompletion = async function (
       topP: config.top_p || undefined,
       randomSeed: config.seed || undefined,
       responseFormat: config.response_format as ResponseFormat,
-      ...passthroughConfig,
+      ...passthroughParams,
     });
     executionDone();
     // typecasting as the only difference present in mistral interface is the it doesnt contain logprobs.

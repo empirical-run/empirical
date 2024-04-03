@@ -49,7 +49,7 @@ interface RunConfigBase {
 
 export interface ModelRunConfig extends RunConfigBase {
   type: "model";
-  provider: "openai" | "mistral" | "google" | "anthropic";
+  provider: "openai" | "mistral" | "google" | "anthropic" | "fireworks";
   model: string;
   prompt?: Prompt;
 }

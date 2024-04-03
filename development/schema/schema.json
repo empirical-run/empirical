@@ -23,7 +23,8 @@
                                     "openai",
                                     "google",
                                     "mistral",
-                                    "anthropic"
+                                    "anthropic",
+                                    "fireworks"
                                 ]
                             },
                             "model": {

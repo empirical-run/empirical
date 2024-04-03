@@ -1,5 +1,5 @@
 {
-  "$schema": "https://assets.empirical.run/config/schema/v1.11.json",
+  "$schema": "https://assets.empirical.run/config/schema/v1.12.json",
   "runs": [
     {
       "name": "gpt-3.5-turbo run",

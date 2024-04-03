@@ -3,7 +3,7 @@ import { RunCompletion } from "@empiricalrun/types";
 import { green, yellow, bold, cyan, red } from "picocolors";
 import { table } from "table";
 
-const percentStr = (value: any) => `${value}%`;
+const percentStr = (value: number) => `${value.toFixed(0)}%`;
 
 const setMetricColor = (metric: string, value: number) => {
   if (value === 1) {

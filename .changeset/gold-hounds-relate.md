@@ -2,4 +2,4 @@
 "@empiricalrun/ai": patch
 ---
 
-fix: throw error response
+fix: openai errors not getting captured

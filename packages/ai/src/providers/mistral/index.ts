@@ -4,7 +4,7 @@ import {
   ICreateChatCompletion,
 } from "@empiricalrun/types";
 import { BatchTaskManager } from "../../utils";
-import { ToolCalls } from "@mistralai/mistralai";
+import { ToolCalls, ResponseFormat } from "@mistralai/mistralai";
 import { AIError, AIErrorEnum } from "../../error";
 
 type MistralChatMessage = {
@@ -31,14 +31,20 @@ const createChatCompletion: ICreateChatCompletion = async function (body) {
   const MistralClient = await importMistral();
   const mistralai = new MistralClient(process.env.MISTRAL_API_KEY);
   const { executionDone } = await batch.waitForTurn();
-  const { model, messages } = body;
+  const { model, messages, ...config } = body;
   try {
     // typecasting as there is a minor difference in role being openai enum vs string
     const mistralMessages = messages as MistralChatMessage[];
     // no retry needed as mistral internally handles it well
+    // TODO: not supported safePrompt
     const completions = await mistralai.chat({
       model,
       messages: mistralMessages,
+      temperature: config.temperature || undefined,
+      maxTokens: config.max_tokens || undefined,
+      topP: config.top_p || undefined,
+      randomSeed: config.seed || undefined,
+      responseFormat: config.response_format as ResponseFormat,
     });
     executionDone();
     // typecasting as the only difference present in mistral interface is the it doesnt contain logprobs.

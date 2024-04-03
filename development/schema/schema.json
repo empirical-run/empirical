@@ -33,6 +33,14 @@
                             "prompt": {
                                 "type": "string"
                             },
+                            "config": {
+                                "type": "object",
+                                "properties": {
+                                    "temperature": {
+                                        "type": "number"
+                                    }
+                                }
+                            },
                             "scorers": {
                                 "type": "array",
                                 "items": {

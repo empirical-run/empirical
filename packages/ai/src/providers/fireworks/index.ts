@@ -10,10 +10,20 @@ import promiseRetry from "promise-retry";
 const batchTaskManager = new BatchTaskManager(10);
 
 const createChatCompletion: ICreateChatCompletion = async (body) => {
-  const { model, messages } = body;
+  const { model, messages, ...config } = body;
   const payload = JSON.stringify({
     model: `accounts/fireworks/models/${model}`,
     messages,
+    temperature: config.temperature,
+    max_tokens: config.max_tokens,
+    // prompt_truncate_len
+    top_p: config.top_p,
+    // top_k
+    frequency_penalty: config.frequency_penalty,
+    presence_penalty: config.presence_penalty,
+    n: config.n,
+    stop: config.stop,
+    response_format: config.response_format, // also supports schema
   });
   const apiKey = process.env.FIREWORKS_API_KEY;
   if (!apiKey) {

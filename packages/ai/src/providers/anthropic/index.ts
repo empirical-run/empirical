@@ -57,7 +57,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
   });
-  const { model, messages, max_tokens } = body;
+  const { model, messages, ...config } = body;
   const { contents, systemPrompt } = convertOpenAIToAnthropicAI(messages);
   const { executionDone } = await batchTaskManager.waitForTurn();
   try {
@@ -65,10 +65,18 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       (retry) => {
         return anthropic.messages
           .create({
-            max_tokens: max_tokens || 1024,
             model: canonicalModelName(model),
             messages: contents,
             system: systemPrompt,
+            max_tokens: config.max_tokens || 1024,
+            temperature: config.temperature || undefined,
+            stop_sequences: Array.isArray(config.stop)
+              ? config.stop
+              : config.stop
+                ? [config.stop]
+                : undefined,
+            // top_k
+            top_p: config.top_p || undefined,
           })
           .catch((err) => {
             if (

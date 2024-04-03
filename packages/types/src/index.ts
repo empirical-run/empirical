@@ -47,11 +47,37 @@ interface RunConfigBase {
   scorers?: Scorer[];
 }
 
+type ResponseFormat = {
+  type: "json_object" | "text";
+};
+
+interface ModelConfigOptions {
+  temperature?: number;
+  max_tokens?: number;
+  top_p?: number;
+  frequency_penalty?: number;
+  logprobs?: boolean;
+  n?: number;
+  presence_penalty?: number;
+  response_format?: ResponseFormat;
+  seed?: number;
+  stop?: string | Array<string>;
+  top_logprobs?: number;
+
+  // Not supported
+  // logit_bias?
+  // stream?: boolean;
+  // tool_choice
+  // tools
+  // user?: string;
+}
+
 export interface ModelRunConfig extends RunConfigBase {
   type: "model";
   provider: "openai" | "mistral" | "google" | "anthropic" | "fireworks";
   model: string;
   prompt?: Prompt;
+  config?: ModelConfigOptions;
 }
 
 export interface JSScriptRunConfig extends RunConfigBase {

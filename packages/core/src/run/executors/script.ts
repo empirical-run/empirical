@@ -32,12 +32,17 @@ export const scriptExecutor: Executor = async (runConfig, sample) => {
 
   let basePath = path.dirname(scriptPath);
   let moduleName = path.basename(scriptPath).replace(".py", "");
-  let pythonArgs = [basePath, moduleName, JSON.stringify(sample.inputs)];
+  let pythonArgs = [
+    basePath,
+    moduleName,
+    JSON.stringify(sample.inputs),
+    JSON.stringify(runConfig.parameters || {}),
+  ];
 
   const runOutput = await new Promise<string[]>((resolve) => {
     let output: string[] = [];
     const shell = new PythonShell(wrapperScriptFile, {
-      pythonPath: runConfig.pythonPath || undefined,
+      pythonPath: runConfig.parameters?.pythonPath || undefined,
       scriptPath: wrapperScriptDirectory,
       args: pythonArgs,
     });

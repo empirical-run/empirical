@@ -7,7 +7,6 @@ nest_asyncio.apply()
 
 
 def execute(inputs, parameters):
-    print(parameters)
     # load documents
     question = inputs["question"]
     reader = SimpleDirectoryReader("./arxiv-papers/", num_files_limit=30)

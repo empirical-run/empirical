@@ -1,6 +1,6 @@
 {
   "name": "@empiricalrun/cli",
-  "version": "0.2.1",
+  "version": "0.2.4",
   "main": "dist/bin/index.js",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
@@ -9,6 +9,8 @@
   "bin": {
     "@empiricalrun/cli": "./dist/bin/index.js"
   },
+  "author": "Empirical.run Team <hey@empirical.run>",
+  "license": "MIT",
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean",

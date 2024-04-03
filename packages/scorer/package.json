@@ -1,12 +1,14 @@
 {
   "name": "@empiricalrun/scorer",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "author": "Empirical.run Team <hey@empirical.run>",
+  "license": "MIT",
   "scripts": {
     "build": "tsc --build && cp -r src/python/ dist/python/",
     "clean": "tsc --build --clean",

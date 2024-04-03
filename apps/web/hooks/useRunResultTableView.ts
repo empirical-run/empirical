@@ -1,5 +1,5 @@
 import { RunCompletion } from "@empiricalrun/types";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 export type RunResultTableHeader = {
   title: string;
@@ -15,7 +15,7 @@ export function useRunResultTableView({
   runs: RunCompletion[];
 }) {
   const [activeRun, setActiveRun] = useState<RunCompletion | undefined>();
-  const getTableHeaders = useCallback(() => {
+  const tableHeaders = useMemo(() => {
     const tableHeaders: RunResultTableHeader[] = [
       { title: "Inputs", type: "input" },
     ];
@@ -55,7 +55,7 @@ export function useRunResultTableView({
   );
 
   return {
-    getTableHeaders,
+    tableHeaders,
     getTableRowSamples,
     getSampleCell,
     runsMap: new Map<string, RunCompletion>(),

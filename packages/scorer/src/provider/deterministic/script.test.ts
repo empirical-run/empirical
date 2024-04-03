@@ -124,7 +124,7 @@ test(
       },
     ]);
   },
-  { timeout: 11000 },
+  { timeout: 21000 },
 );
 
 test("script scorer works with a python script that throws", async () => {

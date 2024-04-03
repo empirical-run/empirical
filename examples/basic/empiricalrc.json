@@ -1,5 +1,5 @@
 {
-  "$schema": "https://assets.empirical.run/config/schema/v1.10.json",
+  "$schema": "https://assets.empirical.run/config/schema/v1.11.json",
   "runs": [
     {
       "type": "model",

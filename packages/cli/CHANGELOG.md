@@ -1,5 +1,26 @@
 # @empiricalrun/cli
 
+## 0.2.4
+
+### Patch Changes
+
+- f7de133: fix: reduce bundled size of cli package
+
+## 0.2.3
+
+### Patch Changes
+
+- 571986a: chore: update npm package license
+- Updated dependencies [571986a]
+  - @empiricalrun/types@0.1.1
+  - @empiricalrun/core@0.1.3
+
+## 0.2.2
+
+### Patch Changes
+
+- @empiricalrun/core@0.1.2
+
 ## 0.2.1
 
 ### Patch Changes

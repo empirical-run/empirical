@@ -39,7 +39,7 @@ export default function Page(): JSX.Element {
   );
 
   return (
-    <main>
+    <main className="relative">
       <PageHeader />
       {!runResults ||
         (!runResults.length && (
@@ -51,7 +51,7 @@ export default function Page(): JSX.Element {
           onClose={() => setActiveRun(undefined)}
         />
       )}
-      <section className=" overflow-scroll relative h-full">
+      <section className="overflow-scroll relative h-screen">
         {runResults?.length > 0 && (
           <div className="flex bg-zinc-900 sticky top-[-1px] z-20 min-w-fit">
             <RunColumnHeaders

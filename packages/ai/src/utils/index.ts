@@ -6,8 +6,10 @@ export function replacePlaceholders(string: string, obj: any) {
   });
 }
 
-function isKnownParameter(paramName: string) {
-  const knownParameters = [
+function isReservedParameter(paramName: string) {
+  const reservedParameters = [
+    "model",
+    "messages",
     "temperature",
     "max_tokens",
     "top_p",
@@ -20,19 +22,14 @@ function isKnownParameter(paramName: string) {
     "stop",
     "top_logprobs",
   ];
-  const otherFieldsToSkip = ["model", "messages"];
-  return [...knownParameters, ...otherFieldsToSkip].indexOf(paramName) >= 0;
+  return reservedParameters.indexOf(paramName) >= 0;
 }
 
 export function getPassthroughParams(body: { [key: string]: any }) {
-  let passthroughParams: { [key: string]: any } = {};
-
-  Object.keys(body)
-    .filter((key) => !isKnownParameter(key))
-    .forEach((key) => {
+  return Object.keys(body)
+    .filter((key) => !isReservedParameter(key))
+    .reduce((passthroughParams: { [key: string]: any }, key) => {
       passthroughParams[key] = body[key];
-      body[key] = undefined;
-    });
-
-  return passthroughParams;
+      return passthroughParams;
+    }, {});
 }

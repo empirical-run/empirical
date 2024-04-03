@@ -41,7 +41,8 @@
       "pages": [
         "introduction",
         "quickstart",
-        "examples"
+        "examples",
+        "running-in-ci"
       ]
     },
     {

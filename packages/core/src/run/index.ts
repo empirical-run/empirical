@@ -1,7 +1,7 @@
 import {
   Dataset,
   DatasetSample,
-  IRunConfig,
+  RunConfig,
   RunCompletion,
   RunOutputSample,
 } from "@empiricalrun/types";
@@ -10,9 +10,9 @@ import score from "@empiricalrun/scorer";
 import { getExecutor } from "./executors";
 
 export async function execute(
-  run: IRunConfig,
+  run: RunConfig,
   dataset: Dataset,
-  progressCallback: (sample: RunOutputSample) => void,
+  progressCallback?: (sample: RunOutputSample) => void,
 ): Promise<RunCompletion> {
   const runCreationDate = new Date();
   const sampleCompletions: RunOutputSample[] = [];
@@ -37,7 +37,7 @@ export async function execute(
           sampleCompletions.push(sample);
 
           try {
-            progressCallback(sample);
+            progressCallback?.(sample);
           } catch (e) {
             console.warn(e);
           }
@@ -88,12 +88,12 @@ export async function execute(
   };
 }
 
-function getDefaultRunName(run: IRunConfig, id: string): string {
+function getDefaultRunName(run: RunConfig, id: string): string {
   let name = "";
   if (run.type === "model") {
     name = run.model;
   } else if (run.type === "py-script" || run.type === "js-script") {
-    name = run.value;
+    name = run.path;
   }
   return `Run #${id}: ${name}`;
 }

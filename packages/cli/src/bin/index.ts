@@ -14,7 +14,12 @@ import { loadDataset } from "./dataset";
 import { DatasetError } from "../error";
 import { DefaultRunsConfigType, getDefaultRunsConfig } from "../runs";
 import { Dataset, RunCompletion } from "@empiricalrun/types";
-import { printStatsSummary, setRunSummary } from "../stats";
+import {
+  failedOutputsSummary,
+  printStatsSummary,
+  setRunSummary,
+} from "../stats";
+import { reportOnCI } from "../reporters/ci";
 
 const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
@@ -70,7 +75,7 @@ program
     } catch (err) {
       console.log(`${red("[Error]")} Failed to read ${configFileName} file`);
       console.log(yellow("Please ensure running init command first"));
-      return;
+      process.exit(1);
     }
 
     console.log(`${green("[Success]")} - read ${configFileName} file`);
@@ -84,7 +89,7 @@ program
     } catch (error) {
       if (error instanceof DatasetError) {
         console.log(`${red("[Error]")} ${error.message}`);
-        return;
+        process.exit(1);
       } else {
         throw error;
       }
@@ -108,6 +113,7 @@ program
     setRunSummary(completion);
     printStatsSummary(completion);
 
+    // TODO: this is not sent in CI report
     console.log(bold("Total dataset samples:"), dataset.samples?.length || 0);
     const endTime = performance.now();
     console.log(
@@ -123,6 +129,18 @@ program
       };
       await fs.mkdir(`${cwd}/${cacheDir}`, { recursive: true });
       await fs.writeFile(outputFilePath, JSON.stringify(data, null, 2));
+    } else {
+      await reportOnCI(completion, dataset);
+    }
+
+    const failedOutputs = failedOutputsSummary(completion);
+    if (failedOutputs) {
+      const { code, message } = failedOutputs;
+      console.log(
+        `${red("[Error]")} Some outputs were not generated successfully`,
+      );
+      console.log(`${red("[Error]")} ${code}: ${message}`);
+      process.exit(1);
     }
   });
 

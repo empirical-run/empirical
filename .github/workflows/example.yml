@@ -1,0 +1,50 @@
+name: Run example with Empirical
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'examples/**'
+      - '.github/workflows/example.yml'
+
+jobs:
+  empirical-run:
+    name: Run example with Empirical
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+ 
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+ 
+      - name: Run Empirical
+        run: npx @empiricalrun/cli run
+        working-directory: ./examples/basic
+        id: empirical-run
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Find Comment
+        uses: peter-evans/find-comment@v3
+        id: fc
+        if: always()
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Empirical Run Summary
+
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v4
+        if: always()
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ${{ steps.empirical-run.outputs.result }}
+          edit-mode: replace

@@ -32,7 +32,12 @@ export const scriptExecutor: Executor = async (runConfig, sample) => {
 
   let basePath = path.dirname(scriptPath);
   let moduleName = path.basename(scriptPath).replace(".py", "");
-  let pythonArgs = [basePath, moduleName, JSON.stringify(sample.inputs)];
+  let pythonArgs = [
+    basePath,
+    moduleName,
+    JSON.stringify(sample.inputs),
+    JSON.stringify(runConfig.config || {}),
+  ];
 
   const runOutput = await new Promise<string[]>((resolve) => {
     let output: string[] = [];

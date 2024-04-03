@@ -1,15 +1,15 @@
 import OpenAI from "openai";
 
 export interface IChatCompletionCreateParams
-  extends OpenAI.ChatCompletionCreateParamsNonStreaming {}
+  extends OpenAI.ChatCompletionCreateParamsNonStreaming {
+  // For passthrough parameters
+  [key: string]: any;
+}
 
 export interface IChatCompletion extends OpenAI.ChatCompletion {}
 
 export interface ICreateChatCompletion {
-  (
-    body: IChatCompletionCreateParams,
-    passthroughParams: object,
-  ): Promise<IChatCompletion>;
+  (body: IChatCompletionCreateParams): Promise<IChatCompletion>;
 }
 
 export interface IChatCompletions {

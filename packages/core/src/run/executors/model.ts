@@ -18,31 +18,7 @@ export const modelExecutor: Executor = async function (
       },
     };
   }
-  let passthroughParams: { [key: string]: any } = {};
   const { prompt, model, provider, parameters } = runConfig;
-  if (parameters) {
-    const knownParameters = [
-      "temperature",
-      "max_tokens",
-      "top_p",
-      "frequency_penalty",
-      "logprobs",
-      "n",
-      "presence_penalty",
-      "response_format",
-      "seed",
-      "stop",
-      "top_logprobs",
-    ];
-    Object.keys(parameters)
-      .filter((key) => {
-        return knownParameters.indexOf(key) < 0;
-      })
-      .forEach((key) => {
-        passthroughParams[key] = parameters[key];
-        parameters[key] = undefined;
-      });
-  }
   const messages: ChatCompletionMessageParam[] = [
     {
       role: "user",
@@ -52,14 +28,11 @@ export const modelExecutor: Executor = async function (
   const ai = new EmpiricalAI(provider);
   let value = "";
   try {
-    const completion = await ai.chat.completions.create(
-      {
-        model,
-        messages,
-        ...parameters,
-      },
-      passthroughParams,
-    );
+    const completion = await ai.chat.completions.create({
+      model,
+      messages,
+      ...parameters,
+    });
     value = completion.choices?.[0]?.message.content || "";
   } catch (e: any) {
     const error = {

@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { IAIProvider, ICreateChatCompletion } from "@empiricalrun/types";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions.mjs";
 import promiseRetry from "promise-retry";
-import { BatchTaskManager } from "../../utils";
+import { BatchTaskManager, getPassthroughParams } from "../../utils";
 import { AIError, AIErrorEnum } from "../../error";
 
 const batchTaskManager = new BatchTaskManager(5);
@@ -47,10 +47,7 @@ const convertOpenAIToAnthropicAI = function (
   return { contents, systemPrompt: systemMessage?.content?.toString() || "" };
 };
 
-const createChatCompletion: ICreateChatCompletion = async (
-  body,
-  passthroughParams,
-) => {
+const createChatCompletion: ICreateChatCompletion = async (body) => {
   if (!process.env.ANTHROPIC_API_KEY) {
     throw new AIError(
       AIErrorEnum.MISSING_PARAMETERS,
@@ -79,7 +76,7 @@ const createChatCompletion: ICreateChatCompletion = async (
                 ? [config.stop]
                 : undefined,
             top_p: config.top_p || undefined,
-            ...passthroughParams,
+            ...getPassthroughParams(config),
           })
           .catch((err) => {
             if (

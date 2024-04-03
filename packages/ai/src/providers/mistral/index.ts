@@ -3,7 +3,7 @@ import {
   IChatCompletion,
   ICreateChatCompletion,
 } from "@empiricalrun/types";
-import { BatchTaskManager } from "../../utils";
+import { BatchTaskManager, getPassthroughParams } from "../../utils";
 import { ToolCalls, ResponseFormat } from "@mistralai/mistralai";
 import { AIError, AIErrorEnum } from "../../error";
 
@@ -21,10 +21,7 @@ const importMistral = async function () {
   return MistralClient;
 };
 
-const createChatCompletion: ICreateChatCompletion = async function (
-  body,
-  passthroughParams,
-) {
+const createChatCompletion: ICreateChatCompletion = async function (body) {
   if (!process.env.MISTRAL_API_KEY) {
     throw new AIError(
       AIErrorEnum.MISSING_PARAMETERS,
@@ -47,7 +44,7 @@ const createChatCompletion: ICreateChatCompletion = async function (
       topP: config.top_p || undefined,
       randomSeed: config.seed || undefined,
       responseFormat: config.response_format as ResponseFormat,
-      ...passthroughParams,
+      ...getPassthroughParams(config),
     });
     executionDone();
     // typecasting as the only difference present in mistral interface is the it doesnt contain logprobs.

@@ -39,7 +39,7 @@ export default function Page(): JSX.Element {
   );
 
   return (
-    <main className="relative">
+    <main className="relative h-screen">
       <PageHeader />
       {!runResults ||
         (!runResults.length && (
@@ -51,9 +51,12 @@ export default function Page(): JSX.Element {
           onClose={() => setActiveRun(undefined)}
         />
       )}
-      <section className="overflow-scroll relative h-screen">
+      <section
+        className="overflow-scroll relative"
+        style={{ height: "calc(100vh - 40px)" }}
+      >
         {runResults?.length > 0 && (
-          <div className="flex bg-zinc-900 sticky top-[-1px] z-20 min-w-fit">
+          <div className="flex bg-zinc-900 sticky top-0 z-20 min-w-fit">
             <RunColumnHeaders
               showPrompt={(run: RunCompletion) =>
                 showRunDetails(activeRun ? undefined : run)
@@ -62,7 +65,6 @@ export default function Page(): JSX.Element {
             />
           </div>
         )}
-
         <>
           {sampleIds?.map((r) => {
             const sampleCells = runColumnHeaders.map(

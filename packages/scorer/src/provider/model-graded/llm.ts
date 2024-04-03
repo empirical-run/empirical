@@ -6,36 +6,39 @@ async function askLlmForEvalResult(
   messages: OpenAI.ChatCompletionMessageParam[],
 ): Promise<{ reason: string; result: "Yes" | "No" }> {
   const ai = new EmpiricalAI("openai");
-  const completion = await ai.chat.completions.create({
-    messages,
-    model: "gpt-3.5-turbo",
-    temperature: 0.1,
-    tools: [
-      {
-        type: "function",
-        function: {
-          name: "set_evaluator_response",
-          description: "Sets the response of the evaluation",
-          parameters: {
-            type: "object",
-            properties: {
-              reason: {
-                type: "string",
-                description:
-                  "Reasoning for the evaluation, shared as a step-by-step chain of thought",
+  const completion = await ai.chat.completions.create(
+    {
+      messages,
+      model: "gpt-3.5-turbo",
+      temperature: 0.1,
+      tools: [
+        {
+          type: "function",
+          function: {
+            name: "set_evaluator_response",
+            description: "Sets the response of the evaluation",
+            parameters: {
+              type: "object",
+              properties: {
+                reason: {
+                  type: "string",
+                  description:
+                    "Reasoning for the evaluation, shared as a step-by-step chain of thought",
+                },
+                result: { type: "string", enum: ["Yes", "No"] },
               },
-              result: { type: "string", enum: ["Yes", "No"] },
+              required: ["reason", "result"],
             },
-            required: ["reason", "result"],
           },
         },
+      ],
+      tool_choice: {
+        type: "function",
+        function: { name: "set_evaluator_response" },
       },
-    ],
-    tool_choice: {
-      type: "function",
-      function: { name: "set_evaluator_response" },
     },
-  });
+    {},
+  );
   const rawResponse = completion.choices[0]!;
   const response = rawResponse.message.tool_calls![0];
   return JSON.parse(response!.function.arguments);

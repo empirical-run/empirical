@@ -38,6 +38,55 @@
                                 "properties": {
                                     "temperature": {
                                         "type": "number"
+                                    },
+                                    "max_tokens": {
+                                        "type": "number"
+                                    },
+                                    "top_p": {
+                                        "type": "number"
+                                    },
+                                    "frequency_penalty": {
+                                        "type": "number"
+                                    },
+                                    "logprobs": {
+                                        "type": "boolean"
+                                    },
+                                    "n": {
+                                        "type": "number"
+                                    },
+                                    "presence_penalty": {
+                                        "type": "number"
+                                    },
+                                    "response_format": {
+                                        "type": "object",
+                                        "properties": {
+                                            "type": {
+                                                "type": "string",
+                                                "enum": ["json_object", "text"]
+                                            }
+                                        }
+                                    },
+                                    "seed": {
+                                        "type": "number"
+                                    },
+                                    "stop": {
+                                        "anyOf": [
+                                            {
+                                                "type": "string"
+                                            },
+                                            {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    "top_logprobs": {
+                                        "type": "number"
+                                    },
+                                    "passthrough": {
+                                        "type": "object"
                                     }
                                 }
                             },

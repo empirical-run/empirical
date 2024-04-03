@@ -21,9 +21,8 @@ path in the `path` field.
 ]
 ```
 You can additional pass following properties in run configuration:
-`name`: Name of the custom run.
-`parameters`: Parameters to be passed to the script file to modify its behavior.
-
+- **name**: `string` - a custom name to your run
+- **parameters**: `object` - object to pass values to the script to modify its behavior
 
 The Python file is expected to have a method called `execute` with the following
 signature:

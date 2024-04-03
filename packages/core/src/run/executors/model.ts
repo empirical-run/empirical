@@ -18,7 +18,12 @@ export const modelExecutor: Executor = async function (
       },
     };
   }
+  let passthroughConfig = {};
   const { prompt, model, provider, config } = runConfig;
+  if (config) {
+    passthroughConfig = { ...config.passthrough };
+    config.passthrough = undefined;
+  }
   const messages: ChatCompletionMessageParam[] = [
     {
       role: "user",
@@ -28,11 +33,14 @@ export const modelExecutor: Executor = async function (
   const ai = new EmpiricalAI(provider);
   let value = "";
   try {
-    const completion = await ai.chat.completions.create({
-      model,
-      messages,
-      ...config,
-    });
+    const completion = await ai.chat.completions.create(
+      {
+        model,
+        messages,
+        ...config,
+      },
+      passthroughConfig,
+    );
     value = completion.choices?.[0]?.message.content || "";
   } catch (e: any) {
     const error = {

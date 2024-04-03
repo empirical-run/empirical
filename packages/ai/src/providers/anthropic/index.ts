@@ -47,7 +47,10 @@ const convertOpenAIToAnthropicAI = function (
   return { contents, systemPrompt: systemMessage?.content?.toString() || "" };
 };
 
-const createChatCompletion: ICreateChatCompletion = async (body) => {
+const createChatCompletion: ICreateChatCompletion = async (
+  body,
+  passthroughConfig,
+) => {
   if (!process.env.ANTHROPIC_API_KEY) {
     throw new AIError(
       AIErrorEnum.MISSING_PARAMETERS,
@@ -75,8 +78,8 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
               : config.stop
                 ? [config.stop]
                 : undefined,
-            // top_k
             top_p: config.top_p || undefined,
+            ...passthroughConfig,
           })
           .catch((err) => {
             if (

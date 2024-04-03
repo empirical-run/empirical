@@ -13,7 +13,7 @@ export * from "./error";
 
 class ChatCompletions implements IChatCompletions {
   constructor(private provider: string) {}
-  create: ICreateChatCompletion = async (body) => {
+  create: ICreateChatCompletion = async (body, passthroughConfig) => {
     const provider = chatProvider.get(this.provider);
     if (!provider) {
       throw new AIError(
@@ -22,7 +22,7 @@ class ChatCompletions implements IChatCompletions {
       );
     }
     try {
-      const completion = await provider(body);
+      const completion = await provider(body, passthroughConfig);
       return completion;
     } catch (err) {
       if (err instanceof AIError) {

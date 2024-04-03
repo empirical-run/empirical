@@ -21,7 +21,10 @@ const importMistral = async function () {
   return MistralClient;
 };
 
-const createChatCompletion: ICreateChatCompletion = async function (body) {
+const createChatCompletion: ICreateChatCompletion = async function (
+  body,
+  passthroughConfig,
+) {
   if (!process.env.MISTRAL_API_KEY) {
     throw new AIError(
       AIErrorEnum.MISSING_PARAMETERS,
@@ -36,7 +39,6 @@ const createChatCompletion: ICreateChatCompletion = async function (body) {
     // typecasting as there is a minor difference in role being openai enum vs string
     const mistralMessages = messages as MistralChatMessage[];
     // no retry needed as mistral internally handles it well
-    // TODO: not supported safePrompt
     const completions = await mistralai.chat({
       model,
       messages: mistralMessages,
@@ -45,6 +47,7 @@ const createChatCompletion: ICreateChatCompletion = async function (body) {
       topP: config.top_p || undefined,
       randomSeed: config.seed || undefined,
       responseFormat: config.response_format as ResponseFormat,
+      ...passthroughConfig,
     });
     executionDone();
     // typecasting as the only difference present in mistral interface is the it doesnt contain logprobs.

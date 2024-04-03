@@ -52,6 +52,8 @@ type ResponseFormat = {
 };
 
 interface ModelConfigOptions {
+  // From OpenAI config: see OpenAI.ChatCompletionCreateParamsNonStreaming
+  // TODO: This does not support logit_bias, tools, tool_choice, user, stream
   temperature?: number;
   max_tokens?: number;
   top_p?: number;
@@ -64,12 +66,9 @@ interface ModelConfigOptions {
   stop?: string | Array<string>;
   top_logprobs?: number;
 
-  // Not supported
-  // logit_bias?
-  // stream?: boolean;
-  // tool_choice
-  // tools
-  // user?: string;
+  // For other models, we coerce the above config keys to appropriate slots
+  // To override that behavior, and specify keys missing above, we support passthrough
+  passthrough?: object;
 }
 
 export interface ModelRunConfig extends RunConfigBase {

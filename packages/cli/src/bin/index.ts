@@ -100,9 +100,8 @@ program
     );
     const completion = await Promise.all(
       runs.map((r) => {
-        if (r.type === "py-script") {
-          r.pythonPath = options.pythonPath;
-        }
+        r.parameters = r.parameters ? r.parameters : {};
+        r.parameters.pythonPath = options.pythonPath;
         return execute(r, dataset, () => {
           progressBar.increment();
         });

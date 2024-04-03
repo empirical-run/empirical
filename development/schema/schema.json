@@ -186,7 +186,7 @@
                             "path": {
                                 "type": "string"
                             },
-                            "config": {
+                            "parameters": {
                                 "type": "object"
                             },
                             "scorers": {

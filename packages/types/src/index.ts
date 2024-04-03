@@ -45,6 +45,9 @@ interface RunConfigBase {
   type: string;
   name?: string;
   scorers?: Scorer[];
+  parameters?: {
+    [key: string]: any;
+  };
 }
 
 type ResponseFormat = {
@@ -87,7 +90,10 @@ export interface JSScriptRunConfig extends RunConfigBase {
 export interface PyScriptRunConfig extends RunConfigBase {
   type: "py-script";
   path: string;
-  pythonPath?: string;
+  parameters?: {
+    pythonPath?: string;
+    [key: string]: any;
+  };
 }
 
 export type RunConfig = ModelRunConfig | PyScriptRunConfig | JSScriptRunConfig;

@@ -6,7 +6,7 @@ from llama_index.core.node_parser import SentenceSplitter
 nest_asyncio.apply()
 
 
-def execute(inputs):
+def execute(inputs, parameters):
     # load documents
     question = inputs["question"]
     reader = SimpleDirectoryReader("./arxiv-papers/", num_files_limit=30)

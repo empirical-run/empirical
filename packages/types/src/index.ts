@@ -45,6 +45,9 @@ interface RunConfigBase {
   type: string;
   name?: string;
   scorers?: Scorer[];
+  parameters?: {
+    [key: string]: any;
+  };
 }
 
 export interface ModelRunConfig extends RunConfigBase {
@@ -57,14 +60,15 @@ export interface ModelRunConfig extends RunConfigBase {
 export interface JSScriptRunConfig extends RunConfigBase {
   type: "js-script";
   path: string;
-  config?: any;
 }
 
 export interface PyScriptRunConfig extends RunConfigBase {
   type: "py-script";
   path: string;
-  pythonPath?: string;
-  config?: any;
+  parameters?: {
+    pythonPath?: string;
+    [key: string]: any;
+  };
 }
 
 export type RunConfig = ModelRunConfig | PyScriptRunConfig | JSScriptRunConfig;

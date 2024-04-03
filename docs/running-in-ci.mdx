@@ -23,7 +23,7 @@ variables to the `run` command.
 
 ```yaml
 # save in .github/workflows/empirical.yml
-name: Run Empirical in CI
+name: Run Empirical
 
 on:
   pull_request:
@@ -34,7 +34,7 @@ on:
 
 jobs:
   empirical-run:
-    name: Run Empirical in CI
+    name: Run Empirical
     runs-on: ubuntu-latest
     steps:
       - name: Check out code

@@ -8,7 +8,6 @@
     "ANTHROPIC_API_KEY",
     "CI",
     "GITHUB_ACTIONS",
-    "GITHUB_STEP_SUMMARY",
     "GITHUB_OUTPUT"
   ],
   "pipeline": {

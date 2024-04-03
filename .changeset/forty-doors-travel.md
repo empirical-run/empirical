@@ -4,4 +4,4 @@
 "@empiricalrun/ai": minor
 ---
 
-feat: support config parameters for model executor
+feat: support model parameters with passthrough

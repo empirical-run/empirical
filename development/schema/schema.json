@@ -33,7 +33,7 @@
                             "prompt": {
                                 "type": "string"
                             },
-                            "config": {
+                            "parameters": {
                                 "type": "object",
                                 "properties": {
                                     "temperature": {
@@ -84,11 +84,9 @@
                                     },
                                     "top_logprobs": {
                                         "type": "number"
-                                    },
-                                    "passthrough": {
-                                        "type": "object"
                                     }
-                                }
+                                },
+                                "additionalProperties": true
                             },
                             "scorers": {
                                 "type": "array",

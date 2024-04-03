@@ -51,7 +51,7 @@ type ResponseFormat = {
   type: "json_object" | "text";
 };
 
-interface ModelConfigParams {
+interface ModelParameters {
   // From OpenAI config: see OpenAI.ChatCompletionCreateParamsNonStreaming
   // TODO: This does not support logit_bias, tools, tool_choice, user, stream
   temperature?: number;
@@ -66,9 +66,9 @@ interface ModelConfigParams {
   stop?: string | Array<string>;
   top_logprobs?: number;
 
-  // For other models, we coerce the above config keys to appropriate slots
-  // To override that behavior, and specify keys missing above, we support passthrough
-  passthrough?: object;
+  // For other models, we coerce the above known parameters to appropriate slots
+  // If users require other parameters, we support passthrough for other key names
+  [key: string]: any;
 }
 
 export interface ModelRunConfig extends RunConfigBase {
@@ -76,7 +76,7 @@ export interface ModelRunConfig extends RunConfigBase {
   provider: "openai" | "mistral" | "google" | "anthropic" | "fireworks";
   model: string;
   prompt?: Prompt;
-  config?: ModelConfigParams;
+  parameters?: ModelParameters;
 }
 
 export interface JSScriptRunConfig extends RunConfigBase {

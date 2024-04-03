@@ -61,14 +61,16 @@ API calls to model providers require API keys, which are stored as environment v
 npx @empiricalrun/cli --env-file <PATH_TO_ENV_FILE>
 ```
 
-### Model configuration parameters
+### Model parameters
 
-To override parameters like `temperature` or `max_tokens`, you can pass `config` alongwith the provider
-information. All OpenAI configurations (see their [API reference](https://platform.openai.com/docs/api-reference/chat/create))
+To override parameters like `temperature` or `max_tokens`, you can pass `parameters` alongwith the provider
+configuration. All OpenAI parameters (see their [API reference](https://platform.openai.com/docs/api-reference/chat/create))
 are supported, except for a few [limitations](#limitations).
 
 For non-OpenAI models, we coerce these parameters to the most appropriate target parameter (e.g. `stop` in OpenAI
-becomes `stop_sequences` for Anthropic.) For additional parameters, see [passthrough](#passthrough).
+becomes `stop_sequences` for Anthropic.)
+
+You can add other parameters or override this behavior with [passthrough](#passthrough).
 
 ```json empiricalrc.json
 "runs": [
@@ -77,7 +79,7 @@ becomes `stop_sequences` for Anthropic.) For additional parameters, see [passthr
     "provider": "openai",
     "model": "gpt-3.5-turbo",
     "prompt": "Hey I'm {{user_name}}",
-    "config": {
+    "parameters": {
       "temperature": 0.1
     }
   },
@@ -86,8 +88,8 @@ becomes `stop_sequences` for Anthropic.) For additional parameters, see [passthr
 
 #### Passthrough
 
-If your models rely on other configuration parameters, you can use the `passthrough` feature, which
-passes the parameter value as-is to the model.
+If your models rely on other parameters, you can still specify them in the configuration. These
+parameters will be passed as-is to the model.
 
 For example, Mistral models support a `safePrompt` parameter for [guardrailing](https://docs.mistral.ai/platform/guardrailing/).
 
@@ -98,10 +100,9 @@ For example, Mistral models support a `safePrompt` parameter for [guardrailing](
     "provider": "mistral",
     "model": "mistral-tiny",
     "prompt": "Hey I'm {{user_name}}",
-    "config": {
-      "passthrough": {
-        "safePrompt": true
-      }
+    "parameters": {
+      "temperature": 0.1,
+      "safePrompt": true
     }
   },
 ]

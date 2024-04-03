@@ -18,11 +18,30 @@ export const modelExecutor: Executor = async function (
       },
     };
   }
-  let passthroughConfig = {};
-  const { prompt, model, provider, config } = runConfig;
-  if (config) {
-    passthroughConfig = { ...config.passthrough };
-    config.passthrough = undefined;
+  let passthroughConfig: { [key: string]: any } = {};
+  const { prompt, model, provider, parameters } = runConfig;
+  if (parameters) {
+    const knownParameters = [
+      "temperature",
+      "max_tokens",
+      "top_p",
+      "frequency_penalty",
+      "logprobs",
+      "n",
+      "presence_penalty",
+      "response_format",
+      "seed",
+      "stop",
+      "top_logprobs",
+    ];
+    Object.keys(parameters)
+      .filter((key) => {
+        return knownParameters.indexOf(key) < 0;
+      })
+      .forEach((key) => {
+        passthroughConfig[key] = parameters[key];
+        parameters[key] = undefined;
+      });
   }
   const messages: ChatCompletionMessageParam[] = [
     {
@@ -37,7 +56,7 @@ export const modelExecutor: Executor = async function (
       {
         model,
         messages,
-        ...config,
+        ...parameters,
       },
       passthroughConfig,
     );

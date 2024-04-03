@@ -23,6 +23,11 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       (retry) => {
         return openai.chat.completions.create(body).catch((err) => {
           if (
+            err instanceof OpenAI.RateLimitError &&
+            err.type === "insufficient_quota"
+          ) {
+            throw err;
+          } else if (
             err instanceof OpenAI.RateLimitError ||
             err instanceof OpenAI.APIConnectionError ||
             err instanceof OpenAI.APIConnectionTimeoutError ||

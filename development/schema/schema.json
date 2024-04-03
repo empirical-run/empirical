@@ -136,8 +136,11 @@
                                     "js-script"
                                 ]
                             },
-                            "value": {
+                            "path": {
                                 "type": "string"
+                            },
+                            "config": {
+                                "type": "object"
                             },
                             "scorers": {
                                 "type": "array",
@@ -216,7 +219,7 @@
                         },
                         "required": [
                             "type",
-                            "value"
+                            "path"
                         ],
                         "additionalProperties": false
                     }

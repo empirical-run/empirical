@@ -1,10 +1,10 @@
-import { IRunConfig } from "@empiricalrun/types";
+import { RunConfig } from "@empiricalrun/types";
 import { Executor } from "./interface";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { AIError, EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
 
 export const modelExecutor: Executor = async function (
-  runConfig: IRunConfig,
+  runConfig: RunConfig,
   sample,
 ) {
   if (runConfig.type !== "model") {

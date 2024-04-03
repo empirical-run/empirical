@@ -4,7 +4,7 @@
     {
       "name": "rag script run",
       "type": "py-script",
-      "value": "rag.py",
+      "path": "rag.py",
       "scorers": [
         {
           "type": "py-script",

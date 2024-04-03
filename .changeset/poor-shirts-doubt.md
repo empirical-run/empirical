@@ -2,4 +2,4 @@
 "@empiricalrun/ai": patch
 ---
 
-fix: openai gets stuck when balance is negative
+fix: openai run gets stuck when balance is negative

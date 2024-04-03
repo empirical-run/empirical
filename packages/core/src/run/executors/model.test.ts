@@ -1,9 +1,9 @@
 import { expect, test } from "vitest";
 import { modelExecutor } from "./model";
-import { IRunConfig } from "@empiricalrun/types";
+import { RunConfig } from "@empiricalrun/types";
 
 test("max_tokens as model config works on openai", async () => {
-  const runConfig: IRunConfig = {
+  const runConfig: RunConfig = {
     type: "model",
     provider: "openai",
     model: "gpt-3.5-turbo",
@@ -22,7 +22,7 @@ test("max_tokens as model config works on openai", async () => {
 });
 
 test("passthrough model config works on mistral", async () => {
-  const runConfig: IRunConfig = {
+  const runConfig: RunConfig = {
     type: "model",
     provider: "mistral",
     model: "mistral-tiny",

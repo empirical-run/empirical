@@ -56,16 +56,16 @@ export interface ModelRunConfig extends RunConfigBase {
 
 export interface JSScriptRunConfig extends RunConfigBase {
   type: "js-script";
-  value: string;
+  path: string;
 }
 
 export interface PyScriptRunConfig extends RunConfigBase {
   type: "py-script";
-  value: string;
+  path: string;
   pythonPath?: string;
 }
 
-export type IRunConfig = ModelRunConfig | PyScriptRunConfig | JSScriptRunConfig;
+export type RunConfig = ModelRunConfig | PyScriptRunConfig | JSScriptRunConfig;
 
 export interface ScoreStats {
   name: string;
@@ -84,7 +84,7 @@ export interface RunOutputStats {
 
 export interface RunCompletion {
   id: string;
-  run_config: IRunConfig;
+  run_config: RunConfig;
   dataset_config: { id: string };
   samples: RunOutputSample[];
   stats?: RunOutputStats;

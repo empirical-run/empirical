@@ -19,7 +19,7 @@ export const scriptExecutor: Executor = async (runConfig, sample) => {
       },
     };
   }
-  const scriptPath = runConfig.value;
+  const scriptPath = runConfig.path;
   if (!scriptPath) {
     return {
       output,

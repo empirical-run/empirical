@@ -96,7 +96,7 @@ export const RunColumnHeaders = ({
               </Badge>
             </section>
             <Button
-              variant={"ghost"}
+              variant={"secondary"}
               onClick={() => showPrompt?.(header.runResult!)}
               className="self-end"
               size={"xs"}

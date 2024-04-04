@@ -8,6 +8,10 @@
   "main": "dist/index.js",
   "author": "Empirical.run Team <hey@empirical.run>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/empirical-run/empirical.git"
+  },
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean",

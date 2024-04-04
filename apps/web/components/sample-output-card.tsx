@@ -22,7 +22,7 @@ import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import EmptySampleCompletion from "./empty-sample-completion";
 
 import ScoreBadge from "./ui/score-badge";
-import { Alert, AlertDescription } from "./ui/alert";
+import SampleCompletionError from "./sample-completion-error";
 
 type Diff = {
   type: string;
@@ -108,6 +108,11 @@ export default function SampleOutputCard({
   );
 
   const containerWrapper = useRef<HTMLDivElement>(null);
+  const showOutput = useMemo(
+    () =>
+      baseSample && baseSample.output && !diffView.enabled && !baseSample.error,
+    [baseSample, diffView],
+  );
 
   useEffect(() => {
     clearDiffView();
@@ -208,11 +213,7 @@ export default function SampleOutputCard({
           </CardTitle>
         )}
         {baseSample?.error && (
-          <Alert variant="destructive" className="m-2">
-            <AlertDescription>
-              Error: {baseSample.error.message || baseSample.error.code}
-            </AlertDescription>
-          </Alert>
+          <SampleCompletionError errorMessage={baseSample.error.message} />
         )}
         {showOutputLoading && (
           <EmptySampleCompletion
@@ -238,7 +239,7 @@ export default function SampleOutputCard({
             loading=""
           />
         )}
-        {baseSample && baseSample.output && !diffView.enabled && (
+        {showOutput && (
           <CodeViewer
             value={baseSample?.output.value || ""}
             language="json"

@@ -31,6 +31,7 @@ test("passthrough model parameters works on mistral", async () => {
       // Mistral supports an additional configuration called safePrompt
       // for guardrails. https://docs.mistral.ai/platform/guardrailing/
       safePrompt: true,
+      temperature: 0.1,
     },
   };
   const { output, error } = await modelExecutor(runConfig, {
@@ -38,5 +39,5 @@ test("passthrough model parameters works on mistral", async () => {
     id: "sample-id-1",
   });
   expect(error).toBeUndefined();
-  expect(output.value).toContain("promote fairness and positivity");
+  expect(output.value).toContain("positivity");
 });

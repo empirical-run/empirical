@@ -95,31 +95,35 @@ export const RunColumnHeaders = ({
                 #{header.runResult?.id}
               </Badge>
             </section>
-            {header.runResult?.run_config.type === "model" && (
-              <Button
-                variant={"ghost"}
-                onClick={() => showPrompt?.(header.runResult!)}
-                className="self-end"
-                size={"xs"}
-              >
-                <span>{header.active ? "Hide" : "Show"} prompt</span>
-              </Button>
-            )}
+            <Button
+              variant={"ghost"}
+              onClick={() => showPrompt?.(header.runResult!)}
+              className="self-end"
+              size={"xs"}
+            >
+              <span>{header.active ? "Hide" : "Show"} config</span>
+            </Button>
           </section>
-          <Separator orientation="horizontal" className={`${overlayBg}`} />
+
           {header.runResult?.stats?.scores &&
             header.runResult?.stats?.scores.length > 0 && (
-              <section className="flex flex-row space-x-2 text-muted-foreground items-center mx-4 my-2 justify-end">
-                <section className="flex flex-row text-xs gap-1 items-center">
-                  {(header.runResult?.stats?.scores || []).map((s) => (
-                    <>
-                      <section className="flex flex-row gap-1 items-center">
-                        <ScoreBadge title={s.name} score={s.avgScore} />
-                      </section>
-                    </>
-                  ))}
+              <>
+                <Separator
+                  orientation="horizontal"
+                  className={`${overlayBg}`}
+                />
+                <section className="flex flex-row space-x-2 text-muted-foreground items-center mx-4 my-2 justify-end">
+                  <section className="flex flex-row text-xs gap-1 items-center">
+                    {(header.runResult?.stats?.scores || []).map((s) => (
+                      <>
+                        <section className="flex flex-row gap-1 items-center">
+                          <ScoreBadge title={s.name} score={s.avgScore} />
+                        </section>
+                      </>
+                    ))}
+                  </section>
                 </section>
-              </section>
+              </>
             )}
         </section>
       </div>

@@ -56,7 +56,7 @@ export default function Page(): JSX.Element {
           <div className="flex bg-zinc-900 sticky top-[-1px] z-20 min-w-fit">
             <RunColumnHeaders
               showPrompt={(run: RunCompletion) =>
-                showRunDetails(activeRun ? undefined : run)
+                showRunDetails(activeRun?.id === run.id ? undefined : run)
               }
               headers={tableHeaders}
             />

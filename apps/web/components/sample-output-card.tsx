@@ -22,6 +22,7 @@ import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import EmptySampleCompletion from "./empty-sample-completion";
 
 import ScoreBadge from "./ui/score-badge";
+import { Alert, AlertDescription } from "./ui/alert";
 
 type Diff = {
   type: string;
@@ -52,6 +53,8 @@ export default function SampleOutputCard({
     type: "",
     enabled: false,
   });
+
+  console.log({ baseSample });
 
   const showCompareAgainst = useMemo(
     () =>
@@ -205,6 +208,13 @@ export default function SampleOutputCard({
               </DropdownMenu>
             </div>
           </CardTitle>
+        )}
+        {baseSample?.error && (
+          <Alert variant="destructive" className="m-2">
+            <AlertDescription>
+              Error: {baseSample.error.message || baseSample.error.code}
+            </AlertDescription>
+          </Alert>
         )}
         {showOutputLoading && (
           <EmptySampleCompletion

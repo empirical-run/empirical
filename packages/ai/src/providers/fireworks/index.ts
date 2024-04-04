@@ -3,17 +3,26 @@ import {
   IAIProvider,
   IChatCompletion,
 } from "@empiricalrun/types";
-import { BatchTaskManager } from "../../utils";
+import { BatchTaskManager, getPassthroughParams } from "../../utils";
 import { AIError, AIErrorEnum } from "../../error";
 import promiseRetry from "promise-retry";
 
 const batchTaskManager = new BatchTaskManager(10);
 
 const createChatCompletion: ICreateChatCompletion = async (body) => {
-  const { model, messages } = body;
+  const { model, messages, ...config } = body;
   const payload = JSON.stringify({
     model: `accounts/fireworks/models/${model}`,
     messages,
+    temperature: config.temperature,
+    max_tokens: config.max_tokens,
+    top_p: config.top_p,
+    frequency_penalty: config.frequency_penalty,
+    presence_penalty: config.presence_penalty,
+    n: config.n,
+    stop: config.stop,
+    response_format: config.response_format,
+    ...getPassthroughParams(config),
   });
   const apiKey = process.env.FIREWORKS_API_KEY;
   if (!apiKey) {

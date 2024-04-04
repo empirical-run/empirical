@@ -110,7 +110,10 @@ export default function SampleOutputCard({
   const containerWrapper = useRef<HTMLDivElement>(null);
   const showOutput = useMemo(
     () =>
-      baseSample && baseSample.output && !diffView.enabled && !baseSample.error,
+      baseSample &&
+      baseSample.output &&
+      !diffView.enabled &&
+      !baseSample?.error,
     [baseSample, diffView],
   );
 

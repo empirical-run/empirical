@@ -1,5 +1,18 @@
 # @empiricalrun/ai
 
+## 0.2.0
+
+### Minor Changes
+
+- 90082c8: feat: support model parameters with passthrough
+- a4cfb49: feat: add support for fireworks provider for dbrx
+
+### Patch Changes
+
+- b354507: fix: change script value property to path in run
+- a9e840a: fix: openai errors not getting captured
+- b3cb527: fix: openai run gets stuck when balance is negative
+
 ## 0.1.1
 
 ### Patch Changes

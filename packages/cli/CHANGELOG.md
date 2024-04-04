@@ -1,5 +1,22 @@
 # @empiricalrun/cli
 
+## 0.3.0
+
+### Minor Changes
+
+- df65e07: feat: execution and reporting for github actions
+
+### Patch Changes
+
+- b354507: fix: change script value property to path in run
+- 5ed6ca9: fix: add support for alternate port for web UI
+- 17860b0: feat: add support for passthrough config for script executor
+- Updated dependencies [b354507]
+- Updated dependencies [90082c8]
+- Updated dependencies [17860b0]
+  - @empiricalrun/types@0.2.0
+  - @empiricalrun/core@0.2.0
+
 ## 0.2.4
 
 ### Patch Changes

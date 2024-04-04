@@ -1,5 +1,11 @@
 # web
 
+## 0.3.0
+
+### Minor Changes
+
+- ec6e494: feat: add parameters in run config ui
+
 ## 0.2.1
 
 ### Patch Changes

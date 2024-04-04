@@ -144,20 +144,21 @@ program
     }
   });
 
+const defaultWebUIPort = 1337;
 program
   .command("ui")
   .description("visualise the results of a run in your web browser")
   .option(
     "-p, --port <int>",
-    "Provide port to run the empirical webapp on",
-    "8000",
+    "port to run the empirical webapp on",
+    `${defaultWebUIPort}`,
   )
   .action(async (options) => {
     console.log(yellow("Initiating webapp..."));
     const app = express();
     const port =
       !options.port || isNaN(Number(options.port))
-        ? 8000
+        ? defaultWebUIPort
         : Number(options.port);
     const availablePort = await detect(port);
     if (availablePort !== port) {

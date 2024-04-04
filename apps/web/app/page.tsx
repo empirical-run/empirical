@@ -8,11 +8,12 @@ import { useRunResultTableView } from "../hooks/useRunResultTableView";
 import InViewElement from "../components/ui/in-view";
 import SampleCard from "../components/sample-card";
 import SampleOutputCard from "../components/sample-output-card";
-import { RunCompletion } from "@empiricalrun/types";
+import { RunCompletion, RunConfig } from "@empiricalrun/types";
 import { RunDetails } from "../components/run-details";
 
 export default function Page(): JSX.Element {
-  const { runResults, dataset } = useRunResults();
+  const { runResults, dataset, addRun, executeRun, updateRunConfigForRun } =
+    useRunResults();
   const { tableHeaders, getSampleCell, setActiveRun, activeRun } =
     useRunResultTableView({
       runs: runResults,
@@ -37,6 +38,30 @@ export default function Page(): JSX.Element {
     },
     [activeRun],
   );
+  const addNewRun = useCallback(
+    (runResult: RunCompletion) => {
+      const idx = runColumnHeaders.findIndex(
+        (r) => r.runResult?.id === runResult.id,
+      );
+      const newRun = addRun(runResult, idx);
+      setActiveRun(newRun);
+      return newRun;
+    },
+    [runColumnHeaders, addRun],
+  );
+  const updateActiveRunConfigAndExecute = useCallback(
+    async (runConfig: RunConfig) => {
+      if (activeRun?.samples.length !== dataset?.samples.length) {
+        const updatedRun = updateRunConfigForRun(activeRun!, runConfig);
+        setActiveRun(updatedRun);
+        executeRun(updatedRun!, dataset!);
+      } else {
+        const newRun = addNewRun(activeRun!);
+        executeRun(newRun, dataset!);
+      }
+    },
+    [activeRun, dataset],
+  );
 
   return (
     <main>
@@ -47,8 +72,10 @@ export default function Page(): JSX.Element {
         ))}
       {activeRun && (
         <RunDetails
-          runResult={activeRun!}
+          runId={activeRun?.id}
+          runConfig={activeRun.run_config!}
           onClose={() => setActiveRun(undefined)}
+          onClickRun={updateActiveRunConfigAndExecute}
         />
       )}
       <section className=" overflow-scroll relative h-full">
@@ -56,13 +83,13 @@ export default function Page(): JSX.Element {
           <div className="flex bg-zinc-900 sticky top-[-1px] z-20 min-w-fit">
             <RunColumnHeaders
               showPrompt={(run: RunCompletion) =>
-                showRunDetails(activeRun ? undefined : run)
+                showRunDetails(activeRun?.id === run.id ? undefined : run)
               }
               headers={tableHeaders}
+              onClickAddRun={addNewRun}
             />
           </div>
         )}
-
         <>
           {sampleIds?.map((r) => {
             const sampleCells = runColumnHeaders.map(

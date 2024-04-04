@@ -35,7 +35,6 @@ export default function SampleOutputCard({
   comparisonResults,
   comparisonSamples,
   isActiveColumn = false,
-  onFetchCompletion,
   onClickCard = () => {},
 }: {
   baseResult?: RunCompletion;
@@ -100,11 +99,6 @@ export default function SampleOutputCard({
       wordWrap: "on",
     });
   }, []);
-
-  const onClickFetchCompletion = useCallback(
-    () => onFetchCompletion?.(baseResult!),
-    [baseResult, onFetchCompletion],
-  );
 
   const containerWrapper = useRef<HTMLDivElement>(null);
 
@@ -208,7 +202,6 @@ export default function SampleOutputCard({
         )}
         {showOutputLoading && (
           <EmptySampleCompletion
-            onClickFetchCompletion={onClickFetchCompletion}
             loading={!!(baseSample && !baseSample?.output)}
           />
         )}

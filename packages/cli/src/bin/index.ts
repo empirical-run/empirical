@@ -13,7 +13,7 @@ import { RunsConfig } from "../types";
 import { loadDataset } from "./dataset";
 import { DatasetError } from "../error";
 import { DefaultRunsConfigType, getDefaultRunsConfig } from "../runs";
-import { Dataset, RunCompletion } from "@empiricalrun/types";
+import { Dataset, RunConfig, RunCompletion } from "@empiricalrun/types";
 import {
   failedOutputsSummary,
   printStatsSummary,
@@ -150,8 +150,21 @@ program
     console.log(yellow("Initiating webapp..."));
     const app = express();
     const port = 8000;
+    app.use(express.json());
     app.use(express.static(path.join(__dirname, "../webapp")));
     app.get("/api/results", (req, res) => res.sendFile(outputFilePath));
+    app.post("/api/run/execute", async (req, res) => {
+      //default 10 mins timeout for response
+      res.setTimeout(600_0000);
+      // TODO: keep the execution at a single place with the cli
+      const { runs, dataset } = req.body as {
+        runs: RunConfig[]; // TODO: should this interface start with I?
+        dataset: Dataset;
+      };
+      const completion = await execute(runs[0]!, dataset);
+      setRunSummary([completion]);
+      res.send(completion);
+    });
     const fullUrl = `http://localhost:${port}`;
     app.listen(port, () => {
       console.log(`Empirical app running on ${fullUrl}`);

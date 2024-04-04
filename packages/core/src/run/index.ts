@@ -9,6 +9,10 @@ import { generateHex } from "../utils";
 import score from "@empiricalrun/scorer";
 import { getExecutor } from "./executors";
 
+export function generateRunId(): string {
+  return generateHex(4);
+}
+
 export async function execute(
   runConfig: RunConfig,
   dataset: Dataset,
@@ -16,7 +20,7 @@ export async function execute(
 ): Promise<RunCompletion> {
   const runCreationDate = new Date();
   const sampleCompletions: RunOutputSample[] = [];
-  const runId = generateHex(4);
+  const runId = generateRunId();
   const { scorers } = runConfig;
   const completionsPromises = [];
   for (const datasetSample of dataset.samples) {

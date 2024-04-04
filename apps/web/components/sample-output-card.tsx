@@ -54,8 +54,6 @@ export default function SampleOutputCard({
     enabled: false,
   });
 
-  console.log({ baseSample });
-
   const showCompareAgainst = useMemo(
     () =>
       baseSample?.expected?.value ||

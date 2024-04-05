@@ -1,4 +1,5 @@
-import { BeatLoader } from "react-spinners";
+import { BarLoader } from "react-spinners";
+
 export default function EmptySampleCompletion({
   loading,
 }: {
@@ -17,14 +18,7 @@ export default function EmptySampleCompletion({
             </p>
           </>
         )}
-        {loading && (
-          <BeatLoader
-            loading={true}
-            color="#efefef"
-            size={6}
-            speedMultiplier={0.75}
-          />
-        )}
+        {loading && <BarLoader color="#a1a1aa" width={80} height={4} />}
       </section>
     </section>
   );

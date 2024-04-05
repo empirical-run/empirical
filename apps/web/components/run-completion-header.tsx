@@ -2,10 +2,11 @@ import { MoreInfo } from "./ui/more-info";
 import { Badge } from "./ui/badge";
 import { cn } from "./ui/lib";
 import { Button } from "./ui/button";
-import ScoreBadge from "./ui/score-badge";
 import { Separator } from "./ui/separator";
 import { MinusCircledIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { RunResult } from "../types";
+import { BarLoader } from "react-spinners";
+import ScoreBadge from "./ui/score-badge";
 
 export type Header = {
   title: string;
@@ -61,11 +62,13 @@ export const RunColumnHeaders = ({
   headers,
   onClickAddRun,
   onClickRemoveRun,
+  datasetCount,
 }: {
   onClickRemoveRun?: (runResult: RunResult) => void;
   showPrompt?: (runResult: RunResult) => void;
   onClickAddRun?: (runResult: RunResult) => void; // TODO: whether to keep the interface name as run completion?
   headers: Header[];
+  datasetCount: number;
 }) => {
   return headers.map((header, index) => {
     if (header.type !== "completion") {
@@ -150,6 +153,28 @@ export const RunColumnHeaders = ({
                 </section>
               </>
             )}
+          {header.runResult?.loading && (
+            <>
+              <Separator orientation="horizontal" className={`${overlayBg}`} />
+              <section className="flex flex-row space-x-2 text-muted-foreground items-center mx-4 my-2 justify-center">
+                <section className="flex flex-col text-xs gap-1 items-center">
+                  <>
+                    {datasetCount > (header.runResult?.samples.length || 0) && (
+                      <p>
+                        {header.runResult?.samples.length} / {datasetCount}{" "}
+                        outputs fetched
+                      </p>
+                    )}
+                    {datasetCount ===
+                      (header.runResult?.samples.length || 0) && (
+                      <p>Scoring outputs</p>
+                    )}
+                    <BarLoader color="#a1a1aa" width={40} height={2} />
+                  </>
+                </section>
+              </section>
+            </>
+          )}
         </section>
       </div>
     );

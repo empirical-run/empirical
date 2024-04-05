@@ -110,8 +110,8 @@ export default function SampleOutputCard({
     clearDiffView();
   }, [baseResult?.id, clearDiffView]);
 
-  const isLoading = !!baseResult?.loading;
   const isEmptyOutput = !baseSample?.output;
+  const isLoading = !!baseResult?.loading && isEmptyOutput;
   return (
     <Card
       className={`flex flex-col flex-1 ${

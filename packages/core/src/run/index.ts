@@ -4,6 +4,7 @@ import {
   RunConfig,
   RunCompletion,
   RunOutputSample,
+  Score,
 } from "@empiricalrun/types";
 import { generateHex } from "../utils";
 import score from "@empiricalrun/scorer";
@@ -13,16 +14,58 @@ export function generateRunId(): string {
   return generateHex(4);
 }
 
+interface RunMetadataUpdate {
+  type: "run_metadata";
+  data: {
+    run_config: RunConfig;
+    id: string;
+    dataset_config: { id: string };
+    created_at: Date;
+  };
+}
+
+interface RunSampleScoreUpdate {
+  type: "run_sample_score";
+  data: {
+    run_id: string;
+    sample_id: string | undefined;
+    dataset_sample_id: string;
+    scores: Score[];
+  };
+}
+
+interface RunSampleUpdate {
+  type: "run_sample";
+  data: RunOutputSample;
+}
+// TODO: fix naming
+type ProgressCallbackDataTypes =
+  | RunMetadataUpdate
+  | RunSampleUpdate
+  | RunSampleScoreUpdate;
+
 export async function execute(
   runConfig: RunConfig,
   dataset: Dataset,
-  progressCallback?: (sample: RunOutputSample) => void,
+  progressCallback?: (sample: ProgressCallbackDataTypes) => void,
 ): Promise<RunCompletion> {
   const runCreationDate = new Date();
   const sampleCompletions: RunOutputSample[] = [];
   const runId = generateRunId();
   const { scorers } = runConfig;
   const completionsPromises = [];
+  // TODO: move this metadata creation logic to single place
+  progressCallback?.({
+    type: "run_metadata",
+    data: {
+      run_config: runConfig,
+      id: runId,
+      dataset_config: {
+        id: dataset.id,
+      },
+      created_at: runCreationDate,
+    },
+  });
   for (const datasetSample of dataset.samples) {
     const executor = getExecutor(runConfig);
     if (executor) {
@@ -41,7 +84,10 @@ export async function execute(
           sampleCompletions.push(sample);
 
           try {
-            progressCallback?.(sample);
+            progressCallback?.({
+              type: "run_sample",
+              data: sample,
+            });
           } catch (e) {
             console.warn(e);
           }
@@ -73,6 +119,15 @@ export async function execute(
             },
           }).then((scores) => {
             sampleCompletion.scores = scores;
+            progressCallback?.({
+              type: "run_sample_score",
+              data: {
+                run_id: runId,
+                sample_id: sampleCompletion.id,
+                dataset_sample_id: sampleCompletion.dataset_sample_id,
+                scores,
+              },
+            });
           }),
         );
       })(s);

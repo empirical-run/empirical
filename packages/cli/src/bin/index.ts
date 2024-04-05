@@ -103,8 +103,10 @@ program
       runs.map((r) => {
         r.parameters = r.parameters ? r.parameters : {};
         r.parameters.pythonPath = options.pythonPath;
-        return execute(r, dataset, () => {
-          progressBar.increment();
+        return execute(r, dataset, (update) => {
+          if (update.type === "run_sample") {
+            progressBar.increment();
+          }
         });
       }),
     );
@@ -166,7 +168,8 @@ program
         `${yellow("[Warning]")} Port ${port} is unavailable. Trying port ${availablePort}.`,
       );
     }
-    app.use(express.json());
+    // TODO: get rid of this with dataset id support
+    app.use(express.json({ limit: "50mb" }));
     app.use(express.static(path.join(__dirname, "../webapp")));
     app.get("/api/results", (req, res) => res.sendFile(outputFilePath));
     app.post("/api/run/execute", async (req, res) => {
@@ -177,9 +180,14 @@ program
         runs: RunConfig[]; // TODO: should this interface start with I?
         dataset: Dataset;
       };
-      const completion = await execute(runs[0]!, dataset);
+      const completion = await execute(runs[0]!, dataset, (update) =>
+        res.write(JSON.stringify(update) + `\n`),
+      );
       setRunSummary([completion]);
-      res.send(completion);
+      res.write(
+        JSON.stringify({ type: "stats_update", data: completion.stats }) + `\n`,
+      );
+      res.end();
     });
     const fullUrl = `http://localhost:${availablePort}`;
     app.listen(availablePort, () => {

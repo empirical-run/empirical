@@ -75,7 +75,7 @@ export default function Page(): JSX.Element {
   );
 
   return (
-    <main>
+    <main className="relative h-screen">
       <PageHeader />
       {!runResults ||
         (!runResults.length && (
@@ -89,9 +89,12 @@ export default function Page(): JSX.Element {
           onClickRun={updateActiveRunConfigAndExecute}
         />
       )}
-      <section className=" overflow-scroll relative h-full">
+      <section
+        className="overflow-scroll relative"
+        style={{ height: "calc(100vh - 40px)" }}
+      >
         {runResults?.length > 0 && (
-          <div className="flex bg-zinc-900 sticky top-[-1px] z-20 min-w-fit">
+          <div className="flex bg-zinc-900 sticky top-0 z-20 min-w-fit">
             <RunColumnHeaders
               showPrompt={(run: RunResult) =>
                 showRunDetails(activeRun?.id === run.id ? undefined : run)

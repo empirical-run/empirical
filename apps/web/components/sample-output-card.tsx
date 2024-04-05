@@ -20,9 +20,9 @@ import { RunOutputSample } from "@empiricalrun/types";
 import { DiffEditor, DiffOnMount } from "@monaco-editor/react";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import EmptySampleCompletion from "./empty-sample-completion";
-
 import ScoreBadge from "./ui/score-badge";
 import { RunResult } from "../types";
+import SampleCompletionError from "./sample-completion-error";
 
 type Diff = {
   type: string;
@@ -101,6 +101,10 @@ export default function SampleOutputCard({
   }, []);
 
   const containerWrapper = useRef<HTMLDivElement>(null);
+  const showOutput = useMemo(
+    () => baseSample && !diffView.enabled && !baseSample?.error,
+    [baseSample, diffView],
+  );
 
   useEffect(() => {
     clearDiffView();
@@ -202,6 +206,9 @@ export default function SampleOutputCard({
           </CardTitle>
         )}
         {isEmptyOutput && <EmptySampleCompletion loading={isLoading} />}
+        {baseSample?.error && (
+          <SampleCompletionError errorMessage={baseSample.error.message} />
+        )}
       </CardHeader>
       <CardContent className="h-full p-2" ref={containerWrapper}>
         {diffView.enabled && baseSample && (
@@ -220,7 +227,7 @@ export default function SampleOutputCard({
             loading=""
           />
         )}
-        {baseSample && baseSample.output && !diffView.enabled && (
+        {showOutput && (
           <CodeViewer
             value={baseSample?.output.value || ""}
             language="json"

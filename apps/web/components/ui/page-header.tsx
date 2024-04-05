@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export function PageHeader() {
   return (
-    <header className="sm:p-1 border-b flex flex-row items-center overflow-hidden relative">
+    <header className="sm:p-1 border-b flex flex-row items-center sticky top-0 z-20 bg-black">
       <section className="flex py-1 px-1 sm:px-3 font-bold">
         <Link href="https://www.empirical.run">
           <BrandLogo width={24} height={24} type={LogoType.WHITE_FILL} />

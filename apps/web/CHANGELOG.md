@@ -1,5 +1,15 @@
 # web
 
+## 0.4.0
+
+### Minor Changes
+
+- f1d71b4: feat: show output errors in ui cells
+
+### Patch Changes
+
+- c8868d9: fix: top bar is not sticky
+
 ## 0.3.0
 
 ### Minor Changes

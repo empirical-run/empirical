@@ -50,11 +50,36 @@ interface RunConfigBase {
   };
 }
 
+type ResponseFormat = {
+  type: "json_object" | "text";
+};
+
+interface ModelParameters {
+  // From OpenAI config: see OpenAI.ChatCompletionCreateParamsNonStreaming
+  // TODO: This does not support logit_bias, tools, tool_choice, user, stream
+  temperature?: number;
+  max_tokens?: number;
+  top_p?: number;
+  frequency_penalty?: number;
+  logprobs?: boolean;
+  n?: number;
+  presence_penalty?: number;
+  response_format?: ResponseFormat;
+  seed?: number;
+  stop?: string | Array<string>;
+  top_logprobs?: number;
+
+  // For other models, we coerce the above known parameters to appropriate slots
+  // If users require other parameters, we support passthrough for other key names
+  [key: string]: any;
+}
+
 export interface ModelRunConfig extends RunConfigBase {
   type: "model";
   provider: "openai" | "mistral" | "google" | "anthropic" | "fireworks";
   model: string;
   prompt?: Prompt;
+  parameters?: ModelParameters;
 }
 
 export interface JSScriptRunConfig extends RunConfigBase {

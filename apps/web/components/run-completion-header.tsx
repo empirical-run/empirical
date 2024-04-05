@@ -101,9 +101,9 @@ export const RunColumnHeaders = ({
               </Badge>
             </section>
             <Button
-              variant={"ghost"}
+              variant={"secondary"}
               onClick={() => showPrompt?.(header.runResult!)}
-              className="self-center justify-center"
+              className="self-end"
               size={"xs"}
             >
               <span>{header.active ? "Hide" : "Show"} config</span>

@@ -103,7 +103,7 @@ export const RunDetails = ({
           )}
           <TabsContent value="parameters">
             <CodeViewer
-              value={JSON.stringify(runConfig.parameters || {})}
+              value={JSON.stringify(runConfig.parameters || "", null, 2)}
               language="json"
               onChange={updateParameters}
             />

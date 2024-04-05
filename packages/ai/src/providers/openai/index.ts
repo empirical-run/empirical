@@ -48,7 +48,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   } catch (err) {
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `failed chat completion for model openai "${body.model}" with the error message: ${(err as any)?.error?.message}`,
+      `Failed completion for OpenAI ${body.model}: ${(err as any)?.error?.message}`,
     );
   }
 };

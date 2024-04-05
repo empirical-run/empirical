@@ -10,22 +10,26 @@ does pre or post-processing around the LLM call or chains multiple LLM calls tog
 ## Run configuration
 
 In your config file, set `type` as `py-script` and specify the Python file
-path in the `value` field.
+path in the `path` field.
 
 ```json
 "runs": [
   {
     "type": "py-script",
-    "value": "rag.py"
+    "path": "rag.py"
   }
 ]
 ```
+You can additional pass following properties in run configuration:
+- **name**: `string` - a custom name to your run
+- **parameters**: `object` - object to pass values to the script to modify its behavior
 
 The Python file is expected to have a method called `execute` with the following
 signature:
 
 - **Arguments**
   - inputs: dict of key-value pairs with [sample inputs](../dataset/basics)
+  - parameters: dict of key-value pairs with the run parameters
 - **Returns**: a dict with
   - output (string): The response from the model/application
   - metadata (dict): Custom key-value pairs that are passed on to the scorer and

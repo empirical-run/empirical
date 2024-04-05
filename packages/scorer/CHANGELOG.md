@@ -1,5 +1,18 @@
 # @empiricalrun/scorer
 
+## 0.1.3
+
+### Patch Changes
+
+- b354507: fix: change script value property to path in run
+- d7f4b53: fix: python script scorer should prefer config.name
+- Updated dependencies [b354507]
+- Updated dependencies [90082c8]
+- Updated dependencies [a9e840a]
+- Updated dependencies [b3cb527]
+- Updated dependencies [a4cfb49]
+  - @empiricalrun/ai@0.2.0
+
 ## 0.1.2
 
 ### Patch Changes

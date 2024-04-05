@@ -1,10 +1,10 @@
-import { IRunConfig } from "@empiricalrun/types";
+import { RunConfig } from "@empiricalrun/types";
 import { Executor } from "./interface";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { AIError, EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
 
 export const modelExecutor: Executor = async function (
-  runConfig: IRunConfig,
+  runConfig: RunConfig,
   sample,
 ) {
   if (runConfig.type !== "model") {
@@ -18,7 +18,7 @@ export const modelExecutor: Executor = async function (
       },
     };
   }
-  const { prompt, model, provider } = runConfig;
+  const { prompt, model, provider, parameters } = runConfig;
   const messages: ChatCompletionMessageParam[] = [
     {
       role: "user",
@@ -28,7 +28,11 @@ export const modelExecutor: Executor = async function (
   const ai = new EmpiricalAI(provider);
   let value = "";
   try {
-    const completion = await ai.chat.completions.create({ model, messages });
+    const completion = await ai.chat.completions.create({
+      model,
+      messages,
+      ...parameters,
+    });
     value = completion.choices?.[0]?.message.content || "";
   } catch (e: any) {
     const error = {

@@ -20,6 +20,7 @@ import {
   setRunSummary,
 } from "../stats";
 import { reportOnCI } from "../reporters/ci";
+import detect from "detect-port";
 
 const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
@@ -100,9 +101,8 @@ program
     );
     const completion = await Promise.all(
       runs.map((r) => {
-        if (r.type === "py-script") {
-          r.pythonPath = options.pythonPath;
-        }
+        r.parameters = r.parameters ? r.parameters : {};
+        r.parameters.pythonPath = options.pythonPath;
         return execute(r, dataset, () => {
           progressBar.increment();
         });
@@ -144,17 +144,32 @@ program
     }
   });
 
+const defaultWebUIPort = 1337;
 program
   .command("ui")
   .description("visualise the results of a run in your web browser")
-  .action(async () => {
+  .option(
+    "-p, --port <int>",
+    "port to run the empirical webapp on",
+    `${defaultWebUIPort}`,
+  )
+  .action(async (options) => {
     console.log(yellow("Initiating webapp..."));
     const app = express();
-    const port = 8000;
+    const port =
+      !options.port || isNaN(Number(options.port))
+        ? defaultWebUIPort
+        : Number(options.port);
+    const availablePort = await detect(port);
+    if (availablePort !== port) {
+      console.log(
+        `${yellow("[Warning]")} Port ${port} is unavailable. Trying port ${availablePort}.`,
+      );
+    }
     app.use(express.static(path.join(__dirname, "../webapp")));
     app.get("/api/results", (req, res) => res.sendFile(outputFilePath));
-    const fullUrl = `http://localhost:${port}`;
-    app.listen(port, () => {
+    const fullUrl = `http://localhost:${availablePort}`;
+    app.listen(availablePort, () => {
       console.log(`Empirical app running on ${fullUrl}`);
       opener(fullUrl);
     });

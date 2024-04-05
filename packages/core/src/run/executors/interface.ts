@@ -1,8 +1,8 @@
-import { DatasetSample, IRunConfig, RunOutput } from "@empiricalrun/types";
+import { DatasetSample, RunConfig, RunOutput } from "@empiricalrun/types";
 
 export interface Executor {
   (
-    runConfig: IRunConfig,
+    runConfig: RunConfig,
     sample: DatasetSample,
   ): Promise<{
     output: RunOutput;

@@ -39,21 +39,35 @@ export const RunDetails = ({
       <CardContent>
         <Tabs defaultValue="prompt">
           <TabsList className="w-fit mb-4 rounded-sm">
-            <TabsTrigger value="prompt" className="text-xs rounded-sm">
-              Prompt template
+            {runResult.run_config.type === "model" && (
+              <TabsTrigger value="prompt" className="text-xs rounded-sm">
+                Prompt template
+              </TabsTrigger>
+            )}
+            <TabsTrigger value="parameters" className="text-xs rounded-sm">
+              Parameters
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="prompt">
-            {runResult.run_config.type === "model" && (
+          {runResult.run_config.type === "model" && (
+            <TabsContent value="prompt">
               <CodeViewer
                 value={runResult.run_config.prompt as string}
                 language="prompt"
                 readOnly
               />
-            )}
+            </TabsContent>
+          )}
+          <TabsContent value="parameters">
+            <CodeViewer
+              value={JSON.stringify(
+                runResult.run_config.parameters || "",
+                null,
+                2,
+              )}
+              language="json"
+              readOnly
+            />
           </TabsContent>
-          <TabsContent value="configuration" />
-          <TabsContent value="tools" />
         </Tabs>
       </CardContent>
     </Card>

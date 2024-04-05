@@ -1,20 +1,24 @@
 {
-  "$schema": "https://assets.empirical.run/config/schema/v1.11.json",
+  "$schema": "https://assets.empirical.run/config/schema/v1.14.json",
   "runs": [
     {
       "type": "model",
-      "provider": "anthropic",
-      "model": "claude-3-haiku",
-      "prompt": "You are a Python programmer. You will be given a function definition with a docstring that describes the behavior of the function. Your task is to write the function body such that it follows the specifications in the docstring. Use the exact same function names and parameters.\n\nInstructions:\n- Do not import any third-party modules\n- Write import strings for types (e.g. List) if required\n- Do not return any markdown backticks in your response\n- Output the complete function with your additions\n\nDO NOT give any explanations - JUST CODE!\nPython function:\n{{prompt}}",
+      "provider": "openai",
+      "model": "gpt-3.5-turbo",
+      "prompt": "Complete the following python function. Return only the completed function so that it can be directly run on a Python shell, including imports like from typing import List.\n```python\n{{prompt}}\n```",
+      "parameters": {
+        "temperature": 0.1
+      },
       "scorers": [
         {
           "type": "py-script",
-          "path": "eval.py"
+          "path": "score.py",
+          "name": "unit-tests"
         }
       ]
     }
   ],
   "dataset": {
-    "path": ".empiricalrun/HumanEval.jsonl"
+    "path": "HumanEval.jsonl"
   }
 }

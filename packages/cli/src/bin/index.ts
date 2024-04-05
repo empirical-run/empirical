@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { DefaultRunsConfigType, getDefaultRunsConfig } from "../runs";
 import { green, red, yellow, bold } from "picocolors";
 import { promises as fs } from "fs";
 import { program } from "commander";
@@ -14,7 +13,15 @@ import cliProgress from "cli-progress";
 import express from "express";
 import path from "path";
 import opener from "opener";
-import { printStatsSummary, setRunSummary } from "../stats";
+import dotenv from "dotenv";
+import { DefaultRunsConfigType, getDefaultRunsConfig } from "../runs";
+import {
+  failedOutputsSummary,
+  printStatsSummary,
+  setRunSummary,
+} from "../stats";
+import { reportOnCI } from "../reporters/ci";
+import detect from "detect-port";
 
 const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
@@ -51,10 +58,16 @@ program
   .description("initiate a run to evaluate model completions")
   .option(
     "-pyp, --python-path <char>",
-    "Provide the python executable patg for the python scripts",
+    "Provide the python executable path for the python scripts",
+  )
+  .option(
+    "-env, --env-file <char>",
+    "Provide path to .env file to load environment variables",
   )
   .action(async (options) => {
+    dotenv.config({ path: options.envFile || [".env.local", ".env"] });
     console.log(yellow("Initiating run..."));
+
     let data;
     const startTime = performance.now();
     try {
@@ -62,7 +75,7 @@ program
     } catch (err) {
       console.log(`${red("[Error]")} Failed to read ${configFileName} file`);
       console.log(yellow("Please ensure running init command first"));
-      return;
+      process.exit(1);
     }
 
     console.log(`${green("[Success]")} - read ${configFileName} file`);
@@ -76,7 +89,7 @@ program
     } catch (error) {
       if (error instanceof DatasetError) {
         console.log(`${red("[Error]")} ${error.message}`);
-        return;
+        process.exit(1);
       } else {
         throw error;
       }
@@ -87,9 +100,8 @@ program
     );
     const completion = await Promise.all(
       runs.map((r) => {
-        if (r.type === "py-script") {
-          r.pythonPath = options.pythonPath;
-        }
+        r.parameters = r.parameters ? r.parameters : {};
+        r.parameters.pythonPath = options.pythonPath;
         return execute(r, dataset, () => {
           progressBar.increment();
         });
@@ -100,6 +112,7 @@ program
     setRunSummary(completion);
     printStatsSummary(completion);
 
+    // TODO: this is not sent in CI report
     console.log(bold("Total dataset samples:"), dataset.samples?.length || 0);
     const endTime = performance.now();
     console.log(
@@ -110,16 +123,43 @@ program
 
     if (process.env.CI !== "true") {
       await fileStore.storeRunsForDatasetId(completion, dataset);
+    } else {
+      await reportOnCI(completion, dataset);
+    }
+
+    const failedOutputs = failedOutputsSummary(completion);
+    if (failedOutputs) {
+      const { code, message } = failedOutputs;
+      console.log(
+        `${red("[Error]")} Some outputs were not generated successfully`,
+      );
+      console.log(`${red("[Error]")} ${code}: ${message}`);
+      process.exit(1);
     }
   });
 
+const defaultWebUIPort = 1337;
 program
   .command("ui")
   .description("visualise the results of a run in your web browser")
-  .action(async () => {
+  .option(
+    "-p, --port <int>",
+    "port to run the empirical webapp on",
+    `${defaultWebUIPort}`,
+  )
+  .action(async (options) => {
     console.log(yellow("Initiating webapp..."));
     const app = express();
-    const port = 8000;
+    const port =
+      !options.port || isNaN(Number(options.port))
+        ? defaultWebUIPort
+        : Number(options.port);
+    const availablePort = await detect(port);
+    if (availablePort !== port) {
+      console.log(
+        `${yellow("[Warning]")} Port ${port} is unavailable. Trying port ${availablePort}.`,
+      );
+    }
     app.use(express.static(path.join(__dirname, "../webapp")));
 
     app.get("/api/results", async (req, res) =>
@@ -133,8 +173,8 @@ program
       res.sendFile(await fileStore.getRunFilePath(runId));
     });
 
-    const fullUrl = `http://localhost:${port}`;
-    app.listen(port, () => {
+    const fullUrl = `http://localhost:${availablePort}`;
+    app.listen(availablePort, () => {
       console.log(`Empirical app running on ${fullUrl}`);
       opener(fullUrl);
     });

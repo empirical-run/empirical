@@ -1,5 +1,5 @@
 {
-  "$schema": "https://assets.empirical.run/config/schema/v1.10.json",
+  "$schema": "https://assets.empirical.run/config/schema/v1.14.json",
   "runs": [
     {
       "name": "less context setting",
@@ -10,7 +10,8 @@
       "scorers": [
         {
           "type": "llm-criteria",
-          "value": "Never call yourself an AI or language model"
+          "criteria": "Never call yourself an AI, language model, or any variant of the term",
+          "name": "self-referencing"
         }
       ]
     },
@@ -23,11 +24,13 @@
       "scorers": [
         {
           "type": "llm-criteria",
-          "value": "Never call yourself a language model"
+          "criteria": "Never call yourself an AI, language model, or any variant of the term",
+          "name": "self-referencing"
         },
         {
           "type": "llm-criteria",
-          "value": "Mention the user's name {{user_name}}"
+          "criteria": "Mention the user's name {{user_name}}",
+          "name": "personal"
         }
       ]
     }

@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { IAIProvider, ICreateChatCompletion } from "@empiricalrun/types";
 import { ChatCompletionMessageParam } from "openai/resources/chat/completions.mjs";
 import promiseRetry from "promise-retry";
-import { BatchTaskManager } from "../../utils";
+import { BatchTaskManager, getPassthroughParams } from "../../utils";
 import { AIError, AIErrorEnum } from "../../error";
 
 const batchTaskManager = new BatchTaskManager(5);
@@ -56,9 +56,8 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   }
   const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
-    maxRetries: 5,
   });
-  const { model, messages, max_tokens } = body;
+  const { model, messages, ...config } = body;
   const { contents, systemPrompt } = convertOpenAIToAnthropicAI(messages);
   const { executionDone } = await batchTaskManager.waitForTurn();
   try {
@@ -66,10 +65,18 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       (retry) => {
         return anthropic.messages
           .create({
-            max_tokens: max_tokens || 1024,
             model: canonicalModelName(model),
             messages: contents,
             system: systemPrompt,
+            max_tokens: config.max_tokens || 1024,
+            temperature: config.temperature || undefined,
+            stop_sequences: Array.isArray(config.stop)
+              ? config.stop
+              : config.stop
+                ? [config.stop]
+                : undefined,
+            top_p: config.top_p || undefined,
+            ...getPassthroughParams(config),
           })
           .catch((err) => {
             if (

@@ -5,7 +5,7 @@ import { Score } from "@empiricalrun/types";
 
 export const name = "py-script";
 
-const scriptTimeout = 10000;
+const scriptTimeout = 20000;
 const wrapperScriptDirectory = path.join(__dirname, "..", "..", "python");
 const wrapperScriptFile = "wrapper.py";
 const executionOutputIdentifier = "scorer_output:";
@@ -29,7 +29,7 @@ export const scoreWithPythonScript: ScoringFn = async ({
     return [
       {
         score: 0,
-        name,
+        name: config.name || name,
         message: "Python script path is not provided for running the scorer",
       },
     ];
@@ -57,7 +57,7 @@ export const scoreWithPythonScript: ScoringFn = async ({
         JSON.stringify([
           {
             score: 0,
-            name,
+            name: config.name || name,
             message: "Scorer script timed out",
           },
         ]),
@@ -79,7 +79,7 @@ export const scoreWithPythonScript: ScoringFn = async ({
         JSON.stringify([
           {
             score: 0,
-            name,
+            name: config.name || name,
             message: `Scorer script error: ${message}`,
           },
         ]),

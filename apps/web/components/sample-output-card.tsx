@@ -6,7 +6,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { Badge } from "./ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import CodeViewer from "./ui/code-viewer";
 import {
@@ -19,18 +18,11 @@ import {
 } from "./ui/dropdown-menu";
 import { RunCompletion, RunOutputSample } from "@empiricalrun/types";
 import { DiffEditor, DiffOnMount } from "@monaco-editor/react";
-import {
-  CheckCircledIcon,
-  CrossCircledIcon,
-  DotsVerticalIcon,
-} from "@radix-ui/react-icons";
+import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import EmptySampleCompletion from "./empty-sample-completion";
-import {
-  TooltipProvider,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "./ui/tooltip";
+
+import ScoreBadge from "./ui/score-badge";
+import SampleCompletionError from "./sample-completion-error";
 
 type Diff = {
   type: string;
@@ -116,6 +108,10 @@ export default function SampleOutputCard({
   );
 
   const containerWrapper = useRef<HTMLDivElement>(null);
+  const showOutput = useMemo(
+    () => baseSample && !diffView.enabled && !baseSample?.error,
+    [baseSample, diffView],
+  );
 
   useEffect(() => {
     clearDiffView();
@@ -140,33 +136,12 @@ export default function SampleOutputCard({
                   return null;
                 }
                 return (
-                  <TooltipProvider>
-                    <Tooltip delayDuration={100}>
-                      <TooltipTrigger>
-                        <Badge
-                          variant={
-                            // @ts-ignore
-                            s.score ? "outline" : "destructive"
-                          }
-                          key={`${baseResult.id}-${baseSample.id}-score-${s.name}`}
-                          className="flex flex-row space-x-1"
-                        >
-                          <span>{s.name} </span>
-                          {
-                            // @ts-ignore
-                            s.score ? (
-                              <CheckCircledIcon height={12} width={12} />
-                            ) : (
-                              <CrossCircledIcon height={12} width={12} />
-                            )
-                          }
-                        </Badge>
-                      </TooltipTrigger>
-                      {s.message && (
-                        <TooltipContent>{s.message}</TooltipContent>
-                      )}
-                    </Tooltip>
-                  </TooltipProvider>
+                  <ScoreBadge
+                    title={s.name}
+                    score={s.score}
+                    description={s.message}
+                    className="flex flex-row space-x-1"
+                  />
                 );
               })}
               <DropdownMenu>
@@ -236,6 +211,9 @@ export default function SampleOutputCard({
             </div>
           </CardTitle>
         )}
+        {baseSample?.error && (
+          <SampleCompletionError errorMessage={baseSample.error.message} />
+        )}
         {showOutputLoading && (
           <EmptySampleCompletion
             onClickFetchCompletion={onClickFetchCompletion}
@@ -260,7 +238,7 @@ export default function SampleOutputCard({
             loading=""
           />
         )}
-        {baseSample && baseSample.output && !diffView.enabled && (
+        {showOutput && (
           <CodeViewer
             value={baseSample?.output.value || ""}
             language="json"

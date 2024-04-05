@@ -9,6 +9,7 @@
     "lint": "turbo lint",
     "test": "turbo test",
     "test:watch": "turbo run test:watch",
+    "publish-packages": "changeset publish",
     "changeset": "changeset"
   },
   "devDependencies": {

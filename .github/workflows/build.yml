@@ -5,6 +5,7 @@ on:
     types: [opened, synchronize]
     paths-ignore:
        - 'docs/**'
+       - '.changeset/**'
 
 jobs:
   build:
@@ -40,3 +41,4 @@ jobs:
         run: pnpm test
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}

@@ -4,13 +4,13 @@ description: 'Ask an LLM to score your outputs based on your criteria'
 ---
 
 Use the `llm-criteria` scorer type to ask an LLM to score the output based on
-your criteria. Specify the criteria in the `value` parameter.
+your criteria. Specify the criteria in the `criteria` parameter.
 
 ```json
 "scorers": [
   {
     "type": "llm-criteria",
-    "value": "Never call yourself a language model"
+    "criteria": "Never call yourself a language model"
   }
 ]
 ```
@@ -31,7 +31,7 @@ valid placeholders. These placeholders will be replaced with actual values at th
 "scorers": [
   {
     "type": "llm-criteria",
-    "value": "Mention the user's name {{user_name}}"
+    "criteria": "Mention the user's name {{user_name}}"
   }
 ]
 ```

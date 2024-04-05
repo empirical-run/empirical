@@ -11,7 +11,7 @@ const humanEval = {
 
 // Using relative path to use the python script from HumanEval example
 // Tests run out of the $root/packages/evals directory
-const scriptPath = "../../examples/humaneval/eval.py";
+const scriptPath = "../../examples/humaneval/score.py";
 
 test("script scorer works for a correct humaneval output", async () => {
   const sample: DatasetSample = {
@@ -37,7 +37,7 @@ test("script scorer works for a correct humaneval output", async () => {
     {
       score: 1,
       name: "unit-tests",
-      message: "",
+      message: "Tests passed",
     },
   ]);
 });
@@ -91,10 +91,9 @@ test("script scorer works for a humaneval output that has backticks", async () =
     }),
   ).toStrictEqual([
     {
-      score: 0,
+      score: 1,
       name: "unit-tests",
-      message:
-        "SyntaxError('invalid syntax', ('<string>', 1, 1, '```python\\n', 1, 2))",
+      message: "Tests passed",
     },
   ]);
 });
@@ -124,7 +123,7 @@ test(
       },
     ]);
   },
-  { timeout: 11000 },
+  { timeout: 21000 },
 );
 
 test("script scorer works with a python script that throws", async () => {

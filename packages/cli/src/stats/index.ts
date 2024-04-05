@@ -3,7 +3,7 @@ import { RunCompletion } from "@empiricalrun/types";
 import { green, yellow, bold, cyan, red } from "picocolors";
 import { table } from "table";
 
-const percentStr = (value: any) => `${value}%`;
+const percentStr = (value: number) => `${value.toFixed(0)}%`;
 
 const setMetricColor = (metric: string, value: number) => {
   if (value === 1) {
@@ -19,26 +19,38 @@ export function setRunSummary(runs: RunCompletion[]) {
   runs.forEach((r) => (r.stats = getStatsForRun(r)));
 }
 
-export function printStatsSummary(runs: RunCompletion[]) {
+function runStatsSummary(
+  runs: RunCompletion[],
+  enableColors: boolean,
+): string[][] {
   // TODO: should get rid of this once config has separate scorer object
   const scorerNames = runs[0]?.stats?.scores.map((s) => s.name) || [];
-  const runStatsSummary = [
-    [bold("Stats"), ...runs.map((c) => bold(c.run_config.name))],
+  return [
     [
-      bold("outputs"),
+      enableColors ? bold("Stats") : "Stats",
+      ...runs.map((c) =>
+        enableColors ? bold(c.run_config.name) : c.run_config.name!,
+      ),
+    ],
+    [
+      enableColors ? bold("outputs") : "outputs",
       ...runs.map((c) => {
         const metric = percentStr((c?.stats?.outputs.success || 0) * 100);
-        return setMetricColor(metric, c?.stats?.outputs.success || 0);
+        return enableColors
+          ? setMetricColor(metric, c?.stats?.outputs.success || 0)
+          : metric;
       }),
     ],
     ...scorerNames.map((sn) => {
       return [
-        bold(sn),
+        enableColors ? bold(sn) : sn,
         ...runs.map((c) => {
           const scoreStats = c.stats?.scores.filter((s) => s.name === sn)[0];
           if (scoreStats) {
             const metric = percentStr(scoreStats.avgScore * 100);
-            return setMetricColor(metric, scoreStats.avgScore);
+            return enableColors
+              ? setMetricColor(metric, scoreStats.avgScore)
+              : metric;
           } else {
             return percentStr(0);
           }
@@ -46,8 +58,35 @@ export function printStatsSummary(runs: RunCompletion[]) {
       ];
     }),
   ];
+}
+
+export function markdownSummary(runs: RunCompletion[]): string {
+  const markdownTable = table(runStatsSummary(runs, false), {
+    border: {
+      topBody: "",
+      topJoin: "",
+      topLeft: "",
+      topRight: "",
+      bottomBody: "",
+      bottomJoin: "",
+      bottomLeft: "",
+      bottomRight: "",
+      bodyLeft: "|",
+      bodyRight: "|",
+      bodyJoin: "|",
+      joinBody: "-",
+      joinLeft: "|",
+      joinRight: "|",
+      joinJoin: "|",
+    },
+    drawHorizontalLine: (index) => index === 1,
+  });
+  return `### Empirical Run Summary\n${markdownTable}`;
+}
+
+export function printStatsSummary(runs: RunCompletion[]) {
   console.log(
-    table(runStatsSummary, {
+    table(runStatsSummary(runs, true), {
       header: {
         alignment: "center",
         content: bold(cyan("Empirical Run Summary")),
@@ -66,4 +105,21 @@ export function printStatsSummary(runs: RunCompletion[]) {
       columns: [{ alignment: "left" }],
     }),
   );
+}
+
+export function failedOutputsSummary(runs: RunCompletion[]):
+  | {
+      code?: string;
+      message: string;
+    }
+  | undefined {
+  const failedOutputs = runs
+    .filter((run) => run.stats?.outputs.failed && run.stats?.outputs.failed > 0)
+    .map((run) => run.samples)
+    .flat();
+  // TODO: Better summary of errors, maybe through the progress callback
+  // TODO: Ensure error is not undefined
+  if (failedOutputs.length > 0 && failedOutputs[0]!.error) {
+    return { ...failedOutputs[0]!.error };
+  }
 }

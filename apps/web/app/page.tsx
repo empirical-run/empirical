@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { RunColumnHeaders } from "../components/run-completion-header";
 import { PageHeader } from "../components/ui/page-header";
 import PageLoader from "../components/ui/page-loader";
@@ -13,10 +13,10 @@ import { RunDetails } from "../components/run-details";
 
 export default function Page(): JSX.Element {
   const { runResults, dataset } = useRunResults();
-  const { getTableHeaders, getSampleCell } = useRunResultTableView({
-    runs: runResults,
-  });
-  const columnHeaders = useMemo(() => getTableHeaders(), [runResults]);
+  const { tableHeaders, getSampleCell, setActiveRun, activeRun } =
+    useRunResultTableView({
+      runs: runResults,
+    });
   const sampleIds = useMemo(
     () => (dataset?.samples || [])?.map((s) => s.id),
     [dataset],
@@ -26,12 +26,11 @@ export default function Page(): JSX.Element {
     [dataset],
   );
   const runColumnHeaders = useMemo(
-    () => columnHeaders.filter((h) => h.type == "completion"),
-    [columnHeaders],
+    () => tableHeaders.filter((h) => h.type == "completion"),
+    [tableHeaders],
   );
-  const [activeRun, setActiveRun] = useState<RunCompletion | undefined>();
   const showRunDetails = useCallback(
-    (run: RunCompletion, showOnlyIfActive: boolean = false) => {
+    (run: RunCompletion | undefined, showOnlyIfActive: boolean = false) => {
       if ((showOnlyIfActive && activeRun) || !showOnlyIfActive) {
         setActiveRun(run);
       }
@@ -40,7 +39,7 @@ export default function Page(): JSX.Element {
   );
 
   return (
-    <main>
+    <main className="relative h-screen">
       <PageHeader />
       {!runResults ||
         (!runResults.length && (
@@ -52,16 +51,20 @@ export default function Page(): JSX.Element {
           onClose={() => setActiveRun(undefined)}
         />
       )}
-      <section className=" overflow-scroll relative h-full">
+      <section
+        className="overflow-scroll relative"
+        style={{ height: "calc(100vh - 40px)" }}
+      >
         {runResults?.length > 0 && (
-          <div className="flex bg-zinc-900 sticky top-[-1px] z-20 min-w-fit">
+          <div className="flex bg-zinc-900 sticky top-0 z-20 min-w-fit">
             <RunColumnHeaders
-              showPrompt={(run: RunCompletion) => showRunDetails(run)}
-              headers={columnHeaders}
+              showPrompt={(run: RunCompletion) =>
+                showRunDetails(activeRun?.id === run.id ? undefined : run)
+              }
+              headers={tableHeaders}
             />
           </div>
         )}
-
         <>
           {sampleIds?.map((r) => {
             const sampleCells = runColumnHeaders.map(
@@ -92,7 +95,7 @@ export default function Page(): JSX.Element {
                           (s) => s.runResult!,
                         )}
                         onClickCard={() =>
-                          showRunDetails(columnHeaders[i]?.runResult!, true)
+                          showRunDetails(runColumnHeaders[i]?.runResult!, true)
                         }
                         comparisonSamples={sampleCells}
                         isActiveColumn={runColumnHeaders[i]?.active}

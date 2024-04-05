@@ -12,7 +12,7 @@ With Empirical, you can:
 - Test your own custom models and RAG applications (see [how-to](https://docs.empirical.run/models/custom))
 - Reports to view, compare, analyze outputs on a web UI
 - Score your outputs with [scoring functions](https://docs.empirical.run/scoring/basics)
-- Run tests on CI/CD (coming soon!)
+- Run [tests on CI/CD](https://docs.empirical.run/running-in-ci)
 
 [Watch demo video](https://www.loom.com/share/5992fdf0edc443e282f44936e6c32672) | [See all docs](https://docs.empirical.run)
 

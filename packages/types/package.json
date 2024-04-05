@@ -1,9 +1,18 @@
 {
   "name": "@empiricalrun/types",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.2.0",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "author": "Empirical.run Team <hey@empirical.run>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/empirical-run/empirical.git"
+  },
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean",

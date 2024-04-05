@@ -4,13 +4,13 @@ description: 'Write a custom scoring function with Python'
 ---
 
 You can configure a custom Python evaluator by specifying a `py-script` evaluator in
-the `scorers` section of the configuration. The `value` key should be the path to the Python script.
+the `scorers` section of the configuration. The `path` key should be the path to the Python script.
 
 ```json
 "scorers": [
   {
     "type": "py-script",
-    "value": "eval.py"
+    "path": "eval.py"
   }
 ]
 ```
@@ -30,7 +30,7 @@ def evaluate(output, inputs):
         {
             "score": 1,
             "message": "Reason for this score",
-            "name": "name-for-evaluator"
+            "name": "name-for-this-scorer"
         }
     ]
 ```
@@ -39,8 +39,7 @@ def evaluate(output, inputs):
 
 The [HumanEval example](https://github.com/empirical-run/empirical/tree/main/examples/humaneval) uses this scorer.
 
-
-## Capabilities
+## Python Path
 
 The Python script is executed on your machine using `python` available in `PATH`. This
 determines the Python version that is used.

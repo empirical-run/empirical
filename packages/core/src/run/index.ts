@@ -1,7 +1,7 @@
 import {
   Dataset,
   DatasetSample,
-  IRunConfig,
+  RunConfig,
   RunCompletion,
   RunOutputSample,
 } from "@empiricalrun/types";
@@ -10,21 +10,21 @@ import score from "@empiricalrun/scorer";
 import { getExecutor } from "./executors";
 
 export async function execute(
-  run: IRunConfig,
+  runConfig: RunConfig,
   dataset: Dataset,
-  progressCallback: (sample: RunOutputSample) => void,
+  progressCallback?: (sample: RunOutputSample) => void,
 ): Promise<RunCompletion> {
   const runCreationDate = new Date();
   const sampleCompletions: RunOutputSample[] = [];
   const runId = generateHex(4);
-  const { scorers } = run;
+  const { scorers } = runConfig;
   const completionsPromises = [];
   for (const datasetSample of dataset.samples) {
-    const executor = getExecutor(run);
+    const executor = getExecutor(runConfig);
     if (executor) {
       // if llm error then add to the completion object but if something else throw error and stop the run
       completionsPromises.push(
-        executor(run, datasetSample).then(({ output, error }) => {
+        executor(runConfig, datasetSample).then(({ output, error }) => {
           const sample: RunOutputSample = {
             inputs: datasetSample.inputs,
             output,
@@ -37,7 +37,7 @@ export async function execute(
           sampleCompletions.push(sample);
 
           try {
-            progressCallback(sample);
+            progressCallback?.(sample);
           } catch (e) {
             console.warn(e);
           }
@@ -65,7 +65,7 @@ export async function execute(
             output: sampleCompletion.output,
             scorers,
             options: {
-              pythonPath: run.type === "py-script" ? run.pythonPath : undefined,
+              pythonPath: runConfig.parameters?.pythonPath,
             },
           }).then((scores) => {
             sampleCompletion.scores = scores;
@@ -79,11 +79,24 @@ export async function execute(
   }
   return {
     id: runId,
-    run_config: run,
+    run_config: {
+      ...runConfig,
+      name: runConfig.name || getDefaultRunName(runConfig, runId),
+    },
     dataset_config: {
       id: dataset.id,
     },
     samples: sampleCompletions,
     created_at: runCreationDate,
   };
+}
+
+function getDefaultRunName(runConfig: RunConfig, id: string): string {
+  let name = "";
+  if (runConfig.type === "model") {
+    name = runConfig.model;
+  } else if (runConfig.type === "py-script" || runConfig.type === "js-script") {
+    name = runConfig.path;
+  }
+  return `Run #${id}: ${name}`;
 }

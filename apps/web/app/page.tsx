@@ -8,12 +8,19 @@ import { useRunResultTableView } from "../hooks/useRunResultTableView";
 import InViewElement from "../components/ui/in-view";
 import SampleCard from "../components/sample-card";
 import SampleOutputCard from "../components/sample-output-card";
-import { RunCompletion, RunConfig } from "@empiricalrun/types";
+import { RunConfig } from "@empiricalrun/types";
 import { RunDetails } from "../components/run-details";
+import { RunResult } from "../types";
 
 export default function Page(): JSX.Element {
-  const { runResults, dataset, addRun, executeRun, updateRunConfigForRun } =
-    useRunResults();
+  const {
+    runResults,
+    dataset,
+    addRun,
+    executeRun,
+    updateRunConfigForRun,
+    removeRun,
+  } = useRunResults();
   const { tableHeaders, getSampleCell, setActiveRun, activeRun } =
     useRunResultTableView({
       runs: runResults,
@@ -31,7 +38,7 @@ export default function Page(): JSX.Element {
     [tableHeaders],
   );
   const showRunDetails = useCallback(
-    (run: RunCompletion | undefined, showOnlyIfActive: boolean = false) => {
+    (run: RunResult | undefined, showOnlyIfActive: boolean = false) => {
       if ((showOnlyIfActive && activeRun) || !showOnlyIfActive) {
         setActiveRun(run);
       }
@@ -39,7 +46,7 @@ export default function Page(): JSX.Element {
     [activeRun],
   );
   const addNewRun = useCallback(
-    (runResult: RunCompletion) => {
+    (runResult: RunResult) => {
       const idx = runColumnHeaders.findIndex(
         (r) => r.runResult?.id === runResult.id,
       );
@@ -56,8 +63,12 @@ export default function Page(): JSX.Element {
         setActiveRun(updatedRun);
         executeRun(updatedRun!, dataset!);
       } else {
-        const newRun = addNewRun(activeRun!);
-        executeRun(newRun, dataset!);
+        const newRun = addNewRun({
+          ...activeRun!,
+          run_config: runConfig,
+        });
+        const newRunResult = await executeRun(newRun, dataset!);
+        setActiveRun(newRunResult);
       }
     },
     [activeRun, dataset],
@@ -82,11 +93,12 @@ export default function Page(): JSX.Element {
         {runResults?.length > 0 && (
           <div className="flex bg-zinc-900 sticky top-[-1px] z-20 min-w-fit">
             <RunColumnHeaders
-              showPrompt={(run: RunCompletion) =>
+              showPrompt={(run: RunResult) =>
                 showRunDetails(activeRun?.id === run.id ? undefined : run)
               }
               headers={tableHeaders}
               onClickAddRun={addNewRun}
+              onClickRemoveRun={removeRun}
             />
           </div>
         )}

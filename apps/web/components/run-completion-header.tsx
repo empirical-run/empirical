@@ -2,15 +2,15 @@ import { MoreInfo } from "./ui/more-info";
 import { Badge } from "./ui/badge";
 import { cn } from "./ui/lib";
 import { Button } from "./ui/button";
-import { RunCompletion } from "@empiricalrun/types";
 import ScoreBadge from "./ui/score-badge";
 import { Separator } from "./ui/separator";
 import { MinusCircledIcon, PlusCircledIcon } from "@radix-ui/react-icons";
+import { RunResult } from "../types";
 
 export type Header = {
   title: string;
   description?: string;
-  runResult?: RunCompletion;
+  runResult?: RunResult;
   type: "input" | "expected" | "completion";
   active?: boolean;
   evals?: string[];
@@ -62,9 +62,9 @@ export const RunColumnHeaders = ({
   onClickAddRun,
   onClickRemoveRun,
 }: {
-  onClickRemoveRun?: (runResult: RunCompletion) => void;
-  showPrompt?: (runResult: RunCompletion) => void;
-  onClickAddRun?: (runResult: RunCompletion) => void; // TODO: whether to keep the interface name as run completion?
+  onClickRemoveRun?: (runResult: RunResult) => void;
+  showPrompt?: (runResult: RunResult) => void;
+  onClickAddRun?: (runResult: RunResult) => void; // TODO: whether to keep the interface name as run completion?
   headers: Header[];
 }) => {
   return headers.map((header, index) => {
@@ -103,7 +103,7 @@ export const RunColumnHeaders = ({
             <Button
               variant={"secondary"}
               onClick={() => showPrompt?.(header.runResult!)}
-              className="self-end"
+              className="self-center"
               size={"xs"}
             >
               <span>{header.active ? "Hide" : "Show"} config</span>

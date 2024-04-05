@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Dataset, RunCompletion, RunConfig } from "@empiricalrun/types";
+import { RunResult } from "../types";
 export function generateRunId(len: number = 4) {
   let hash = "";
   for (let i = 0; i < len; i++) {
@@ -9,7 +10,7 @@ export function generateRunId(len: number = 4) {
 }
 
 export function useRunResults() {
-  const [runResults, setRunResults] = useState<RunCompletion[]>([]);
+  const [runResults, setRunResults] = useState<RunResult[]>([]);
   const [dataset, setDataset] = useState<Dataset | undefined>();
   const fetchRunResults = useCallback(async () => {
     const resp = await fetch("/api/results");
@@ -17,7 +18,7 @@ export function useRunResults() {
       runs: RunCompletion[];
       dataset: Dataset;
     };
-    setRunResults(data.runs);
+    setRunResults(data.runs.map((run) => ({ ...run, loading: false })));
     setDataset(data.dataset);
   }, []);
 
@@ -25,9 +26,38 @@ export function useRunResults() {
     fetchRunResults();
   }, []);
 
+  const setLoadingStateForRun = useCallback(
+    (runId: string, loading: boolean) => {
+      setRunResults((prevRunResults) => {
+        const updatedRunResults = prevRunResults.map((run) => {
+          if (run.id === runId) {
+            return { ...run, loading };
+          }
+          return run;
+        });
+        return updatedRunResults;
+      });
+    },
+    [setRunResults],
+  );
+
+  const updateRun = useCallback((runId: string, run: RunCompletion) => {
+    setRunResults((prevRunResults) => {
+      const updatedRunResults = prevRunResults.map((r) => {
+        if (r.id === runId) {
+          return { ...run, loading: false };
+        }
+        return r;
+      });
+      return updatedRunResults;
+    });
+  }, []);
+
   const executeRun = useCallback(
-    async (run: RunCompletion, dataset: Dataset) => {
+    async (run: RunResult, dataset: Dataset) => {
       const runConfig = run.run_config;
+      setLoadingStateForRun(run.id, true);
+      run.loading = true;
       const resp = await fetch("/api/run/execute", {
         method: "POST",
         headers: {
@@ -36,18 +66,14 @@ export function useRunResults() {
         body: JSON.stringify({ runs: [runConfig], dataset }),
       });
       const data = await resp.json();
-      setRunResults((prevRunResults) => {
-        const updatedRunResults = [...prevRunResults];
-        const idx = updatedRunResults.findIndex((r) => r.id === run.id);
-        updatedRunResults[idx] = data;
-        return updatedRunResults;
-      });
+      updateRun(run.id, data);
+      return data;
     },
     [setRunResults],
   );
 
   const addRun = useCallback(
-    (refRun: RunCompletion, index = runResults.length - 1) => {
+    (refRun: RunResult, index = runResults.length - 1) => {
       const updatedRunResults = [...runResults];
       const run = { ...refRun };
       run.id = generateRunId();
@@ -61,13 +87,13 @@ export function useRunResults() {
   );
 
   const updateRunConfigForRun = useCallback(
-    (run: RunCompletion, runConfig: RunConfig) => {
+    (run: RunResult, runConfig: RunConfig) => {
       const updatedRunResults = [...runResults];
       const idx = updatedRunResults.findIndex((r) => r.id === run.id);
       const updatedRun = {
         ...updatedRunResults[idx],
         run_config: runConfig,
-      } as RunCompletion;
+      } as RunResult;
       updatedRunResults[idx] = updatedRun;
       setRunResults(updatedRunResults);
       return updatedRun;
@@ -75,9 +101,25 @@ export function useRunResults() {
     [runResults],
   );
 
+  const removeRun = useCallback(
+    (run: RunResult) => {
+      setRunResults((prevRunResults) => {
+        if (prevRunResults.length === 1) {
+          return prevRunResults;
+        }
+        const updatedRunResults = [...prevRunResults];
+        const idx = updatedRunResults.findIndex((r) => r.id === run.id);
+        updatedRunResults.splice(idx, 1);
+        return updatedRunResults;
+      });
+    },
+    [setRunResults],
+  );
+
   return {
     addRun,
     executeRun,
+    removeRun,
     updateRunConfigForRun,
     runResults,
     dataset,

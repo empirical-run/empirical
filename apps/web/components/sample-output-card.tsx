@@ -16,12 +16,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuCheckboxItem,
 } from "./ui/dropdown-menu";
-import { RunCompletion, RunOutputSample } from "@empiricalrun/types";
+import { RunOutputSample } from "@empiricalrun/types";
 import { DiffEditor, DiffOnMount } from "@monaco-editor/react";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import EmptySampleCompletion from "./empty-sample-completion";
 
 import ScoreBadge from "./ui/score-badge";
+import { RunResult } from "../types";
 
 type Diff = {
   type: string;
@@ -37,13 +38,12 @@ export default function SampleOutputCard({
   isActiveColumn = false,
   onClickCard = () => {},
 }: {
-  baseResult?: RunCompletion;
+  baseResult?: RunResult;
   baseSample?: RunOutputSample;
   comparisonSamples?: RunOutputSample[];
-  comparisonResults?: RunCompletion[];
+  comparisonResults?: RunResult[];
   isActiveColumn?: boolean;
   setSelections?: Dispatch<any>;
-  onFetchCompletion?: (runResult: RunCompletion) => void;
   onClickCard?: () => void;
 }) {
   const [diffView, setDiffView] = useState<Diff>({
@@ -106,7 +106,8 @@ export default function SampleOutputCard({
     clearDiffView();
   }, [baseResult?.id, clearDiffView]);
 
-  const showOutputLoading = !baseSample || !baseSample?.output;
+  const isLoading = !!baseResult?.loading;
+  const isEmptyOutput = !baseSample?.output;
   return (
     <Card
       className={`flex flex-col flex-1 ${
@@ -200,11 +201,7 @@ export default function SampleOutputCard({
             </div>
           </CardTitle>
         )}
-        {showOutputLoading && (
-          <EmptySampleCompletion
-            loading={!!(baseSample && !baseSample?.output)}
-          />
-        )}
+        {isEmptyOutput && <EmptySampleCompletion loading={isLoading} />}
       </CardHeader>
       <CardContent className="h-full p-2" ref={containerWrapper}>
         {diffView.enabled && baseSample && (

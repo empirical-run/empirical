@@ -21,6 +21,7 @@ export const RunDetails = ({
   if (!runConfig) {
     return null;
   }
+  const defaultTabValue = runConfig.type === "model" ? "prompt" : "parameters";
   const [runConfigState, setRunConfigState] = useState<RunConfig | undefined>();
   useEffect(() => setRunConfigState(runConfig), [runConfig]);
   const updatePrompt = useCallback(
@@ -81,7 +82,7 @@ export const RunDetails = ({
         </div>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="prompt">
+        <Tabs defaultValue={defaultTabValue}>
           <TabsList className="w-fit mb-4 rounded-sm">
             {runConfig.type === "model" && (
               <TabsTrigger value="prompt" className="text-xs rounded-sm">

@@ -1,15 +1,16 @@
+import { BeatLoader } from "react-spinners";
 export default function EmptySampleCompletion({
   loading,
 }: {
   loading: boolean;
 }) {
   return (
-    <section className=" flex justify-center h-full w-full pt-8">
+    <section className="flex flex-row justify-center h-full w-full pt-8">
       <section className=" flex flex-col items-center space-y-1">
         {!loading && (
           <>
             <p className=" text-xs text-muted-foreground font-bold">
-              No completion for this prompt
+              No completion for this sample
             </p>
             <p className=" text-xs text-muted-foreground">
               Click &rdquo;run&rdquo; to see completion
@@ -17,7 +18,12 @@ export default function EmptySampleCompletion({
           </>
         )}
         {loading && (
-          <p className=" text-xs text-muted-foreground font-bold">Loading...</p>
+          <BeatLoader
+            loading={true}
+            color="#efefef"
+            size={6}
+            speedMultiplier={0.75}
+          />
         )}
       </section>
     </section>

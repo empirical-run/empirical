@@ -1,5 +1,11 @@
 # @empiricalrun/cli
 
+## 0.3.1
+
+### Patch Changes
+
+- c8868d9: fix: top bar in UI is not sticky
+
 ## 0.3.0
 
 ### Minor Changes

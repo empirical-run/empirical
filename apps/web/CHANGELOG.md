@@ -1,5 +1,16 @@
 # web
 
+## 0.5.0
+
+### Minor Changes
+
+- 879b971: feat: add support for interactivity in the UI
+- 2866cef: feat: add support for showing output metadata on UI
+
+### Patch Changes
+
+- 0f552ca: fix: run config gets hidden on opening after scroll
+
 ## 0.4.0
 
 ### Minor Changes

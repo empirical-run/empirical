@@ -1,5 +1,16 @@
 # @empiricalrun/core
 
+## 0.3.0
+
+### Minor Changes
+
+- 879b971: feat: add support for interactivity in the UI
+
+### Patch Changes
+
+- @empiricalrun/ai@0.2.0
+- @empiricalrun/scorer@0.1.3
+
 ## 0.2.0
 
 ### Minor Changes

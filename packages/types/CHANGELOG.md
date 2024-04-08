@@ -1,5 +1,11 @@
 # @empiricalrun/types
 
+## 0.3.0
+
+### Minor Changes
+
+- 879b971: feat: add support for interactivity in the UI
+
 ## 0.2.0
 
 ### Minor Changes

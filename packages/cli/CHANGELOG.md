@@ -1,5 +1,18 @@
 # @empiricalrun/cli
 
+## 0.4.0
+
+### Minor Changes
+
+- 879b971: feat: add support for interactivity in the UI
+
+### Patch Changes
+
+- 2866cef: feat: add support for showing output metadata on UI
+- Updated dependencies [879b971]
+  - @empiricalrun/types@0.3.0
+  - @empiricalrun/core@0.3.0
+
 ## 0.3.1
 
 ### Patch Changes

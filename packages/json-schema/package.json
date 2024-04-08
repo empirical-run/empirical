@@ -1,0 +1,21 @@
+{
+  "name": "@empiricalrun/json-schema",
+  "version": "0.0.0",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/empirical-run/empirical.git"
+  },
+  "author": "Empirical Team <hey@empirical.run>",
+  "scripts": {
+    "build": "ts-node src/index.ts",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "ts-json-schema-generator": "^1.5.0"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "@types/node": "^20.11.24"
+  }
+}

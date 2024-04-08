@@ -9,7 +9,7 @@
   "bin": {
     "@empiricalrun/cli": "./dist/bin/index.js"
   },
-  "author": "Empirical.run Team <hey@empirical.run>",
+  "author": "Empirical Team <hey@empirical.run>",
   "license": "MIT",
   "repository": {
     "type": "git",

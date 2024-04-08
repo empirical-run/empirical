@@ -10,8 +10,7 @@
     "test": "turbo test",
     "test:watch": "turbo run test:watch",
     "publish-packages": "changeset publish",
-    "changeset": "changeset",
-    "generate:schema": "turbo schema"
+    "changeset": "changeset"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
@@ -28,8 +27,5 @@
   "packageManager": "pnpm@8.5.0",
   "engines": {
     "node": ">=20"
-  },
-  "dependencies": {
-    "ts-json-schema-generator": "^1.5.0"
   }
 }

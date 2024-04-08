@@ -42,6 +42,7 @@
         "introduction",
         "quickstart",
         "examples",
+        "configuration",
         "running-in-ci"
       ]
     },

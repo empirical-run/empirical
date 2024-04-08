@@ -1,0 +1,42 @@
+name: Upload JSON Schema
+
+on: workflow_dispatch
+
+jobs:
+  upload:
+    name: Publish packages
+    timeout-minutes: 8
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+ 
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8.5
+ 
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+ 
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Lint
+        run: pnpm lint
+      
+      - name: Build
+        run: pnpm build
+
+      - uses: ryand56/r2-upload-action@latest
+        with:
+          r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
+          r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
+          r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          r2-bucket: ${{ secrets.R2_BUCKET }}
+          source-dir: ./packages/json-schema/dist/
+          destination-dir: ./config/schema/

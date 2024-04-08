@@ -10,7 +10,8 @@
     "test": "turbo test",
     "test:watch": "turbo run test:watch",
     "publish-packages": "changeset publish",
-    "changeset": "changeset"
+    "changeset": "changeset",
+    "generate:schema": "turbo schema"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",

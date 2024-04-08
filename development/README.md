@@ -42,6 +42,20 @@ Follow these concise steps to set up and contribute to this monorepo:
   pnpm run gen:workspace
   ```
 
+### JSON Schema
+
+Enables auto-completion and linting inside VS Code.
+
+## Development
+
+1. Test the changes locally by changing the schema file in one of the examples to
+    ```json
+    "$schema": "../../packages/json-schema/dist/latest.json",
+    ```
+2. Upload the new version to Cloudflare using github action CI pipeline
+3. Update the schema reference for the examples to the new version
+4. Commit the updated schema file
+
 ### Testing
 
 - **Run Tests**:
@@ -72,3 +86,4 @@ Before creating a pull request (PR), follow these steps:
   Follow the prompts presented by the changeset CLI to add the changeset to your PR.
 
   > Note: If the changes do not require a version upgrade for the packages, you may skip adding a changeset.
+

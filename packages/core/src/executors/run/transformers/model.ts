@@ -1,9 +1,9 @@
 import { RunConfig } from "@empiricalrun/types";
-import { Executor } from "./interface";
+import { Transformer } from "./interface";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { AIError, EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
 
-export const modelExecutor: Executor = async function (
+export const modelExecutor: Transformer = async function (
   runConfig: RunConfig,
   sample,
 ) {

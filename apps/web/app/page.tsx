@@ -8,11 +8,19 @@ import { useRunResultTableView } from "../hooks/useRunResultTableView";
 import InViewElement from "../components/ui/in-view";
 import SampleCard from "../components/sample-card";
 import SampleOutputCard from "../components/sample-output-card";
-import { RunCompletion } from "@empiricalrun/types";
+import { RunConfig } from "@empiricalrun/types";
 import { RunDetails } from "../components/run-details";
+import { RunResult } from "../types";
 
 export default function Page(): JSX.Element {
-  const { runResults, dataset } = useRunResults();
+  const {
+    runResults,
+    dataset,
+    addRun,
+    executeRun,
+    updateRunConfigForRun,
+    removeRun,
+  } = useRunResults();
   const { tableHeaders, getSampleCell, setActiveRun, activeRun } =
     useRunResultTableView({
       runs: runResults,
@@ -40,12 +48,51 @@ export default function Page(): JSX.Element {
     [tableHeaders],
   );
   const showRunDetails = useCallback(
-    (run: RunCompletion | undefined, showOnlyIfActive: boolean = false) => {
+    (run: RunResult | undefined, showOnlyIfActive: boolean = false) => {
       if ((showOnlyIfActive && activeRun) || !showOnlyIfActive) {
         setActiveRun(run);
       }
     },
     [activeRun],
+  );
+  const addNewRun = useCallback(
+    (runResult: RunResult) => {
+      const idx = runColumnHeaders.findIndex(
+        (r) => r.runResult?.id === runResult.id,
+      );
+      const newRun = addRun(runResult, idx);
+      setActiveRun(newRun);
+      return newRun;
+    },
+    [runColumnHeaders, addRun],
+  );
+  const updateActiveRunConfigAndExecute = useCallback(
+    (runConfig: RunConfig) => {
+      if (activeRun?.samples.length !== dataset?.samples.length) {
+        const updatedRun = updateRunConfigForRun(activeRun!, runConfig);
+        setActiveRun(updatedRun);
+        executeRun(updatedRun!, dataset!);
+      } else {
+        const newRun = addNewRun({
+          ...activeRun!,
+          run_config: runConfig,
+        });
+        executeRun(newRun, dataset!);
+        setActiveRun(undefined);
+      }
+    },
+    [activeRun, dataset],
+  );
+
+  const onClickRemoveRun = useCallback(
+    (run: RunResult) => {
+      if (run.id === activeRun?.id) {
+        setActiveRun(undefined);
+      } else {
+        removeRun(run);
+      }
+    },
+    [activeRun, removeRun],
   );
 
   useEffect(() => {
@@ -74,8 +121,10 @@ export default function Page(): JSX.Element {
         ))}
       {activeRun && (
         <RunDetails
-          runResult={activeRun!}
+          runId={activeRun?.id}
+          runConfig={activeRun.run_config!}
           onClose={() => setActiveRun(undefined)}
+          onClickRun={updateActiveRunConfigAndExecute}
         />
       )}
       <section
@@ -88,10 +137,13 @@ export default function Page(): JSX.Element {
         {runResults?.length > 0 && (
           <div className="flex bg-zinc-900 sticky top-0 z-20 min-w-fit">
             <RunColumnHeaders
-              showPrompt={(run: RunCompletion) =>
+              showPrompt={(run: RunResult) =>
                 showRunDetails(activeRun?.id === run.id ? undefined : run)
               }
               headers={tableHeaders}
+              onClickAddRun={addNewRun}
+              onClickRemoveRun={onClickRemoveRun}
+              datasetSampleCount={dataset?.samples.length || 0}
             />
           </div>
         )}

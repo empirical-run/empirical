@@ -20,7 +20,7 @@ void watch({
       name: "build",
       onChange: async ({ spawn }) => {
         await spawn`pnpm install`;
-        await spawn`pnpm run build`;
+        await spawn`pnpm run build --force`;
         await spawn`pnpm install`;
       },
       interruptible: true,

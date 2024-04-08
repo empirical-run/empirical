@@ -40,12 +40,7 @@ Context:\n{{context}}
 Answer:
 `;
 
-export const checkLlmFaithfulness: ScoringFn = async ({
-  sample,
-  // eslint-disable-next-line no-unused-vars
-  output,
-  config,
-}) => {
+export const checkLlmFaithfulness: ScoringFn = async ({ sample, config }) => {
   let context = "";
   if (config.type !== "llm-faithfulness") {
     return [
@@ -80,16 +75,15 @@ export const checkLlmFaithfulness: ScoringFn = async ({
 
   try {
     const response = await askLlmForEvalResult(messages, config.claims.length);
-    const totalScore = Object.entries(response).reduce(
-      // eslint-disable-next-line no-unused-vars
-      (totalScore, [_, verdict]) => totalScore + (verdict === "Yes" ? 1 : 0),
+    const totalScore = Object.keys(response).reduce(
+      (score, key) => score + (response[key] === "Yes" ? 1 : 0),
       0,
     );
-    const reasonsForNo = Object.entries(response).reduce(
-      (aggReason: string[], [key, value]) =>
-        value === "No"
-          ? [...aggReason, response[`explanation_${key.split("_").pop()}`]]
-          : aggReason,
+    const reasonsForNo = Object.keys(response).reduce(
+      (reasons: string[], key) =>
+        response[key] === "No"
+          ? [...reasons, response[`explanation_${key.split("_").pop()}`]!]
+          : reasons,
       [],
     );
     return [
@@ -115,7 +109,7 @@ export const checkLlmFaithfulness: ScoringFn = async ({
 async function askLlmForEvalResult(
   messages: OpenAI.ChatCompletionMessageParam[],
   numStatements: number,
-): Promise<any> {
+): Promise<{ [key: string]: string }> {
   const ai = new EmpiricalAI("openai");
   const properties = [...Array(numStatements).keys()].reduce(
     (agg: any, index) => {

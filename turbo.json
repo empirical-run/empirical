@@ -2,11 +2,14 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
   "globalEnv": [
-    "CI",
     "MISTRAL_API_KEY",
     "GEMINI_API_KEY",
     "OPENAI_API_KEY",
-    "ANTHROPIC_API_KEY"
+    "ANTHROPIC_API_KEY",
+    "FIREWORKS_API_KEY",
+    "CI",
+    "GITHUB_ACTIONS",
+    "GITHUB_OUTPUT"
   ],
   "pipeline": {
     "build": {

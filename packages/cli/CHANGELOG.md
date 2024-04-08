@@ -1,5 +1,49 @@
 # @empiricalrun/cli
 
+## 0.3.1
+
+### Patch Changes
+
+- c8868d9: fix: top bar in UI is not sticky
+
+## 0.3.0
+
+### Minor Changes
+
+- df65e07: feat: execution and reporting for github actions
+
+### Patch Changes
+
+- b354507: fix: change script value property to path in run
+- 5ed6ca9: fix: add support for alternate port for web UI
+- 17860b0: feat: add support for passthrough config for script executor
+- Updated dependencies [b354507]
+- Updated dependencies [90082c8]
+- Updated dependencies [17860b0]
+  - @empiricalrun/types@0.2.0
+  - @empiricalrun/core@0.2.0
+
+## 0.2.4
+
+### Patch Changes
+
+- f7de133: fix: reduce bundled size of cli package
+
+## 0.2.3
+
+### Patch Changes
+
+- 571986a: chore: update npm package license
+- Updated dependencies [571986a]
+  - @empiricalrun/types@0.1.1
+  - @empiricalrun/core@0.1.3
+
+## 0.2.2
+
+### Patch Changes
+
+- @empiricalrun/core@0.1.2
+
 ## 0.2.1
 
 ### Patch Changes

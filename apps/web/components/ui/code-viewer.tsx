@@ -99,10 +99,6 @@ export default function CodeViewer({
         automaticLayout: true,
         fontFamily:
           'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace',
-        scrollbar: {
-          alwaysConsumeMouseWheel: scrollable,
-          handleMouseWheel: scrollable,
-        },
         minimap: {
           enabled: false,
         },
@@ -166,6 +162,12 @@ export default function CodeViewer({
         loading=""
         onChange={onChange}
         className="absolute"
+        options={{
+          scrollbar: {
+            alwaysConsumeMouseWheel: false,
+            handleMouseWheel: scrollable,
+          },
+        }}
       />
     </div>
   );

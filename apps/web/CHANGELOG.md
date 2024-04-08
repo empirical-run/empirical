@@ -1,5 +1,33 @@
 # web
 
+## 0.4.0
+
+### Minor Changes
+
+- f1d71b4: feat: show output errors in ui cells
+
+### Patch Changes
+
+- c8868d9: fix: top bar is not sticky
+
+## 0.3.0
+
+### Minor Changes
+
+- ec6e494: feat: add parameters in run config ui
+
+## 0.2.1
+
+### Patch Changes
+
+- 4a858f5: fix: monaco instances block page scroll
+
+## 0.2.0
+
+### Minor Changes
+
+- 424f994: feat: add run summary in the header
+
 ## 0.1.0
 
 ### Minor Changes

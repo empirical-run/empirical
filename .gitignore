@@ -44,3 +44,4 @@ __pycache__/
 packages/**/empiricalrc.json
 .empiricalrun
 arxiv-papers
+examples/humaneval/HumanEval.jsonl

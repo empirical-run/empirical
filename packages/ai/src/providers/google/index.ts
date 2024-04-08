@@ -68,6 +68,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   try {
     const completion = await promiseRetry<GenerateContentResult>(
       (retry) => {
+        // TODO: move to model.startChat which support model config (e.g. temperature)
         return modelInstance
           .generateContent({ contents })
           .catch((err: Error) => {

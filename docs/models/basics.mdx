@@ -47,6 +47,7 @@ side-by-side comparison view in the web reporter.
 | `anthropic` | Claude 3 models are supported. Requires `ANTHROPIC_API_KEY` environment variable. |
 | `mistral` | All chat models are supported. Requires `MISTRAL_API_KEY` environment variable. |
 | `google` | Gemini Pro models are supported. Requires `GEMINI_API_KEY` environment variable. |
+| `fireworks` | Models hosted on Fireworks (e.g. `dbrx-instruct`) are supported. Requires `FIREWORKS_API_KEY` environment variable. |
 
 ### Environment variables
 
@@ -59,3 +60,57 @@ API calls to model providers require API keys, which are stored as environment v
 ```sh
 npx @empiricalrun/cli --env-file <PATH_TO_ENV_FILE>
 ```
+
+### Model parameters
+
+To override parameters like `temperature` or `max_tokens`, you can pass `parameters` alongwith the provider
+configuration. All OpenAI parameters (see their [API reference](https://platform.openai.com/docs/api-reference/chat/create))
+are supported, except for a few [limitations](#limitations).
+
+For non-OpenAI models, we coerce these parameters to the most appropriate target parameter (e.g. `stop` in OpenAI
+becomes `stop_sequences` for Anthropic.)
+
+You can add other parameters or override this behavior with [passthrough](#passthrough).
+
+```json empiricalrc.json
+"runs": [
+  {
+    "type": "model",
+    "provider": "openai",
+    "model": "gpt-3.5-turbo",
+    "prompt": "Hey I'm {{user_name}}",
+    "parameters": {
+      "temperature": 0.1
+    }
+  },
+]
+```
+
+#### Passthrough
+
+If your models rely on other parameters, you can still specify them in the configuration. These
+parameters will be passed as-is to the model.
+
+For example, Mistral models support a `safePrompt` parameter for [guardrailing](https://docs.mistral.ai/platform/guardrailing/).
+
+```json empiricalrc.json
+"runs": [
+  {
+    "type": "model",
+    "provider": "mistral",
+    "model": "mistral-tiny",
+    "prompt": "Hey I'm {{user_name}}",
+    "parameters": {
+      "temperature": 0.1,
+      "safePrompt": true
+    }
+  },
+]
+```
+
+#### Limitations
+
+- These parameters are not supported today: `logit_bias`, `tools`, `tool_choice`, `user`, `stream`
+- The Google Gemini model provider does not support any configuration parameter
+
+If any of these limitations are blocking your use of Empirical, please file a [feature request](https://github.com/empirical-run/empirical/issues/new).

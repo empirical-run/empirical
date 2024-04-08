@@ -1,10 +1,10 @@
-import { Separator } from "./ui/separator";
 import { MoreInfo } from "./ui/more-info";
 import { Badge } from "./ui/badge";
-import { ArrowTopRightIcon } from "@radix-ui/react-icons";
 import { cn } from "./ui/lib";
 import { Button } from "./ui/button";
 import { RunCompletion } from "@empiricalrun/types";
+import ScoreBadge from "./ui/score-badge";
+import { Separator } from "./ui/separator";
 
 export type Header = {
   title: string;
@@ -95,24 +95,36 @@ export const RunColumnHeaders = ({
                 #{header.runResult?.id}
               </Badge>
             </section>
+            <Button
+              variant={"secondary"}
+              onClick={() => showPrompt?.(header.runResult!)}
+              className="self-end"
+              size={"xs"}
+            >
+              <span>{header.active ? "Hide" : "Show"} config</span>
+            </Button>
           </section>
 
-          {header.runResult?.run_config.type === "model" && (
-            <>
-              <Separator orientation="horizontal" className={`${overlayBg}`} />
-              <section className="flex flex-row space-x-2 text-muted-foreground items-center justify-center ml-2">
-                <Button
-                  variant={"link"}
-                  onClick={() => showPrompt?.(header.runResult!)}
-                  className="p-0 h-6"
-                  size={"sm"}
-                >
-                  <span>View Prompt</span>
-                  <ArrowTopRightIcon />
-                </Button>
-              </section>
-            </>
-          )}
+          {header.runResult?.stats?.scores &&
+            header.runResult?.stats?.scores.length > 0 && (
+              <>
+                <Separator
+                  orientation="horizontal"
+                  className={`${overlayBg}`}
+                />
+                <section className="flex flex-row space-x-2 text-muted-foreground items-center mx-4 my-2 justify-end">
+                  <section className="flex flex-row text-xs gap-1 items-center">
+                    {(header.runResult?.stats?.scores || []).map((s) => (
+                      <>
+                        <section className="flex flex-row gap-1 items-center">
+                          <ScoreBadge title={s.name} score={s.avgScore} />
+                        </section>
+                      </>
+                    ))}
+                  </section>
+                </section>
+              </>
+            )}
         </section>
       </div>
     );

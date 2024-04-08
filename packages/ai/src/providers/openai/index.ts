@@ -23,6 +23,11 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       (retry) => {
         return openai.chat.completions.create(body).catch((err) => {
           if (
+            err instanceof OpenAI.RateLimitError &&
+            err.type === "insufficient_quota"
+          ) {
+            throw err;
+          } else if (
             err instanceof OpenAI.RateLimitError ||
             err instanceof OpenAI.APIConnectionError ||
             err instanceof OpenAI.APIConnectionTimeoutError ||
@@ -31,7 +36,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
             retry(err);
             throw err;
           }
-          return err;
+          throw err;
         });
       },
       {
@@ -43,7 +48,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   } catch (err) {
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `failed chat completion for model openai ${body.model} with error code: ${(err as OpenAI.ErrorObject).code}`,
+      `Failed completion for OpenAI ${body.model}: ${(err as any)?.error?.message}`,
     );
   }
 };

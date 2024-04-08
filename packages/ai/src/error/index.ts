@@ -8,6 +8,8 @@ export enum AIErrorEnum {
   MISSING_PARAMETERS = "AI202",
   // failed completions
   FAILED_CHAT_COMPLETION = "AI301",
+  // rate limiting
+  RATE_LIMITED = "AI401",
 }
 
 export class AIError extends Error implements IEmpiricalAIError {

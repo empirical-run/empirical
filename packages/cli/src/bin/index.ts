@@ -190,6 +190,13 @@ program
         data: completion.stats!,
       };
       streamUpdate(statsUpdate);
+      const file = await fs.readFile(outputFilePath);
+      const { runs: savedRuns } = JSON.parse(file.toString());
+      savedRuns.push(completion);
+      await fs.writeFile(
+        outputFilePath,
+        JSON.stringify({ runs: savedRuns, dataset }, null, 2),
+      );
       res.end();
     });
     const fullUrl = `http://localhost:${availablePort}`;

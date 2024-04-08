@@ -27,5 +27,8 @@
   "packageManager": "pnpm@8.5.0",
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "ts-json-schema-generator": "^1.5.0"
   }
 }

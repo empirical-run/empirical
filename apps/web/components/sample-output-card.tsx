@@ -23,6 +23,8 @@ import EmptySampleCompletion from "./empty-sample-completion";
 import ScoreBadge from "./ui/score-badge";
 import { RunResult } from "../types";
 import SampleCompletionError from "./sample-completion-error";
+import { Separator } from "./ui/separator";
+import { JsonAsTab } from "./json-as-tab";
 
 type Diff = {
   type: string;
@@ -210,29 +212,50 @@ export default function SampleOutputCard({
           <SampleCompletionError errorMessage={baseSample.error.message} />
         )}
       </CardHeader>
-      <CardContent className="h-full p-2" ref={containerWrapper}>
-        {diffView.enabled && baseSample && (
-          <DiffEditor
-            original={baseSample?.output.value || ""}
-            modified={diffView.text}
-            height={`${
-              containerWrapper.current?.clientHeight
-                ? containerWrapper.current?.clientHeight - 24 // reduce the padding value
-                : 100
-            }px`}
-            language={"json"}
-            onMount={handleDiffOnMount}
-            theme="tomorrow-night-blue"
-            width="100%"
-            loading=""
-          />
-        )}
-        {showOutput && (
-          <CodeViewer
-            value={baseSample?.output.value || ""}
-            language="json"
-            readOnly
-          />
+      <CardContent
+        className="flex flex-col h-full p-2 gap-4"
+        ref={containerWrapper}
+      >
+        <section className="flex flex-col">
+          <p className=" text-sm font-medium mb-2">Output</p>
+          {diffView.enabled && baseSample && (
+            <DiffEditor
+              original={baseSample?.output.value || ""}
+              modified={diffView.text}
+              height={`${
+                containerWrapper.current?.clientHeight
+                  ? containerWrapper.current?.clientHeight - 24 // reduce the padding value
+                  : 100
+              }px`}
+              language={"json"}
+              onMount={handleDiffOnMount}
+              theme="tomorrow-night-blue"
+              width="100%"
+              loading=""
+            />
+          )}
+          {showOutput && (
+            <CodeViewer
+              value={baseSample?.output.value || ""}
+              language="json"
+              readOnly
+            />
+          )}
+        </section>
+        {!diffView.enabled && baseSample?.output.metadata && (
+          <section className="flex flex-col h-[200px] mt-2">
+            <Separator
+              orientation="horizontal"
+              className="w-[60%] self-center"
+            />
+            <p className=" text-sm font-medium mt-2 mb-2">Metadata</p>
+            <section className="relative flex flex-col flex-1">
+              <JsonAsTab
+                storeKey={baseResult?.id!}
+                data={baseSample?.output.metadata!}
+              />
+            </section>
+          </section>
         )}
       </CardContent>
     </Card>

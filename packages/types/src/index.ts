@@ -104,7 +104,7 @@ export interface ScoreStats {
   avgScore: number;
 }
 
-export interface RunOutputStats {
+export interface RunCompletionStats {
   outputs: {
     count: number;
     success: number;
@@ -118,7 +118,7 @@ export interface RunCompletion {
   run_config: RunConfig;
   dataset_config: { id: string };
   samples: RunSampleOutput[];
-  stats?: RunOutputStats;
+  stats?: RunCompletionStats;
   created_at: Date;
 }
 
@@ -180,3 +180,39 @@ export type Score = {
   name: string;
   message: string;
 };
+
+export interface RunMetadataUpdate {
+  type: "run_metadata";
+  data: {
+    run_config: RunConfig;
+    id: string;
+    dataset_config: { id: string };
+    created_at: Date;
+  };
+}
+
+export interface RunSampleScoreUpdate {
+  type: "run_sample_score";
+  data: {
+    run_id: string;
+    sample_id: string | undefined;
+    dataset_sample_id: string;
+    scores: Score[];
+  };
+}
+
+export interface RunSampleUpdate {
+  type: "run_sample";
+  data: RunSampleOutput;
+}
+
+export interface RunStatsUpdate {
+  type: "run_stats";
+  data: RunCompletionStats;
+}
+// TODO: fix naming
+export type RunUpdateType =
+  | RunMetadataUpdate
+  | RunSampleUpdate
+  | RunSampleScoreUpdate
+  | RunStatsUpdate;

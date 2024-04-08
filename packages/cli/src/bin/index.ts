@@ -13,7 +13,12 @@ import { RunsConfig } from "../types";
 import { loadDataset } from "./dataset";
 import { DatasetError } from "../error";
 import { DefaultRunsConfigType, getDefaultRunsConfig } from "../runs";
-import { Dataset, RunConfig, RunCompletion } from "@empiricalrun/types";
+import {
+  Dataset,
+  RunConfig,
+  RunCompletion,
+  RunStatsUpdate,
+} from "@empiricalrun/types";
 import {
   failedOutputsSummary,
   printStatsSummary,
@@ -180,7 +185,11 @@ program
       const streamUpdate = (obj: any) => res.write(JSON.stringify(obj) + `\n`);
       const completion = await execute(runs[0]!, dataset, streamUpdate);
       setRunSummary([completion]);
-      streamUpdate({ type: "stats_update", data: completion.stats });
+      const statsUpdate: RunStatsUpdate = {
+        type: "run_stats",
+        data: completion.stats!,
+      };
+      streamUpdate(statsUpdate);
       res.end();
     });
     const fullUrl = `http://localhost:${availablePort}`;

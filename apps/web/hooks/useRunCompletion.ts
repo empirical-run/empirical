@@ -3,8 +3,7 @@ import {
   Dataset,
   RunCompletion,
   RunConfig,
-  RunSampleOutput,
-  Score,
+  RunUpdateType,
 } from "@empiricalrun/types";
 import { RunResult } from "../types";
 export function generateRunId(len: number = 4) {
@@ -14,37 +13,6 @@ export function generateRunId(len: number = 4) {
   }
   return hash;
 }
-
-// TODO: move these types
-interface RunMetadataUpdate {
-  type: "run_metadata";
-  data: {
-    run_config: RunConfig;
-    id: string;
-    dataset_config: { id: string };
-    created_at: Date;
-  };
-}
-
-interface RunSampleScoreUpdate {
-  type: "run_sample_score";
-  data: {
-    run_id: string;
-    sample_id: string | undefined;
-    dataset_sample_id: string;
-    scores: Score[];
-  };
-}
-
-interface RunSampleUpdate {
-  type: "run_sample";
-  data: RunSampleOutput;
-}
-// TODO: fix naming
-type ProgressCallbackDataTypes =
-  | RunMetadataUpdate
-  | RunSampleUpdate
-  | RunSampleScoreUpdate;
 
 // TODO: move this to utils
 async function* streamFetch(url: string, options: any) {
@@ -109,7 +77,7 @@ export function useRunResults() {
       })) {
         const resp = new Response(chunk);
         const text = await resp.text();
-        const updates: ProgressCallbackDataTypes[] = text
+        const updates: RunUpdateType[] = text
           .split("\n")
           .filter((s) => s !== "\n")
           .filter((s) => !!s)
@@ -138,10 +106,8 @@ export function useRunResults() {
                     }
                     return { ...s };
                   });
-                } else {
-                  // TODO: setup summary update type
+                } else if (u.type === "run_stats") {
                   updatedRun.loading = false;
-                  // @ts-ignore
                   updatedRun.stats = u.data;
                 }
               });

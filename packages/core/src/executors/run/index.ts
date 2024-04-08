@@ -4,6 +4,7 @@ import {
   RunCompletion,
   RunSampleOutput,
   Score,
+  RunUpdateType,
 } from "@empiricalrun/types";
 import { generateHex } from "../../utils";
 import score from "@empiricalrun/scorer";
@@ -13,41 +14,10 @@ function generateRunId(): string {
   return generateHex(4);
 }
 
-// TODO: move this to types repo
-interface RunMetadataUpdate {
-  type: "run_metadata";
-  data: {
-    run_config: RunConfig;
-    id: string;
-    dataset_config: { id: string };
-    created_at: Date;
-  };
-}
-
-interface RunSampleScoreUpdate {
-  type: "run_sample_score";
-  data: {
-    run_id: string;
-    sample_id: string | undefined;
-    dataset_sample_id: string;
-    scores: Score[];
-  };
-}
-
-interface RunSampleUpdate {
-  type: "run_sample";
-  data: RunSampleOutput;
-}
-// TODO: fix naming
-type ProgressCallbackDataTypes =
-  | RunMetadataUpdate
-  | RunSampleUpdate
-  | RunSampleScoreUpdate;
-
 export async function execute(
   runConfig: RunConfig,
   dataset: Dataset,
-  progressCallback?: (sample: ProgressCallbackDataTypes) => void,
+  progressCallback?: (sample: RunUpdateType) => void,
 ): Promise<RunCompletion> {
   const runCreationDate = new Date();
   const runId = generateRunId();

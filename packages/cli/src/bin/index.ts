@@ -177,7 +177,31 @@ program
     app.use(express.json({ limit: "50mb" }));
     app.use(express.static(path.join(__dirname, "../webapp")));
     app.get("/api/results", (req, res) => res.sendFile(outputFilePath));
-    app.post("/api/run/execute", async (req, res) => {
+    app.delete("/api/runs/:id", async (req, res) => {
+      try {
+        const file = await fs.readFile(outputFilePath);
+        const { runs, dataset } = JSON.parse(file.toString()) as {
+          runs: RunCompletion[];
+          dataset: Dataset;
+        };
+        const updatedRuns = runs.filter((run) => run.id !== req.params.id);
+        await fs.writeFile(
+          outputFilePath,
+          JSON.stringify({ runs: updatedRuns, dataset }, null, 2),
+        );
+      } catch (e: any) {
+        res.send({
+          success: false,
+          error: {
+            message: e.message,
+          },
+        });
+      }
+      res.send({
+        success: true,
+      });
+    });
+    app.post("/api/runs/execute", async (req, res) => {
       const { runs, dataset } = req.body as {
         runs: RunConfig[];
         dataset: Dataset;

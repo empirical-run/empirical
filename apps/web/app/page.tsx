@@ -57,7 +57,7 @@ export default function Page(): JSX.Element {
     [runColumnHeaders, addRun],
   );
   const updateActiveRunConfigAndExecute = useCallback(
-    async (runConfig: RunConfig) => {
+    (runConfig: RunConfig) => {
       if (activeRun?.samples.length !== dataset?.samples.length) {
         const updatedRun = updateRunConfigForRun(activeRun!, runConfig);
         setActiveRun(updatedRun);
@@ -67,11 +67,22 @@ export default function Page(): JSX.Element {
           ...activeRun!,
           run_config: runConfig,
         });
-        const newRunResult = await executeRun(newRun, dataset!);
-        setActiveRun(newRunResult);
+        executeRun(newRun, dataset!);
+        setActiveRun(undefined);
       }
     },
     [activeRun, dataset],
+  );
+
+  const onClickRemoveRun = useCallback(
+    (run: RunResult) => {
+      if (run.id === activeRun?.id) {
+        setActiveRun(undefined);
+      } else {
+        removeRun(run);
+      }
+    },
+    [activeRun, removeRun],
   );
 
   return (
@@ -101,7 +112,7 @@ export default function Page(): JSX.Element {
               }
               headers={tableHeaders}
               onClickAddRun={addNewRun}
-              onClickRemoveRun={removeRun}
+              onClickRemoveRun={onClickRemoveRun}
               datasetSampleCount={dataset?.samples.length || 0}
             />
           </div>

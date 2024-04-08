@@ -68,7 +68,7 @@ export function useRunResults() {
       let runId = run.id;
       setLoadingStateForRun(runId, true);
       run.loading = true;
-      for await (const chunk of streamFetch("/api/run/execute", {
+      for await (const chunk of streamFetch("/api/runs/execute", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -111,7 +111,7 @@ export function useRunResults() {
                   updatedRun.stats = u.data;
                 }
               });
-              return { ...updatedRun };
+              return updatedRun;
             }
             return prevRun;
           });
@@ -153,16 +153,22 @@ export function useRunResults() {
   );
 
   const removeRun = useCallback(
-    (run: RunResult) => {
-      setRunResults((prevRunResults) => {
-        if (prevRunResults.length === 1) {
-          return prevRunResults;
-        }
-        const updatedRunResults = [...prevRunResults];
-        const idx = updatedRunResults.findIndex((r) => r.id === run.id);
-        updatedRunResults.splice(idx, 1);
-        return updatedRunResults;
+    async (run: RunResult) => {
+      const resp = await fetch(`/api/runs/${run.id}`, {
+        method: "DELETE",
       });
+      const isSuccess = (await resp.json()).success;
+      if (isSuccess) {
+        setRunResults((prevRunResults) => {
+          if (prevRunResults.length === 1) {
+            return prevRunResults;
+          }
+          const updatedRunResults = [...prevRunResults];
+          const idx = updatedRunResults.findIndex((r) => r.id === run.id);
+          updatedRunResults.splice(idx, 1);
+          return updatedRunResults;
+        });
+      }
     },
     [setRunResults],
   );

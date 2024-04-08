@@ -25,10 +25,14 @@ export async function execute(
   const completionsPromises: Promise<RunSampleOutput>[] = [];
   const sampleCompletions: RunSampleOutput[] = [];
   // TODO: move this metadata creation logic to single place
+  const updatedRunConfig = {
+    ...runConfig,
+    name: runConfig.name || getDefaultRunName(runConfig, runId),
+  };
   progressCallback?.({
     type: "run_metadata",
     data: {
-      run_config: runConfig,
+      run_config: updatedRunConfig,
       id: runId,
       dataset_config: {
         id: dataset.id,
@@ -104,10 +108,7 @@ export async function execute(
 
   return {
     id: runId,
-    run_config: {
-      ...runConfig,
-      name: runConfig.name || getDefaultRunName(runConfig, runId),
-    },
+    run_config: updatedRunConfig,
     dataset_config: {
       id: dataset.id,
     },

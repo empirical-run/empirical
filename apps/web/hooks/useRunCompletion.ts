@@ -73,7 +73,10 @@ export function useRunResults() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ runs: [run.run_config], dataset }),
+        body: JSON.stringify({
+          runs: [{ ...run.run_config, name: undefined }],
+          dataset,
+        }),
       })) {
         const resp = new Response(chunk);
         const text = await resp.text();

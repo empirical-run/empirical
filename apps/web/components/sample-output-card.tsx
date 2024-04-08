@@ -217,7 +217,9 @@ export default function SampleOutputCard({
         ref={containerWrapper}
       >
         <section className="flex flex-col">
-          <p className=" text-sm font-medium mb-2">Output</p>
+          {showOutput && baseSample?.output.metadata && (
+            <p className=" text-sm font-medium mb-2">Output</p>
+          )}
           {diffView.enabled && baseSample && (
             <DiffEditor
               original={baseSample?.output.value || ""}

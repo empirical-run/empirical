@@ -121,7 +121,6 @@ export default function Page(): JSX.Element {
         ))}
       {activeRun && (
         <RunDetails
-          runId={activeRun?.id}
           runConfig={activeRun.run_config!}
           onClose={() => setActiveRun(undefined)}
           onClickRun={updateActiveRunConfigAndExecute}
@@ -159,7 +158,7 @@ export default function Page(): JSX.Element {
                 className=" flex flex-row items-stretch min-h-[150px] w-full"
               >
                 <div className="flex flex-1 bg-zinc-900">
-                  <div className="flex items-stretch flex-1 min-w-[400px]">
+                  <div className="flex items-stretch flex-1 min-w-[500px]">
                     <SampleCard
                       sample={inputSample!}
                       inputTabs={datasetInputNames}
@@ -167,7 +166,7 @@ export default function Page(): JSX.Element {
                   </div>
                   {sampleCells.map((sample, i) => (
                     <div
-                      className="flex flex-1 items-stretch min-w-[400px]"
+                      className="flex flex-1 items-stretch min-w-[500px]"
                       key={`sample-${r}-${i}`}
                     >
                       <SampleOutputCard

@@ -270,13 +270,13 @@ importers:
 
   packages/json-schema:
     dependencies:
-      '@types/node':
-        specifier: ^20.11.24
-        version: 20.11.24
       ts-json-schema-generator:
         specifier: ^1.5.0
         version: 1.5.0
     devDependencies:
+      '@types/node':
+        specifier: ^20.11.24
+        version: 20.11.24
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@types/node@20.11.24)(typescript@5.3.3)

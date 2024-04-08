@@ -1,14 +1,14 @@
 import { PythonShell } from "python-shell";
 import path from "path";
-import { Executor } from "./interface";
+import { Transformer } from "./interface";
 
 //TODO: make this configurable
 const scriptTimeout = 20000;
-const wrapperScriptDirectory = path.join(__dirname, "..", "..", "python");
+const wrapperScriptDirectory = path.join(__dirname, "..", "..", "..", "python");
 const wrapperScriptFile = "executor_wrapper.py";
 const executionOutputIdentifier = "execution_output:";
 
-export const scriptExecutor: Executor = async (runConfig, sample) => {
+export const scriptExecutor: Transformer = async (runConfig, sample) => {
   let output = { value: "" };
   if (runConfig.type !== "py-script") {
     return {
@@ -39,6 +39,7 @@ export const scriptExecutor: Executor = async (runConfig, sample) => {
     JSON.stringify(runConfig.parameters || {}),
   ];
 
+  console.log("Starting python shell:", sample.id, Date.now());
   const runOutput = await new Promise<string[]>((resolve) => {
     let output: string[] = [];
     const shell = new PythonShell(wrapperScriptFile, {
@@ -55,6 +56,7 @@ export const scriptExecutor: Executor = async (runConfig, sample) => {
 
     shell.on("message", function (message: string) {
       if (message.indexOf(executionOutputIdentifier) === 0) {
+        console.log("got output for sample", sample.id, Date.now());
         output.push(message.replace(executionOutputIdentifier, ""));
       } else {
         console.log(message);

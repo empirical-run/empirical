@@ -117,7 +117,7 @@ export interface RunCompletion {
   id: string;
   run_config: RunConfig;
   dataset_config: { id: string };
-  samples: RunOutputSample[];
+  samples: RunSampleOutput[];
   stats?: RunOutputStats;
   created_at: Date;
 }
@@ -157,7 +157,7 @@ export type RunOutput = {
   metadata?: object | undefined;
 };
 
-export type RunOutputSample = {
+export type RunSampleOutput = {
   id?: string;
   annotations?: string[];
   scores?: Score[];

@@ -1,6 +1,6 @@
 import { DatasetSample, RunConfig, RunOutput } from "@empiricalrun/types";
 
-export interface Executor {
+export interface Transformer {
   (
     runConfig: RunConfig,
     sample: DatasetSample,

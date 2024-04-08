@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuCheckboxItem,
 } from "./ui/dropdown-menu";
-import { RunOutputSample } from "@empiricalrun/types";
+import { RunSampleOutput } from "@empiricalrun/types";
 import { DiffEditor, DiffOnMount } from "@monaco-editor/react";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import EmptySampleCompletion from "./empty-sample-completion";
@@ -39,8 +39,8 @@ export default function SampleOutputCard({
   onClickCard = () => {},
 }: {
   baseResult?: RunResult;
-  baseSample?: RunOutputSample;
-  comparisonSamples?: RunOutputSample[];
+  baseSample?: RunSampleOutput;
+  comparisonSamples?: RunSampleOutput[];
   comparisonResults?: RunResult[];
   isActiveColumn?: boolean;
   setSelections?: Dispatch<any>;

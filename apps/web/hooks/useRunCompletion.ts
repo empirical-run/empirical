@@ -3,7 +3,7 @@ import {
   Dataset,
   RunCompletion,
   RunConfig,
-  RunOutputSample,
+  RunSampleOutput,
   Score,
 } from "@empiricalrun/types";
 import { RunResult } from "../types";
@@ -38,7 +38,7 @@ interface RunSampleScoreUpdate {
 
 interface RunSampleUpdate {
   type: "run_sample";
-  data: RunOutputSample;
+  data: RunSampleOutput;
 }
 // TODO: fix naming
 type ProgressCallbackDataTypes =

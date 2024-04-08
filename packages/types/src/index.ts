@@ -34,7 +34,7 @@ export interface DeterministicScorer extends ScorerBase {
 }
 
 export interface ScriptScorer extends ScorerBase {
-  type: "py-script";
+  type: "py-script" | "js-script";
   name?: string;
   path: string;
 }

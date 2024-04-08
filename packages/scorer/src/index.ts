@@ -2,6 +2,8 @@ import { Scorer, Score, DatasetSample, RunOutput } from "@empiricalrun/types";
 import { ScorerError, ScorerErrorEnum } from "./error";
 import getScoringFn from "./provider";
 
+export { getScoringFn };
+
 export default async function score({
   sample,
   output,

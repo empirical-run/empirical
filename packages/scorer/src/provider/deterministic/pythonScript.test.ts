@@ -1,6 +1,6 @@
 import { DatasetSample } from "@empiricalrun/types";
 import { expect, test } from "vitest";
-import { scoreWithPythonScript } from "./script";
+import { scoreWithPythonScript } from "./pythonScript";
 
 const humanEval = {
   output:
@@ -10,10 +10,10 @@ const humanEval = {
 };
 
 // Using relative path to use the python script from HumanEval example
-// Tests run out of the $root/packages/evals directory
+// Tests run out of the $root/packages/scorer directory
 const scriptPath = "../../examples/humaneval/score.py";
 
-test("script scorer works for a correct humaneval output", async () => {
+test("python script scorer works for a correct humaneval output", async () => {
   const sample: DatasetSample = {
     id: "1",
     inputs: {
@@ -42,7 +42,7 @@ test("script scorer works for a correct humaneval output", async () => {
   ]);
 });
 
-test("script scorer works for a incorrect humaneval output", async () => {
+test("python script scorer works for a incorrect humaneval output", async () => {
   const sample: DatasetSample = {
     id: "1",
     inputs: {
@@ -69,7 +69,7 @@ test("script scorer works for a incorrect humaneval output", async () => {
   ]);
 });
 
-test("script scorer works for a humaneval output that has backticks", async () => {
+test("python script scorer works for a humaneval output that has backticks", async () => {
   const sample: DatasetSample = {
     id: "1",
     inputs: {
@@ -99,7 +99,8 @@ test("script scorer works for a humaneval output that has backticks", async () =
 });
 
 test(
-  "script scorer times out a long running script",
+  "python script scorer times out a long running script",
+  { timeout: 21000 },
   async () => {
     const sample: DatasetSample = {
       id: "0",
@@ -123,10 +124,9 @@ test(
       },
     ]);
   },
-  { timeout: 21000 },
 );
 
-test("script scorer works with a python script that throws", async () => {
+test("python script scorer works with a python script that throws", async () => {
   const sample: DatasetSample = {
     id: "0",
     inputs: {},

@@ -3,7 +3,7 @@ import { isJson, name as jsonName } from "./deterministic/json";
 import {
   scoreWithPythonScript,
   name as scriptName,
-} from "./deterministic/script";
+} from "./deterministic/pythonScript";
 import {
   syntaxName,
   checkSqlSyntax,

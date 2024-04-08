@@ -1,5 +1,4 @@
 import { MoreInfo } from "./ui/more-info";
-import { Badge } from "./ui/badge";
 import { cn } from "./ui/lib";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
@@ -26,7 +25,7 @@ function StaticHeader({
 }) {
   return (
     <div
-      className={`flex-1 flex flex-col rounded-none justify-center relative border-r min-w-[400px] last:border-none bg-zinc-900`}
+      className={`flex-1 flex flex-col rounded-none justify-center relative border-r min-w-[500px] last:border-none bg-zinc-900`}
     >
       <section className="flex flex-col">
         <section className="flex flex-row my-3 justify-center">
@@ -87,7 +86,7 @@ export const RunColumnHeaders = ({
         key={`header-${index}`}
         className={`flex-1 flex flex-col rounded-none justify-center relative ${
           isActive ? "bg-muted" : "bg-zinc-900"
-        } border-r min-w-[400px] last:border-none`}
+        } border-r min-w-[500px] last:border-none`}
       >
         <section className="flex flex-col">
           <section className="flex flex-row my-2 mx-4 justify-center">
@@ -96,12 +95,6 @@ export const RunColumnHeaders = ({
                 model={header.runResult?.run_config.name}
                 className="text-muted-foreground"
               />
-              <Badge
-                variant={"secondary"}
-                className="text-muted-foreground text-xs bg-transparent p-0 ml-1"
-              >
-                #{header.runResult?.id}
-              </Badge>
             </section>
             <Button
               variant={"secondary"}

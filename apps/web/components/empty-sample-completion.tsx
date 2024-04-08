@@ -14,7 +14,7 @@ export default function EmptySampleCompletion({
               No output for this sample
             </p>
             <p className=" text-xs text-muted-foreground">
-              Click &rdquo;run&rdquo; to see completion
+              Click &rdquo;run&rdquo; to fetch output
             </p>
           </>
         )}

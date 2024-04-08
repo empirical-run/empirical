@@ -3,18 +3,15 @@ import CodeViewer from "./ui/code-viewer";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { RunConfig } from "@empiricalrun/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { Badge } from "./ui/badge";
 import { TriangleRightIcon } from "@radix-ui/react-icons";
 import { useCallback, useEffect, useState } from "react";
 
 export const RunDetails = ({
   onClose,
-  runId,
   runConfig,
   onClickRun,
 }: {
   onClickRun?: (runConfig: RunConfig) => void;
-  runId?: string;
   onClose?: () => void;
   runConfig: RunConfig;
 }) => {
@@ -58,12 +55,6 @@ export const RunDetails = ({
         <div className="flex flex-col">
           <CardTitle className="flex flex-row space-x-1 items-center">
             <span>{runConfig.name}</span>
-            <Badge
-              variant={"secondary"}
-              className=" text-xs text-muted-foreground whitespace-nowrap"
-            >
-              #{runId}
-            </Badge>
           </CardTitle>
         </div>
         <div className="flex flex-row mt-0 gap-2">

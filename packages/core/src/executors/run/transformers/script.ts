@@ -39,7 +39,6 @@ export const scriptExecutor: Transformer = async (runConfig, sample) => {
     JSON.stringify(runConfig.parameters || {}),
   ];
 
-  console.log("Starting python shell:", sample.id, Date.now());
   const runOutput = await new Promise<string[]>((resolve) => {
     let output: string[] = [];
     const shell = new PythonShell(wrapperScriptFile, {
@@ -56,7 +55,6 @@ export const scriptExecutor: Transformer = async (runConfig, sample) => {
 
     shell.on("message", function (message: string) {
       if (message.indexOf(executionOutputIdentifier) === 0) {
-        console.log("got output for sample", sample.id, Date.now());
         output.push(message.replace(executionOutputIdentifier, ""));
       } else {
         console.log(message);

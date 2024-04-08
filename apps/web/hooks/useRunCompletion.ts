@@ -95,24 +95,11 @@ export function useRunResults() {
     [setRunResults],
   );
 
-  // const updateRun = useCallback((runId: string, run: RunCompletion) => {
-  //   setRunResults((prevRunResults) => {
-  //     const updatedRunResults = prevRunResults.map((r) => {
-  //       if (r.id === runId) {
-  //         return { ...run, loading: false };
-  //       }
-  //       return r;
-  //     });
-  //     return updatedRunResults;
-  //   });
-  // }, []);
-
   const executeRun = useCallback(
     async (run: RunResult, dataset: Dataset) => {
       let runId = run.id;
       setLoadingStateForRun(runId, true);
       run.loading = true;
-      console.log(dataset);
       for await (const chunk of streamFetch("/api/run/execute", {
         method: "POST",
         headers: {

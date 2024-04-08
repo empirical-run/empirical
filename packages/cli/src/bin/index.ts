@@ -173,20 +173,14 @@ program
     app.use(express.static(path.join(__dirname, "../webapp")));
     app.get("/api/results", (req, res) => res.sendFile(outputFilePath));
     app.post("/api/run/execute", async (req, res) => {
-      //default 10 mins timeout for response
-      res.setTimeout(600_0000);
-      // TODO: keep the execution at a single place with the cli
       const { runs, dataset } = req.body as {
-        runs: RunConfig[]; // TODO: should this interface start with I?
+        runs: RunConfig[];
         dataset: Dataset;
       };
-      const completion = await execute(runs[0]!, dataset, (update) =>
-        res.write(JSON.stringify(update) + `\n`),
-      );
+      const streamUpdate = (obj: any) => res.write(JSON.stringify(obj) + `\n`);
+      const completion = await execute(runs[0]!, dataset, streamUpdate);
       setRunSummary([completion]);
-      res.write(
-        JSON.stringify({ type: "stats_update", data: completion.stats }) + `\n`,
-      );
+      streamUpdate({ type: "stats_update", data: completion.stats });
       res.end();
     });
     const fullUrl = `http://localhost:${availablePort}`;

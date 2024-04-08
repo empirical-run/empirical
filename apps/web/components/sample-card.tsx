@@ -4,7 +4,13 @@ import { Card, CardContent } from "./ui/card";
 import CodeViewer from "./ui/code-viewer";
 import { DatasetSample } from "@empiricalrun/types";
 import { ArrowTopRightIcon } from "@radix-ui/react-icons";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 import {
   Sheet,
   SheetContent,
@@ -14,6 +20,7 @@ import {
 } from "./ui/sheet";
 import ZeroStateSampleCard from "./zero-state-sample-card";
 import { useSyncedTabs } from "../hooks/useSyncedTab";
+import { SelectGroup } from "@radix-ui/react-select";
 
 export default function SampleCard({
   sample,
@@ -73,47 +80,34 @@ export default function SampleCard({
             )}
           </>
         </div>
-        {Object.keys(sample?.inputs || {}).length > 0 && (
-          <Tabs
-            value={activeTab}
-            className="h-full"
-            onValueChange={onChangeTab}
-          >
-            <TabsList className=" rounded-sm">
-              {Object.keys(sample?.inputs || {}).map((name) => (
-                <TabsTrigger
-                  key={name}
-                  value={name}
-                  className="text-xs rounded-sm"
-                >
-                  {name}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-
-            {Object.entries(sample?.inputs || {}).map((el) => {
-              const [key, value] = el;
-              return (
-                <TabsContent
-                  key={key}
-                  value={key}
-                  // 2.25rem as the height of the tabs is h-9 by default. change this if tab height changes
-                  className="h-[calc(100%-3rem)]"
-                >
-                  <CodeViewer
-                    value={
-                      typeof value === "string"
-                        ? value
-                        : JSON.stringify(value, null, 2)
-                    }
-                    language="json"
-                    readOnly
-                    scrollable
-                  />
-                </TabsContent>
-              );
-            })}
-          </Tabs>
+        {Object.keys(sample?.inputs || {}).length > 0 && activeTab && (
+          <Select value={activeTab} onValueChange={onChangeTab}>
+            <SelectTrigger className="w-fit">
+              <SelectValue placeholder="Select parameter" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {Object.keys(sample?.inputs || {}).map((name) => (
+                  <SelectItem key={name} value={name}>
+                    {name}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+            <div className="mt-2">
+              <CodeViewer
+                value={(() => {
+                  const inputValue = sample?.inputs[activeTab];
+                  return typeof inputValue === "string"
+                    ? inputValue!
+                    : JSON.stringify(inputValue, null, 2);
+                })()}
+                language="json"
+                readOnly
+                scrollable
+              />
+            </div>
+          </Select>
         )}
         {!Object.keys(sample?.inputs).length && <ZeroStateSampleCard />}
       </CardContent>

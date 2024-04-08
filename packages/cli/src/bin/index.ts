@@ -13,7 +13,12 @@ import { RunsConfig } from "../types";
 import { loadDataset } from "./dataset";
 import { DatasetError } from "../error";
 import { DefaultRunsConfigType, getDefaultRunsConfig } from "../runs";
-import { Dataset, RunCompletion } from "@empiricalrun/types";
+import {
+  Dataset,
+  RunConfig,
+  RunCompletion,
+  RunStatsUpdate,
+} from "@empiricalrun/types";
 import {
   failedOutputsSummary,
   printStatsSummary,
@@ -103,8 +108,10 @@ program
       runs.map((r) => {
         r.parameters = r.parameters ? r.parameters : {};
         r.parameters.pythonPath = options.pythonPath;
-        return execute(r, dataset, () => {
-          progressBar.increment();
+        return execute(r, dataset, (update) => {
+          if (update.type === "run_sample") {
+            progressBar.increment();
+          }
         });
       }),
     );
@@ -166,8 +173,56 @@ program
         `${yellow("[Warning]")} Port ${port} is unavailable. Trying port ${availablePort}.`,
       );
     }
+    // TODO: get rid of this with dataset id support
+    app.use(express.json({ limit: "50mb" }));
     app.use(express.static(path.join(__dirname, "../webapp")));
     app.get("/api/results", (req, res) => res.sendFile(outputFilePath));
+    app.delete("/api/runs/:id", async (req, res) => {
+      try {
+        const file = await fs.readFile(outputFilePath);
+        const { runs, dataset } = JSON.parse(file.toString()) as {
+          runs: RunCompletion[];
+          dataset: Dataset;
+        };
+        const updatedRuns = runs.filter((run) => run.id !== req.params.id);
+        await fs.writeFile(
+          outputFilePath,
+          JSON.stringify({ runs: updatedRuns, dataset }, null, 2),
+        );
+      } catch (e: any) {
+        res.send({
+          success: false,
+          error: {
+            message: e.message,
+          },
+        });
+      }
+      res.send({
+        success: true,
+      });
+    });
+    app.post("/api/runs/execute", async (req, res) => {
+      const { runs, dataset } = req.body as {
+        runs: RunConfig[];
+        dataset: Dataset;
+      };
+      const streamUpdate = (obj: any) => res.write(JSON.stringify(obj) + `\n`);
+      const completion = await execute(runs[0]!, dataset, streamUpdate);
+      setRunSummary([completion]);
+      const statsUpdate: RunStatsUpdate = {
+        type: "run_stats",
+        data: completion.stats!,
+      };
+      streamUpdate(statsUpdate);
+      const file = await fs.readFile(outputFilePath);
+      const { runs: savedRuns } = JSON.parse(file.toString());
+      savedRuns.push(completion);
+      await fs.writeFile(
+        outputFilePath,
+        JSON.stringify({ runs: savedRuns, dataset }, null, 2),
+      );
+      res.end();
+    });
     const fullUrl = `http://localhost:${availablePort}`;
     app.listen(availablePort, () => {
       console.log(`Empirical app running on ${fullUrl}`);

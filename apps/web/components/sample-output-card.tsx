@@ -16,13 +16,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuCheckboxItem,
 } from "./ui/dropdown-menu";
-import { RunCompletion, RunOutputSample } from "@empiricalrun/types";
+import { RunSampleOutput } from "@empiricalrun/types";
 import { DiffEditor, DiffOnMount } from "@monaco-editor/react";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import EmptySampleCompletion from "./empty-sample-completion";
-
 import ScoreBadge from "./ui/score-badge";
+import { RunResult } from "../types";
 import SampleCompletionError from "./sample-completion-error";
+import { Separator } from "./ui/separator";
+import { JsonAsTab } from "./json-as-tab";
 
 type Diff = {
   type: string;
@@ -36,16 +38,14 @@ export default function SampleOutputCard({
   comparisonResults,
   comparisonSamples,
   isActiveColumn = false,
-  onFetchCompletion,
   onClickCard = () => {},
 }: {
-  baseResult?: RunCompletion;
-  baseSample?: RunOutputSample;
-  comparisonSamples?: RunOutputSample[];
-  comparisonResults?: RunCompletion[];
+  baseResult?: RunResult;
+  baseSample?: RunSampleOutput;
+  comparisonSamples?: RunSampleOutput[];
+  comparisonResults?: RunResult[];
   isActiveColumn?: boolean;
   setSelections?: Dispatch<any>;
-  onFetchCompletion?: (runResult: RunCompletion) => void;
   onClickCard?: () => void;
 }) {
   const [diffView, setDiffView] = useState<Diff>({
@@ -102,11 +102,6 @@ export default function SampleOutputCard({
     });
   }, []);
 
-  const onClickFetchCompletion = useCallback(
-    () => onFetchCompletion?.(baseResult!),
-    [baseResult, onFetchCompletion],
-  );
-
   const containerWrapper = useRef<HTMLDivElement>(null);
   const showOutput = useMemo(
     () => baseSample && !diffView.enabled && !baseSample?.error,
@@ -117,7 +112,8 @@ export default function SampleOutputCard({
     clearDiffView();
   }, [baseResult?.id, clearDiffView]);
 
-  const showOutputLoading = !baseSample || !baseSample?.output;
+  const isEmptyOutput = !baseSample?.output;
+  const isLoading = !!baseResult?.loading && isEmptyOutput;
   return (
     <Card
       className={`flex flex-col flex-1 ${
@@ -211,39 +207,57 @@ export default function SampleOutputCard({
             </div>
           </CardTitle>
         )}
+        {isEmptyOutput && <EmptySampleCompletion loading={isLoading} />}
         {baseSample?.error && (
           <SampleCompletionError errorMessage={baseSample.error.message} />
         )}
-        {showOutputLoading && (
-          <EmptySampleCompletion
-            onClickFetchCompletion={onClickFetchCompletion}
-            loading={!!(baseSample && !baseSample?.output)}
-          />
-        )}
       </CardHeader>
-      <CardContent className="h-full p-2" ref={containerWrapper}>
-        {diffView.enabled && baseSample && (
-          <DiffEditor
-            original={baseSample?.output.value || ""}
-            modified={diffView.text}
-            height={`${
-              containerWrapper.current?.clientHeight
-                ? containerWrapper.current?.clientHeight - 24 // reduce the padding value
-                : 100
-            }px`}
-            language={"json"}
-            onMount={handleDiffOnMount}
-            theme="tomorrow-night-blue"
-            width="100%"
-            loading=""
-          />
-        )}
-        {showOutput && (
-          <CodeViewer
-            value={baseSample?.output.value || ""}
-            language="json"
-            readOnly
-          />
+      <CardContent
+        className="flex flex-col h-full p-2 gap-4"
+        ref={containerWrapper}
+      >
+        <section className="flex flex-col">
+          {showOutput && baseSample?.output.metadata && (
+            <p className=" text-sm font-medium mb-2">Output</p>
+          )}
+          {diffView.enabled && baseSample && (
+            <DiffEditor
+              original={baseSample?.output.value || ""}
+              modified={diffView.text}
+              height={`${
+                containerWrapper.current?.clientHeight
+                  ? containerWrapper.current?.clientHeight - 24 // reduce the padding value
+                  : 100
+              }px`}
+              language={"json"}
+              onMount={handleDiffOnMount}
+              theme="tomorrow-night-blue"
+              width="100%"
+              loading=""
+            />
+          )}
+          {showOutput && (
+            <CodeViewer
+              value={baseSample?.output.value || ""}
+              language="json"
+              readOnly
+            />
+          )}
+        </section>
+        {!diffView.enabled && baseSample?.output.metadata && (
+          <section className="flex flex-col h-[200px] mt-2">
+            <Separator
+              orientation="horizontal"
+              className="w-[60%] self-center"
+            />
+            <p className=" text-sm font-medium mt-2 mb-2">Metadata</p>
+            <section className="relative flex flex-col flex-1">
+              <JsonAsTab
+                storeKey={baseResult?.id!}
+                data={baseSample?.output.metadata!}
+              />
+            </section>
+          </section>
         )}
       </CardContent>
     </Card>

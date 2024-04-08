@@ -1,7 +1,7 @@
-# empirical.run CLI
+# Empirical CLI
 
 [![npm](https://img.shields.io/npm/v/@empiricalrun/cli)](https://npmjs.com/package/@empiricalrun/cli)
-[![Discord](https://dcbadge.vercel.app/api/server/NeR6jj8dw9?style=flat&compact=true)](https://discord.gg/NeR6jj8dw9)
+[![Discord](https://img.shields.io/badge/discord-empirical.run-blue?logo=discord&logoColor=white&color=5d68e8)](https://discord.gg/NeR6jj8dw9)
 
 Empirical is the fastest way to test different LLMs, prompts and other model configurations, across all the scenarios
 that matter for your application.
@@ -19,6 +19,8 @@ With Empirical, you can:
 
 ## Usage
 
+[See quick start on docs →](https://docs.empirical.run/quickstart)
+
 Empirical bundles together a CLI and a web app. The CLI handles running tests and
 the web app visualizes results.
 
@@ -28,16 +30,22 @@ Everything runs locally, with a JSON configuration file, `empiricalrc.json`.
 
 ### Start with a basic example
 
-This example converts incoming unstructured user messages into structured JSON objects
-using an LLM.
+In this example, we will ask an LLM to parse user messages to extract entities and
+give us a structured JSON output. For example, "I'm Alice from Maryland" will
+become `"{name: 'Alice', location: 'Maryland'}"`.
+
+Our test will succeed if the model outputs valid JSON.
 
 1. Use the CLI to create a sample configuration file called `empiricalrc.json`.
 
     ```sh
     npx @empiricalrun/cli init
+    cat empiricalrc.json
     ```
 
-2. Run the test samples against the models with the `run` command.
+2. Run the test samples against the models with the `run` command. This step requires
+   the `OPENAI_API_KEY` environment variable to authenticate with OpenAI. This
+   execution will cost $0.0026, based on the selected models.
 
     ```sh
     npx @empiricalrun/cli run

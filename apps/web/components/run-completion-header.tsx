@@ -1,15 +1,16 @@
 import { MoreInfo } from "./ui/more-info";
-import { Badge } from "./ui/badge";
 import { cn } from "./ui/lib";
 import { Button } from "./ui/button";
-import { RunCompletion } from "@empiricalrun/types";
-import ScoreBadge from "./ui/score-badge";
 import { Separator } from "./ui/separator";
+import { MinusCircledIcon, PlusCircledIcon } from "@radix-ui/react-icons";
+import { RunResult } from "../types";
+import { BarLoader } from "react-spinners";
+import ScoreBadge from "./ui/score-badge";
 
 export type Header = {
   title: string;
   description?: string;
-  runResult?: RunCompletion;
+  runResult?: RunResult;
   type: "input" | "expected" | "completion";
   active?: boolean;
   evals?: string[];
@@ -24,7 +25,7 @@ function StaticHeader({
 }) {
   return (
     <div
-      className={`flex-1 flex flex-col rounded-none justify-center relative border-r min-w-[400px] last:border-none bg-zinc-900`}
+      className={`flex-1 flex flex-col rounded-none justify-center relative border-r min-w-[500px] last:border-none bg-zinc-900`}
     >
       <section className="flex flex-col">
         <section className="flex flex-row my-3 justify-center">
@@ -58,9 +59,15 @@ function ModelTitle({
 export const RunColumnHeaders = ({
   showPrompt,
   headers,
+  onClickAddRun,
+  onClickRemoveRun,
+  datasetSampleCount,
 }: {
-  showPrompt?: (runResult: RunCompletion) => void;
+  onClickRemoveRun?: (runResult: RunResult) => void;
+  showPrompt?: (runResult: RunResult) => void;
+  onClickAddRun?: (runResult: RunResult) => void; // TODO: whether to keep the interface name as run completion?
   headers: Header[];
+  datasetSampleCount: number;
 }) => {
   return headers.map((header, index) => {
     if (header.type !== "completion") {
@@ -79,7 +86,7 @@ export const RunColumnHeaders = ({
         key={`header-${index}`}
         className={`flex-1 flex flex-col rounded-none justify-center relative ${
           isActive ? "bg-muted" : "bg-zinc-900"
-        } border-r min-w-[400px] last:border-none`}
+        } border-r min-w-[500px] last:border-none`}
       >
         <section className="flex flex-col">
           <section className="flex flex-row my-2 mx-4 justify-center">
@@ -88,21 +95,35 @@ export const RunColumnHeaders = ({
                 model={header.runResult?.run_config.name}
                 className="text-muted-foreground"
               />
-              <Badge
-                variant={"secondary"}
-                className="text-muted-foreground text-xs bg-transparent p-0 ml-1"
-              >
-                #{header.runResult?.id}
-              </Badge>
             </section>
             <Button
               variant={"secondary"}
               onClick={() => showPrompt?.(header.runResult!)}
-              className="self-end"
+              className="self-center"
               size={"xs"}
             >
               <span>{header.active ? "Hide" : "Show"} config</span>
             </Button>
+            <section className=" flex flex-row gap-2">
+              <section className="flex flex-row gap-0 items-center">
+                <Button
+                  variant={"link"}
+                  size={"sm"}
+                  className="px-1"
+                  onClick={() => onClickRemoveRun?.(header.runResult!)}
+                >
+                  <MinusCircledIcon />
+                </Button>
+                <Button
+                  variant={"link"}
+                  size={"sm"}
+                  className="px-1"
+                  onClick={() => onClickAddRun?.(header.runResult!)}
+                >
+                  <PlusCircledIcon />
+                </Button>
+              </section>
+            </section>
           </section>
 
           {header.runResult?.stats?.scores &&
@@ -125,6 +146,29 @@ export const RunColumnHeaders = ({
                 </section>
               </>
             )}
+          {header.runResult?.loading && (
+            <>
+              <Separator orientation="horizontal" className={`${overlayBg}`} />
+              <section className="flex flex-row space-x-2 text-muted-foreground items-center mx-4 my-2 justify-center">
+                <section className="flex flex-col text-xs gap-1 items-center">
+                  <>
+                    {datasetSampleCount >
+                      (header.runResult?.samples.length || 0) && (
+                      <p>
+                        {header.runResult?.samples.length} /{" "}
+                        {datasetSampleCount} outputs fetched
+                      </p>
+                    )}
+                    {datasetSampleCount ===
+                      (header.runResult?.samples.length || 0) && (
+                      <p>Scoring outputs</p>
+                    )}
+                    <BarLoader color="#a1a1aa" width={40} height={2} />
+                  </>
+                </section>
+              </section>
+            </>
+          )}
         </section>
       </div>
     );

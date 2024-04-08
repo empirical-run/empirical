@@ -4,7 +4,6 @@ export const config: RunsConfig = {
   runs: [
     {
       type: "model",
-      name: "gpt-3.5-turbo run",
       provider: "openai",
       model: "gpt-3.5-turbo",
       prompt:
@@ -17,7 +16,6 @@ export const config: RunsConfig = {
     },
     {
       type: "model",
-      name: "gpt-4-turbo-preview run",
       provider: "openai",
       model: "gpt-4-turbo-preview",
       prompt:

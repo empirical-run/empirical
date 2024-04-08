@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { create } from "zustand";
+import { StoreApi, UseBoundStore, create } from "zustand";
 
 interface SyncTabs {
   tabs: string[] | [];
@@ -8,17 +8,31 @@ interface SyncTabs {
   setActiveTab: (tab: string | undefined) => void;
 }
 
-const useTabsStore = create<SyncTabs>((set) => ({
-  tabs: [],
-  activeTab: undefined,
-  setTabs: (tabs) => set({ tabs }),
-  setActiveTab: (tab) => set({ activeTab: tab }),
-}));
+const map = new Map<string, UseBoundStore<StoreApi<SyncTabs>>>();
 
-export function useSyncedTabs(tabList: string[]) {
-  const { setActiveTab, setTabs } = useTabsStore();
-  const activeTab = useTabsStore((state) => state.activeTab);
-  const tabs = useTabsStore((state) => state.tabs);
+export function createSyncTabsStore(key: string) {
+  if (map.has(key)) {
+    return;
+  }
+  const store = create<SyncTabs>((set) => ({
+    tabs: [],
+    activeTab: undefined,
+    setTabs: (tabs) => set({ tabs }),
+    setActiveTab: (tab) => set({ activeTab: tab }),
+  }));
+  map.set(key, store);
+  return store;
+}
+
+export function removeTabStore(tabStoreKey: string) {
+  map.delete(tabStoreKey);
+}
+
+export function useSyncedTabs(tabList: string[], tabStoreKey: string) {
+  const useStore = map.get(tabStoreKey) || createSyncTabsStore(tabStoreKey)!;
+  const { setActiveTab, setTabs } = useStore();
+  const activeTab = useStore((state) => state.activeTab);
+  const tabs = useStore((state) => state.tabs);
   const onChangeTab = useCallback(
     (tab: string) => setActiveTab(tab),
     [setActiveTab],
@@ -34,14 +48,14 @@ export function useSyncedTabs(tabList: string[]) {
       setActiveTab(missingTabs[0]);
     }
     setTabs(tabList);
-  }, [tabs, setActiveTab, setTabs, tabList, activeTab]);
+  }, [tabs, setTabs, tabList, activeTab]);
 
   useEffect(() => {
     //@ts-ignore
     if (!tabs.includes(activeTab || "")) {
       setActiveTab(tabs[0]);
     }
-  }, [activeTab, tabs, setActiveTab]);
+  }, [activeTab, tabs]);
 
   return {
     tabs,

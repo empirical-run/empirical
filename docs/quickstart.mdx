@@ -8,30 +8,125 @@ the web app visualizes results.
 
 Everything runs locally, with a JSON configuration file, `empiricalrc.json`.
 
-Required: [Node.js](https://nodejs.org/en) 20+ needs to be installed on your system.
+Required: Node.js 20+ needs to be installed on your system.
 
 ## Start with a basic example
 
-This example converts incoming unstructured user messages into structured JSON objects
-using an LLM.
+In this example, we will ask an LLM to parse user messages to extract entities and
+give us a structured JSON output. For example, "I'm Alice from Maryland" will
+become `"{name: 'Alice', location: 'Maryland'}"`.
 
-1. Use the CLI to create a sample configuration file called `empiricalrc.json`.
+Our test will succeed if the model outputs valid JSON.
+
+<Steps>
+  <Step title="Set up Empirical">
+    Use the CLI to create a sample configuration file in `empiricalrc.json`.
 
     ```sh
     npx @empiricalrun/cli init
     ```
 
-2. Run the test samples against the models with the `run` command.
+    Read the file to see the configured models and dataset samples that we will test
+    for. The default configuration uses models from OpenAI.
+
+    ```sh
+    cat empiricalrc.json
+    ```
+  </Step>
+
+  <Step title="Run the test">
+    Run the test samples against the models with the `run` command.
 
     ```sh
     npx @empiricalrun/cli run
     ```
 
-3. Use the `ui` command to open the reporter web app in your web browser and see side-by-side results.
+    This step requires the `OPENAI_API_KEY` environment variable to authenticate with
+    OpenAI. This execution will cost $0.0026, based on the selected models.
+  </Step>
+
+  <Step title="See results">
+    Use the `ui` command to open the reporter web app in your web browser and see
+    side-by-side results.
 
     ```sh
     npx @empiricalrun/cli ui
     ```
+  </Step>
+
+  <Step title="[Bonus] Fix GPT-4 Turbo">
+    GPT-4 Turbo tends to fail our JSON syntax check, because it returns outputs
+   in markdown syntax (with backticks ` ```json `). We can fix this behavior by enabling
+   [JSON mode](https://platform.openai.com/docs/guides/text-generation/json-mode).
+   
+    ```json
+    {
+      "model": "gpt-4-turbo-preview",
+      // ...
+      // Existing properties
+      "parameters": {
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    }
+    ```
+
+    <Accordion title="empiricalrc.json: Updated with JSON mode">
+    ```json empiricalrc.json
+    {
+      "runs": [
+        {
+          "type": "model",
+          "provider": "openai",
+          "model": "gpt-3.5-turbo",
+          "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
+          "scorers": [
+            {
+              "type": "is-json"
+            }
+          ]
+        },
+        {
+          "type": "model",
+          "provider": "openai",
+          "model": "gpt-4-turbo-preview",
+          "parameters": {
+            "response_format": {
+              "type": "json_object"
+            }
+          },
+          "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
+          "scorers": [
+            {
+              "type": "is-json"
+            }
+          ]
+        }
+      ],
+      "dataset": {
+        "samples": [
+          {
+            "inputs": {
+              "user_message": "Hi my name is John Doe. I'm 26 years old and I work in real estate."
+            }
+          },
+          {
+            "inputs": {
+              "user_message": "This is Alice. I am a nurse from Maryland. I was born in 1990."
+            }
+          }
+        ]
+      }
+    }
+    ```
+    </Accordion>
+
+    Re-running the test with `npx @empiricalrun/cli run` will give us better results
+    for GPT-4 Turbo.
+  </Step>
+</Steps>
+
 
 ## Make it yours
 

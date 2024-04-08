@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { RunColumnHeaders } from "../components/run-completion-header";
 import { PageHeader } from "../components/ui/page-header";
 import PageLoader from "../components/ui/page-loader";
@@ -25,6 +25,16 @@ export default function Page(): JSX.Element {
     useRunResultTableView({
       runs: runResults,
     });
+  const runHeaderRowRef = useRef<HTMLDivElement>(null);
+  const [comparisonTableHeight, setComparisonTableHeight] = useState(0);
+
+  const updateComparisonTableHeight = useCallback(() => {
+    if (dataset?.samples && runHeaderRowRef.current) {
+      const top = runHeaderRowRef.current.offsetTop;
+      setComparisonTableHeight(window.innerHeight - top - 40);
+    }
+  }, [dataset?.samples]);
+
   const sampleIds = useMemo(
     () => (dataset?.samples || [])?.map((s) => s.id),
     [dataset],
@@ -85,6 +95,23 @@ export default function Page(): JSX.Element {
     [activeRun, removeRun],
   );
 
+  useEffect(() => {
+    if (dataset?.samples && runHeaderRowRef.current) {
+      updateComparisonTableHeight();
+    }
+  }, [dataset?.samples, updateComparisonTableHeight]);
+
+  useEffect(() => {
+    window.addEventListener("resize", updateComparisonTableHeight);
+    return () => {
+      window.removeEventListener("resize", updateComparisonTableHeight);
+    };
+  }, [updateComparisonTableHeight]);
+
+  useEffect(() => {
+    updateComparisonTableHeight();
+  }, [activeRun]);
+
   return (
     <main className="relative h-screen">
       <PageHeader />
@@ -101,8 +128,11 @@ export default function Page(): JSX.Element {
         />
       )}
       <section
+        ref={runHeaderRowRef}
         className="overflow-scroll relative"
-        style={{ height: "calc(100vh - 40px)" }}
+        style={{
+          height: `${comparisonTableHeight}px`,
+        }}
       >
         {runResults?.length > 0 && (
           <div className="flex bg-zinc-900 sticky top-0 z-20 min-w-fit">

@@ -62,13 +62,13 @@ export const RunColumnHeaders = ({
   headers,
   onClickAddRun,
   onClickRemoveRun,
-  datasetCount,
+  datasetSampleCount,
 }: {
   onClickRemoveRun?: (runResult: RunResult) => void;
   showPrompt?: (runResult: RunResult) => void;
   onClickAddRun?: (runResult: RunResult) => void; // TODO: whether to keep the interface name as run completion?
   headers: Header[];
-  datasetCount: number;
+  datasetSampleCount: number;
 }) => {
   return headers.map((header, index) => {
     if (header.type !== "completion") {
@@ -159,13 +159,14 @@ export const RunColumnHeaders = ({
               <section className="flex flex-row space-x-2 text-muted-foreground items-center mx-4 my-2 justify-center">
                 <section className="flex flex-col text-xs gap-1 items-center">
                   <>
-                    {datasetCount > (header.runResult?.samples.length || 0) && (
+                    {datasetSampleCount >
+                      (header.runResult?.samples.length || 0) && (
                       <p>
-                        {header.runResult?.samples.length} / {datasetCount}{" "}
-                        outputs fetched
+                        {header.runResult?.samples.length} /{" "}
+                        {datasetSampleCount} outputs fetched
                       </p>
                     )}
-                    {datasetCount ===
+                    {datasetSampleCount ===
                       (header.runResult?.samples.length || 0) && (
                       <p>Scoring outputs</p>
                     )}

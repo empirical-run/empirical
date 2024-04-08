@@ -102,7 +102,7 @@ export default function Page(): JSX.Element {
               headers={tableHeaders}
               onClickAddRun={addNewRun}
               onClickRemoveRun={removeRun}
-              datasetCount={dataset?.samples.length || 0}
+              datasetSampleCount={dataset?.samples.length || 0}
             />
           </div>
         )}

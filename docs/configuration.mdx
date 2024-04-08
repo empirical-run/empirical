@@ -1,0 +1,56 @@
+---
+title: 'Configuration file'
+description: 'Use a JSON file to configure your tests'
+---
+
+Empirical uses a JSON configuration file, called `empiricalrc.json`, to describe
+the test to run. This configuration is declarative, in the sense that you define what you
+want to test, and Empirical will internally implement the expected behavior.
+
+## Configuration reference
+
+The `empiricalrc.json` configuration file has two high-level properties:
+
+- `runs`: Use this to define [model providers](./models/basics) and [scoring functions](./scoring/basics)
+- `dataset`: Use this to define the [scenarios to test](./dataset/basics)
+
+## Code editor integration
+
+Your code editor can give you auto-completions and detect linting errors for this configuration
+file. This uses a [JSON Schema](https://json-schema.org/) definition which is hosted by Empirical.
+
+There are two ways to configure the schema definition.
+
+### `$schema` property
+
+Use the `$schema` property in the configuration file to specify the JSON schema URL.
+
+```json empiricalrc.json
+{
+  "$schema": "https://assets.empirical.run/config/schema/v1.14.json",
+  "runs": [
+    // ...
+  ],
+  "dataset": {
+    // ...
+  }
+}
+```
+
+### Visual Studio Code
+
+Add the `json.schemas` property to your VS Code configuration (user or workspace). This maps
+the `empiricalrc.json` file to use the JSON schema.
+
+```json settings.json
+{
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "empiricalrc.json"
+      ],
+      "url": "https://assets.empirical.run/config/schema/v1.14.json"
+    }
+  ]
+}
+```

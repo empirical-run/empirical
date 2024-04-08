@@ -3,7 +3,6 @@
   "runs": [
     {
       "type": "model",
-      "name": "gpt-3.5-turbo run",
       "provider": "openai",
       "model": "gpt-3.5-turbo",
       "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
@@ -15,7 +14,6 @@
     },
     {
       "type": "model",
-      "name": "gpt-4-turbo-preview run",
       "provider": "openai",
       "model": "gpt-4-turbo-preview",
       "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",

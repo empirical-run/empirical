@@ -2,14 +2,16 @@ import { MoreInfo } from "./ui/more-info";
 import { Badge } from "./ui/badge";
 import { cn } from "./ui/lib";
 import { Button } from "./ui/button";
-import { RunCompletion } from "@empiricalrun/types";
-import ScoreBadge from "./ui/score-badge";
 import { Separator } from "./ui/separator";
+import { MinusCircledIcon, PlusCircledIcon } from "@radix-ui/react-icons";
+import { RunResult } from "../types";
+import { BarLoader } from "react-spinners";
+import ScoreBadge from "./ui/score-badge";
 
 export type Header = {
   title: string;
   description?: string;
-  runResult?: RunCompletion;
+  runResult?: RunResult;
   type: "input" | "expected" | "completion";
   active?: boolean;
   evals?: string[];
@@ -58,9 +60,15 @@ function ModelTitle({
 export const RunColumnHeaders = ({
   showPrompt,
   headers,
+  onClickAddRun,
+  onClickRemoveRun,
+  datasetSampleCount,
 }: {
-  showPrompt?: (runResult: RunCompletion) => void;
+  onClickRemoveRun?: (runResult: RunResult) => void;
+  showPrompt?: (runResult: RunResult) => void;
+  onClickAddRun?: (runResult: RunResult) => void; // TODO: whether to keep the interface name as run completion?
   headers: Header[];
+  datasetSampleCount: number;
 }) => {
   return headers.map((header, index) => {
     if (header.type !== "completion") {
@@ -98,11 +106,31 @@ export const RunColumnHeaders = ({
             <Button
               variant={"secondary"}
               onClick={() => showPrompt?.(header.runResult!)}
-              className="self-end"
+              className="self-center"
               size={"xs"}
             >
               <span>{header.active ? "Hide" : "Show"} config</span>
             </Button>
+            <section className=" flex flex-row gap-2">
+              <section className="flex flex-row gap-0 items-center">
+                <Button
+                  variant={"link"}
+                  size={"sm"}
+                  className="px-1"
+                  onClick={() => onClickRemoveRun?.(header.runResult!)}
+                >
+                  <MinusCircledIcon />
+                </Button>
+                <Button
+                  variant={"link"}
+                  size={"sm"}
+                  className="px-1"
+                  onClick={() => onClickAddRun?.(header.runResult!)}
+                >
+                  <PlusCircledIcon />
+                </Button>
+              </section>
+            </section>
           </section>
 
           {header.runResult?.stats?.scores &&
@@ -125,6 +153,29 @@ export const RunColumnHeaders = ({
                 </section>
               </>
             )}
+          {header.runResult?.loading && (
+            <>
+              <Separator orientation="horizontal" className={`${overlayBg}`} />
+              <section className="flex flex-row space-x-2 text-muted-foreground items-center mx-4 my-2 justify-center">
+                <section className="flex flex-col text-xs gap-1 items-center">
+                  <>
+                    {datasetSampleCount >
+                      (header.runResult?.samples.length || 0) && (
+                      <p>
+                        {header.runResult?.samples.length} /{" "}
+                        {datasetSampleCount} outputs fetched
+                      </p>
+                    )}
+                    {datasetSampleCount ===
+                      (header.runResult?.samples.length || 0) && (
+                      <p>Scoring outputs</p>
+                    )}
+                    <BarLoader color="#a1a1aa" width={40} height={2} />
+                  </>
+                </section>
+              </section>
+            </>
+          )}
         </section>
       </div>
     );

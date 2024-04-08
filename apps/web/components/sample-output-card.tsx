@@ -16,12 +16,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuCheckboxItem,
 } from "./ui/dropdown-menu";
-import { RunCompletion, RunOutputSample } from "@empiricalrun/types";
+import { RunSampleOutput } from "@empiricalrun/types";
 import { DiffEditor, DiffOnMount } from "@monaco-editor/react";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import EmptySampleCompletion from "./empty-sample-completion";
-
 import ScoreBadge from "./ui/score-badge";
+import { RunResult } from "../types";
 import SampleCompletionError from "./sample-completion-error";
 
 type Diff = {
@@ -36,16 +36,14 @@ export default function SampleOutputCard({
   comparisonResults,
   comparisonSamples,
   isActiveColumn = false,
-  onFetchCompletion,
   onClickCard = () => {},
 }: {
-  baseResult?: RunCompletion;
-  baseSample?: RunOutputSample;
-  comparisonSamples?: RunOutputSample[];
-  comparisonResults?: RunCompletion[];
+  baseResult?: RunResult;
+  baseSample?: RunSampleOutput;
+  comparisonSamples?: RunSampleOutput[];
+  comparisonResults?: RunResult[];
   isActiveColumn?: boolean;
   setSelections?: Dispatch<any>;
-  onFetchCompletion?: (runResult: RunCompletion) => void;
   onClickCard?: () => void;
 }) {
   const [diffView, setDiffView] = useState<Diff>({
@@ -102,11 +100,6 @@ export default function SampleOutputCard({
     });
   }, []);
 
-  const onClickFetchCompletion = useCallback(
-    () => onFetchCompletion?.(baseResult!),
-    [baseResult, onFetchCompletion],
-  );
-
   const containerWrapper = useRef<HTMLDivElement>(null);
   const showOutput = useMemo(
     () => baseSample && !diffView.enabled && !baseSample?.error,
@@ -117,7 +110,8 @@ export default function SampleOutputCard({
     clearDiffView();
   }, [baseResult?.id, clearDiffView]);
 
-  const showOutputLoading = !baseSample || !baseSample?.output;
+  const isEmptyOutput = !baseSample?.output;
+  const isLoading = !!baseResult?.loading && isEmptyOutput;
   return (
     <Card
       className={`flex flex-col flex-1 ${
@@ -211,14 +205,9 @@ export default function SampleOutputCard({
             </div>
           </CardTitle>
         )}
+        {isEmptyOutput && <EmptySampleCompletion loading={isLoading} />}
         {baseSample?.error && (
           <SampleCompletionError errorMessage={baseSample.error.message} />
-        )}
-        {showOutputLoading && (
-          <EmptySampleCompletion
-            onClickFetchCompletion={onClickFetchCompletion}
-            loading={!!(baseSample && !baseSample?.output)}
-          />
         )}
       </CardHeader>
       <CardContent className="h-full p-2" ref={containerWrapper}>

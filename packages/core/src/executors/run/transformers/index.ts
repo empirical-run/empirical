@@ -1,9 +1,11 @@
 import { RunConfig } from "@empiricalrun/types";
 import { modelExecutor } from "./model";
-import { Executor } from "./interface";
+import { Transformer } from "./interface";
 import { scriptExecutor } from "./script";
 
-export const getExecutor = (runConfig: RunConfig): Executor | undefined => {
+export const getTransformer = (
+  runConfig: RunConfig,
+): Transformer | undefined => {
   if (runConfig.type === "model") {
     return modelExecutor;
   } else if (runConfig.type === "py-script") {

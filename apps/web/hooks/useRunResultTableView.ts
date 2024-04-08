@@ -1,20 +1,16 @@
-import { RunCompletion } from "@empiricalrun/types";
 import { useCallback, useMemo, useState } from "react";
+import { RunResult } from "../types";
 
 export type RunResultTableHeader = {
   title: string;
   description?: string;
-  runResult?: RunCompletion;
+  runResult?: RunResult;
   type: "input" | "expected" | "completion";
   active?: boolean;
 };
 
-export function useRunResultTableView({
-  runs = [],
-}: {
-  runs: RunCompletion[];
-}) {
-  const [activeRun, setActiveRun] = useState<RunCompletion | undefined>();
+export function useRunResultTableView({ runs = [] }: { runs: RunResult[] }) {
+  const [activeRun, setActiveRun] = useState<RunResult | undefined>();
   const tableHeaders = useMemo(() => {
     const tableHeaders: RunResultTableHeader[] = [
       { title: "Inputs", type: "input" },
@@ -39,14 +35,14 @@ export function useRunResultTableView({
     return tableHeaders;
   }, [runs, activeRun]);
 
-  const getTableRowSamples = useCallback((runs: RunCompletion[]) => {
+  const getTableRowSamples = useCallback((runs: RunResult[]) => {
     return Array.from(
       new Set(runs.flatMap((run) => run.samples.map((sample) => sample.id))),
     );
   }, []);
 
   const getSampleCell = useCallback(
-    (id: string, run: RunCompletion | undefined) => {
+    (id: string, run: RunResult | undefined) => {
       return run?.samples.filter(
         (sample) => sample.dataset_sample_id === id,
       )?.[0];
@@ -58,7 +54,7 @@ export function useRunResultTableView({
     tableHeaders,
     getTableRowSamples,
     getSampleCell,
-    runsMap: new Map<string, RunCompletion>(),
+    runsMap: new Map<string, RunResult>(),
     activeRun,
     setActiveRun,
   };

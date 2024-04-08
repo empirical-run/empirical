@@ -1,6 +1,6 @@
 import {
   RunCompletion,
-  RunOutputStats,
+  RunCompletionStats,
   Score,
   ScoreStats,
 } from "@empiricalrun/types";
@@ -11,7 +11,7 @@ function getAverage(scores: Score[]) {
   return Number((totalScore / count).toFixed(2));
 }
 
-export function getStatsForRun(run: RunCompletion): RunOutputStats {
+export function getStatsForRun(run: RunCompletion): RunCompletionStats {
   const totalOutputsCount = run.samples.length;
   const failedOutputsCount = run.samples.filter((s) => !!s.error).length;
   const scoreMap = new Map<string, Score[]>();

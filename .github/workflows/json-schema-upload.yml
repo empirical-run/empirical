@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   upload:
-    name: Publish packages
+    name: Upload JSON Schema
     timeout-minutes: 8
     runs-on: ubuntu-latest
     steps:

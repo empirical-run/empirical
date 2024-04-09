@@ -27,7 +27,7 @@ Use the `$schema` property in the configuration file to specify the JSON schema 
 
 ```json empiricalrc.json
 {
-  "$schema": "https://assets.empirical.run/config/schema/v1.14.json",
+  "$schema": "https://assets.empirical.run/config/schema/latest.json",
   "runs": [
     // ...
   ],
@@ -36,6 +36,25 @@ Use the `$schema` property in the configuration file to specify the JSON schema 
   }
 }
 ```
+
+The above URL will always point to the JSON schema for the latest CLI version.
+If you want to specify JSON schema for a particular CLI version, you can replace "latest" with the version number.
+
+```json empiricalrc.json
+{
+  // https://assets.empirical.run/config/schema/v{CLI_VERSION_NUMBER}.json
+  "$schema": "https://assets.empirical.run/config/schema/v0.4.0.json", 
+  "runs": [
+    // ...
+  ],
+  "dataset": {
+    // ...
+  }
+}
+```
+
+The easiest way to detect the CLI version is by running `npx @empiricalrun/cli -V` which will print the currently installed version number. 
+You can then use that version number in the schema URL.
 
 ### Visual Studio Code
 
@@ -49,7 +68,7 @@ the `empiricalrc.json` file to use the JSON schema.
       "fileMatch": [
         "empiricalrc.json"
       ],
-      "url": "https://assets.empirical.run/config/schema/v1.14.json"
+      "url": "https://assets.empirical.run/config/schema/latest.json"
     }
   ]
 }

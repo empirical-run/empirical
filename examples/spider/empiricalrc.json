@@ -17,10 +17,10 @@
       ]
     },
     {
-      "name": "claude 2.1 run",
+      "name": "mistral-tiny run",
       "type": "model",
-      "provider": "anthropic",
-      "model": "claude-2.1",
+      "provider": "mistral",
+      "model": "mistral-tiny",
       "prompt": "You are an SQLite expert who can convert natural language questions to SQL queries for the database schema given below.\n\nDatabase schema:\n{{schema}}\n\nAnswer the following question with only the SQL query.\n\nQuestion: {{question}}",
       "scorers": [
         {

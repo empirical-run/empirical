@@ -1,5 +1,4 @@
 import { Badge } from "./badge";
-import { Tooltip, TooltipProvider, TooltipTrigger } from "./tooltip";
 
 export const ResponseMetadataBadge = ({
   title,
@@ -12,14 +11,11 @@ export const ResponseMetadataBadge = ({
     return;
   }
   return (
-    <TooltipProvider>
-      <Tooltip delayDuration={100}>
-        <TooltipTrigger>
-          <Badge variant={"secondary"} className="text-xs">
-            {title}: {value}
-          </Badge>
-        </TooltipTrigger>
-      </Tooltip>
-    </TooltipProvider>
+    <Badge
+      variant={"secondary"}
+      className="text-xs cursor-default hover:bg-secondary"
+    >
+      {title}: {value}
+    </Badge>
   );
 };

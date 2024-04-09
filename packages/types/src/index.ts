@@ -155,6 +155,8 @@ export enum ModelTypes {
 export type RunOutput = {
   value: string | null | undefined;
   metadata?: object | undefined;
+  finish_reason?: string;
+  tokens_used?: number;
 };
 
 export type RunSampleOutput = {

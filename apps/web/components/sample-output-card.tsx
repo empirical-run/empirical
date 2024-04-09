@@ -25,6 +25,7 @@ import { RunResult } from "../types";
 import SampleCompletionError from "./sample-completion-error";
 import { Separator } from "./ui/separator";
 import { JsonAsTab } from "./json-as-tab";
+import { ResponseMetadataBadge } from "./ui/response-metadata-badge";
 
 type Diff = {
   type: string;
@@ -207,6 +208,18 @@ export default function SampleOutputCard({
             </div>
           </CardTitle>
         )}
+        {!diffView.enabled ? (
+          <div className="flex gap-2 justify-end">
+            <ResponseMetadataBadge
+              title="finish reason"
+              value={baseSample?.output?.finish_reason}
+            />
+            <ResponseMetadataBadge
+              title="tokens used"
+              value={baseSample?.output?.tokens_used}
+            />
+          </div>
+        ) : null}
         {isEmptyOutput && <EmptySampleCompletion loading={isLoading} />}
         {baseSample?.error && (
           <SampleCompletionError errorMessage={baseSample.error.message} />

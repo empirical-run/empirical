@@ -82,6 +82,12 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       },
     );
     executionDone();
+    const responseContent = completion.response.text();
+    const { totalTokens: completion_tokens } =
+      await modelInstance.countTokens(responseContent);
+    const { totalTokens: prompt_tokens } = await modelInstance.countTokens({
+      contents,
+    });
     const response: IChatCompletion = {
       id: crypto.randomUUID(),
       choices: [
@@ -89,7 +95,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
           finish_reason: "stop",
           index: 0,
           message: {
-            content: completion.response.text(),
+            content: responseContent,
             role: "assistant",
           },
           logprobs: null,
@@ -97,6 +103,11 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       ],
       object: "chat.completion",
       created: Date.now(),
+      usage: {
+        total_tokens: prompt_tokens + completion_tokens,
+        prompt_tokens,
+        completion_tokens,
+      },
       model,
     };
     return response;

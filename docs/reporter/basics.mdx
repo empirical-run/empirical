@@ -1,60 +1,67 @@
 ---
 title: 'Basics'
-description: 'How to view test results'
+description: 'How to view results of a run'
 ---
 
-After executing tests, you can access the results through a reporter.
+After executing runs, you can access the results through a reporter.
 
-Empirical provides several built-in reporters:
-{/* understand when backticks are used in docs */}
-- `Terminal` : This displays test results in the console.
-- `WebApp` : It launches a web server to view test results in a browser.
-
+Empirical provides 2 built-in reporter types:
+- `Terminal` : displays summary of [runs](./../configuration#configuration-reference) in the console.
+- `Web app` : launches a web server to view summary of [runs](./../configuration#configuration-reference) in a browser.
 
 ## Terminal reporter
-As the name suggests it presents a summary of the test run on the terminal.
-The summary includes:
-- Table containing statistical summaries for each configured run specified in `empiricalrc.json`.
-- Total number of samples tested
-- Duration of the test run
-- Errors during the test run, if any
+A terminal reporter presents a summary of the runs in the console.
 
-![Terminal Reporter](./images/terminal-reporter-summary.png)
+This summary is available immediately after the execution of the runs using the `npx @empiricalrun/cli run` command.
+
+![Terminal reporter](./images/terminal-reporter-summary.png)
+
+The summary includes:
+- table containing statistical summaries for each configured run
+- total number of [dataset](./../dataset/basics) samples
+- duration of the run
+- errors during the run, if any
 
 ### Statistical summary
 The summary table includes statistics for following metrics:
 - `output` : percentage of successful outputs from the run provider. A score lower than 100% means that there were instances where the run provider failed to respond.
-- `scorer` : average score from the configured scoring function shown in percentage.
-    - The scorer metrics are shown only if a scoring function is configured.
-    - The scorer metrics are shown for each configured scoring function separately by scorer name.  
+- `scorer` : average score of the configured [scorer](./../scoring/basics) represented in percentage.
+    - This metric is shown for each configured [scorer](./../scoring/basics) separately by name.  
 
 
-## WebApp reporter
-The WebApp reporter launches a local web server to view detailed test results in the browser.
-It displays:
-    - `inputs` : a list of all dataset samples tested.
+## Web app reporter
+The web app reporter launches a local web server to view detailed summary of the runs in the browser.
+
+To start the web app reporter, run the following command after the execution of the runs using the `npx @empiricalrun/cli run` command:
+```sh
+npx @empiricalrun/cli ui
+```
+
+Running the above command will open a view on a browser similar to the following
+![Web app reporter](./images/web-app-reporter-summary.png)
+
+The web app reporter view displays:
+    - `inputs` : a list of all [dataset](./../dataset/basics) samples
     - `runs` : outputs for each run configured in `empiricalrc.json`
     - `statistics` : statistical summary for each run
-{/* add image here */}
 
-Additionally, the webapp is interactive to allow users to:
-- Modify parameters of the test run and re-execute it
-- Delete a test run
+Moreover, the web app allows you to:
+- modify run configuration and execute it
+- delete a run
 
-The WebApp interactivity saves you the hassle of repeatedly navigating back to the `empiricalrc.json` file to configure and compare results. 
-One can seamlessly edit and delete test runs in real-time, offering a much higher iteration speed and productivity.
+The web app interactivity saves you the hassle of repeatedly navigating back to the `empiricalrc.json` file to configure, run and compare results. 
+Using web app, one can seamlessly modify and delete runs in real-time, offering a much higher iteration speed and productivity.
 
 ### Modifying a run
-{/* rephrase this in steps */}
-A run can be modified in 2 quick simple steps
+A run can be modified and executed in quick simple steps:
 <Steps>
-    <Step title='Click on the "Show config" button next to the run'>
+    <Step title='Click "Show config" button next to the run'>
     A box will open, allowing you to update the prompt and parameters of the run.
 
     Update the parameters and prompt as needed.
   </Step>
   <Step title='Hit "Run"'>
-    Click the "Run" button to execute the test with the updated parameters.
+    Click the "Run" button to execute the run with the updated parameters.
 
     Post execution, a new run will be added to the table, allowing you to compare the results side-by-side.
   </Step>

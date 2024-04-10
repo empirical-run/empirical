@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { green, red, yellow, bold } from "picocolors";
+import { green, red, yellow, bold, cyan, underline } from "picocolors";
 import { promises as fs } from "fs";
 import { program } from "commander";
 import cliProgress from "cli-progress";
@@ -243,7 +243,7 @@ program
     });
     const fullUrl = `http://localhost:${availablePort}`;
     app.listen(availablePort, () => {
-      console.log(`Empirical app running on ${fullUrl}`);
+      console.log(cyan(`Empirical app running on ${underline(fullUrl)}`));
       opener(fullUrl);
     });
   });

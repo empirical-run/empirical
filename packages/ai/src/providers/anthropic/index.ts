@@ -61,6 +61,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const { contents, systemPrompt } = convertOpenAIToAnthropicAI(messages);
   const { executionDone } = await batchTaskManager.waitForTurn();
   try {
+    const startedAt = Date.now();
     const response = await promiseRetry<Anthropic.Messages.Message>(
       (retry) => {
         return anthropic.messages
@@ -96,8 +97,8 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
         minTimeout: 1000,
       },
     );
-
     executionDone();
+    const latency = Date.now() - startedAt;
     // renaming to terms used by openai, mistral
     const { input_tokens: prompt_tokens, output_tokens: completion_tokens } =
       response.usage;
@@ -123,6 +124,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
           logprobs: null,
         },
       ],
+      latency,
     };
   } catch (e) {
     executionDone();

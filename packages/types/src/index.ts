@@ -157,6 +157,7 @@ export type RunOutput = {
   metadata?: object | undefined;
   finish_reason?: string;
   tokens_used?: number;
+  latency?: number;
 };
 
 export type RunSampleOutput = {

@@ -66,6 +66,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const contents = massageOpenAIMessagesToGoogleAI(messages);
   const { executionDone } = await batch.waitForTurn();
   try {
+    const startedAt = Date.now();
     const completion = await promiseRetry<GenerateContentResult>(
       (retry) => {
         // TODO: move to model.startChat which support model config (e.g. temperature)
@@ -82,6 +83,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       },
     );
     executionDone();
+    const latency = Date.now() - startedAt;
     const responseContent = completion.response.text();
     const { totalTokens: completion_tokens } =
       await modelInstance.countTokens(responseContent);
@@ -109,6 +111,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
         completion_tokens,
       },
       model,
+      latency,
     };
     return response;
   } catch (e) {

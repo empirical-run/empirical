@@ -6,7 +6,9 @@ export interface IChatCompletionCreateParams
   [key: string]: any;
 }
 
-export interface IChatCompletion extends OpenAI.ChatCompletion {}
+export interface IChatCompletion extends OpenAI.ChatCompletion {
+  latency?: number;
+}
 
 export interface ICreateChatCompletion {
   (body: IChatCompletionCreateParams): Promise<IChatCompletion>;

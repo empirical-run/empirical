@@ -100,7 +100,7 @@ program
         clearOnComplete: true,
         hideCursor: true,
         forceRedraw: true,
-        format: "{name}: {bar} | {value}/{total}",
+        format: "{name}: {bar} | {value}/{total} ({percentage}%) | ETA: {eta}s",
       },
       cliProgress.Presets.shades_grey,
     );

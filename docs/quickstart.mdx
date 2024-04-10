@@ -35,14 +35,21 @@ Our test will succeed if the model outputs valid JSON.
   </Step>
 
   <Step title="Run the test">
+    This step requires an `OPENAI_API_KEY` to authenticate with OpenAI.
+    
+    Create a `.env` file with `OPENAI_API_KEY` as environment variable.
+
+    ```sh
+    touch .env && echo "OPENAI_API_KEY=your_api_key_here" > .env
+    ```
+
     Run the test samples against the models with the `run` command.
 
     ```sh
     npx @empiricalrun/cli run
     ```
 
-    This step requires the `OPENAI_API_KEY` environment variable to authenticate with
-    OpenAI. This execution will cost $0.0026, based on the selected models.
+    This execution will cost ~$0.0026, based on the selected models.
   </Step>
 
   <Step title="See results">
@@ -57,7 +64,7 @@ Our test will succeed if the model outputs valid JSON.
   <Step title="[Bonus] Fix GPT-4 Turbo">
     GPT-4 Turbo tends to fail our JSON syntax check, because it returns outputs
    in markdown syntax (with backticks ` ```json `). We can fix this behavior by enabling
-   [JSON mode](https://platform.openai.com/docs/guides/text-generation/json-mode).
+   [JSON mode](https://platform.openai.com/docs/guides/text-generation/json-mode) in `empiricalrc.json` file.
    
     ```json
     {

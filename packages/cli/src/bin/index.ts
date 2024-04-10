@@ -109,7 +109,7 @@ program
       name: "Outputs",
     });
     const totalScoresCount = runs.reduce((agg, run) => {
-      return agg + totalOutputsCount * (run.scorers?.length || 0);
+      return agg + (dataset.samples || []).length * (run.scorers?.length || 0);
     }, 0);
     let scoresProgressBar: cliProgress.SingleBar | undefined = undefined;
     if (totalScoresCount) {

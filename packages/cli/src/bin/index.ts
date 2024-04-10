@@ -75,7 +75,7 @@ program
 
     // Check if environment variables exist
     if(error){
-      console.log(`${red("[Error]")} Failed to load environment varibles`);
+      console.log(`${red("[Error]")} Failed to load environment variables`);
       console.log(`${yellow("Please create .env file with necessary environment variables")} \n${cyan('touch .env && echo "AI_PROVIDER_API_KEY=your_api_key_here" > .env')}`);
       process.exit(1);
     }

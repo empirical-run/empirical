@@ -1,0 +1,72 @@
+---
+title: 'Basics'
+description: 'How to view results of a test'
+---
+
+After executing the test, you can access the results through a reporter.
+
+Empirical provides 2 built-in reporter types:
+- `terminal` : Displays test summary in the console.
+- `webapp` : Launches a web server to view test summary in a browser.
+
+## Terminal reporter
+A terminal reporter presents a test summary in the console.
+This summary is available immediately after running test samples using the `npx @empiricalrun/cli run` command.
+
+![Terminal reporter](../images/terminal-reporter-summary.png)
+
+The summary includes:
+- Table containing statistical summaries for each configured run
+- Total number of [dataset](./../dataset/basics) samples
+- Duration of the test run
+- Errors during the test run, if any
+
+### Statistical summary
+The summary table includes statistics for following metrics:
+- `output` : Percentage of successful outputs from the run provider. A score lower than 100% means that there were instances where the run provider failed to respond.
+- `scorer` : Average score of the configured [scorer](./../scoring/basics) represented in percentage.
+    - This metric is shown for each configured [scorer](./../scoring/basics) separately by name.  
+
+
+## Webapp reporter
+The webapp reporter launches a local web server to view detailed summary of the runs in the browser.
+
+To start the webapp reporter, run the following command after running the test:
+```sh
+npx @empiricalrun/cli ui
+```
+
+Running the above command will open a view on a browser similar to the following
+![Web app reporter](../images/web-app-reporter-summary.png)
+
+The webapp reporter view contains:
+
+- `inputs` : A list of all [dataset](./../dataset/basics) test samples
+- `runs` : Outputs for each [run](./../configuration) configured
+- `statistics` : Statistical summary for each run
+
+The webapp also allows you to:
+- Modify [run](./../configuration) and execute it
+- Delete a [run](./../configuration)
+
+The webapp interactivity saves you the hassle of repeatedly navigating back to `empiricalrc.json` to configure, run and compare results. 
+Using webapp, one can seamlessly modify, execute and delete [runs](./../configuration) in real-time, offering a much higher iteration speed and productivity.
+
+### Modifying a run
+A [run](./../configuration) configuration can be modified and executed in 2 steps:
+<Steps>
+    <Step title='Click "Show config" button next to the run'>
+    A run configuration box will open, allowing you to update the prompt and other parameters of the config.
+    You can update them as per your need.
+
+  </Step>
+  <Step title='Hit "Run"'>
+    Click the "Run" button to execute the run with the updated parameters.
+
+    Post execution, a new run will be added to the table, allowing you to compare the results side-by-side.
+  </Step>
+</Steps>
+<video muted controls autoPlay loop playsInline src="https://assets.empirical.run/docs%2Fvideos%2Fedit-config-ui.mp4" />
+
+### Deleting a run
+To delete a run, click on the `(-)` button next to the run you want to remove. This will permanently remove the run from the webapp.

@@ -1,18 +1,18 @@
 {
-  "name": "turbo",
+  "name": "empiricalrun",
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "changeset": "changeset",
     "dev": "npm exec turbowatch turbowatch.ts",
+    "docs:install": "cd docs && pnpm --ignore-workspace install",
+    "docs:dev": "cd docs && pnpm dev",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "gen:pkg:lib": "turbo gen pkg:lib",
     "lint": "turbo lint",
-    "test": "turbo test",
-    "test:watch": "turbo run test:watch",
     "publish-packages": "changeset publish",
-    "changeset": "changeset",
-    "docs:install": "cd docs && pnpm --ignore-workspace install",
-    "docs:dev": "cd docs && pnpm dev"
+    "test": "turbo test",
+    "test:watch": "turbo run test:watch"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",

@@ -66,6 +66,12 @@
         "scoring/llm",
         "scoring/python"
       ]
+    },
+    {
+      "group": "Reporter",
+      "pages": [
+        "reporter/basics"
+      ]
     }
   ],
   "footerSocials": {

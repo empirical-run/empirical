@@ -99,6 +99,10 @@ export async function execute(
             }
             sampleCompletions.push(sample);
             return sample;
+          })
+          .catch((e) => {
+            console.warn(e);
+            return e;
           }),
       );
     }

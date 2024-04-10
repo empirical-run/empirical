@@ -75,7 +75,7 @@ program
 
     // Check if environment variables exist
     if(error){
-      console.log(`${red("[Error]")} Failed to load environment variables`);
+      console.log(buildErrorLog("Failed to load environment variables"));
       console.log(`${yellow("Please create .env file with necessary environment variables")} \n${cyan('touch .env && echo "AI_PROVIDER_API_KEY=your_api_key_here" > .env')}`);
       process.exit(1);
     }
@@ -100,7 +100,7 @@ program
       dataset = await loadDataset(datasetConfig);
     } catch (error) {
       if (error instanceof DatasetError) {
-        console.log(`${red("[Error]")} ${error.message}`);
+        console.log(buildErrorLog(error.message));
         process.exit(1);
       } else {
         throw error;

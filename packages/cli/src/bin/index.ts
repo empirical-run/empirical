@@ -36,12 +36,6 @@ const outputFileName = "output.json";
 const cacheDir = ".empiricalrun";
 const outputFilePath = `${cwd}/${cacheDir}/${outputFileName}`;
 
-function setupProgressBar(total: number) {
-  const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-  bar.start(total, 0);
-  return bar;
-}
-
 program
   .name("Empirical.run CLI")
   .description(
@@ -101,9 +95,28 @@ program
       }
     }
 
-    const progressBar = setupProgressBar(
-      runs.length * (dataset.samples || []).length,
+    const multibar = new cliProgress.MultiBar(
+      {
+        clearOnComplete: true,
+        hideCursor: true,
+        forceRedraw: true,
+        format: "{name}: {bar} | {value}/{total}",
+      },
+      cliProgress.Presets.shades_grey,
     );
+    const totalOutputsCount = runs.length * (dataset.samples || []).length;
+    const progressBar = multibar.create(totalOutputsCount, 0, {
+      name: "Outputs",
+    });
+    const totalScoresCount = runs.reduce((agg, run) => {
+      return agg + totalOutputsCount * (run.scorers?.length || 0);
+    }, 0);
+    let scoresProgressBar: cliProgress.SingleBar | undefined = undefined;
+    if (totalScoresCount) {
+      scoresProgressBar = multibar.create(totalScoresCount, 0, {
+        name: "Scores",
+      });
+    }
     const completion = await Promise.all(
       runs.map((r) => {
         r.parameters = r.parameters ? r.parameters : {};
@@ -112,10 +125,15 @@ program
           if (update.type === "run_sample") {
             progressBar.increment();
           }
+          if (update.type === "run_sample_score") {
+            scoresProgressBar?.increment();
+          }
         });
       }),
     );
     progressBar.stop();
+    scoresProgressBar?.stop();
+    multibar.stop();
 
     setRunSummary(completion);
     printStatsSummary(completion);

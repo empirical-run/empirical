@@ -14,7 +14,7 @@ export const RunResponseMetadata = ({
   }
   return (
     <>
-      {!hideSeparator && <Separator orientation="vertical" className="h-6" />}
+      {!hideSeparator && <Separator orientation="vertical" className="h-4" />}
       <p className="text-xs text-muted-foreground">
         {title}: {value}
       </p>

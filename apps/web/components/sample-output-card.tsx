@@ -221,7 +221,7 @@ export default function SampleOutputCard({
         )}
       </CardHeader>
       <CardContent
-        className="flex flex-col h-full p-2 gap-4"
+        className="flex flex-col h-full p-2 gap-2"
         ref={containerWrapper}
       >
         <section className="flex flex-col">
@@ -253,7 +253,7 @@ export default function SampleOutputCard({
           )}
         </section>
         {!diffView.enabled ? (
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <RunResponseMetadata
               title="finish reason"
               value={baseSample?.output?.finish_reason}

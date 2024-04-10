@@ -1,8 +1,7 @@
 #!/usr/bin/env node
-import { green, red, yellow, bold, cyan, underline } from "picocolors";
+import { red, yellow, bold, cyan, underline } from "picocolors";
 import { promises as fs } from "fs";
 import { program } from "commander";
-import cliProgress from "cli-progress";
 import express from "express";
 import path from "path";
 import opener from "opener";
@@ -26,6 +25,12 @@ import {
 } from "../stats";
 import { reportOnCI } from "../reporters/ci";
 import detect from "detect-port";
+import {
+  ProgressBar,
+  buildErrorLog,
+  buildSuccessLog,
+  getCliProgressLoggerInstance,
+} from "./logger/cli-logger";
 
 const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
@@ -49,7 +54,7 @@ program
   .action(async () => {
     await fs.writeFile(configFileFullPath, JSON.stringify(config, null, 2));
     console.log(
-      `${green("[Success]")} - created ${bold(`${configFileName}`)} in ${cwd}`,
+      buildSuccessLog(`created ${bold(`${configFileName}`)} in ${cwd}`),
     );
   });
 
@@ -73,16 +78,15 @@ program
     try {
       data = await fs.readFile(configFileFullPath);
     } catch (err) {
-      console.log(`${red("[Error]")} Failed to read ${configFileName} file`);
+      console.log(buildErrorLog(`Failed to read ${configFileName} file`));
       console.log(yellow("Please ensure running init command first"));
       process.exit(1);
     }
 
-    console.log(`${green("[Success]")} - read ${configFileName} file`);
+    console.log(buildSuccessLog(`read ${configFileName} file successfully`));
     const jsonStr = data.toString();
     const { runs, dataset: datasetConfig } = JSON.parse(jsonStr) as RunsConfig;
     // TODO: add check here for empty runs config. Add validator of the file
-
     let dataset: Dataset;
     try {
       dataset = await loadDataset(datasetConfig);
@@ -94,18 +98,9 @@ program
         throw error;
       }
     }
-
-    const multibar = new cliProgress.MultiBar(
-      {
-        clearOnComplete: true,
-        hideCursor: true,
-        forceRedraw: true,
-        format: "{name} {bar} {percentage}% | {value}/{total} | ETA: {eta}s",
-      },
-      cliProgress.Presets.shades_grey,
-    );
+    const cliProgressBar = getCliProgressLoggerInstance();
     const totalOutputsCount = runs.length * (dataset.samples || []).length;
-    const progressBar = multibar.create(totalOutputsCount, 0, {
+    const progressBar = cliProgressBar.create(totalOutputsCount, 0, {
       name: "Outputs",
     });
     const totalScoresCount = runs.reduce(
@@ -113,9 +108,9 @@ program
         agg + (dataset.samples || []).length * (run.scorers?.length || 0),
       0,
     );
-    let scoresProgressBar: cliProgress.SingleBar | undefined = undefined;
+    let scoresProgressBar: ProgressBar | undefined = undefined;
     if (totalScoresCount) {
-      scoresProgressBar = multibar.create(totalScoresCount, 0, {
+      scoresProgressBar = cliProgressBar.create(totalScoresCount, 0, {
         name: "Scores ",
       });
     }
@@ -133,10 +128,7 @@ program
         });
       }),
     );
-    progressBar.stop();
-    scoresProgressBar?.stop();
-    multibar.stop();
-
+    cliProgressBar.stop();
     setRunSummary(completion);
     printStatsSummary(completion);
 
@@ -164,9 +156,9 @@ program
     if (failedOutputs) {
       const { code, message } = failedOutputs;
       console.log(
-        `${red("[Error]")} Some outputs were not generated successfully`,
+        buildErrorLog("Some outputs were not generated successfully"),
       );
-      console.log(`${red("[Error]")} ${code}: ${message}`);
+      console.log(buildErrorLog(`${code}: ${message}`));
       process.exit(1);
     }
   });

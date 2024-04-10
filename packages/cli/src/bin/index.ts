@@ -136,7 +136,7 @@ program
     console.log(bold("Total dataset samples:"), dataset.samples?.length || 0);
     const endTime = performance.now();
     console.log(
-      bold("Done in"),
+      "Done in",
       yellow(((endTime - startTime) / 1000).toFixed(2)),
       "seconds",
     );

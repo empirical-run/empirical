@@ -17,6 +17,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   }
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
+    timeout: 30000,
   });
   try {
     const completions = await promiseRetry<IChatCompletion>(

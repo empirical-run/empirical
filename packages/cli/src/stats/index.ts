@@ -89,7 +89,7 @@ export function printStatsSummary(runs: RunCompletion[]) {
     table(runStatsSummary(runs, true), {
       header: {
         alignment: "center",
-        content: bold(cyan("Empirical Run Summary")),
+        content: bold(cyan("🦉 Empirical Run Summary")),
       },
       columnDefault: {
         alignment: "right",

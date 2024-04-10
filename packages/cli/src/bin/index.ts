@@ -100,7 +100,7 @@ program
         clearOnComplete: true,
         hideCursor: true,
         forceRedraw: true,
-        format: "{name}: {bar} | {value}/{total} ({percentage}%) | ETA: {eta}s",
+        format: "{name} {bar} {percentage}% | {value}/{total} | ETA: {eta}s",
       },
       cliProgress.Presets.shades_grey,
     );
@@ -108,13 +108,15 @@ program
     const progressBar = multibar.create(totalOutputsCount, 0, {
       name: "Outputs",
     });
-    const totalScoresCount = runs.reduce((agg, run) => {
-      return agg + (dataset.samples || []).length * (run.scorers?.length || 0);
-    }, 0);
+    const totalScoresCount = runs.reduce(
+      (agg, run) =>
+        agg + (dataset.samples || []).length * (run.scorers?.length || 0),
+      0,
+    );
     let scoresProgressBar: cliProgress.SingleBar | undefined = undefined;
     if (totalScoresCount) {
       scoresProgressBar = multibar.create(totalScoresCount, 0, {
-        name: "Scores",
+        name: "Scores ",
       });
     }
     const completion = await Promise.all(
@@ -126,7 +128,7 @@ program
             progressBar.increment();
           }
           if (update.type === "run_sample_score") {
-            scoresProgressBar?.increment();
+            scoresProgressBar?.increment(update.data.scores.length);
           }
         });
       }),

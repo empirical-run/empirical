@@ -85,11 +85,24 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     executionDone();
     const latency = Date.now() - startedAt;
     const responseContent = completion.response.text();
-    const { totalTokens: completion_tokens } =
-      await modelInstance.countTokens(responseContent);
-    const { totalTokens: prompt_tokens } = await modelInstance.countTokens({
-      contents,
-    });
+
+    let totalTokens = 0,
+      promptTokens = 0,
+      completionTokens = 0;
+
+    try {
+      [{ totalTokens: completionTokens }, { totalTokens: promptTokens }] =
+        await Promise.all([
+          modelInstance.countTokens(responseContent),
+          modelInstance.countTokens({
+            contents,
+          }),
+        ]);
+      totalTokens = completionTokens + promptTokens;
+    } catch (e) {
+      console.warn(`Failed to fetch token usage for google:${model}`);
+    }
+
     const response: IChatCompletion = {
       id: crypto.randomUUID(),
       choices: [
@@ -106,9 +119,9 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       object: "chat.completion",
       created: Date.now(),
       usage: {
-        total_tokens: prompt_tokens + completion_tokens,
-        prompt_tokens,
-        completion_tokens,
+        total_tokens: totalTokens,
+        prompt_tokens: promptTokens,
+        completion_tokens: completionTokens,
       },
       model,
       latency,

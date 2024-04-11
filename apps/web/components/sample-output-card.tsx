@@ -25,7 +25,7 @@ import { RunResult } from "../types";
 import SampleCompletionError from "./sample-completion-error";
 import { Separator } from "./ui/separator";
 import { JsonAsTab } from "./json-as-tab";
-import { RunResponseMetadata } from "./run-response-metadata";
+import { RunSampleOutputMetric } from "./run-response-metadata";
 
 type Diff = {
   type: string;
@@ -252,20 +252,20 @@ export default function SampleOutputCard({
             />
           )}
         </section>
-        {!diffView.enabled ? (
-          <div className="flex gap-2 items-center">
-            <RunResponseMetadata
-              title="finish reason"
+        {showOutput && (
+          <div className="flex gap-2 items-center justify-end">
+            <RunSampleOutputMetric
+              title="Finish reason"
               value={baseSample?.output?.finish_reason}
               hideSeparator
             />
-            <RunResponseMetadata
-              title="tokens used"
+            <RunSampleOutputMetric
+              title="Total tokens"
               value={baseSample?.output?.tokens_used}
             />
-            <RunResponseMetadata title="latency" value={latency} />
+            <RunSampleOutputMetric title="Latency" value={latency} />
           </div>
-        ) : null}
+        )}
         {!diffView.enabled && baseSample?.output.metadata && (
           <section className="flex flex-col h-[200px] mt-2">
             <Separator

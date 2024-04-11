@@ -1,6 +1,6 @@
 import { Separator } from "./ui/separator";
 
-export const RunResponseMetadata = ({
+export const RunSampleOutputMetric = ({
   title,
   value,
   hideSeparator = false,
@@ -14,8 +14,8 @@ export const RunResponseMetadata = ({
   }
   return (
     <>
-      {!hideSeparator && <Separator orientation="vertical" className="h-4" />}
-      <p className="text-xs text-muted-foreground">
+      {!hideSeparator && <Separator orientation="vertical" className="h-3" />}
+      <p className="text-xs text-muted-foreground font-medium">
         {title}: {value}
       </p>
     </>

@@ -66,6 +66,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const contents = massageOpenAIMessagesToGoogleAI(messages);
   const { executionDone } = await batch.waitForTurn();
   try {
+    const startedAt = Date.now();
     const completion = await promiseRetry<GenerateContentResult>(
       (retry) => {
         // TODO: move to model.startChat which support model config (e.g. temperature)
@@ -82,6 +83,26 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       },
     );
     executionDone();
+    const latency = Date.now() - startedAt;
+    const responseContent = completion.response.text();
+
+    let totalTokens = 0,
+      promptTokens = 0,
+      completionTokens = 0;
+
+    try {
+      [{ totalTokens: completionTokens }, { totalTokens: promptTokens }] =
+        await Promise.all([
+          modelInstance.countTokens(responseContent),
+          modelInstance.countTokens({
+            contents,
+          }),
+        ]);
+      totalTokens = completionTokens + promptTokens;
+    } catch (e) {
+      console.warn(`Failed to fetch token usage for google:${model}`);
+    }
+
     const response: IChatCompletion = {
       id: crypto.randomUUID(),
       choices: [
@@ -89,7 +110,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
           finish_reason: "stop",
           index: 0,
           message: {
-            content: completion.response.text(),
+            content: responseContent,
             role: "assistant",
           },
           logprobs: null,
@@ -97,7 +118,13 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       ],
       object: "chat.completion",
       created: Date.now(),
+      usage: {
+        total_tokens: totalTokens,
+        prompt_tokens: promptTokens,
+        completion_tokens: completionTokens,
+      },
       model,
+      latency,
     };
     return response;
   } catch (e) {

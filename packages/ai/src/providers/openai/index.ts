@@ -19,6 +19,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     apiKey: process.env.OPENAI_API_KEY,
   });
   try {
+    const startedAt = Date.now();
     const completions = await promiseRetry<IChatCompletion>(
       (retry) => {
         return openai.chat.completions.create(body).catch((err) => {
@@ -44,7 +45,8 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
         minTimeout: 1000,
       },
     );
-    return completions;
+    const latency = Date.now() - startedAt;
+    return { ...completions, latency };
   } catch (err) {
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,

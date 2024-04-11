@@ -35,6 +35,7 @@ const createChatCompletion: ICreateChatCompletion = async function (body) {
   try {
     // typecasting as there is a minor difference in role being openai enum vs string
     const mistralMessages = messages as MistralChatMessage[];
+    const startedAt = Date.now();
     // no retry needed as mistral internally handles it well
     const completions = await mistralai.chat({
       model,
@@ -47,9 +48,10 @@ const createChatCompletion: ICreateChatCompletion = async function (body) {
       ...getPassthroughParams(config),
     });
     executionDone();
+    const latency = Date.now() - startedAt;
     // typecasting as the only difference present in mistral interface is the it doesnt contain logprobs.
     // currently its not being used. hence typecasting it for now.
-    return completions as IChatCompletion;
+    return { ...completions, latency } as IChatCompletion;
   } catch (err) {
     executionDone();
     throw new AIError(

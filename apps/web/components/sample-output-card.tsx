@@ -25,6 +25,7 @@ import { RunResult } from "../types";
 import SampleCompletionError from "./sample-completion-error";
 import { Separator } from "./ui/separator";
 import { JsonAsTab } from "./json-as-tab";
+import { RunSampleOutputMetric } from "./run-response-metadata";
 
 type Diff = {
   type: string;
@@ -114,6 +115,13 @@ export default function SampleOutputCard({
 
   const isEmptyOutput = !baseSample?.output;
   const isLoading = !!baseResult?.loading && isEmptyOutput;
+  const latency = useMemo(
+    () =>
+      baseSample?.output?.latency && baseSample.output.latency > 0
+        ? `${baseSample?.output.latency}ms`
+        : 0,
+    [baseSample],
+  );
   return (
     <Card
       className={`flex flex-col flex-1 ${
@@ -213,7 +221,7 @@ export default function SampleOutputCard({
         )}
       </CardHeader>
       <CardContent
-        className="flex flex-col h-full p-2 gap-4"
+        className="flex flex-col h-full p-2 gap-2"
         ref={containerWrapper}
       >
         <section className="flex flex-col">
@@ -244,6 +252,20 @@ export default function SampleOutputCard({
             />
           )}
         </section>
+        {showOutput && (
+          <div className="flex gap-2 items-center justify-end">
+            <RunSampleOutputMetric
+              title="Finish reason"
+              value={baseSample?.output?.finish_reason}
+              hideSeparator
+            />
+            <RunSampleOutputMetric
+              title="Total tokens"
+              value={baseSample?.output?.tokens_used}
+            />
+            <RunSampleOutputMetric title="Latency" value={latency} />
+          </div>
+        )}
         {!diffView.enabled && baseSample?.output.metadata && (
           <section className="flex flex-col h-[200px] mt-2">
             <Separator

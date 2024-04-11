@@ -26,7 +26,10 @@ export const modelExecutor: Transformer = async function (
     },
   ];
   const ai = new EmpiricalAI(provider);
-  let value = "";
+  let value = "",
+    tokens_used,
+    finish_reason,
+    latency;
   try {
     const completion = await ai.chat.completions.create({
       model,
@@ -34,6 +37,9 @@ export const modelExecutor: Transformer = async function (
       ...parameters,
     });
     value = completion.choices?.[0]?.message.content || "";
+    tokens_used = completion.usage?.total_tokens || 0;
+    finish_reason = completion.choices?.[0]?.finish_reason || "";
+    latency = completion.latency || 0;
   } catch (e: any) {
     const error = {
       code: "RE101",
@@ -53,6 +59,9 @@ export const modelExecutor: Transformer = async function (
   return {
     output: {
       value,
+      tokens_used,
+      finish_reason,
+      latency,
     },
   };
 };

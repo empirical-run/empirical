@@ -7,7 +7,7 @@ import { AIError, AIErrorEnum } from "../../error";
 
 const batchTaskManager = new BatchTaskManager(5);
 
-const finishReaonReverseMap = new Map<
+const finishReasonReverseMap = new Map<
   "end_turn" | "max_tokens" | "stop_sequence" | null,
   "length" | "stop" | "tool_calls" | "content_filter" | "function_call"
 >([
@@ -61,6 +61,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const { contents, systemPrompt } = convertOpenAIToAnthropicAI(messages);
   const { executionDone } = await batchTaskManager.waitForTurn();
   try {
+    const startedAt = Date.now();
     const response = await promiseRetry<Anthropic.Messages.Message>(
       (retry) => {
         return anthropic.messages
@@ -96,18 +97,25 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
         minTimeout: 1000,
       },
     );
-
     executionDone();
-
+    const latency = Date.now() - startedAt;
+    // renaming to terms used by openai, mistral
+    const { input_tokens: prompt_tokens, output_tokens: completion_tokens } =
+      response.usage;
     return {
       id: response.id,
       model,
       object: "chat.completion",
       created: Date.now() / 1000,
+      usage: {
+        total_tokens: prompt_tokens + completion_tokens,
+        completion_tokens,
+        prompt_tokens,
+      },
       choices: [
         {
           finish_reason:
-            finishReaonReverseMap.get(response.stop_reason) || "stop",
+            finishReasonReverseMap.get(response.stop_reason) || "stop",
           index: 0,
           message: {
             content: response.content[0]?.text || null,
@@ -116,6 +124,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
           logprobs: null,
         },
       ],
+      latency,
     };
   } catch (e) {
     executionDone();

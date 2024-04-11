@@ -1,5 +1,11 @@
 # web
 
+## 0.6.0
+
+### Minor Changes
+
+- a94aa16: feat: add stop reason and token usage metrics to run output
+
 ## 0.5.0
 
 ### Minor Changes

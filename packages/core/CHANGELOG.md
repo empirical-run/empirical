@@ -1,5 +1,17 @@
 # @empiricalrun/core
 
+## 0.4.0
+
+### Minor Changes
+
+- a94aa16: feat: add stop reason and token usage metrics to run output
+
+### Patch Changes
+
+- Updated dependencies [a94aa16]
+  - @empiricalrun/ai@0.3.0
+  - @empiricalrun/scorer@0.1.4
+
 ## 0.3.0
 
 ### Minor Changes

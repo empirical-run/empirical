@@ -35,6 +35,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const { executionDone } = await batchTaskManager.waitForTurn();
 
   try {
+    const startedAt = Date.now();
     const completion = await promiseRetry<IChatCompletion>(
       (retry) => {
         return fetch("https://api.fireworks.ai/inference/v1/chat/completions", {
@@ -67,12 +68,12 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       },
       {
         randomize: true,
-        minTimeout: 1000,
+        maxTimeout: body.timeout,
       },
     );
-
+    const latency = Date.now() - startedAt;
     executionDone();
-    return completion;
+    return { ...completion, latency };
   } catch (err) {
     throw new AIError(AIErrorEnum.FAILED_CHAT_COMPLETION, "Unknown error");
   }

@@ -62,7 +62,10 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   }
   const { model, messages } = body;
   const googleAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-  const modelInstance = googleAI.getGenerativeModel({ model });
+  const modelInstance = googleAI.getGenerativeModel(
+    { model },
+    { timeout: body.timeout },
+  );
   const contents = massageOpenAIMessagesToGoogleAI(messages);
   const { executionDone } = await batch.waitForTurn();
   try {
@@ -79,7 +82,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       },
       {
         randomize: true,
-        minTimeout: 2000,
+        maxTimeout: body.timeout,
       },
     );
     executionDone();

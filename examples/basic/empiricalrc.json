@@ -18,6 +18,7 @@
       "model": "gpt-4-turbo-preview",
       "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
       "parameters": {
+        "timeout": 3000,
         "response_format": {
           "type": "json_object"
         }

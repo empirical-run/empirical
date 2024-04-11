@@ -54,10 +54,11 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       "process.env.ANTHROPIC_API_KEY is not set",
     );
   }
+  const { model, messages, ...config } = body;
   const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
+    timeout: config.timeout,
   });
-  const { model, messages, ...config } = body;
   const { contents, systemPrompt } = convertOpenAIToAnthropicAI(messages);
   const { executionDone } = await batchTaskManager.waitForTurn();
   try {
@@ -130,7 +131,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     executionDone();
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `failed chat completion for model ${body.model} with message ${(e as Error).message} `,
+      `failed chat completion for model ${body.model} with message ${(e as Error).message}`,
     );
   }
 };

@@ -17,6 +17,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   }
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
+    timeout: body.timeout,
   });
   try {
     const startedAt = Date.now();
@@ -43,6 +44,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       {
         randomize: true,
         minTimeout: 1000,
+        maxTimeout: body.timeout,
       },
     );
     const latency = Date.now() - startedAt;

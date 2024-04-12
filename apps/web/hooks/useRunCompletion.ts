@@ -4,6 +4,8 @@ import {
   RunCompletion,
   RunConfig,
   RunUpdateType,
+  DatasetSample,
+  DatasetSampleInputs,
 } from "@empiricalrun/types";
 import { RunResult } from "../types";
 export function generateRunId(len: number = 4) {
@@ -34,6 +36,7 @@ async function* streamFetch(url: string, options: any) {
 export function useRunResults() {
   const [runResults, setRunResults] = useState<RunResult[]>([]);
   const [dataset, setDataset] = useState<Dataset | undefined>();
+
   const fetchRunResults = useCallback(async () => {
     const resp = await fetch("/api/results");
     const data = (await resp.json()) as {
@@ -85,6 +88,7 @@ export function useRunResults() {
           .filter((s) => s !== "\n")
           .filter((s) => !!s)
           .map((s) => JSON.parse(s));
+        // move this outside so that it can be called for add samples
         setRunResults((prevRunResults) => {
           const updatedRunResults = prevRunResults.map((prevRun) => {
             if (prevRun.id === runId) {
@@ -176,6 +180,66 @@ export function useRunResults() {
     [setRunResults],
   );
 
+  const addDatasetSample = useCallback(
+    // TODO: maybe i don't need to import dataset - see next method
+    async (sample: DatasetSample, dataset: Dataset) => {
+      console.log(sample);
+      console.log(dataset);
+      const { samples } = dataset;
+      const newSample: DatasetSample = {
+        id: crypto.randomUUID(),
+        inputs: {
+          user_message: "", // TODO: get all keys
+        },
+      };
+      setDataset({
+        ...dataset,
+        samples: [...samples, newSample],
+      });
+    },
+    [setDataset],
+  );
+
+  const removeDatasetSample = useCallback(
+    async (sample: DatasetSample) => {
+      setDataset((prevDataset) => {
+        if (!prevDataset) {
+          return prevDataset;
+        }
+        return {
+          ...prevDataset,
+          samples: prevDataset.samples.filter(({ id }) => id !== sample.id),
+        };
+      });
+    },
+    [setDataset],
+  );
+
+  const updateDatasetSampleInput = useCallback(
+    // TODO: test this with multiple tabs example
+    (sampleId: string, newInputs: DatasetSampleInputs) => {
+      setDataset((prevDataset) => {
+        if (!prevDataset) {
+          return prevDataset;
+        }
+        const samples = prevDataset?.samples.map((s) => {
+          if (s.id !== sampleId) {
+            return s;
+          }
+          return {
+            ...s,
+            inputs: { ...s.inputs, ...newInputs },
+          };
+        });
+        return {
+          ...prevDataset,
+          samples,
+        };
+      });
+    },
+    [],
+  );
+
   return {
     addRun,
     executeRun,
@@ -183,5 +247,8 @@ export function useRunResults() {
     updateRunConfigForRun,
     runResults,
     dataset,
+    addDatasetSample,
+    removeDatasetSample,
+    updateDatasetSampleInput,
   };
 }

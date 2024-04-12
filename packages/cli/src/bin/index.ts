@@ -218,7 +218,10 @@ program
         runs: RunConfig[];
         dataset: Dataset;
       };
+      // stream - check for ids - to tell which object is updated
       const streamUpdate = (obj: any) => res.write(JSON.stringify(obj) + `\n`);
+
+      // this runs the first run
       const completion = await execute(runs[0]!, dataset, streamUpdate);
       setRunSummary([completion]);
       const statsUpdate: RunStatsUpdate = {

@@ -20,6 +20,9 @@ export default function Page(): JSX.Element {
     executeRun,
     updateRunConfigForRun,
     removeRun,
+    addDatasetSample,
+    removeDatasetSample,
+    updateDatasetSampleInput,
   } = useRunResults();
   const { tableHeaders, getSampleCell, setActiveRun, activeRun } =
     useRunResultTableView({
@@ -162,6 +165,11 @@ export default function Page(): JSX.Element {
                     <SampleCard
                       sample={inputSample!}
                       inputTabs={datasetInputNames}
+                      onSampleAdd={(sample) =>
+                        addDatasetSample(sample, dataset!)
+                      }
+                      onSampleInputUpdate={updateDatasetSampleInput}
+                      onSampleRemove={(sample) => removeDatasetSample(sample)}
                     />
                   </div>
                   {sampleCells.map((sample, i) => (

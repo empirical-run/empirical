@@ -7,6 +7,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
+import { PlusCircledIcon, MinusCircledIcon } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
 import { ArrowTopRightIcon } from "@radix-ui/react-icons";
 import CodeViewer from "./ui/code-viewer";
@@ -16,10 +17,16 @@ export function JsonAsTab({
   storeKey = "",
   data,
   defaultTabs,
+  onSampleAdd,
+  onSampleRemove,
+  onEditorContentUpdate,
 }: {
   storeKey: string;
   data: { [key: string]: any };
   defaultTabs?: string[];
+  onSampleAdd?: () => void;
+  onSampleRemove?: () => void;
+  onEditorContentUpdate?: (key: string, value: string) => void;
 }) {
   const tabs = useMemo(
     () => defaultTabs || Object.keys(data),
@@ -59,13 +66,33 @@ export function JsonAsTab({
                         ? activeTabValue
                         : JSON.stringify(activeTabValue, null, 2)
                     }
-                    readOnly
+                    readOnly // expand sheet is readonly
                     scrollable
                     language="json"
                   />
                 </div>
               </SheetContent>
             </Sheet>
+          )}
+          {onSampleAdd && (
+            <Button
+              variant={"link"}
+              size={"xs"}
+              onClick={() => onSampleAdd()}
+              className=" self-end justify-end p-0"
+            >
+              <PlusCircledIcon />
+            </Button>
+          )}
+          {onSampleRemove && (
+            <Button
+              variant={"link"}
+              size={"xs"}
+              onClick={() => onSampleRemove()}
+              className=" self-end justify-end p-0"
+            >
+              <MinusCircledIcon />
+            </Button>
           )}
         </>
       </div>
@@ -98,9 +125,10 @@ export function JsonAsTab({
                       ? value
                       : JSON.stringify(value, null, 2)
                   }
-                  language="json"
-                  readOnly
+                  // language="json"
+                  readOnly={false} // TODO: editing is not saving to the dataset
                   scrollable
+                  onChange={(value) => onEditorContentUpdate?.(key, value!)}
                 />
               </TabsContent>
             );

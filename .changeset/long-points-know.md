@@ -2,4 +2,4 @@
 "@empiricalrun/cli": patch
 ---
 
-Better error messaging for CLI commands
+chore: better error messaging for CLI commands

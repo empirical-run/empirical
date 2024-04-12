@@ -70,15 +70,7 @@ program
     "Provide path to .env file to load environment variables",
   )
   .action(async (options) => {
-    // Check for either envFile in options or .env file or .env.local file
-    let {error} = dotenv.config({ path: options.envFile || ".env" });
-
-    // Check if environment variables exist
-    if(error){
-      console.log(buildErrorLog("Failed to load environment variables"));
-      console.log(`${yellow("Please create .env file with necessary environment variables")} \n${cyan('touch .env && echo "AI_PROVIDER_API_KEY=your_api_key_here" > .env')}`);
-      process.exit(1);
-    }
+    dotenv.config({ path: options.envFile || [".env.local", ".env"] });
     console.log(yellow("Initiating run..."));
 
     let data;
@@ -184,12 +176,11 @@ program
 
     // Check if ui command is executed before the run command. 
     try {
-        await fs.readFile(outputFilePath);
-      } catch (err) {
-        console.log(buildErrorLog(`Failed to read output file`));
-        console.log(`${yellow("Please ensure to execute run command first")} - ${cyan("npx @empiricalrun/cli run")}`);
-        process.exit(1);
-      }
+      await fs.readFile(outputFilePath);
+    } catch (err) {
+      console.log(`${yellow("Please ensure to execute run command first")} - ${cyan("npx @empiricalrun/cli run")}`);
+      process.exit(1);
+    }
     console.log(yellow("Initiating webapp..."));
     const app = express();
     const port =

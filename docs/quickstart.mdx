@@ -37,10 +37,10 @@ Our test will succeed if the model outputs valid JSON.
   <Step title="Run the test">
     This step requires an `OPENAI_API_KEY` to authenticate with OpenAI.
     
-    Create a `.env` file with `OPENAI_API_KEY` as environment variable.
+    Export `OPENAI_API_KEY` as an environment variable.
 
     ```sh
-    touch .env && echo "OPENAI_API_KEY=your_api_key_here" > .env
+    export "OPENAI_API_KEY=your_api_key_here"
     ```
 
     Run the test samples against the models with the `run` command.

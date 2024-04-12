@@ -29,6 +29,7 @@ import {
   ProgressBar,
   buildErrorLog,
   buildSuccessLog,
+  buildWarningLog,
   getCliProgressLoggerInstance,
 } from "./logger/cli-logger";
 
@@ -181,8 +182,10 @@ program
         : Number(options.port);
     const availablePort = await detect(port);
     if (availablePort !== port) {
-      console.log(
-        `${yellow("[Warning]")} Port ${port} is unavailable. Trying port ${availablePort}.`,
+      console.warn(
+        buildWarningLog(
+          `Port ${port} is unavailable. Trying port ${availablePort}.`,
+        ),
       );
     }
     // TODO: get rid of this with dataset id support

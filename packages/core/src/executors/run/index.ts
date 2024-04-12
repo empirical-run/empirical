@@ -5,14 +5,19 @@ import {
   RunSampleOutput,
   Score,
   RunUpdateType,
+  RunMetadataUpdate,
 } from "@empiricalrun/types";
 import { generateHex } from "../../utils";
 import score from "@empiricalrun/scorer";
 import { getTransformer } from "./transformers";
+import { EmpiricalStore } from "../../store";
 
 function generateRunId(): string {
   return generateHex(4);
 }
+
+//TODO: move this
+let store: EmpiricalStore | null = null;
 
 export async function execute(
   runConfig: RunConfig,
@@ -29,7 +34,9 @@ export async function execute(
     ...runConfig,
     name: runConfig.name || getDefaultRunName(runConfig, runId),
   };
-  progressCallback?.({
+  store = store ? store : new EmpiricalStore();
+  const recorder = store.getRunRecorder();
+  const data: RunMetadataUpdate = {
     type: "run_metadata",
     data: {
       run_config: updatedRunConfig,
@@ -39,7 +46,9 @@ export async function execute(
       },
       created_at: runCreationDate,
     },
-  });
+  };
+  recorder(data);
+  progressCallback?.(data);
   for (const datasetSample of dataset.samples) {
     const transform = getTransformer(runConfig);
     if (transform) {

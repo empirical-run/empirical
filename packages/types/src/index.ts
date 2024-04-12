@@ -68,7 +68,6 @@ interface ModelParameters {
   seed?: number;
   stop?: string | Array<string>;
   top_logprobs?: number;
-  timeout?: number;
 
   // For other models, we coerce the above known parameters to appropriate slots
   // If users require other parameters, we support passthrough for other key names

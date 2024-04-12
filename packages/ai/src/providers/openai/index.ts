@@ -44,7 +44,6 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       {
         randomize: true,
         minTimeout: 1000,
-        maxTimeout: body.timeout,
       },
     );
     const latency = Date.now() - startedAt;

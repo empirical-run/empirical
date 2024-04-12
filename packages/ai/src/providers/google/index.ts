@@ -82,7 +82,6 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       },
       {
         randomize: true,
-        maxTimeout: body.timeout,
       },
     );
     executionDone();

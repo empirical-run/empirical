@@ -8,6 +8,8 @@ import {
   DatasetSampleInputs,
 } from "@empiricalrun/types";
 import { RunResult } from "../types";
+import { aggregateRunStats, statsAfterRemoved } from "../utils";
+
 export function generateRunId(len: number = 4) {
   let hash = "";
   for (let i = 0; i < len; i++) {
@@ -70,6 +72,7 @@ export function useRunResults() {
     async (run: RunResult, dataset: Dataset) => {
       let runId = run.id;
       setLoadingStateForRun(runId, true);
+      // TODO: this is broken in testing
       for await (const chunk of streamFetch("/api/runs/execute", {
         method: "POST",
         headers: {
@@ -78,6 +81,7 @@ export function useRunResults() {
         body: JSON.stringify({
           runs: [{ ...run.run_config, name: undefined }],
           dataset,
+          persistToFile: true,
         }),
       })) {
         const resp = new Response(chunk);
@@ -220,8 +224,17 @@ export function useRunResults() {
           samples: prevDataset.samples.filter(({ id }) => id !== sample.id),
         };
       });
+      setRunResults((prevRunResults) => {
+        return prevRunResults.map((runResult) => ({
+          ...runResult,
+          samples: runResult.samples.filter(
+            (s) => s.dataset_sample_id !== sample.id,
+          ),
+          stats: statsAfterRemoved(runResult, sample),
+        }));
+      });
     },
-    [setDataset],
+    [setDataset, setRunResults],
   );
 
   const updateDatasetSampleInput = useCallback(
@@ -252,14 +265,18 @@ export function useRunResults() {
     async (runs: RunResult[], sample: DatasetSample) => {
       runs.forEach(async (run) => {
         setLoadingStateForRun(run.id, true);
-        for await (const chunk of streamFetch("/api/runs/execute-sample", {
+        for await (const chunk of streamFetch("/api/runs/execute", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            run: run.run_config,
-            sample,
+            runs: [run.run_config],
+            dataset: {
+              id: "temp-id",
+              samples: [sample],
+            },
+            persistToFile: false,
           }),
         })) {
           const resp = new Response(chunk);
@@ -277,6 +294,8 @@ export function useRunResults() {
                 u.data.run_id = run.id;
               } else if (u.type === "run_sample_score") {
                 u.data.run_id = run.id;
+              } else if (u.type === "run_stats") {
+                u.data = aggregateRunStats(u.data, run.stats);
               }
               return u;
             });

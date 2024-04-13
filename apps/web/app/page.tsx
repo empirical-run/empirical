@@ -11,6 +11,7 @@ import SampleOutputCard from "../components/sample-output-card";
 import { DatasetSample, RunConfig } from "@empiricalrun/types";
 import { RunDetails } from "../components/run-details";
 import { RunResult } from "../types";
+import { useToast } from "../components/ui/use-toast";
 
 export default function Page(): JSX.Element {
   const {
@@ -126,6 +127,8 @@ export default function Page(): JSX.Element {
     updateComparisonTableHeight();
   }, [activeRun]);
 
+  const toast = useToast();
+
   return (
     <main className="relative h-screen">
       <PageHeader />
@@ -180,7 +183,16 @@ export default function Page(): JSX.Element {
                       inputTabs={datasetInputNames}
                       onSampleAdd={(sample) => addDatasetSample(sample)}
                       onSampleInputUpdate={updateDatasetSampleInput}
-                      onSampleRemove={(sample) => removeDatasetSample(sample)}
+                      onSampleRemove={(sample) => {
+                        if (dataset?.samples.length === 1) {
+                          // TODO: toast is not working
+                          toast.toast({
+                            title: "Cannot remove the last sample",
+                          });
+                        } else {
+                          removeDatasetSample(sample);
+                        }
+                      }}
                       onClickRunOnAllModels={onClickRunOnAllModelsForSample}
                       hasMissingCompletion={hasMissingCompletion} // TODO: support edits (input sample different from output sample?)
                     />

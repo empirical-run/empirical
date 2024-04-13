@@ -3,9 +3,25 @@
   "runs": [
     {
       "type": "model",
-      "provider": "mistral",
-      "model": "mistral-tiny",
+      "provider": "openai",
+      "model": "gpt-3.5-turbo",
       "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
+      "scorers": [
+        {
+          "type": "is-json"
+        }
+      ]
+    },
+    {
+      "type": "model",
+      "provider": "openai",
+      "model": "gpt-4-turbo-preview",
+      "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
+      "parameters": {
+        "response_format": {
+          "type": "json_object"
+        }
+      },
       "scorers": [
         {
           "type": "is-json"

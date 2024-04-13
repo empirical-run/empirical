@@ -6,6 +6,7 @@ import {
   RunUpdateType,
   DatasetSample,
   DatasetSampleInputs,
+  RunMetadataUpdate,
 } from "@empiricalrun/types";
 import { RunResult } from "../types";
 import { aggregateRunStats, statsAfterRemoved } from "../utils";
@@ -72,7 +73,6 @@ export function useRunResults() {
     async (run: RunResult, dataset: Dataset) => {
       let runId = run.id;
       setLoadingStateForRun(runId, true);
-      // TODO: this is broken in testing
       for await (const chunk of streamFetch("/api/runs/execute", {
         method: "POST",
         headers: {
@@ -92,6 +92,10 @@ export function useRunResults() {
           .filter((s) => !!s)
           .map((s) => JSON.parse(s));
         setRunResultsOnStream(runId, updates);
+        const newMetadataWithRunId = updates.find(
+          (u) => u.type === "run_metadata",
+        ) as RunMetadataUpdate | undefined;
+        runId = newMetadataWithRunId ? newMetadataWithRunId.data.id : runId;
       }
       return run;
     },
@@ -105,8 +109,7 @@ export function useRunResults() {
           const updatedRun = { ...prevRun };
           updates.forEach((u) => {
             if (u.type === "run_metadata") {
-              runId = u.data.id;
-              updatedRun.id = runId;
+              updatedRun.id = u.data.id;
               updatedRun.run_config = u.data.run_config;
               updatedRun.dataset_config = u.data.dataset_config;
               updatedRun.created_at = u.data.created_at;
@@ -299,7 +302,6 @@ export function useRunResults() {
               }
               return u;
             });
-          console.log(updates);
           setRunResultsOnStream(run.id, updates);
         }
       });

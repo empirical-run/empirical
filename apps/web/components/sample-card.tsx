@@ -9,6 +9,7 @@ export default function SampleCard({
   onSampleRemove,
   onSampleAdd,
   onSampleInputUpdate,
+  onClickRunOnAllModels,
 }: {
   sample: DatasetSample;
   inputTabs?: string[];
@@ -18,8 +19,8 @@ export default function SampleCard({
     sampleId: string,
     newSampleInputs: DatasetSampleInputs,
   ) => void;
+  onClickRunOnAllModels: (sample: DatasetSample) => void;
 }) {
-  console.log("sample", sample);
   return (
     <Card
       className={`flex flex-1 flex-col rounded-md items-stretch border-zinc-900`}
@@ -31,12 +32,12 @@ export default function SampleCard({
           defaultTabs={inputTabs}
           onSampleAdd={() => onSampleAdd?.(sample)}
           onSampleRemove={() => onSampleRemove?.(sample)}
-          onEditorContentUpdate={(key: string, value: string) => {
-            console.log(key, value);
+          onEditorContentUpdate={(key: string, value: string) =>
             onSampleInputUpdate?.(sample.id, {
               [key]: value,
-            });
-          }}
+            })
+          }
+          onClickRunAll={() => onClickRunOnAllModels?.(sample)}
         />
         {!Object.keys(sample?.inputs).length && <ZeroStateSampleCard />}
       </CardContent>

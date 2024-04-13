@@ -17,6 +17,7 @@ import {
   RunConfig,
   RunCompletion,
   RunStatsUpdate,
+  DatasetSample,
 } from "@empiricalrun/types";
 import {
   failedOutputsSummary,
@@ -220,8 +221,7 @@ program
       };
       // stream - check for ids - to tell which object is updated
       const streamUpdate = (obj: any) => res.write(JSON.stringify(obj) + `\n`);
-
-      // this runs the first run
+      // This endpoint expects to execute only one run
       const completion = await execute(runs[0]!, dataset, streamUpdate);
       setRunSummary([completion]);
       const statsUpdate: RunStatsUpdate = {
@@ -238,6 +238,30 @@ program
       );
       res.end();
     });
+
+    app.post("/api/runs/execute-sample", async (req, res) => {
+      // This executes one run for a single sample and does not persist the result
+      const { run, sample } = req.body as {
+        run: RunConfig;
+        sample: DatasetSample;
+      };
+      // console.log(runs);
+      // console.log(sample);
+      const dataset: Dataset = {
+        id: "temp-id",
+        samples: [sample],
+      };
+      const streamUpdate = (obj: any) => res.write(JSON.stringify(obj) + `\n`);
+      const completion = await execute(run, dataset, streamUpdate);
+      setRunSummary([completion]);
+      const statsUpdate: RunStatsUpdate = {
+        type: "run_stats",
+        data: completion.stats!,
+      };
+      streamUpdate(statsUpdate);
+      res.end();
+    });
+
     const fullUrl = `http://localhost:${availablePort}`;
     app.listen(availablePort, () => {
       console.log(cyan(`Empirical app running on ${underline(fullUrl)}`));

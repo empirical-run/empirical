@@ -8,7 +8,7 @@ import { useRunResultTableView } from "../hooks/useRunResultTableView";
 import InViewElement from "../components/ui/in-view";
 import SampleCard from "../components/sample-card";
 import SampleOutputCard from "../components/sample-output-card";
-import { RunConfig } from "@empiricalrun/types";
+import { DatasetSample, RunConfig } from "@empiricalrun/types";
 import { RunDetails } from "../components/run-details";
 import { RunResult } from "../types";
 
@@ -23,6 +23,7 @@ export default function Page(): JSX.Element {
     addDatasetSample,
     removeDatasetSample,
     updateDatasetSampleInput,
+    executeRunsForSample,
   } = useRunResults();
   const { tableHeaders, getSampleCell, setActiveRun, activeRun } =
     useRunResultTableView({
@@ -98,6 +99,18 @@ export default function Page(): JSX.Element {
     [activeRun, removeRun],
   );
 
+  const onClickRunOnAllModelsForSample = useCallback(
+    (sample: DatasetSample) => {
+      executeRunsForSample(
+        runResults.filter(
+          (run) => !run.samples.some((s) => s.id === sample.id),
+        ),
+        sample,
+      );
+    },
+    [runResults],
+  );
+
   useEffect(() => {
     if (dataset?.samples && runHeaderRowRef.current) {
       updateComparisonTableHeight();
@@ -165,11 +178,10 @@ export default function Page(): JSX.Element {
                     <SampleCard
                       sample={inputSample!}
                       inputTabs={datasetInputNames}
-                      onSampleAdd={(sample) =>
-                        addDatasetSample(sample, dataset!)
-                      }
+                      onSampleAdd={(sample) => addDatasetSample(sample)}
                       onSampleInputUpdate={updateDatasetSampleInput}
                       onSampleRemove={(sample) => removeDatasetSample(sample)}
+                      onClickRunOnAllModels={onClickRunOnAllModelsForSample}
                     />
                   </div>
                   {sampleCells.map((sample, i) => (

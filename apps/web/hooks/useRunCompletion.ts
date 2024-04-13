@@ -88,47 +88,48 @@ export function useRunResults() {
           .filter((s) => s !== "\n")
           .filter((s) => !!s)
           .map((s) => JSON.parse(s));
-        // move this outside so that it can be called for add samples
-        setRunResults((prevRunResults) => {
-          const updatedRunResults = prevRunResults.map((prevRun) => {
-            if (prevRun.id === runId) {
-              const updatedRun = { ...prevRun };
-              updates.forEach((u) => {
-                if (u.type === "run_metadata") {
-                  runId = u.data.id;
-                  updatedRun.id = runId;
-                  updatedRun.run_config = u.data.run_config;
-                  updatedRun.dataset_config = u.data.dataset_config;
-                  updatedRun.created_at = u.data.created_at;
-                } else if (u.type === "run_sample") {
-                  const sample = u.data;
-                  updatedRun.samples = updatedRun.samples
-                    ? updatedRun.samples
-                    : [];
-                  updatedRun.samples.push(sample);
-                } else if (u.type === "run_sample_score") {
-                  updatedRun.samples = updatedRun.samples.map((s) => {
-                    if (s.dataset_sample_id === u.data.dataset_sample_id) {
-                      s.scores = u.data.scores;
-                    }
-                    return { ...s };
-                  });
-                } else if (u.type === "run_stats") {
-                  updatedRun.loading = false;
-                  updatedRun.stats = u.data;
-                }
-              });
-              return updatedRun;
-            }
-            return prevRun;
-          });
-          return [...updatedRunResults];
-        });
+        setRunResultsOnStream(runId, updates);
       }
       return run;
     },
     [setRunResults],
   );
+
+  const setRunResultsOnStream = (runId: string, updates: RunUpdateType[]) => {
+    setRunResults((prevRunResults) => {
+      const updatedRunResults = prevRunResults.map((prevRun) => {
+        if (prevRun.id === runId) {
+          const updatedRun = { ...prevRun };
+          updates.forEach((u) => {
+            if (u.type === "run_metadata") {
+              runId = u.data.id;
+              updatedRun.id = runId;
+              updatedRun.run_config = u.data.run_config;
+              updatedRun.dataset_config = u.data.dataset_config;
+              updatedRun.created_at = u.data.created_at;
+            } else if (u.type === "run_sample") {
+              const sample = u.data;
+              updatedRun.samples = updatedRun.samples ? updatedRun.samples : [];
+              updatedRun.samples.push(sample);
+            } else if (u.type === "run_sample_score") {
+              updatedRun.samples = updatedRun.samples.map((s) => {
+                if (s.dataset_sample_id === u.data.dataset_sample_id) {
+                  s.scores = u.data.scores;
+                }
+                return { ...s };
+              });
+            } else if (u.type === "run_stats") {
+              updatedRun.loading = false;
+              updatedRun.stats = u.data;
+            }
+          });
+          return updatedRun;
+        }
+        return prevRun;
+      });
+      return [...updatedRunResults];
+    });
+  };
 
   const addRun = useCallback(
     (refRun: RunResult, index = runResults.length - 1) => {
@@ -181,20 +182,29 @@ export function useRunResults() {
   );
 
   const addDatasetSample = useCallback(
-    // TODO: maybe i don't need to import dataset - see next method
-    async (sample: DatasetSample, dataset: Dataset) => {
-      console.log(sample);
-      console.log(dataset);
-      const { samples } = dataset;
-      const newSample: DatasetSample = {
-        id: crypto.randomUUID(),
-        inputs: {
-          user_message: "", // TODO: get all keys
-        },
-      };
-      setDataset({
-        ...dataset,
-        samples: [...samples, newSample],
+    async (sample: DatasetSample) => {
+      console.log(sample); // TODO: this is not used
+      setDataset((prevDataset) => {
+        if (!prevDataset) {
+          return prevDataset;
+        }
+        const { samples } = prevDataset;
+        // TODO: this assume there is at least one sample
+        const inputs = Object.keys(samples[0]?.inputs || {}).reduce(
+          (inputs: DatasetSampleInputs, key) => {
+            inputs[key] = "";
+            return inputs;
+          },
+          {},
+        );
+        const newSample: DatasetSample = {
+          id: crypto.randomUUID(),
+          inputs,
+        };
+        return {
+          ...prevDataset,
+          samples: [...samples, newSample],
+        };
       });
     },
     [setDataset],
@@ -216,7 +226,6 @@ export function useRunResults() {
   );
 
   const updateDatasetSampleInput = useCallback(
-    // TODO: test this with multiple tabs example
     (sampleId: string, newInputs: DatasetSampleInputs) => {
       setDataset((prevDataset) => {
         if (!prevDataset) {
@@ -240,6 +249,47 @@ export function useRunResults() {
     [],
   );
 
+  const executeRunsForSample = useCallback(
+    async (runs: RunResult[], sample: DatasetSample) => {
+      runs.forEach(async (run) => {
+        setLoadingStateForRun(run.id, true);
+        run.loading = true;
+        for await (const chunk of streamFetch("/api/runs/execute-sample", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            run: { ...run.run_config, name: undefined },
+            sample,
+          }),
+        })) {
+          const resp = new Response(chunk);
+          const text = await resp.text();
+          const updates: RunUpdateType[] = text
+            .split("\n")
+            .filter((s) => s !== "\n")
+            .filter((s) => !!s)
+            .map((s) => JSON.parse(s))
+            .map((u) => {
+              // Overwrite the new run id with the existing run id
+              if (u.type === "run_metadata") {
+                u.data.id = run.id;
+              } else if (u.type === "run_sample") {
+                u.data.run_id = run.id;
+              } else if (u.type === "run_sample_score") {
+                u.data.run_id = run.id;
+              }
+              return u;
+            });
+          console.log(updates);
+          setRunResultsOnStream(run.id, updates);
+        }
+      });
+    },
+    [setRunResults],
+  );
+
   return {
     addRun,
     executeRun,
@@ -250,5 +300,6 @@ export function useRunResults() {
     addDatasetSample,
     removeDatasetSample,
     updateDatasetSampleInput,
+    executeRunsForSample,
   };
 }

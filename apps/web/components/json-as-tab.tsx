@@ -7,7 +7,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
-import { PlusCircledIcon, MinusCircledIcon } from "@radix-ui/react-icons";
+import {
+  TriangleRightIcon,
+  PlusCircledIcon,
+  MinusCircledIcon,
+} from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
 import { ArrowTopRightIcon } from "@radix-ui/react-icons";
 import CodeViewer from "./ui/code-viewer";
@@ -20,6 +24,7 @@ export function JsonAsTab({
   onSampleAdd,
   onSampleRemove,
   onEditorContentUpdate,
+  onClickRunAll,
 }: {
   storeKey: string;
   data: { [key: string]: any };
@@ -27,6 +32,7 @@ export function JsonAsTab({
   onSampleAdd?: () => void;
   onSampleRemove?: () => void;
   onEditorContentUpdate?: (key: string, value: string) => void;
+  onClickRunAll?: () => void;
 }) {
   const tabs = useMemo(
     () => defaultTabs || Object.keys(data),
@@ -73,6 +79,17 @@ export function JsonAsTab({
                 </div>
               </SheetContent>
             </Sheet>
+          )}
+          {onClickRunAll && (
+            <Button
+              variant={"secondary"}
+              size={"xs"}
+              className="flex flex-row pl-1"
+              onClick={onClickRunAll}
+            >
+              <TriangleRightIcon width={18} height={18} />
+              <span>Run this row</span>
+            </Button>
           )}
           {onSampleAdd && (
             <Button
@@ -125,8 +142,8 @@ export function JsonAsTab({
                       ? value
                       : JSON.stringify(value, null, 2)
                   }
-                  // language="json"
-                  readOnly={false} // TODO: editing is not saving to the dataset
+                  // language="json" // TODO(arjun): still seeing json issue
+                  readOnly={false} // TODO(arjun): editing is not saving to the dataset
                   scrollable
                   onChange={(value) => onEditorContentUpdate?.(key, value!)}
                 />

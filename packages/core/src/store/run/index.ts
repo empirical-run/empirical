@@ -8,7 +8,7 @@ import fs from "fs";
 
 // TODO: figure out where to keep this
 const cachePath = ".empiricalrun/runs";
-class LocalRunStore {
+export class LocalRunStore {
   fullPath = "";
   async createRunTable(runId: string) {
     const dbInstance = await getLocalDBInstance();
@@ -52,4 +52,3 @@ class LocalRunStore {
     return update;
   }
 }
-exports.LocalRunStore = LocalRunStore;

@@ -144,8 +144,8 @@ export function JsonAsTab({
                       ? value
                       : JSON.stringify(value, null, 2)
                   }
-                  // language="json" // TODO(arjun): still seeing json issue
-                  readOnly={false} // TODO(arjun): editing is not saving to the dataset
+                  language="json"
+                  readOnly={false}
                   scrollable
                   onChange={(value) => onEditorContentUpdate?.(key, value!)}
                 />

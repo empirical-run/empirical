@@ -31,7 +31,7 @@ signature:
   - inputs: dict of key-value pairs with [sample inputs](../dataset/basics)
   - parameters: dict of key-value pairs with the run parameters
 - **Returns**: a dict with
-  - output (string): The response from the model/application
+  - value (string): The response from the model/application
   - metadata (dict): Custom key-value pairs that are passed on to the scorer and
     web reporter
 
@@ -40,7 +40,7 @@ signature:
 def execute(inputs):
     # ...
     return {
-        "output": output,
+        "value": output,
         "metadata": {
             "key": value
         }

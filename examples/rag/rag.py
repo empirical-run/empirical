@@ -24,8 +24,7 @@ def execute(inputs, parameters):
     response = query_engine.query(question)
     output = response.response
     contexts = [c.node.get_content() for c in response.source_nodes]
-
     return {
-        "output": output,
+        "value": output,
         "metadata": {"contexts": contexts},
     }

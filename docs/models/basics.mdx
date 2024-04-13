@@ -89,7 +89,6 @@ You can add other parameters or override this behavior with [passthrough](#passt
     "prompt": "Hey I'm {{user_name}}",
     "parameters": {
       "temperature": 0.1,
-      "timeout": 2000
     }
   }
 ]
@@ -112,6 +111,24 @@ For example, Mistral models support a `safePrompt` parameter for [guardrailing](
     "parameters": {
       "temperature": 0.1,
       "safePrompt": true
+    }
+  }
+]
+```
+
+#### Configuring request timeout
+
+You can set the timeout duration in milliseconds under model parameters in the `empiricalrc.json` file. This might be required for prompt completions that are expected to take more time, for example while running models like Claude Opus. If no specific value is assigned, the default timeout duration of 30 seconds will be applied.
+
+```json empiricalrc.json
+"runs": [
+  {
+    "type": "model",
+    "provider": "openai",
+    "model": "gpt-3.5-turbo",
+    "prompt": "Hey I'm {{user_name}}",
+    "parameters": {
+      "timeout": 30000
     }
   }
 ]

@@ -6,6 +6,7 @@ import {
 import OpenAI from "openai";
 import promiseRetry from "promise-retry";
 import { AIError, AIErrorEnum } from "../../error";
+import { DEFAULT_TIMEOUT } from "../../constants";
 
 const createChatCompletion: ICreateChatCompletion = async (body) => {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -17,8 +18,11 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   }
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-    timeout: body.timeout,
+    timeout: body.timeout || DEFAULT_TIMEOUT,
   });
+  if (body.timeout) {
+    delete body.timeout;
+  }
   try {
     const startedAt = Date.now();
     const completions = await promiseRetry<IChatCompletion>(

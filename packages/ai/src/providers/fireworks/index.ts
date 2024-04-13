@@ -6,11 +6,16 @@ import {
 import { BatchTaskManager, getPassthroughParams } from "../../utils";
 import { AIError, AIErrorEnum } from "../../error";
 import promiseRetry from "promise-retry";
+import { DEFAULT_TIMEOUT } from "../../constants";
 
 const batchTaskManager = new BatchTaskManager(10);
 
 const createChatCompletion: ICreateChatCompletion = async (body) => {
   const { model, messages, ...config } = body;
+  const timeout = config.timeout || DEFAULT_TIMEOUT;
+  if (config.timeout) {
+    delete config.timeout;
+  }
   const payload = JSON.stringify({
     model: `accounts/fireworks/models/${model}`,
     messages,
@@ -68,7 +73,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       },
       {
         randomize: true,
-        maxTimeout: body.timeout,
+        maxTimeout: timeout,
       },
     );
     const latency = Date.now() - startedAt;

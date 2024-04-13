@@ -4,6 +4,7 @@ import { ChatCompletionMessageParam } from "openai/resources/chat/completions.mj
 import promiseRetry from "promise-retry";
 import { BatchTaskManager, getPassthroughParams } from "../../utils";
 import { AIError, AIErrorEnum } from "../../error";
+import { DEFAULT_TIMEOUT } from "../../constants";
 
 const batchTaskManager = new BatchTaskManager(5);
 
@@ -57,8 +58,11 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const { model, messages, ...config } = body;
   const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
-    timeout: config.timeout,
+    timeout: config.timeout || DEFAULT_TIMEOUT,
   });
+  if (config.timeout) {
+    delete config.timeout;
+  }
   const { contents, systemPrompt } = convertOpenAIToAnthropicAI(messages);
   const { executionDone } = await batchTaskManager.waitForTurn();
   try {
@@ -131,7 +135,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     executionDone();
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `failed chat completion for model ${body.model} with message ${(e as Error).message}`,
+      `Failed chat completion for model ${body.model} with message ${(e as Error).message}`,
     );
   }
 };

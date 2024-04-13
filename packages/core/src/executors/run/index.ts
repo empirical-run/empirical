@@ -67,14 +67,14 @@ export async function execute(
             };
             return data;
           })
-          .then((sample) => {
+          .then(async (sample) => {
             try {
               const update: RunSampleUpdate = {
                 type: "run_sample",
                 data: sample,
               };
               progressCallback?.(update);
-              recorder(update);
+              await recorder(update);
             } catch (e) {
               console.warn(e);
             }

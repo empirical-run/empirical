@@ -101,12 +101,10 @@ export default function Page(): JSX.Element {
 
   const onClickRunOnAllModelsForSample = useCallback(
     (sample: DatasetSample) => {
-      executeRunsForSample(
-        runResults.filter(
-          (run) => !run.samples.some((s) => s.id === sample.id),
-        ),
-        sample,
+      const runsWithoutSample = runResults.filter(
+        (run) => !run.samples.some((s) => s.id === sample.id),
       );
+      executeRunsForSample(runsWithoutSample, sample);
     },
     [runResults],
   );
@@ -168,6 +166,8 @@ export default function Page(): JSX.Element {
               (h) => getSampleCell(r, h.runResult)!,
             );
             const inputSample = dataset!.samples?.filter((s) => s.id === r)[0];
+            const hasMissingCompletion =
+              sampleCells.filter((s) => !s).length > 0;
             return (
               <InViewElement
                 key={`run-sample-${r}`}
@@ -182,6 +182,7 @@ export default function Page(): JSX.Element {
                       onSampleInputUpdate={updateDatasetSampleInput}
                       onSampleRemove={(sample) => removeDatasetSample(sample)}
                       onClickRunOnAllModels={onClickRunOnAllModelsForSample}
+                      hasMissingCompletion={hasMissingCompletion} // TODO: support edits (input sample different from output sample?)
                     />
                   </div>
                   {sampleCells.map((sample, i) => (

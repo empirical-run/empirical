@@ -21,6 +21,7 @@ export function JsonAsTab({
   storeKey = "",
   data,
   defaultTabs,
+  showRunButton,
   onSampleAdd,
   onSampleRemove,
   onEditorContentUpdate,
@@ -29,6 +30,7 @@ export function JsonAsTab({
   storeKey: string;
   data: { [key: string]: any };
   defaultTabs?: string[];
+  showRunButton?: boolean;
   onSampleAdd?: () => void;
   onSampleRemove?: () => void;
   onEditorContentUpdate?: (key: string, value: string) => void;
@@ -80,7 +82,7 @@ export function JsonAsTab({
               </SheetContent>
             </Sheet>
           )}
-          {onClickRunAll && (
+          {onClickRunAll && showRunButton && (
             <Button
               variant={"secondary"}
               size={"xs"}

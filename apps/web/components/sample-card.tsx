@@ -10,9 +10,11 @@ export default function SampleCard({
   onSampleAdd,
   onSampleInputUpdate,
   onClickRunOnAllModels,
+  hasMissingCompletion,
 }: {
   sample: DatasetSample;
   inputTabs?: string[];
+  hasMissingCompletion: boolean;
   onSampleRemove?: (sample: DatasetSample) => void;
   onSampleAdd?: (sample: DatasetSample) => void;
   onSampleInputUpdate?: (
@@ -30,6 +32,7 @@ export default function SampleCard({
           storeKey="input"
           data={sample?.inputs}
           defaultTabs={inputTabs}
+          showRunButton={hasMissingCompletion}
           onSampleAdd={() => onSampleAdd?.(sample)}
           onSampleRemove={() => onSampleRemove?.(sample)}
           onEditorContentUpdate={(key: string, value: string) =>

@@ -70,7 +70,6 @@ export function useRunResults() {
     async (run: RunResult, dataset: Dataset) => {
       let runId = run.id;
       setLoadingStateForRun(runId, true);
-      run.loading = true;
       for await (const chunk of streamFetch("/api/runs/execute", {
         method: "POST",
         headers: {
@@ -253,14 +252,13 @@ export function useRunResults() {
     async (runs: RunResult[], sample: DatasetSample) => {
       runs.forEach(async (run) => {
         setLoadingStateForRun(run.id, true);
-        run.loading = true;
         for await (const chunk of streamFetch("/api/runs/execute-sample", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            run: { ...run.run_config, name: undefined },
+            run: run.run_config,
             sample,
           }),
         })) {

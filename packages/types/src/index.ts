@@ -166,7 +166,7 @@ export type RunSampleOutput = {
   id?: string;
   annotations?: string[];
   scores?: Score[];
-  inputs: { [key: string]: string };
+  inputs: DatasetSampleInputs;
   output: RunOutput;
   expected?: {
     value: string;

@@ -189,13 +189,15 @@ export function useRunResults() {
 
   const addDatasetSample = useCallback(
     async (sample: DatasetSample) => {
-      console.log(sample); // TODO: this is not used
       setDataset((prevDataset) => {
         if (!prevDataset) {
           return prevDataset;
         }
         const { samples } = prevDataset;
-        // TODO: this assume there is at least one sample
+        const newSampleIdx = samples
+          .map((s, idx) => s.id === sample.id && idx + 1)
+          .find((x) => !!x) as number;
+        // TODO: Assuming there is at least one sample to infer input keys
         const inputs = Object.keys(samples[0]?.inputs || {}).reduce(
           (inputs: DatasetSampleInputs, key) => {
             inputs[key] = "";
@@ -209,7 +211,11 @@ export function useRunResults() {
         };
         return {
           ...prevDataset,
-          samples: [...samples, newSample],
+          samples: [
+            ...samples.slice(0, newSampleIdx),
+            newSample,
+            ...samples.slice(newSampleIdx),
+          ],
         };
       });
     },

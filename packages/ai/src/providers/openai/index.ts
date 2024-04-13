@@ -16,34 +16,44 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       "process.env.OPENAI_API_KEY is not set",
     );
   }
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-    timeout: body.timeout || DEFAULT_TIMEOUT,
-  });
+  const timeout = body.timeout || DEFAULT_TIMEOUT;
   if (body.timeout) {
     delete body.timeout;
   }
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    timeout: timeout,
+  });
+
   try {
     const startedAt = Date.now();
     const completions = await promiseRetry<IChatCompletion>(
       (retry) => {
-        return openai.chat.completions.create(body).catch((err) => {
-          if (
-            err instanceof OpenAI.RateLimitError &&
-            err.type === "insufficient_quota"
-          ) {
+        const timeoutId = setTimeout(() => {
+          console.warn(`Request timed out after ${timeout} ms. Retrying...`);
+        }, timeout);
+        return openai.chat.completions
+          .create(body)
+          .catch((err) => {
+            if (
+              err instanceof OpenAI.RateLimitError &&
+              err.type === "insufficient_quota"
+            ) {
+              throw err;
+            } else if (
+              err instanceof OpenAI.RateLimitError ||
+              err instanceof OpenAI.APIConnectionError ||
+              err instanceof OpenAI.APIConnectionTimeoutError ||
+              err instanceof OpenAI.InternalServerError
+            ) {
+              retry(err);
+              throw err;
+            }
             throw err;
-          } else if (
-            err instanceof OpenAI.RateLimitError ||
-            err instanceof OpenAI.APIConnectionError ||
-            err instanceof OpenAI.APIConnectionTimeoutError ||
-            err instanceof OpenAI.InternalServerError
-          ) {
-            retry(err);
-            throw err;
-          }
-          throw err;
-        });
+          })
+          .finally(() => {
+            clearTimeout(timeoutId);
+          });
       },
       {
         randomize: true,

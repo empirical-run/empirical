@@ -56,19 +56,23 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     );
   }
   const { model, messages, ...config } = body;
-  const anthropic = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY,
-    timeout: config.timeout || DEFAULT_TIMEOUT,
-  });
+  const timeout = config.timeout || DEFAULT_TIMEOUT;
   if (config.timeout) {
     delete config.timeout;
   }
+  const anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY,
+    timeout: timeout,
+  });
   const { contents, systemPrompt } = convertOpenAIToAnthropicAI(messages);
   const { executionDone } = await batchTaskManager.waitForTurn();
   try {
     const startedAt = Date.now();
     const response = await promiseRetry<Anthropic.Messages.Message>(
       (retry) => {
+        const timeoutId = setTimeout(() => {
+          console.warn(`Request timed out after ${timeout} ms. Retrying...`);
+        }, timeout);
         return anthropic.messages
           .create({
             model: canonicalModelName(model),
@@ -95,6 +99,9 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
               throw err;
             }
             return err;
+          })
+          .finally(() => {
+            clearTimeout(timeoutId);
           });
       },
       {
@@ -135,7 +142,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     executionDone();
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `Failed chat completion for model ${body.model} with message ${(e as Error).message}`,
+      `Failed chat completion for model ${body.model}: ${(e as Error).message}`,
     );
   }
 };

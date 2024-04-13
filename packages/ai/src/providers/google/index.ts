@@ -63,23 +63,25 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   }
   const { model, messages } = body;
   const googleAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-  const modelInstance = googleAI.getGenerativeModel(
-    { model },
-    { timeout: body.timeout || DEFAULT_TIMEOUT },
-  );
+  const timeout = body.timeout || DEFAULT_TIMEOUT;
+  const modelInstance = googleAI.getGenerativeModel({ model }, { timeout });
   const contents = massageOpenAIMessagesToGoogleAI(messages);
   const { executionDone } = await batch.waitForTurn();
   try {
     const startedAt = Date.now();
     const completion = await promiseRetry<GenerateContentResult>(
       (retry) => {
+        const timeoutId = setTimeout(() => {
+          console.warn(`Request timed out after ${timeout} ms. Retrying...`);
+        }, timeout);
         // TODO: move to model.startChat which support model config (e.g. temperature)
         return modelInstance
           .generateContent({ contents })
           .catch((err: Error) => {
             retry(err);
             throw err;
-          });
+          })
+          .finally(() => clearTimeout(timeoutId));
       },
       {
         randomize: true,

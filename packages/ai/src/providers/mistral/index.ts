@@ -37,7 +37,7 @@ const createChatCompletion: ICreateChatCompletion = async function (body) {
     // type issue in https://github.com/mistralai/client-js/blob/e33a2f3e5f6fb88fd083e8e7d9c3c081d1c7c0e4/src/client.js#L51, will submit a PR later
     // @ts-ignore default value for retries
     5,
-    config.timeout || DEFAULT_TIMEOUT,
+    (config.timeout || DEFAULT_TIMEOUT) / 1000, // Mistral expects values in seconds
   );
   if (config.timeout) {
     delete config.timeout;

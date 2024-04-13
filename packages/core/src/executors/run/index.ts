@@ -6,6 +6,7 @@ import {
   Score,
   RunUpdateType,
   RunMetadataUpdate,
+  RunSampleUpdate,
 } from "@empiricalrun/types";
 import { generateHex } from "../../utils";
 import score from "@empiricalrun/scorer";
@@ -68,10 +69,12 @@ export async function execute(
           })
           .then((sample) => {
             try {
-              progressCallback?.({
+              const update: RunSampleUpdate = {
                 type: "run_sample",
                 data: sample,
-              });
+              };
+              progressCallback?.(update);
+              recorder(update);
             } catch (e) {
               console.warn(e);
             }

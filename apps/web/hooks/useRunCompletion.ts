@@ -69,6 +69,25 @@ export function useRunResults() {
     [setRunResults],
   );
 
+  const clearOutputsForSample = useCallback(
+    (runId: string, sample: DatasetSample) => {
+      setRunResults((prevRunResults) => {
+        if (!prevRunResults) {
+          return prevRunResults;
+        }
+        return prevRunResults.map((run) => {
+          if (run.id === runId) {
+            run.samples = run.samples.filter(
+              (s) => s.dataset_sample_id !== sample.id,
+            );
+          }
+          return run;
+        });
+      });
+    },
+    [setRunResults],
+  );
+
   const executeRun = useCallback(
     async (run: RunResult, dataset: Dataset) => {
       let runId = run.id;
@@ -274,6 +293,7 @@ export function useRunResults() {
     async (runs: RunResult[], sample: DatasetSample) => {
       runs.forEach(async (run) => {
         setLoadingStateForRun(run.id, true);
+        clearOutputsForSample(run.id, sample);
         for await (const chunk of streamFetch("/api/runs/execute", {
           method: "POST",
           headers: {

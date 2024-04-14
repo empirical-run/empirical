@@ -102,10 +102,20 @@ export default function Page(): JSX.Element {
 
   const onClickRunOnAllModelsForSample = useCallback(
     (sample: DatasetSample) => {
-      const runsWithoutSample = runResults.filter(
-        (run) => !run.samples.some((s) => s.dataset_sample_id === sample.id),
-      );
-      executeRunsForSample(runsWithoutSample, sample);
+      const runsToChange = runResults.filter((run) => {
+        const hasMissingOutputsForSample = !run.samples.some(
+          (s) => s.dataset_sample_id === sample.id,
+        );
+        const hasDifferentInputs = run.samples
+          .filter((s) => s.dataset_sample_id === sample.id)
+          .filter((s) =>
+            Object.keys(sample.inputs).some(
+              (key) => sample.inputs[key] !== s.inputs[key],
+            ),
+          );
+        return hasMissingOutputsForSample || hasDifferentInputs;
+      });
+      executeRunsForSample(runsToChange, sample);
     },
     [runResults],
   );
@@ -169,8 +179,17 @@ export default function Page(): JSX.Element {
               (h) => getSampleCell(r, h.runResult)!,
             );
             const inputSample = dataset!.samples?.filter((s) => s.id === r)[0];
-            const hasMissingCompletion =
-              sampleCells.filter((s) => !s).length > 0;
+            const hasEmptyCompletion = sampleCells.filter((s) => !s).length > 0;
+            const hasEditedInputs = sampleCells.some(
+              (sc) =>
+                inputSample &&
+                inputSample.inputs &&
+                sc &&
+                sc.inputs &&
+                Object.keys(inputSample.inputs).some(
+                  (key) => inputSample.inputs[key] !== sc.inputs[key],
+                ),
+            );
             return (
               <InViewElement
                 key={`run-sample-${r}`}
@@ -193,8 +212,9 @@ export default function Page(): JSX.Element {
                         }
                       }}
                       onClickRunOnAllModels={onClickRunOnAllModelsForSample}
-                      // TODO: show run button also when input is edited
-                      hasMissingCompletion={hasMissingCompletion}
+                      hasMissingCompletion={
+                        hasEditedInputs || hasEmptyCompletion
+                      }
                     />
                   </div>
                   {sampleCells.map((sample, i) => (

@@ -103,7 +103,7 @@ export default function Page(): JSX.Element {
   const onClickRunOnAllModelsForSample = useCallback(
     (sample: DatasetSample) => {
       const runsWithoutSample = runResults.filter(
-        (run) => !run.samples.some((s) => s.id === sample.id),
+        (run) => !run.samples.some((s) => s.dataset_sample_id === sample.id),
       );
       executeRunsForSample(runsWithoutSample, sample);
     },
@@ -185,7 +185,6 @@ export default function Page(): JSX.Element {
                       onSampleInputUpdate={updateDatasetSampleInput}
                       onSampleRemove={(sample) => {
                         if (dataset?.samples.length === 1) {
-                          // TODO: toast is not working
                           toast.toast({
                             title: "Cannot remove the last sample",
                           });
@@ -194,7 +193,8 @@ export default function Page(): JSX.Element {
                         }
                       }}
                       onClickRunOnAllModels={onClickRunOnAllModelsForSample}
-                      hasMissingCompletion={hasMissingCompletion} // TODO: support edits (input sample different from output sample?)
+                      // TODO: show run button also when input is edited
+                      hasMissingCompletion={hasMissingCompletion}
                     />
                   </div>
                   {sampleCells.map((sample, i) => (

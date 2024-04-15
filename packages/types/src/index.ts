@@ -123,9 +123,11 @@ export interface RunCompletion {
   created_at: Date;
 }
 
+export type DatasetSampleInputs = { [key: string]: string };
+
 export type DatasetSample = {
   id: string;
-  inputs: { [key: string]: string };
+  inputs: DatasetSampleInputs;
   expected?: string;
 };
 
@@ -136,7 +138,7 @@ export type Dataset = {
 
 export type DatasetSampleConfig = {
   id?: string;
-  inputs: { [key: string]: string };
+  inputs: DatasetSampleInputs;
   expected?: string;
 };
 
@@ -165,7 +167,7 @@ export type RunSampleOutput = {
   id?: string;
   annotations?: string[];
   scores?: Score[];
-  inputs: { [key: string]: string };
+  inputs: DatasetSampleInputs;
   output: RunOutput;
   expected?: {
     value: string;

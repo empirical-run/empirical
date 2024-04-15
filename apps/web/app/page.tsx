@@ -8,9 +8,10 @@ import { useRunResultTableView } from "../hooks/useRunResultTableView";
 import InViewElement from "../components/ui/in-view";
 import SampleCard from "../components/sample-card";
 import SampleOutputCard from "../components/sample-output-card";
-import { RunConfig } from "@empiricalrun/types";
+import { DatasetSample, RunConfig } from "@empiricalrun/types";
 import { RunDetails } from "../components/run-details";
 import { RunResult } from "../types";
+import { useToast } from "../components/ui/use-toast";
 
 export default function Page(): JSX.Element {
   const {
@@ -20,6 +21,10 @@ export default function Page(): JSX.Element {
     executeRun,
     updateRunConfigForRun,
     removeRun,
+    addDatasetSample,
+    removeDatasetSample,
+    updateDatasetSampleInput,
+    executeRunsForSample,
   } = useRunResults();
   const { tableHeaders, getSampleCell, setActiveRun, activeRun } =
     useRunResultTableView({
@@ -95,6 +100,16 @@ export default function Page(): JSX.Element {
     [activeRun, removeRun],
   );
 
+  const onClickRunOnAllModelsForSample = useCallback(
+    (sample: DatasetSample) => {
+      const runsWithoutSampleOutput = runResults.filter(
+        (run) => !run.samples.some((s) => s.dataset_sample_id === sample.id),
+      );
+      executeRunsForSample(runsWithoutSampleOutput, sample);
+    },
+    [runResults],
+  );
+
   useEffect(() => {
     if (dataset?.samples && runHeaderRowRef.current) {
       updateComparisonTableHeight();
@@ -111,6 +126,8 @@ export default function Page(): JSX.Element {
   useEffect(() => {
     updateComparisonTableHeight();
   }, [activeRun]);
+
+  const toast = useToast();
 
   return (
     <main className="relative h-screen">
@@ -152,6 +169,8 @@ export default function Page(): JSX.Element {
               (h) => getSampleCell(r, h.runResult)!,
             );
             const inputSample = dataset!.samples?.filter((s) => s.id === r)[0];
+            const hasMissingCompletion =
+              sampleCells.filter((s) => !s).length > 0;
             return (
               <InViewElement
                 key={`run-sample-${r}`}
@@ -162,6 +181,20 @@ export default function Page(): JSX.Element {
                     <SampleCard
                       sample={inputSample!}
                       inputTabs={datasetInputNames}
+                      onSampleAdd={(sample) => addDatasetSample(sample)}
+                      onSampleInputUpdate={updateDatasetSampleInput}
+                      onSampleRemove={(sample) => {
+                        if (dataset?.samples.length === 1) {
+                          toast.toast({
+                            title: "Cannot remove the last sample",
+                          });
+                        } else {
+                          removeDatasetSample(sample);
+                        }
+                      }}
+                      onClickRunOnAllModels={onClickRunOnAllModelsForSample}
+                      // TODO: show run button also when input is edited
+                      hasMissingCompletion={hasMissingCompletion}
                     />
                   </div>
                   {sampleCells.map((sample, i) => (

@@ -3,15 +3,21 @@ import { promises as fs } from "fs";
 import { loaders, hashContents } from "./loaders";
 import { DatasetError, DatasetErrorEnum } from "../../error";
 
-function parseDataset(
+const googleSheetIdentifier = "https://docs.google.com/spreadsheets/d/";
+
+async function parseDataset(
   path: string,
   contents: string,
-): DatasetSample[] | undefined {
-  const extension = path.split(".").pop();
+): Promise<DatasetSample[] | undefined> {
+  //TODO: fix this file support check
+  const extension = path.startsWith(googleSheetIdentifier)
+    ? "csv"
+    : path.split(".").pop();
 
   if (extension && loaders.has(extension)) {
     const loaderFn = loaders.get(extension)!;
-    return loaderFn(contents);
+    const dataset = await loaderFn(contents);
+    return dataset;
   } else {
     throw new DatasetError(
       DatasetErrorEnum.UNSUPPORTED_FILE_EXTENSION,
@@ -22,7 +28,12 @@ function parseDataset(
 
 async function fetchContents(path: string): Promise<string> {
   try {
-    if (path.startsWith("http")) {
+    if (path.startsWith(googleSheetIdentifier)) {
+      const documentId = path.replace(googleSheetIdentifier, "").split("/")[0];
+      const fetchPath = `https://docs.google.com/spreadsheets/d/${documentId}/export?format=csv`;
+      const resp = await fetch(fetchPath);
+      return await resp.text();
+    } else if (path.startsWith("http")) {
       const response = await fetch(path);
       return await response.text();
     } else {
@@ -49,7 +60,7 @@ export async function loadDataset(config: DatasetConfig): Promise<Dataset> {
     }));
   } else if ("path" in config) {
     contents = await fetchContents(config.path); // wrap and throw if fetching fails
-    const parsed = parseDataset(config.path, contents);
+    const parsed = await parseDataset(config.path, contents);
     if (parsed) {
       samples = parsed;
     }

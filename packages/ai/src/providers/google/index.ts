@@ -6,9 +6,9 @@ import {
 import {
   GoogleGenerativeAI,
   Content,
-  Role,
   Part,
   GenerateContentResult,
+  POSSIBLE_ROLES,
 } from "@google/generative-ai";
 //TODO: fix this import to empirical types
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
@@ -17,6 +17,8 @@ import crypto from "crypto";
 import promiseRetry from "promise-retry";
 import { AIError, AIErrorEnum } from "../../error";
 import { DEFAULT_TIMEOUT } from "../../constants";
+
+type Role = (typeof POSSIBLE_ROLES)[number];
 
 const batch = new BatchTaskManager(5);
 
@@ -64,7 +66,10 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const { model, messages } = body;
   const googleAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
   const timeout = body.timeout || DEFAULT_TIMEOUT;
-  const modelInstance = googleAI.getGenerativeModel({ model }, { timeout });
+  const modelInstance = googleAI.getGenerativeModel(
+    { model },
+    { apiVersion: "v1beta", timeout },
+  );
   const contents = massageOpenAIMessagesToGoogleAI(messages);
   const { executionDone } = await batch.waitForTurn();
   try {
@@ -92,10 +97,19 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       completionTokens = 0;
 
     try {
+      // Google's JS library does not fully support Gemini 1.5 Pro
+      // because of which the `countTokens` method needs to be requested
+      // via an older model. We have an open issue with details:
+      // https://github.com/google/generative-ai-js/issues/98
+      const tokenCounterModelInstance = model.includes("gemini-1.5")
+        ? googleAI.getGenerativeModel({
+            model: "gemini-pro",
+          })
+        : modelInstance;
       [{ totalTokens: completionTokens }, { totalTokens: promptTokens }] =
         await Promise.all([
-          modelInstance.countTokens(responseContent),
-          modelInstance.countTokens({
+          tokenCounterModelInstance.countTokens(responseContent),
+          tokenCounterModelInstance.countTokens({
             contents,
           }),
         ]);

@@ -57,6 +57,24 @@ See [dataset](../dataset/basics) to learn more about sample inputs.
 | `google` | Gemini Pro models are supported. Requires `GOOGLE_API_KEY` environment variable. |
 | `fireworks` | Models hosted on Fireworks (e.g. `dbrx-instruct`) are supported. Requires `FIREWORKS_API_KEY` environment variable. |
 
+<AccordionGroup>
+<Accordion title="Using models from Google">
+
+#### Get API key
+
+The [Google AI studio](https://aistudio.google.com/) is the easiest way to get API keys. Once you have the key,
+set it as the `GOOGLE_API_KEY` environment variable.
+
+#### Supported models
+
+We support the Gemini model codes, as defined in the [official docs](https://ai.google.dev/models/gemini).
+
+- Gemini 1.5 Pro: set `model` to `gemini-1.5-pro-latest`
+- Gemini 1 Pro: set `model` to `gemini-pro` or `gemini-1.0-pro`
+
+</Accordion>
+</AccordionGroup>
+
 ### Environment variables
 
 API calls to model providers require API keys, which are stored as environment variables. The CLI can work with:

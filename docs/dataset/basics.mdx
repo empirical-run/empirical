@@ -47,7 +47,7 @@ The LLM prompt can use this value in the prompt through the `{{user_message}}` p
 Specify a path to the JSONL file. Each line of the file should be a valid JSON object.
 On import, the keys of this JSON will be converted into inputs of the sample.
 
-If using relative paths, the path is treated relatively to the configuration file.
+If using relative paths, the path is treated relative to the configuration file.
 
 ```json
 "dataset": {
@@ -56,11 +56,7 @@ If using relative paths, the path is treated relatively to the configuration fil
 ```
 
 ## Import from CSV
-Specify a path to the CSV file. The CSV file should contain headers. 
-The column header names are used to generate inputs for the dataset sample.
-
-e.g. 
-If using relative paths, the path is treated relatively to the configuration file.
+Specify a path to the CSV file in the `empiricalrc.json`. If using relative paths, the path is treated relative to the configuration file.
 
 ```json
 "dataset": {
@@ -68,17 +64,78 @@ If using relative paths, the path is treated relatively to the configuration fil
 }
 ```
 
-## Import from Google sheet
-Specify a path to the google sheet. The sheet should contain column headers as first row.
-The column header names are used to generate inputs for the dataset sample.
-
-e.g. 
-
+The CSV file should contain headers.
+The lines of the file are converted into dataset inputs with column header names as the name of the parameter. For example:
+```csv foo.csv
+name,age
+John,25
+```
+The above CSV gets converted into the following dataset object: 
 ```json
+"dataset": {
+  "samples": [
+    {
+      "inputs": {
+        "name": "John",
+        "age": "25"
+      }
+    }
+  ]
+}
+```
+
+The above conversion enables you to create prompt with placeholders. For example: 
+```json
+{
+  "prompt": "Your name is {{name}} and you are a helpful assistant..."
+}
+```
+
+## Import from Google Sheets
+Specify a path to the Google sheet in the `empiricalrc.json`. 
+
+```json empiricalrc.json
+...
 "dataset": {
   "path": "https://docs.google.com/spreadsheets/d/1AsMekKCG74m1PbBZQN_sEJgaW0b9Xarg4ms4mhG3i5k"
 }
 ```
+Ref: [chatbot example](https://github.com/empirical-run/empirical/tree/main/examples/chatbot)
+
+The sheet should contain column headers.
+The rows of the file are converted into dataset inputs with column header names as the name of the parameter. For example:
+
+```md
+| name | age |
+| ---- | --- |
+| John | 25  |
+```
+
+The above table in the sheet gets converted into the following dataset object: 
+```json
+"dataset": {
+  "samples": [
+    {
+      "inputs": {
+        "name": "John",
+        "age": "25"
+      }
+    }
+  ]
+}
+```
+
+The above conversion enables you to create prompt with placeholders. For example: 
+```json empiricalrc.json
+{
+  ...
+  "prompt": "Your name is {{name}} and you are a helpful assistant..."
+  ...
+}
+```
+
+
+> If you wish to extract data from a specific sheet of Google Sheet, make sure to navigate to the desired sheet and copy the browser URL into `empiricalrc.json`.
 
 ## Import Empirical JSON format
 

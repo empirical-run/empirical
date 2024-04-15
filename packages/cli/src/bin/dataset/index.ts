@@ -1,6 +1,6 @@
 import { Dataset, DatasetConfig, DatasetSample } from "@empiricalrun/types";
 import { promises as fs } from "fs";
-import { loaders, hashContents } from "./loaders";
+import { loaders, hashContents, LoaderType } from "./loaders";
 import { DatasetError, DatasetErrorEnum } from "../../error";
 
 const googleSheetIdentifier = "https://docs.google.com/spreadsheets/d/";
@@ -11,7 +11,7 @@ async function parseDataset(
 ): Promise<DatasetSample[] | undefined> {
   //TODO: fix this file support check
   const extension = path.startsWith(googleSheetIdentifier)
-    ? "csv"
+    ? LoaderType.csv
     : path.split(".").pop();
 
   if (extension && loaders.has(extension)) {

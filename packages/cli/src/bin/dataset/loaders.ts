@@ -38,7 +38,16 @@ async function jsonlLoader(contents: string): Promise<DatasetSample[]> {
 }
 
 async function csvLoader(contents: string): Promise<DatasetSample[]> {
-  const data = await csv({ trim: true }).fromString(contents);
+  const emptyRowsRegexp = new RegExp(/^,*$/);
+  console.log(contents);
+  const updatedContents = contents
+    .split("\n")
+    .map((s) => (emptyRowsRegexp.test(s.trim()) ? "" : s))
+    .filter((s) => !!s)
+    .join("\n");
+  const data = await csv({ trim: true, ignoreEmpty: true }).fromString(
+    updatedContents,
+  );
   const samples = data.map((d, i) => {
     const sample: DatasetSample = {
       id: `${i + 1}`,
@@ -49,10 +58,16 @@ async function csvLoader(contents: string): Promise<DatasetSample[]> {
   return samples;
 }
 
+export enum LoaderType {
+  "csv" = "csv",
+  "json" = "json",
+  "jsonl" = "jsonl",
+}
+
 export const loaders = new Map<string, LoaderFunction>([
-  ["jsonl", jsonlLoader],
-  ["json", jsonLoader],
-  ["csv", csvLoader],
+  [LoaderType.jsonl, jsonlLoader],
+  [LoaderType.json, jsonLoader],
+  [LoaderType.csv, csvLoader],
 ]);
 
 export function hashContents(contents: string) {

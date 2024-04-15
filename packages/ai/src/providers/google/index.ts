@@ -93,9 +93,9 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       completionTokens = 0;
 
     try {
-      // The Gemini JS library does not fully support Gemini 1.5 Pro
-      // because of which the countTokens method needs to be requested via
-      // a different model. We have an open issue with details:
+      // Google's JS library does not fully support Gemini 1.5 Pro
+      // because of which the `countTokens` method needs to be requested
+      // via an older model. We have an open issue with details:
       // https://github.com/google/generative-ai-js/issues/98
       const tokenCounterModelInstance = model.includes("gemini-1.5")
         ? googleAI.getGenerativeModel({

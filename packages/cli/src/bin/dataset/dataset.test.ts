@@ -48,7 +48,7 @@ test("can load dataset from jsonl with ids", async () => {
   expect(sample?.inputs.key1).toBe("value1");
 });
 
-test("can load dataset from google sheet", async () => {
+test("load dataset from google sheet", async () => {
   const dataset = await loadDataset({
     path: "https://docs.google.com/spreadsheets/d/1AsMekKCG74m1PbBZQN_sEJgaW0b9Xarg4ms4mhG3i5k/edit#gid=0",
   });
@@ -57,7 +57,7 @@ test("can load dataset from google sheet", async () => {
   expect(dataset.samples?.[0]?.inputs).toBeDefined();
 });
 
-test("can load dataset from google sheet a specific google sheet tab", async () => {
+test("load dataset from a specific sheet of google sheet", async () => {
   const dataset = await loadDataset({
     path: "https://docs.google.com/spreadsheets/d/1AsMekKCG74m1PbBZQN_sEJgaW0b9Xarg4ms4mhG3i5k/edit#gid=1009685491",
   });
@@ -67,7 +67,7 @@ test("can load dataset from google sheet a specific google sheet tab", async () 
   expect(dataset.samples?.[0]?.inputs?.user_name).toBe("Jimmy");
 });
 
-test("load dataset with empty columns in google sheet", async () => {
+test("load dataset from csv having empty columns", async () => {
   const csvLoader = loaders.get(LoaderType.csv)!;
   const csvStr = `
   ,,,user_name,,
@@ -78,7 +78,7 @@ test("load dataset with empty columns in google sheet", async () => {
   expect(Object.keys(samples[0]?.inputs || {}).length).toBe(1);
 });
 
-test("load dataset with initial empty rows", async () => {
+test("load dataset from csv having empty columns", async () => {
   const csvLoader = loaders.get(LoaderType.csv)!;
   const csvStr = `
   ,,,,,

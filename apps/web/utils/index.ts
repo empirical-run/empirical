@@ -17,14 +17,14 @@ export function aggregateRunStats(
   return {
     outputs: sumObjectsByKey(oldStats?.outputs || {}, newStats.outputs),
     scores: newStats.scores.map((score) => {
-      const newScore = oldStats?.scores.find((s) => s.name === score.name);
-      const count = score.count + (newScore?.count || 0);
+      const oldScore = oldStats?.scores.find((s) => s.name === score.name);
+      const count = score.count + (oldScore?.count || 0);
       return {
         name: score.name,
         count,
         avgScore:
           (score.count * score.avgScore +
-            (newScore?.count || 0) * (newScore?.avgScore || 0)) /
+            (oldScore?.count || 0) * (oldScore?.avgScore || 0)) /
           count,
       };
     }),

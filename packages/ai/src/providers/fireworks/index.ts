@@ -6,13 +6,11 @@ import {
 import { BatchTaskManager, getPassthroughParams } from "../../utils";
 import { AIError, AIErrorEnum } from "../../error";
 import promiseRetry from "promise-retry";
-import { DEFAULT_TIMEOUT } from "../../constants";
 
 const batchTaskManager = new BatchTaskManager(10);
 
 const createChatCompletion: ICreateChatCompletion = async (body) => {
   const { model, messages, ...config } = body;
-  const timeout = config.timeout || DEFAULT_TIMEOUT;
   if (config.timeout) {
     delete config.timeout;
   }
@@ -43,9 +41,6 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     const startedAt = Date.now();
     const completion = await promiseRetry<IChatCompletion>(
       (retry) => {
-        const timeoutId = setTimeout(() => {
-          console.warn(`Request timed out after ${timeout} ms. Retrying...`);
-        }, timeout);
         return fetch("https://api.fireworks.ai/inference/v1/chat/completions", {
           method: "POST",
           headers: {
@@ -54,31 +49,28 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
             Authorization: `Bearer ${apiKey}`,
           },
           body: payload,
-        })
-          .then(async (response) => {
-            const parsed = await response.json();
+        }).then(async (response) => {
+          const parsed = await response.json();
 
-            if (response.status === 200) {
-              return parsed;
-            } else if (response.status === 400) {
-              throw new AIError(
-                AIErrorEnum.INCORRECT_PARAMETERS,
-                `Incorrect request payload: ${parsed.error?.message || "Unknown error"}`,
-              );
-            } else if (response.status === 429 || response.status >= 500) {
-              const err = new AIError(
-                AIErrorEnum.RATE_LIMITED,
-                "Fireworks API rate limit reached",
-              );
-              retry(err);
-              throw err;
-            }
-          })
-          .finally(() => clearTimeout(timeoutId));
+          if (response.status === 200) {
+            return parsed;
+          } else if (response.status === 400) {
+            throw new AIError(
+              AIErrorEnum.INCORRECT_PARAMETERS,
+              `Incorrect request payload: ${parsed.error?.message || "Unknown error"}`,
+            );
+          } else if (response.status === 429 || response.status >= 500) {
+            const err = new AIError(
+              AIErrorEnum.RATE_LIMITED,
+              "Fireworks API rate limit reached",
+            );
+            retry(err);
+            throw err;
+          }
+        });
       },
       {
         randomize: true,
-        maxTimeout: timeout,
       },
     );
     const latency = Date.now() - startedAt;

@@ -70,9 +70,6 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     const startedAt = Date.now();
     const response = await promiseRetry<Anthropic.Messages.Message>(
       (retry) => {
-        const timeoutId = setTimeout(() => {
-          console.warn(`Request timed out after ${timeout} ms. Retrying...`);
-        }, timeout);
         return anthropic.messages
           .create({
             model: canonicalModelName(model),
@@ -99,9 +96,6 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
               throw err;
             }
             return err;
-          })
-          .finally(() => {
-            clearTimeout(timeoutId);
           });
       },
       {
@@ -142,7 +136,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     executionDone();
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `Failed chat completion for model ${body.model}: ${(e as Error).message}`,
+      `Failed to fetch output from model ${body.model}: ${(e as Error).message}`,
     );
   }
 };

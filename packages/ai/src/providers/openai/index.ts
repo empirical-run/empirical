@@ -22,38 +22,30 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   }
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-    timeout: timeout,
+    timeout,
   });
 
   try {
     const startedAt = Date.now();
     const completions = await promiseRetry<IChatCompletion>(
       (retry) => {
-        const timeoutId = setTimeout(() => {
-          console.warn(`Request timed out after ${timeout} ms. Retrying...`);
-        }, timeout);
-        return openai.chat.completions
-          .create(body)
-          .catch((err) => {
-            if (
-              err instanceof OpenAI.RateLimitError &&
-              err.type === "insufficient_quota"
-            ) {
-              throw err;
-            } else if (
-              err instanceof OpenAI.RateLimitError ||
-              err instanceof OpenAI.APIConnectionError ||
-              err instanceof OpenAI.APIConnectionTimeoutError ||
-              err instanceof OpenAI.InternalServerError
-            ) {
-              retry(err);
-              throw err;
-            }
+        return openai.chat.completions.create(body).catch((err) => {
+          if (
+            err instanceof OpenAI.RateLimitError &&
+            err.type === "insufficient_quota"
+          ) {
             throw err;
-          })
-          .finally(() => {
-            clearTimeout(timeoutId);
-          });
+          } else if (
+            err instanceof OpenAI.RateLimitError ||
+            err instanceof OpenAI.APIConnectionError ||
+            err instanceof OpenAI.APIConnectionTimeoutError ||
+            err instanceof OpenAI.InternalServerError
+          ) {
+            retry(err);
+            throw err;
+          }
+          throw err;
+        });
       },
       {
         randomize: true,
@@ -65,7 +57,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   } catch (err) {
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `Failed completion for OpenAI ${body.model}: ${(err as any)?.error?.message}`,
+      `Failed to fetch output from model ${body.model}: ${(err as any)?.error?.message}`,
     );
   }
 };

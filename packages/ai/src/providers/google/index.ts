@@ -71,17 +71,13 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     const startedAt = Date.now();
     const completion = await promiseRetry<GenerateContentResult>(
       (retry) => {
-        const timeoutId = setTimeout(() => {
-          console.warn(`Request timed out after ${timeout} ms. Retrying...`);
-        }, timeout);
         // TODO: move to model.startChat which support model config (e.g. temperature)
         return modelInstance
           .generateContent({ contents })
           .catch((err: Error) => {
             retry(err);
             throw err;
-          })
-          .finally(() => clearTimeout(timeoutId));
+          });
       },
       {
         randomize: true,
@@ -136,7 +132,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     executionDone();
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `Failed chat completion for model ${body.model} with message ${(e as Error).message}`,
+      `Failed to fetch output from model ${body.model} with message ${(e as Error).message}`,
     );
   }
 };

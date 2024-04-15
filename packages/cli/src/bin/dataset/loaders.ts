@@ -38,7 +38,7 @@ async function jsonlLoader(contents: string): Promise<DatasetSample[]> {
 }
 
 async function csvLoader(contents: string): Promise<DatasetSample[]> {
-  const data = await csv().fromString(contents);
+  const data = await csv({ trim: true }).fromString(contents);
   const samples = data.map((d, i) => {
     const sample: DatasetSample = {
       id: `${i + 1}`,

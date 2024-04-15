@@ -16,6 +16,7 @@ import { BatchTaskManager } from "../../utils";
 import crypto from "crypto";
 import promiseRetry from "promise-retry";
 import { AIError, AIErrorEnum } from "../../error";
+import { DEFAULT_TIMEOUT } from "../../constants";
 
 type Role = (typeof POSSIBLE_ROLES)[number];
 
@@ -64,9 +65,10 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   }
   const { model, messages } = body;
   const googleAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
+  const timeout = body.timeout || DEFAULT_TIMEOUT;
   const modelInstance = googleAI.getGenerativeModel(
     { model },
-    { apiVersion: "v1beta" },
+    { apiVersion: "v1beta", timeout },
   );
   const contents = massageOpenAIMessagesToGoogleAI(messages);
   const { executionDone } = await batch.waitForTurn();
@@ -84,7 +86,6 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       },
       {
         randomize: true,
-        minTimeout: 2000,
       },
     );
     executionDone();
@@ -145,7 +146,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     executionDone();
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `failed chat completion for model ${body.model} with message ${(e as Error).message}`,
+      `Failed to fetch output from model ${body.model} with message ${(e as Error).message}`,
     );
   }
 };

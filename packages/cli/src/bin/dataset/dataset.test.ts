@@ -1,5 +1,6 @@
 import { expect, test, vi } from "vitest";
 import { loadDataset } from "./index";
+import { LoaderType, loaders } from "./loaders";
 
 test("can load dataset without any ids", async () => {
   const dataset = await loadDataset({
@@ -45,4 +46,46 @@ test("can load dataset from jsonl with ids", async () => {
   const sample = dataset?.samples[0];
   expect(sample?.id).toBe("1");
   expect(sample?.inputs.key1).toBe("value1");
+});
+
+test("load dataset from google sheet", async () => {
+  const dataset = await loadDataset({
+    path: "https://docs.google.com/spreadsheets/d/1AsMekKCG74m1PbBZQN_sEJgaW0b9Xarg4ms4mhG3i5k/edit#gid=0",
+  });
+  expect(dataset.id).toBeDefined();
+  expect(dataset.samples?.[0]?.id).toBeDefined();
+  expect(dataset.samples?.[0]?.inputs).toBeDefined();
+});
+
+test("load dataset from a specific sheet of google sheet", async () => {
+  const dataset = await loadDataset({
+    path: "https://docs.google.com/spreadsheets/d/1AsMekKCG74m1PbBZQN_sEJgaW0b9Xarg4ms4mhG3i5k/edit#gid=1009685491",
+  });
+  expect(dataset.id).toBeDefined();
+  expect(dataset.samples?.[0]?.id).toBeDefined();
+  expect(dataset.samples?.[0]?.inputs).toBeDefined();
+  expect(dataset.samples?.[0]?.inputs?.user_name).toBe("Jimmy");
+});
+
+test("load dataset from csv having empty columns", async () => {
+  const csvLoader = loaders.get(LoaderType.csv)!;
+  const csvStr = `
+  ,,,user_name,,
+  ,,,john,,
+  `;
+  const samples = await csvLoader(csvStr);
+  expect(samples[0]?.inputs?.user_name).toBe("john");
+  expect(Object.keys(samples[0]?.inputs || {}).length).toBe(1);
+});
+
+test("load dataset from csv having empty columns", async () => {
+  const csvLoader = loaders.get(LoaderType.csv)!;
+  const csvStr = `
+  ,,,,,
+  ,,,user_name,,
+  ,,,john,,
+  `;
+  const samples = await csvLoader(csvStr);
+  expect(samples[0]?.inputs?.user_name).toBe("john");
+  expect(Object.keys(samples[0]?.inputs || {}).length).toBe(1);
 });

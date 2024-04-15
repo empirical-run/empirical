@@ -7,6 +7,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
+import {
+  TriangleRightIcon,
+  PlusCircledIcon,
+  MinusCircledIcon,
+} from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
 import { ArrowTopRightIcon } from "@radix-ui/react-icons";
 import CodeViewer from "./ui/code-viewer";
@@ -16,10 +21,20 @@ export function JsonAsTab({
   storeKey = "",
   data,
   defaultTabs,
+  showRunButton,
+  onSampleAdd,
+  onSampleRemove,
+  onEditorContentUpdate,
+  onClickRunAll,
 }: {
   storeKey: string;
   data: { [key: string]: any };
   defaultTabs?: string[];
+  showRunButton?: boolean;
+  onSampleAdd?: () => void;
+  onSampleRemove?: () => void;
+  onEditorContentUpdate?: (key: string, value: string) => void;
+  onClickRunAll?: () => void;
 }) {
   const tabs = useMemo(
     () => defaultTabs || Object.keys(data),
@@ -59,13 +74,44 @@ export function JsonAsTab({
                         ? activeTabValue
                         : JSON.stringify(activeTabValue, null, 2)
                     }
-                    readOnly
+                    readOnly // expand sheet is readonly
                     scrollable
                     language="json"
                   />
                 </div>
               </SheetContent>
             </Sheet>
+          )}
+          {onClickRunAll && showRunButton && (
+            <Button
+              variant={"secondary"}
+              size={"xs"}
+              className="flex flex-row pl-1"
+              onClick={onClickRunAll}
+            >
+              <TriangleRightIcon width={18} height={18} />
+              <span>Run this row</span>
+            </Button>
+          )}
+          {onSampleAdd && (
+            <Button
+              variant={"link"}
+              size={"xs"}
+              onClick={() => onSampleAdd()}
+              className=" self-end justify-end p-0"
+            >
+              <PlusCircledIcon />
+            </Button>
+          )}
+          {onSampleRemove && (
+            <Button
+              variant={"link"}
+              size={"xs"}
+              onClick={() => onSampleRemove()}
+              className=" self-end justify-end p-0"
+            >
+              <MinusCircledIcon />
+            </Button>
           )}
         </>
       </div>
@@ -99,8 +145,9 @@ export function JsonAsTab({
                       : JSON.stringify(value, null, 2)
                   }
                   language="json"
-                  readOnly
+                  readOnly={false}
                   scrollable
+                  onChange={(value) => onEditorContentUpdate?.(key, value!)}
                 />
               </TabsContent>
             );

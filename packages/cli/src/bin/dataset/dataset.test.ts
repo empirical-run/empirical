@@ -49,7 +49,7 @@ test("can load dataset from jsonl with ids", async () => {
 
 test("can load dataset from google sheet", async () => {
   const dataset = await loadDataset({
-    path: "https://docs.google.com/spreadsheets/d/1AsMekKCG74m1PbBZQN_sEJgaW0b9Xarg4ms4mhG3i5k/edit?format=csv#gid=0",
+    path: "https://docs.google.com/spreadsheets/d/1AsMekKCG74m1PbBZQN_sEJgaW0b9Xarg4ms4mhG3i5k/edit#gid=0",
   });
   expect(dataset.id).toBeDefined();
   expect(dataset.samples?.[0]?.id).toBeDefined();

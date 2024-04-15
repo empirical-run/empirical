@@ -31,7 +31,13 @@ async function fetchContents(path: string): Promise<string> {
     if (path.startsWith(googleSheetIdentifier)) {
       const documentId = path.replace(googleSheetIdentifier, "").split("/")[0];
       const fetchPath = `https://docs.google.com/spreadsheets/d/${documentId}/export?format=csv`;
-      const resp = await fetch(fetchPath);
+      // extract hash params from URL
+      const pathUrl = new URL(path.replaceAll("#", "?"));
+      const fetchUrl = new URL(fetchPath);
+      pathUrl.searchParams.forEach((value, name) =>
+        fetchUrl.searchParams.append(name, value),
+      );
+      const resp = await fetch(fetchUrl.toString());
       return await resp.text();
     } else if (path.startsWith("http")) {
       const response = await fetch(path);

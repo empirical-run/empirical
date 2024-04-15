@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 importers:
 
   .:
@@ -7923,7 +7927,3 @@ packages:
       which: 3.0.1
       yaml: 2.4.1
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false

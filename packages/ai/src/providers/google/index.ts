@@ -6,7 +6,6 @@ import {
 import {
   GoogleGenerativeAI,
   Content,
-  Role,
   Part,
   GenerateContentResult,
 } from "@google/generative-ai";
@@ -29,7 +28,7 @@ const massageOpenAIMessagesToGoogleAI = function (
   }
   const filteredMessages = messages.filter((m) => m.role !== "system");
   const contents = filteredMessages.map((m) => {
-    let role: Role = "user";
+    let role: "user" | "model" | "function" = "user";
     let parts: Part[] = [];
     if (m.role === "assistant") {
       role = "model";
@@ -62,7 +61,10 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   }
   const { model, messages } = body;
   const googleAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
-  const modelInstance = googleAI.getGenerativeModel({ model });
+  const modelInstance = googleAI.getGenerativeModel(
+    { model },
+    { apiVersion: "v1beta" },
+  );
   const contents = massageOpenAIMessagesToGoogleAI(messages);
   const { executionDone } = await batch.waitForTurn();
   try {
@@ -91,10 +93,19 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       completionTokens = 0;
 
     try {
+      // The Gemini JS library does not fully support Gemini 1.5 Pro
+      // because of which the countTokens method needs to be requested via
+      // a different model. We have an open issue with details:
+      // https://github.com/google/generative-ai-js/issues/98
+      const tokenCounterModelInstance = model.includes("gemini-1.5")
+        ? googleAI.getGenerativeModel({
+            model: "gemini-pro",
+          })
+        : modelInstance;
       [{ totalTokens: completionTokens }, { totalTokens: promptTokens }] =
         await Promise.all([
-          modelInstance.countTokens(responseContent),
-          modelInstance.countTokens({
+          tokenCounterModelInstance.countTokens(responseContent),
+          tokenCounterModelInstance.countTokens({
             contents,
           }),
         ]);

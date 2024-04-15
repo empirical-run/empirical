@@ -55,6 +55,31 @@ If using relative paths, the path is treated relatively to the configuration fil
 }
 ```
 
+## Import from CSV
+Specify a path to the CSV file. The CSV file should contain headers. 
+The column header names are converted to keys for dataset sample `inputs`.
+
+e.g. 
+If using relative paths, the path is treated relatively to the configuration file.
+
+```json
+"dataset": {
+  "path": "foo.csv"
+}
+```
+
+## Import from google sheet
+Specify a path to the google sheet. The sheet should contain column headers as first row.
+The column header names are converted to keys for dataset sample `inputs`.
+
+e.g. 
+
+```json
+"dataset": {
+  "path": "https://docs.google.com/spreadsheets/d/1AsMekKCG74m1PbBZQN_sEJgaW0b9Xarg4ms4mhG3i5k"
+}
+```
+
 ## Import Empirical JSON format
 
 If your dataset follows the Empirical JSON format, you can import that from
@@ -65,3 +90,7 @@ a file or HTTP endpoint.
   "path": "https://assets.empirical.run/datasets/json/spider-tiny.json"
 }
 ```
+
+
+
+

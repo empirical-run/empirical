@@ -1,13 +1,19 @@
-import { RunUpdateType } from "@empiricalrun/types";
+import { Dataset, RunUpdateType } from "@empiricalrun/types";
 import { LocalRunMetadataStore } from "./run-metadata";
 import { LocalRunStore } from "./run";
+import { LocalDatasetMetadataStore } from "./dataset-metadata/local";
+import { LocalDatasetStore } from "./dataset/local";
 
 export class LocalStore {
   runMetadataStore;
   runStore;
+  datasetMetadataStore;
+  datasetStore;
   constructor() {
     this.runMetadataStore = new LocalRunMetadataStore();
     this.runStore = new LocalRunStore();
+    this.datasetMetadataStore = LocalDatasetMetadataStore;
+    this.datasetStore = LocalDatasetStore;
   }
   getRunRecorder = () => {
     return async (update: RunUpdateType) => {
@@ -24,6 +30,17 @@ export class LocalStore {
         await this.runStore.updateRunSampleScore(update);
       } else {
         console.warn("store got a noop update", JSON.stringify(update));
+      }
+    };
+  };
+
+  getDatasetRecorder = () => {
+    return async (update: Dataset) => {
+      if (update) {
+        await Promise.allSettled([
+          this.datasetMetadataStore.addDatasetMetadata(update),
+          this.datasetStore.addDataset(update),
+        ]);
       }
     };
   };

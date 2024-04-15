@@ -7,6 +7,7 @@ import {
   RunUpdateType,
   RunMetadataUpdate,
   RunSampleUpdate,
+  RunSampleScoreUpdate,
 } from "@empiricalrun/types";
 import { generateHex } from "../../utils";
 import score from "@empiricalrun/scorer";
@@ -37,6 +38,7 @@ export async function execute(
   };
   store = store ? store : new EmpiricalStore();
   const recorder = store.getRunRecorder();
+  const datasetRecorder = store.getDatasetRecorder();
   const data: RunMetadataUpdate = {
     type: "run_metadata",
     data: {
@@ -95,9 +97,9 @@ export async function execute(
             sample.scores = scores;
             return sample;
           })
-          .then((sample) => {
+          .then(async (sample) => {
             try {
-              progressCallback?.({
+              const data: RunSampleScoreUpdate = {
                 type: "run_sample_score",
                 data: {
                   run_id: sample.run_id,
@@ -105,7 +107,9 @@ export async function execute(
                   dataset_sample_id: sample.dataset_sample_id,
                   scores: sample.scores || [],
                 },
-              });
+              };
+              progressCallback?.(data);
+              await recorder(data);
             } catch (e) {
               console.warn(e);
             }
@@ -116,7 +120,7 @@ export async function execute(
     }
   }
 
-  await Promise.allSettled(completionsPromises);
+  await Promise.allSettled([...completionsPromises, datasetRecorder(dataset)]);
 
   return {
     id: runId,

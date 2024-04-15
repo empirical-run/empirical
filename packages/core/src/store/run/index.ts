@@ -1,5 +1,6 @@
 import {
   RunMetadataUpdate,
+  RunSampleOutput,
   RunSampleScoreUpdate,
   RunSampleUpdate,
 } from "@empiricalrun/types";
@@ -37,28 +38,40 @@ export class LocalRunStore {
     try {
       const dbInstance = await getLocalDBInstance();
       const statement = `insert into runs${update.data.run_id} values(null, '${JSON.stringify({ ...update.data, scores: [] }).replaceAll("'", "''")}')`;
-      console.log(statement);
       await dbInstance.exec(statement);
       const fullPath = `${cachePath}/${update.data.run_id}.jsonl`;
       await dbInstance.exec(`copy runs${update.data.run_id} to '${fullPath}'`);
-      console.log(`${fullPath} updated`);
     } catch (e) {
       console.error(
         `Failed to record run sample output for run: ${update.data.run_id} with dataset sample id: ${update.data.dataset_sample_id} `,
       );
       console.error(e);
     }
-    return update;
   }
-  updateRunSampleScore(update: RunSampleScoreUpdate) {
-    // try {
-    //   const dbInstance = await getLocalDBInstance();
-    //   const statement = `update `;
-    // } catch (e) {
-    //   console.error(
-    //     `Failed to record score for run ${update.data.run_id} and dataset sample id ${update.data.dataset_sample_id}`,
-    //   );
-    // }
-    return update;
+  async updateRunSampleScore(update: RunSampleScoreUpdate) {
+    try {
+      const dbInstance = await getLocalDBInstance();
+      const statement = `select sample from runs${update.data.run_id} where sample.dataset_sample_id = ${update.data.dataset_sample_id}`;
+      const [resp] = await dbInstance.all(statement);
+      if (resp) {
+        const runSampleOutput = JSON.parse(resp.sample) as RunSampleOutput;
+        const deleteStatement = `delete from runs${update.data.run_id} where sample.dataset_sample_id = ${update.data.dataset_sample_id}`;
+        await dbInstance.exec(deleteStatement);
+        runSampleOutput.scores = update.data.scores;
+        const updateStatement = `insert into runs${update.data.run_id} values( null, '${JSON.stringify(runSampleOutput).replaceAll("'", "''")}')`;
+        await dbInstance.exec(updateStatement);
+        const fullPath = `${cachePath}/${update.data.run_id}.jsonl`;
+        await dbInstance.exec(
+          `copy runs${update.data.run_id} to '${fullPath}'`,
+        );
+      } else {
+        console.error("Failed to find run sample to update score");
+      }
+    } catch (e) {
+      console.error(
+        `Failed to record score for run ${update.data.run_id} and dataset sample id ${update.data.dataset_sample_id}`,
+      );
+      console.error(e);
+    }
   }
 }

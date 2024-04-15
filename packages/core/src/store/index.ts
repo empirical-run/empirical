@@ -9,6 +9,10 @@ export class EmpiricalStore {
   getRunRecorder() {
     return this.store.getRunRecorder();
   }
+
+  getDatasetRecorder() {
+    return this.store.getDatasetRecorder();
+  }
   getRunDetails() {
     // return this.store.getRunDetails();
   }

@@ -21,6 +21,26 @@ test("sql-syntax works with backticks", async () => {
   ]);
 });
 
+test("sql-syntax fails with empty output", async () => {
+  expect(
+    await checkSqlSyntax({
+      sample: { id: "1", inputs: {} },
+      output: {
+        value: "",
+      },
+      config: {
+        type: "sql-syntax",
+      },
+    }),
+  ).toStrictEqual([
+    {
+      score: 0,
+      name: "sql-syntax",
+      message: "Output is empty",
+    },
+  ]);
+});
+
 test("sql-syntax works with markdown", async () => {
   expect(
     await checkSqlSyntax({

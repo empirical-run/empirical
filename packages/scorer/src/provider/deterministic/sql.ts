@@ -11,12 +11,12 @@ export const checkSqlSyntax: ScoringFn = async ({ output }) => {
   let isSQLQuery = false;
   let inValidSQLMsg = "SQL is invalid";
   const parser = new Parser();
-  if (!output) {
+  if (!output || !output.value) {
     return [
       {
         score: 0,
         name: syntaxName,
-        message: "output is empty",
+        message: "Output is empty",
       },
     ];
   }

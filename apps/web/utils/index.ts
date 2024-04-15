@@ -41,13 +41,12 @@ export function statsAfterRemoved(
   }
   const { scores, outputs } = stats;
   const foundSample = samples.find((s) => s.dataset_sample_id === sample.id);
-  const changeInSuccess = foundSample && foundSample.output.value ? 1 : 0;
-  const changeInFailed = foundSample && !foundSample.output.value ? 1 : 0;
+  const keyToChange = foundSample && foundSample.error ? "failed" : "success";
   return {
     outputs: {
-      count: outputs.count - 1,
-      success: outputs.success - changeInSuccess,
-      failed: outputs.failed - changeInFailed,
+      ...outputs,
+      count: foundSample ? outputs.count - 1 : outputs.count,
+      [keyToChange]: outputs[keyToChange] - 1,
     },
     scores: scores.map((score) => {
       const foundScore =

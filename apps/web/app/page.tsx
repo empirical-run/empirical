@@ -102,10 +102,10 @@ export default function Page(): JSX.Element {
 
   const onClickRunOnAllModelsForSample = useCallback(
     (sample: DatasetSample) => {
-      const runsWithoutSample = runResults.filter(
+      const runsWithoutSampleOutput = runResults.filter(
         (run) => !run.samples.some((s) => s.dataset_sample_id === sample.id),
       );
-      executeRunsForSample(runsWithoutSample, sample);
+      executeRunsForSample(runsWithoutSampleOutput, sample);
     },
     [runResults],
   );

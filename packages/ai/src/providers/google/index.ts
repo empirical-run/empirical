@@ -55,14 +55,14 @@ const massageOpenAIMessagesToGoogleAI = function (
 };
 
 const createChatCompletion: ICreateChatCompletion = async (body) => {
-  if (!process.env.GEMINI_API_KEY) {
+  if (!process.env.GOOGLE_API_KEY) {
     throw new AIError(
       AIErrorEnum.MISSING_PARAMETERS,
-      "process.env.GEMINI_API_KEY is not set",
+      "process.env.GOOGLE_API_KEY is not set",
     );
   }
   const { model, messages } = body;
-  const googleAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+  const googleAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
   const timeout = body.timeout || DEFAULT_TIMEOUT;
   const modelInstance = googleAI.getGenerativeModel({ model }, { timeout });
   const contents = massageOpenAIMessagesToGoogleAI(messages);

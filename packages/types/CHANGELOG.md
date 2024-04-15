@@ -1,5 +1,11 @@
 # @empiricalrun/types
 
+## 0.3.1
+
+### Patch Changes
+
+- a94aa16: feat: add stop reason and token usage metrics to run output
+
 ## 0.3.0
 
 ### Minor Changes

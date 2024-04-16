@@ -54,7 +54,8 @@ test("sql-syntax works with markdown", async () => {
     {
       score: 0,
       name: "sql-syntax",
-      message: "SQL is invalid",
+      message:
+        'Expected "#", "$", "(", "+", "-", "--", "/*", ";", "@", "@@", "ALTER", "CALL", "CREATE", "DELETE", "DESC", "DESCRIBE", "DROP", "GO", "GRANT", "INSERT", "LOCK", "RENAME", "REPLACE", "SELECT", "SET", "SHOW", "TRUNCATE", "UNLOCK", "UPDATE", "USE", "WITH", "return", [ \\t\\n\\r], [0-9], [A-Za-z_], or end of input but "`" found.',
     },
   ]);
 });

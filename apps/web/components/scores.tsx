@@ -1,6 +1,5 @@
 import { Score } from "@empiricalrun/types";
 import ScoreBadge from "./ui/score-badge";
-import { Separator } from "./ui/separator";
 import { DoubleArrowDownIcon, DoubleArrowUpIcon } from "@radix-ui/react-icons";
 import { useScoresView } from "../hooks/useScoresView";
 import { Button } from "./ui/button";
@@ -28,12 +27,6 @@ export function Scores({ scores }: { scores: Score[] }) {
                   </p>
                 )}
               </div>
-              {expandState && (
-                <Separator
-                  className="w-full self-center"
-                  orientation="horizontal"
-                />
-              )}
             </>
           );
         })}

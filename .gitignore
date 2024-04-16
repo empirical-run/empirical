@@ -45,3 +45,4 @@ packages/**/empiricalrc.json
 .empiricalrun
 arxiv-papers
 examples/humaneval/HumanEval.jsonl
+examples/spider/concert_singer.db

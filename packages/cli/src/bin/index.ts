@@ -165,6 +165,7 @@ program
       console.log(buildErrorLog(`${code}: ${message}`));
       process.exit(1);
     }
+    process.exit(0);
   });
 
 const defaultWebUIPort = 1337;

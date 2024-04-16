@@ -209,14 +209,17 @@ program
       const dbInstance = await getLocalDBInstance();
       const tableName = `runs${req.params.id}`;
       const path = `.empiricalrun/runs/${req.params.id}.jsonl`;
+      // TODO: find a better solve for scenarios where this table exists
+      // currently it throws error while doing unnest
+      await dbInstance.exec(`drop table if exists ${tableName}`);
       await dbInstance.exec(
-        `create table ${tableName} as select * from read_json_auto('${path}')`,
+        `create table if not exists ${tableName} as select * from read_json_auto('${path}')`,
       );
       const messages = await dbInstance.all(
-        `select score.name, score.message as message, score.score, count(*) as count from ${tableName}, unnest(sample.scores) t(score) group by 1,2,3 order by 4 desc, 1 asc`,
+        `select score.name, score.message as message, score.score, count(*) as count from ${tableName}, unnest(sample.scores) t(score) where sample is not null group by 1,2,3 order by 4 desc, 1 asc`,
       );
       const scores = await dbInstance.all(
-        `select score.name, score.score, count(*) as count from ${tableName}, unnest(sample.scores) t(score) group by 1,2 order by 3 desc, 1 asc`,
+        `select score.name, score.score, count(*) as count from ${tableName}, unnest(sample.scores) t(score) where sample is not null group by 1,2 order by 3 desc, 1 asc`,
       );
 
       const messagesResp = JSON.parse(
@@ -270,7 +273,8 @@ program
       };
       const streamUpdate = (obj: any) => res.write(JSON.stringify(obj) + `\n`);
       // This endpoint expects to execute only one run
-      const completion = await execute(runs[0]!, dataset, streamUpdate);
+      let store = persistToFile ? new EmpiricalStore() : undefined;
+      const completion = await execute(runs[0]!, dataset, streamUpdate, store);
       setRunSummary([completion]);
       const statsUpdate: RunStatsUpdate = {
         type: "run_stats",

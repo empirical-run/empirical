@@ -13,9 +13,9 @@ export class LocalRunMetadataStore {
   private async getDBInstance() {
     const dbInstance = await getLocalDBInstance();
     const cwd = process.cwd();
-    this.fullPath = `${cwd}/${cachePath}/${fileName}`;
     let cmd = "";
-    if (!fs.existsSync(`${this.fullPath}`)) {
+    const fullPath = `${process.cwd()}/${cachePath}/${fileName}`;
+    if (!fs.existsSync(`${fullPath}`)) {
       fs.mkdirSync(`${cwd}/${cachePath}`, { recursive: true });
       fs.writeFileSync(this.fullPath, "");
       cmd = `create table runs (run JSON)`;

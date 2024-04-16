@@ -7,7 +7,11 @@ import path from "path";
 import opener from "opener";
 import dotenv from "dotenv";
 import packageJSON from "../../package.json";
-import { EmpiricalStore, execute } from "@empiricalrun/core";
+import {
+  EmpiricalStore,
+  execute,
+  getLocalDBInstance,
+} from "@empiricalrun/core";
 import { RunsConfig } from "../types";
 import { loadDataset } from "./dataset";
 import { DatasetError } from "../error";
@@ -118,18 +122,24 @@ program
         name: "Scores ",
       });
     }
+    const store = new EmpiricalStore();
     const completion = await Promise.all(
       runs.map((r) => {
         r.parameters = r.parameters ? r.parameters : {};
         r.parameters.pythonPath = options.pythonPath;
-        return execute(r, dataset, (update) => {
-          if (update.type === "run_sample") {
-            progressBar.increment();
-          }
-          if (update.type === "run_sample_score") {
-            scoresProgressBar?.increment(update.data.scores.length);
-          }
-        });
+        return execute(
+          r,
+          dataset,
+          (update) => {
+            if (update.type === "run_sample") {
+              progressBar.increment();
+            }
+            if (update.type === "run_sample_score") {
+              scoresProgressBar?.increment(update.data.scores.length);
+            }
+          },
+          store,
+        );
       }),
     );
     cliProgressBar.stop();
@@ -196,6 +206,39 @@ program
     app.use(express.json({ limit: "50mb" }));
     app.use(express.static(path.join(__dirname, "../webapp")));
     app.get("/api/results", (req, res) => res.sendFile(outputFilePath));
+    app.get("/api/runs/:id/score/distribution", async (req, res) => {
+      const dbInstance = await getLocalDBInstance();
+      const tableName = `runs${req.params.id}`;
+      const path = `.empiricalrun/runs/${req.params.id}.jsonl`;
+      await dbInstance.exec(
+        `create table ${tableName} as select * from read_json_auto('${path}')`,
+      );
+      const messages = await dbInstance.all(
+        `select score.name, score.message as message, score.score, count(*) as count from ${tableName}, unnest(sample.scores) t(score) group by 1,2,3 order by 4 desc, 1 asc`,
+      );
+      const scores = await dbInstance.all(
+        `select score.name, score.score, count(*) as count from ${tableName}, unnest(sample.scores) t(score) group by 1,2 order by 3 desc, 1 asc`,
+      );
+
+      const messagesResp = JSON.parse(
+        JSON.stringify(messages, (key, value) =>
+          typeof value === "bigint" ? Number(value) : value,
+        ),
+      );
+      const scoresResp = JSON.parse(
+        JSON.stringify(scores, (key, value) =>
+          typeof value === "bigint" ? Number(value) : value,
+        ),
+      );
+      await dbInstance.exec(`drop table ${tableName}`);
+      res.send({
+        success: true,
+        data: {
+          scores: scoresResp,
+          messages: messagesResp,
+        },
+      });
+    });
     app.delete("/api/runs/:id", async (req, res) => {
       try {
         const file = await fs.readFile(outputFilePath);

@@ -18,13 +18,11 @@ function generateRunId(): string {
   return generateHex(4);
 }
 
-//TODO: move this
-let store: EmpiricalStore | null = null;
-
 export async function execute(
   runConfig: RunConfig,
   dataset: Dataset,
   progressCallback?: (sample: RunUpdateType) => void,
+  store?: EmpiricalStore,
 ): Promise<RunCompletion> {
   const runCreationDate = new Date();
   const runId = generateRunId();
@@ -36,8 +34,7 @@ export async function execute(
     ...runConfig,
     name: runConfig.name || getDefaultRunName(runConfig, runId),
   };
-  store = store ? store : new EmpiricalStore();
-  const recorder = store.getRunRecorder();
+  const recorder = store?.getRunRecorder();
   const data: RunMetadataUpdate = {
     type: "run_metadata",
     data: {
@@ -49,7 +46,7 @@ export async function execute(
       created_at: runCreationDate,
     },
   };
-  recorder(data);
+  recorder?.(data);
   progressCallback?.(data);
   for (const datasetSample of dataset.samples) {
     const transform = getTransformer(runConfig);
@@ -75,7 +72,7 @@ export async function execute(
                 data: sample,
               };
               progressCallback?.(update);
-              await recorder(update);
+              await recorder?.(update);
             } catch (e) {
               console.warn(e);
             }
@@ -108,7 +105,7 @@ export async function execute(
                 },
               };
               progressCallback?.(data);
-              await recorder(data);
+              await recorder?.(data);
             } catch (e) {
               console.warn(e);
             }

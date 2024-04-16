@@ -31,7 +31,7 @@ export function Scores({ scores }: { scores: Score[] }) {
           );
         })}
       </div>
-      <div className=" flex flex-row items-center">
+      <div className=" flex flex-row items-center self-baseline">
         {showExpandViewOption && (
           <Button
             onClick={() => {

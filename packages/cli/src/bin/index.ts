@@ -44,7 +44,7 @@ const outputFilePath = `${cwd}/${cacheDir}/${outputFileName}`;
 program
   .name("Empirical.run CLI")
   .description(
-    "CLI to compare and evaluate multiple AI model completions on different prompts and models",
+    "CLI to compare and evaluate AI models across all the scenarios that matter",
   )
   .version(packageJSON.version);
 
@@ -161,6 +161,7 @@ program
       console.log(buildErrorLog(`${code}: ${message}`));
       process.exit(1);
     }
+    process.exit(0);
   });
 
 const defaultWebUIPort = 1337;

@@ -54,8 +54,26 @@ See [dataset](../dataset/basics) to learn more about sample inputs.
 | `openai` | All chat models are supported. Requires `OPENAI_API_KEY` environment variable. |
 | `anthropic` | Claude 3 models are supported. Requires `ANTHROPIC_API_KEY` environment variable. |
 | `mistral` | All chat models are supported. Requires `MISTRAL_API_KEY` environment variable. |
-| `google` | Gemini Pro models are supported. Requires `GEMINI_API_KEY` environment variable. |
+| `google` | Gemini Pro models are supported. Requires `GOOGLE_API_KEY` environment variable. |
 | `fireworks` | Models hosted on Fireworks (e.g. `dbrx-instruct`) are supported. Requires `FIREWORKS_API_KEY` environment variable. |
+
+<AccordionGroup>
+<Accordion title="Using models from Google">
+
+#### Get API key
+
+The [Google AI studio](https://aistudio.google.com/) is the easiest way to get API keys. Once you have the key,
+set it as the `GOOGLE_API_KEY` environment variable.
+
+#### Supported models
+
+We support the Gemini model codes, as defined in the [official docs](https://ai.google.dev/models/gemini).
+
+- Gemini 1.5 Pro: set `model` to `gemini-1.5-pro-latest`
+- Gemini 1 Pro: set `model` to `gemini-pro` or `gemini-1.0-pro`
+
+</Accordion>
+</AccordionGroup>
 
 ### Environment variables
 
@@ -111,6 +129,24 @@ For example, Mistral models support a `safePrompt` parameter for [guardrailing](
     "parameters": {
       "temperature": 0.1,
       "safePrompt": true
+    }
+  }
+]
+```
+
+#### Configuring request timeout
+
+You can set the timeout duration in milliseconds under model parameters in the `empiricalrc.json` file. This might be required for prompt completions that are expected to take more time, for example while running models like Claude Opus. If no specific value is assigned, the default timeout duration of 30 seconds will be applied.
+
+```json empiricalrc.json
+"runs": [
+  {
+    "type": "model",
+    "provider": "anthropic",
+    "model": "claude-3-opus",
+    "prompt": "Hey I'm {{user_name}}",
+    "parameters": {
+      "timeout": 10000
     }
   }
 ]

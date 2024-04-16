@@ -2,7 +2,6 @@
   "$schema": "https://assets.empirical.run/config/schema/v0.4.0.json",
   "runs": [
     {
-      "name": "gpt-3.5-turbo run",
       "provider": "openai",
       "type": "model",
       "model": "gpt-3.5-turbo",
@@ -12,27 +11,43 @@
           "type": "sql-syntax"
         },
         {
-          "type": "sql-semantic"
+          "type": "py-script",
+          "path": "execution_accuracy.py"
         }
       ]
     },
     {
-      "name": "claude 2.1 run",
       "type": "model",
       "provider": "anthropic",
-      "model": "claude-2.1",
+      "model": "claude-3-haiku",
       "prompt": "You are an SQLite expert who can convert natural language questions to SQL queries for the database schema given below.\n\nDatabase schema:\n{{schema}}\n\nAnswer the following question with only the SQL query.\n\nQuestion: {{question}}",
       "scorers": [
         {
           "type": "sql-syntax"
         },
         {
-          "type": "sql-semantic"
+          "type": "py-script",
+          "path": "execution_accuracy.py"
+        }
+      ]
+    },
+    {
+      "type": "model",
+      "provider": "google",
+      "model": "gemini-1.0-pro",
+      "prompt": "You are an SQLite expert who can convert natural language questions to SQL queries for the database schema given below.\n\nDatabase schema:\n{{schema}}\n\nAnswer the following question with only the SQL query.\n\nQuestion: {{question}}",
+      "scorers": [
+        {
+          "type": "sql-syntax"
+        },
+        {
+          "type": "py-script",
+          "path": "execution_accuracy.py"
         }
       ]
     }
   ],
   "dataset": {
-    "path": "https://assets.empirical.run/datasets/v2/json/spider-tiny.json"
+    "path": "https://docs.google.com/spreadsheets/d/1x_p0lX2pJEyGkFoe1A9nY3q87qOJUd547f2lz99ugiM/edit#gid=0"
   }
 }

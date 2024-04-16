@@ -17,14 +17,14 @@ export function aggregateRunStats(
   return {
     outputs: sumObjectsByKey(oldStats?.outputs || {}, newStats.outputs),
     scores: newStats.scores.map((score) => {
-      const newScore = oldStats?.scores.find((s) => s.name === score.name);
-      const count = score.count + (newScore?.count || 0);
+      const oldScore = oldStats?.scores.find((s) => s.name === score.name);
+      const count = score.count + (oldScore?.count || 0);
       return {
         name: score.name,
         count,
         avgScore:
           (score.count * score.avgScore +
-            (newScore?.count || 0) * (newScore?.avgScore || 0)) /
+            (oldScore?.count || 0) * (oldScore?.avgScore || 0)) /
           count,
       };
     }),
@@ -41,13 +41,12 @@ export function statsAfterRemoved(
   }
   const { scores, outputs } = stats;
   const foundSample = samples.find((s) => s.dataset_sample_id === sample.id);
-  const changeInSuccess = foundSample && foundSample.output.value ? 1 : 0;
-  const changeInFailed = foundSample && !foundSample.output.value ? 1 : 0;
+  const keyToChange = foundSample && foundSample.error ? "failed" : "success";
   return {
     outputs: {
-      count: outputs.count - 1,
-      success: outputs.success - changeInSuccess,
-      failed: outputs.failed - changeInFailed,
+      ...outputs,
+      count: foundSample ? outputs.count - 1 : outputs.count,
+      [keyToChange]: outputs[keyToChange] - 1,
     },
     scores: scores.map((score) => {
       const foundScore =

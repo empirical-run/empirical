@@ -75,7 +75,7 @@ export const scriptExecutor: Transformer = async (runConfig, sample) => {
 
   return {
     output: {
-      value: result["output"],
+      value: result["value"],
       metadata: result["metadata"],
     },
   };

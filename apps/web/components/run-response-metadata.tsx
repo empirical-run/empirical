@@ -15,7 +15,7 @@ export const RunSampleOutputMetric = ({
   return (
     <>
       {!hideSeparator && <Separator orientation="vertical" className="h-3" />}
-      <p className="text-xs text-muted-foreground font-medium">
+      <p className="text-xs text-muted-foreground font-normal">
         {title}: {value}
       </p>
     </>

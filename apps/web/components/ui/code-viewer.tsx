@@ -47,6 +47,7 @@ export default function CodeViewer({
   customCommands,
   focus = false,
   scrollable = false,
+  onMount = () => {},
 }: {
   value: string;
   language?: string;
@@ -55,6 +56,7 @@ export default function CodeViewer({
   customCommands?: CustomAction[];
   focus?: boolean;
   scrollable?: boolean;
+  onMount?: () => void;
 }) {
   const monaco = useMonaco();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -126,6 +128,7 @@ export default function CodeViewer({
         }
       };
       editor.onDidContentSizeChange(updateHeight);
+      onMount();
     },
     [bringEditorInFocus, readOnly, scrollable],
   );

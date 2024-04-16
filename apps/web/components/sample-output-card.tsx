@@ -241,7 +241,7 @@ export default function SampleOutputCard({
           )}
         </section>
         {showOutput && (
-          <div className="flex gap-2 items-center justify-end">
+          <div className="flex gap-2 items-center px-2 mt-2">
             <RunSampleOutputMetric
               title="Finish reason"
               value={baseSample?.output?.finish_reason}

@@ -152,24 +152,26 @@ export const RunColumnHeaders = ({
                     ))}
                   </section>
                   <section className=" flex flex-row text-xs gap-1 items-center">
-                    <Sheet>
-                      <SheetTrigger asChild>
-                        <Button variant={"secondary"} size={"xs"}>
-                          Show summary
-                        </Button>
-                      </SheetTrigger>
-                      <SheetContent className="w-[500px] sm:w-[540px]">
-                        <SheetHeader>
-                          <SheetTitle>Scores summary</SheetTitle>
-                        </SheetHeader>
-                        <div className="py-4 h-full overflow-scroll">
-                          <ScoreSummary
-                            runId={header.runResult.id}
-                            stats={header.runResult.stats}
-                          />
-                        </div>
-                      </SheetContent>
-                    </Sheet>
+                    {(header.runResult?.stats?.scores || []).length > 0 && (
+                      <Sheet>
+                        <SheetTrigger asChild>
+                          <Button variant={"secondary"} size={"xs"}>
+                            Show summary
+                          </Button>
+                        </SheetTrigger>
+                        <SheetContent className="w-[500px] sm:w-[540px]">
+                          <SheetHeader>
+                            <SheetTitle>Scores summary</SheetTitle>
+                          </SheetHeader>
+                          <div className="py-4 h-full overflow-scroll">
+                            <ScoreSummary
+                              runId={header.runResult.id}
+                              stats={header.runResult.stats}
+                            />
+                          </div>
+                        </SheetContent>
+                      </Sheet>
+                    )}
                   </section>
                 </section>
               </>

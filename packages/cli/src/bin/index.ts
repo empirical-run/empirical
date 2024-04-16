@@ -93,9 +93,9 @@ program
     const { runs, dataset: datasetConfig } = JSON.parse(jsonStr) as RunsConfig;
     // TODO: add check here for empty runs config. Add validator of the file
     let dataset: Dataset;
+    const store = new EmpiricalStore();
     try {
       dataset = await loadDataset(datasetConfig);
-      const store = new EmpiricalStore();
       const datasetRecorder = store.getDatasetRecorder();
       await datasetRecorder(dataset);
     } catch (error) {
@@ -122,7 +122,6 @@ program
         name: "Scores ",
       });
     }
-    const store = new EmpiricalStore();
     const completion = await Promise.all(
       runs.map((r) => {
         r.parameters = r.parameters ? r.parameters : {};

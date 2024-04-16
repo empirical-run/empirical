@@ -38,7 +38,6 @@
     "csvtojson": "^2.0.10",
     "detect-port": "^1.5.1",
     "dotenv": "^16.4.5",
-    "duckdb-async": "^0.10.0",
     "express": "^4.19.2",
     "opener": "^1.5.2",
     "picocolors": "^1.0.0",

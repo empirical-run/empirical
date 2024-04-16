@@ -4,7 +4,6 @@ import { getLocalDBInstance } from "../../db";
 
 // TODO: figure out where to keep this
 const cachePath = ".empiricalrun";
-// TODO: does this have to be json
 const fileName = "runs.jsonl";
 
 export class LocalRunMetadataStore {
@@ -15,11 +14,15 @@ export class LocalRunMetadataStore {
     const dbInstance = await getLocalDBInstance();
     const cwd = process.cwd();
     this.fullPath = `${cwd}/${cachePath}/${fileName}`;
+    let cmd = "";
     if (!fs.existsSync(`${this.fullPath}`)) {
       fs.mkdirSync(`${cwd}/${cachePath}`, { recursive: true });
       fs.writeFileSync(this.fullPath, "");
+      cmd = `create table runs (run JSON)`;
+    } else {
+      cmd = `create table runs as select * from read_json_auto('${cachePath}/${fileName}')`;
     }
-    const cmd = `create table runs as select * from read_json_auto('${cachePath}/${fileName}')`;
+
     if (!this.createTable) {
       this.createTable = dbInstance.exec(cmd);
     }
@@ -39,10 +42,10 @@ export class LocalRunMetadataStore {
       const dbInstance = await this.getDBInstance();
       const runs = await dbInstance.all(`select * from runs`);
       if (runs.length) {
-        const selectCmd = `select * from runs where json.id = '${update.data.id}'`;
+        const selectCmd = `select * from runs where run.id = '${update.data.id}'`;
         const [run] = await dbInstance.all(selectCmd);
         if (run) {
-          const deleteCmd = `delete from runs where json.id = '${update.data.id}'`;
+          const deleteCmd = `delete from runs where run.id = '${update.data.id}'`;
           await dbInstance.exec(deleteCmd);
         }
       }

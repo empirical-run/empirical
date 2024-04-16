@@ -189,9 +189,6 @@ importers:
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
-      duckdb-async:
-        specifier: ^0.10.0
-        version: 0.10.0
       express:
         specifier: ^4.19.2
         version: 4.19.2

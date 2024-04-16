@@ -4,7 +4,6 @@ import { getLocalDBInstance } from "../../db";
 
 // TODO: figure out where to keep this
 const cachePath = ".empiricalrun";
-// TODO: does this have to be json
 const fileName = "datasets.jsonl";
 
 let createTablePromise: Promise<void> | null = null;
@@ -13,12 +12,15 @@ const getDBInstance = async () => {
   const dbInstance = await getLocalDBInstance();
   const cwd = process.cwd();
   const fullPath = `${cwd}/${cachePath}/${fileName}`;
+  let cmd = "";
   if (!fs.existsSync(`${fullPath}`)) {
     fs.mkdirSync(`${cwd}/${cachePath}`, { recursive: true });
     fs.writeFileSync(fullPath, "");
+    cmd = `create table datasets (dataset JSON)`;
+  } else {
+    cmd = `create table datasets as select * from read_json_auto('${cachePath}/${fileName}')`;
   }
   if (!createTablePromise) {
-    const cmd = `create table datasets as select * from read_json_auto('${cachePath}/${fileName}')`;
     createTablePromise = dbInstance.exec(cmd);
   }
   await createTablePromise;
@@ -29,7 +31,7 @@ export const LocalDatasetMetadataStore = {
   async addDatasetMetadata(dataset: Dataset) {
     try {
       const dbInstance = await getDBInstance();
-      const selectCmd = `select * from datasets where json.id = '${dataset.id}'`;
+      const selectCmd = `select * from datasets where dataset.id = '${dataset.id}'`;
       const datasets = await dbInstance.all(selectCmd);
       if (datasets.length) {
         return;

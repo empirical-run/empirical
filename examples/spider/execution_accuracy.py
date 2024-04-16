@@ -22,7 +22,7 @@ def evaluate(output, inputs):
             passed = 1
             message = "Result preview: " + ", ".join([str(x) for x in first_row])
         else:
-            passed = 0
+            passed = 0.5
             message = "No results found"
     except Exception as e:
         passed, message = 0, repr(e)

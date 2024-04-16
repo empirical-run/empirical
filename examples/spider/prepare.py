@@ -13,6 +13,7 @@ def create_and_load_database():
     # Then load data
     cur.executescript(data)
     con.close()
+    print("Database created successfully at " + sqlite_file_name)
 
 
 schema = """CREATE TABLE stadium (

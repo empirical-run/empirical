@@ -7,7 +7,6 @@ const cachePath = ".empiricalrun";
 const fileName = "runs.jsonl";
 
 export class LocalRunMetadataStore {
-  private fullPath = "";
   private createTable: Promise<void> | null = null;
 
   private async getDBInstance() {
@@ -17,7 +16,7 @@ export class LocalRunMetadataStore {
     const fullPath = `${process.cwd()}/${cachePath}/${fileName}`;
     if (!fs.existsSync(`${fullPath}`)) {
       fs.mkdirSync(`${cwd}/${cachePath}`, { recursive: true });
-      fs.writeFileSync(this.fullPath, "");
+      fs.writeFileSync(fullPath, "");
       cmd = `create table runs (run JSON)`;
     } else {
       cmd = `create table runs as select * from read_json_auto('${cachePath}/${fileName}')`;

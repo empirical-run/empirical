@@ -6,6 +6,7 @@ import {
 import OpenAI from "openai";
 import promiseRetry from "promise-retry";
 import { AIError, AIErrorEnum } from "../../error";
+import { DEFAULT_TIMEOUT } from "../../constants";
 
 const createChatCompletion: ICreateChatCompletion = async (body) => {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -15,9 +16,15 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       "process.env.OPENAI_API_KEY is not set",
     );
   }
+  const timeout = body.timeout || DEFAULT_TIMEOUT;
+  if (body.timeout) {
+    delete body.timeout;
+  }
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
+    timeout,
   });
+
   try {
     const startedAt = Date.now();
     const completions = await promiseRetry<IChatCompletion>(
@@ -50,7 +57,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   } catch (err) {
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `Failed completion for OpenAI ${body.model}: ${(err as any)?.error?.message}`,
+      `Failed to fetch output from model ${body.model}: ${(err as any)?.error?.message}`,
     );
   }
 };

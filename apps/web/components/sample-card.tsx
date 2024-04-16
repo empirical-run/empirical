@@ -1,14 +1,27 @@
 import { Card, CardContent } from "./ui/card";
-import { DatasetSample } from "@empiricalrun/types";
+import { DatasetSample, DatasetSampleInputs } from "@empiricalrun/types";
 import ZeroStateSampleCard from "./zero-state-sample-card";
 import { JsonAsTab } from "./json-as-tab";
 
 export default function SampleCard({
   sample,
   inputTabs,
+  onSampleRemove,
+  onSampleAdd,
+  onSampleInputUpdate,
+  onClickRunOnAllModels,
+  hasMissingCompletion,
 }: {
   sample: DatasetSample;
   inputTabs?: string[];
+  hasMissingCompletion: boolean;
+  onSampleRemove?: (sample: DatasetSample) => void;
+  onSampleAdd?: (sample: DatasetSample) => void;
+  onSampleInputUpdate?: (
+    sampleId: string,
+    newSampleInputs: DatasetSampleInputs,
+  ) => void;
+  onClickRunOnAllModels: (sample: DatasetSample) => void;
 }) {
   return (
     <Card
@@ -19,6 +32,15 @@ export default function SampleCard({
           storeKey="input"
           data={sample?.inputs}
           defaultTabs={inputTabs}
+          showRunButton={hasMissingCompletion}
+          onSampleAdd={() => onSampleAdd?.(sample)}
+          onSampleRemove={() => onSampleRemove?.(sample)}
+          onEditorContentUpdate={(key: string, value: string) =>
+            onSampleInputUpdate?.(sample.id, {
+              [key]: value,
+            })
+          }
+          onClickRunAll={() => onClickRunOnAllModels?.(sample)}
         />
         {!Object.keys(sample?.inputs).length && <ZeroStateSampleCard />}
       </CardContent>

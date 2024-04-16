@@ -21,6 +21,7 @@ function isReservedParameter(paramName: string) {
     "seed",
     "stop",
     "top_logprobs",
+    "timeout",
   ];
   return reservedParameters.indexOf(paramName) >= 0;
 }

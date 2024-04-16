@@ -20,12 +20,12 @@ import { RunSampleOutput } from "@empiricalrun/types";
 import { DiffEditor, DiffOnMount } from "@monaco-editor/react";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import EmptySampleCompletion from "./empty-sample-completion";
-import ScoreBadge from "./ui/score-badge";
 import { RunResult } from "../types";
 import SampleCompletionError from "./sample-completion-error";
 import { Separator } from "./ui/separator";
 import { JsonAsTab } from "./json-as-tab";
 import { RunSampleOutputMetric } from "./run-response-metadata";
+import { Scores } from "./scores";
 
 type Diff = {
   type: string;
@@ -134,20 +134,8 @@ export default function SampleOutputCard({
       <CardHeader className="p-2">
         {baseResult && baseSample && (
           <CardTitle className="flex flex-row space-x-2 items-center">
-            <div className="flex flex-1 flex-row space-x-2 justify-end">
-              {baseSample.scores?.map((s) => {
-                if (!s) {
-                  return null;
-                }
-                return (
-                  <ScoreBadge
-                    title={s.name}
-                    score={s.score}
-                    description={s.message}
-                    className="flex flex-row space-x-1"
-                  />
-                );
-              })}
+            <Scores scores={baseSample?.scores || []} />
+            <div className="flex flex-row space-x-2 justify-end items-start">
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <DotsVerticalIcon />
@@ -253,7 +241,7 @@ export default function SampleOutputCard({
           )}
         </section>
         {showOutput && (
-          <div className="flex gap-2 items-center justify-end">
+          <div className="flex gap-2 items-center px-2 mt-2">
             <RunSampleOutputMetric
               title="Finish reason"
               value={baseSample?.output?.finish_reason}

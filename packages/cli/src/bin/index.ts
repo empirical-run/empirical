@@ -217,11 +217,13 @@ program
       });
     });
     app.post("/api/runs/execute", async (req, res) => {
-      const { runs, dataset } = req.body as {
+      const { runs, dataset, persistToFile } = req.body as {
         runs: RunConfig[];
         dataset: Dataset;
+        persistToFile: boolean;
       };
       const streamUpdate = (obj: any) => res.write(JSON.stringify(obj) + `\n`);
+      // This endpoint expects to execute only one run
       const completion = await execute(runs[0]!, dataset, streamUpdate);
       setRunSummary([completion]);
       const statsUpdate: RunStatsUpdate = {
@@ -229,13 +231,15 @@ program
         data: completion.stats!,
       };
       streamUpdate(statsUpdate);
-      const file = await fs.readFile(outputFilePath);
-      const { runs: savedRuns } = JSON.parse(file.toString());
-      savedRuns.push(completion);
-      await fs.writeFile(
-        outputFilePath,
-        JSON.stringify({ runs: savedRuns, dataset }, null, 2),
-      );
+      if (persistToFile) {
+        const file = await fs.readFile(outputFilePath);
+        const { runs: savedRuns } = JSON.parse(file.toString());
+        savedRuns.push(completion);
+        await fs.writeFile(
+          outputFilePath,
+          JSON.stringify({ runs: savedRuns, dataset }, null, 2),
+        );
+      }
       res.end();
     });
     const fullUrl = `http://localhost:${availablePort}`;

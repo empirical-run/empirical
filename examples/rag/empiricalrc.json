@@ -2,9 +2,24 @@
   "$schema": "https://assets.empirical.run/config/schema/v0.4.0.json",
   "runs": [
     {
-      "name": "rag script run",
       "type": "py-script",
       "path": "rag.py",
+      "parameters": {
+        "model": "gpt-3.5-turbo"
+      },
+      "scorers": [
+        {
+          "type": "py-script",
+          "path": "score.py"
+        }
+      ]
+    },
+    {
+      "type": "py-script",
+      "path": "rag.py",
+      "parameters": {
+        "model": "gpt-4-turbo-preview"
+      },
       "scorers": [
         {
           "type": "py-script",

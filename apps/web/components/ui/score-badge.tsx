@@ -64,7 +64,7 @@ export default function ScoreBadge({
   return (
     <Badge
       variant={"outline"}
-      className={`${className} text-xs ${color?.border} ${color?.bg} gap-1`}
+      className={`${className} text-xs ${color?.border} ${color?.bg} gap-1 whitespace-nowrap h-fit`}
     >
       {title} {`${(score * 100).toFixed(0)}%`}
     </Badge>

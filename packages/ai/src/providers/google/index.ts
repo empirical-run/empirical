@@ -66,33 +66,40 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const { model, messages } = body;
   const googleAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
   const timeout = body.timeout || DEFAULT_TIMEOUT;
-  const modelInstance = googleAI.getGenerativeModel(
-    { model },
-    { apiVersion: "v1beta", timeout },
-  );
+  const isBetaModel = model.includes("gemini-1.5");
+  // Google's JS library does not fully support Gemini 1.5 Pro
+  // We have an open issue with details:
+  // https://github.com/google/generative-ai-js/issues/98
+  const modelInstance = isBetaModel
+    ? googleAI.getGenerativeModel({
+        model: "gemini-pro",
+      })
+    : googleAI.getGenerativeModel({ model }, { apiVersion: "v1beta", timeout });
   const contents = massageOpenAIMessagesToGoogleAI(messages);
   const { executionDone } = await batch.waitForTurn();
   try {
     const startedAt = Date.now();
     const completion = await promiseRetry<GenerateContentResult>(
       (retry) => {
-        // TODO: move to model.startChat which support model config (e.g. temperature)
-        const chat = modelInstance.startChat({
-          generationConfig: {
-            maxOutputTokens: body.max_tokens || 1024,
-            // 0.9 is the default for 1.0 pro
-            temperature: body.temperature || 0.9,
-          },
+        return (
+          isBetaModel
+            ? modelInstance.generateContent({ contents })
+            : modelInstance
+                .startChat({
+                  generationConfig: {
+                    maxOutputTokens: body.max_tokens || 1024,
+                    // 0.9 is the default for 1.0 pro
+                    temperature: body.temperature || 0.9,
+                  },
+                })
+                .sendMessage(JSON.stringify(contents))
+        ).catch((err: Error) => {
+          // TODO: Replace with instanceof checks when the Gemini SDK exports errors
+          if (err.message.includes("[429 Too Many Requests]")) {
+            retry(err);
+          }
+          throw err;
         });
-        return chat
-          .sendMessage(JSON.stringify(contents))
-          .catch((err: Error) => {
-            // TODO: Replace with instanceof checks when the Gemini SDK exports errors
-            if (err.message.includes("[429 Too Many Requests]")) {
-              retry(err);
-            }
-            throw err;
-          });
       },
       {
         randomize: true,
@@ -107,19 +114,10 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       completionTokens = 0;
 
     try {
-      // Google's JS library does not fully support Gemini 1.5 Pro
-      // because of which the `countTokens` method needs to be requested
-      // via an older model. We have an open issue with details:
-      // https://github.com/google/generative-ai-js/issues/98
-      const tokenCounterModelInstance = model.includes("gemini-1.5")
-        ? googleAI.getGenerativeModel({
-            model: "gemini-pro",
-          })
-        : modelInstance;
       [{ totalTokens: completionTokens }, { totalTokens: promptTokens }] =
         await Promise.all([
-          tokenCounterModelInstance.countTokens(responseContent),
-          tokenCounterModelInstance.countTokens({
+          modelInstance.countTokens(responseContent),
+          modelInstance.countTokens({
             contents,
           }),
         ]);

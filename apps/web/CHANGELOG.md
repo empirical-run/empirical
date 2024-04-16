@@ -1,5 +1,18 @@
 # web
 
+## 0.7.0
+
+### Minor Changes
+
+- 8ffc64e: feat: add or remove samples and run them on the comparison ui
+- a8bc03a: feat: add support for duckdb for filtering and score summary
+- d3a24a6: feat: update scores UI to accomodate score message
+
+### Patch Changes
+
+- 036c015: fix: update the tabs UI to a more minimal design
+- 2bc5465: fix: minor improvements for execution accuracy in spider example
+
 ## 0.6.0
 
 ### Minor Changes

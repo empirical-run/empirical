@@ -1,6 +1,6 @@
 {
   "name": "@empiricalrun/cli",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "main": "dist/bin/index.js",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",

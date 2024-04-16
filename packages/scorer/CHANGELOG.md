@@ -1,5 +1,19 @@
 # @empiricalrun/scorer
 
+## 0.1.5
+
+### Patch Changes
+
+- 5079335: fix: sql syntax scorer should fail for empty output
+- b065dad: chore: improve message string for valid sql-syntax
+- 2bc5465: fix: minor improvements for execution accuracy in spider example
+- Updated dependencies [e77b76e]
+- Updated dependencies [9822db6]
+- Updated dependencies [06b1667]
+- Updated dependencies [bbd5cd0]
+- Updated dependencies [2bc5465]
+  - @empiricalrun/ai@0.4.0
+
 ## 0.1.4
 
 ### Patch Changes

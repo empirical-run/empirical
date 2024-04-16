@@ -1,5 +1,25 @@
 # @empiricalrun/cli
 
+## 0.5.0
+
+### Minor Changes
+
+- d087119: feat: add support for dataset using csv and google sheet
+- a8bc03a: feat: add support for duckdb for filtering and score summary
+
+### Patch Changes
+
+- 036c015: fix: update the tabs UI to a more minimal design
+- 8ffc64e: feat: add or remove samples and run them on the comparison ui
+- d3a24a6: feat: update scores UI to accomodate score message
+- 2bc5465: fix: minor improvements for execution accuracy in spider example
+- Updated dependencies [8ffc64e]
+- Updated dependencies [9822db6]
+- Updated dependencies [dd7af1f]
+- Updated dependencies [a8bc03a]
+  - @empiricalrun/types@0.3.2
+  - @empiricalrun/core@0.5.0
+
 ## 0.4.1
 
 ### Patch Changes

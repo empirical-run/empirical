@@ -1,5 +1,18 @@
 # @empiricalrun/ai
 
+## 0.4.0
+
+### Minor Changes
+
+- e77b76e: feat: support for gemini 1.5 pro model
+- 9822db6: feat: accept timeout as parameter in empiricalrc.json
+
+### Patch Changes
+
+- 06b1667: chore: change api key name for google models
+- bbd5cd0: fix: don't retry gemini unless we get a 429 error
+- 2bc5465: fix: minor improvements for execution accuracy in spider example
+
 ## 0.3.0
 
 ### Minor Changes

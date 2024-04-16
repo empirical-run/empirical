@@ -1,10 +1,4 @@
 import { Badge } from "./badge";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./tooltip";
 
 const colorMap: { [key: number]: { border: string; bg: string } } = {
   0: {
@@ -57,12 +51,10 @@ export default function ScoreBadge({
   title,
   score,
   className,
-  description,
 }: {
   title: string;
   score: number;
   className?: string;
-  description?: string;
 }) {
   if (score === undefined) {
     return null;
@@ -70,18 +62,11 @@ export default function ScoreBadge({
   const color = colorMap[Math.floor(score * 10)];
 
   return (
-    <TooltipProvider>
-      <Tooltip delayDuration={100}>
-        <TooltipTrigger>
-          <Badge
-            variant={"outline"}
-            className={`${className} text-xs ${color?.border} ${color?.bg} gap-1`}
-          >
-            {title} {`${(score * 100).toFixed(0)}%`}
-          </Badge>
-        </TooltipTrigger>
-        {description && <TooltipContent>{description}</TooltipContent>}
-      </Tooltip>
-    </TooltipProvider>
+    <Badge
+      variant={"outline"}
+      className={`${className} text-xs ${color?.border} ${color?.bg} gap-1`}
+    >
+      {title} {`${(score * 100).toFixed(0)}%`}
+    </Badge>
   );
 }

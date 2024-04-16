@@ -59,6 +59,36 @@ test("sql-syntax works with markdown", async () => {
   ]);
 });
 
+test("sql-syntax works with a correct query", async () => {
+  const query = `SELECT name, capacity 
+FROM stadium 
+WHERE stadium_id = (
+    SELECT stadium_id 
+    FROM concert 
+    WHERE year > 2013 
+    GROUP BY stadium_id 
+    ORDER BY COUNT(concert_id) DESC 
+    LIMIT 1
+);`;
+  expect(
+    await checkSqlSyntax({
+      sample: { id: "1", inputs: {} },
+      output: {
+        value: query,
+      },
+      config: {
+        type: "sql-syntax",
+      },
+    }),
+  ).toStrictEqual([
+    {
+      score: 1,
+      name: "sql-syntax",
+      message: "",
+    },
+  ]);
+});
+
 test("sql-semantic works with column aliases", async () => {
   expect(
     await checkSqlSemantic({

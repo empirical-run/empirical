@@ -17,8 +17,13 @@ def evaluate(output, inputs):
     cur = con.cursor()
     try:
         res = cur.execute(remove_backticks(output["value"]))
-        passed = 1
-        message = 'Result preview: ' + ', '.join([str(x) for x in res.fetchone()])
+        first_row = res.fetchone()
+        if first_row:
+            passed = 1
+            message = "Result preview: " + ", ".join([str(x) for x in first_row])
+        else:
+            passed = 0
+            message = "No results found"
     except Exception as e:
         passed, message = 0, repr(e)
 

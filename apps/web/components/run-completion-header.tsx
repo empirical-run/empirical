@@ -6,6 +6,14 @@ import { MinusCircledIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { RunResult } from "../types";
 import { BarLoader } from "react-spinners";
 import ScoreBadge from "./ui/score-badge";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
+import { ScoreSummary } from "./score-summary";
 
 export type Header = {
   title: string;
@@ -134,7 +142,7 @@ export const RunColumnHeaders = ({
                   className={`${overlayBg}`}
                 />
                 <section className="flex flex-row space-x-2 text-muted-foreground items-center mx-4 my-2">
-                  <section className="flex flex-row text-xs gap-1 items-center">
+                  <section className="flex flex-row flex-1 text-xs gap-1 items-center">
                     {(header.runResult?.stats?.scores || []).map((s) => (
                       <>
                         <section className="flex flex-row gap-1 items-center">
@@ -142,6 +150,28 @@ export const RunColumnHeaders = ({
                         </section>
                       </>
                     ))}
+                  </section>
+                  <section className=" flex flex-row text-xs gap-1 items-center">
+                    {(header.runResult?.stats?.scores || []).length > 0 && (
+                      <Sheet>
+                        <SheetTrigger asChild>
+                          <Button variant={"secondary"} size={"xs"}>
+                            Show summary
+                          </Button>
+                        </SheetTrigger>
+                        <SheetContent className="w-[500px] sm:w-[540px]">
+                          <SheetHeader>
+                            <SheetTitle>Scores summary</SheetTitle>
+                          </SheetHeader>
+                          <div className="py-4 h-full overflow-scroll">
+                            <ScoreSummary
+                              runId={header.runResult.id}
+                              stats={header.runResult.stats}
+                            />
+                          </div>
+                        </SheetContent>
+                      </Sheet>
+                    )}
                   </section>
                 </section>
               </>

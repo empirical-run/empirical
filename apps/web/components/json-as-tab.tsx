@@ -47,6 +47,7 @@ export function JsonAsTab({
     }
     return undefined;
   }, [activeTab, data]);
+
   return (
     <>
       <div className="flex flex-row space-x-2 justify-end absolute right-4 top-4">
@@ -144,7 +145,7 @@ export function JsonAsTab({
                       ? value
                       : JSON.stringify(value, null, 2)
                   }
-                  language="json"
+                  language="text"
                   readOnly={false}
                   scrollable
                   onChange={(value) => onEditorContentUpdate?.(key, value!)}

@@ -5,10 +5,14 @@ import {
   RunSampleOutput,
   Score,
   RunUpdateType,
+  RunMetadataUpdate,
+  RunSampleUpdate,
+  RunSampleScoreUpdate,
 } from "@empiricalrun/types";
 import { generateHex } from "../../utils";
 import score from "@empiricalrun/scorer";
 import { getTransformer } from "./transformers";
+import { EmpiricalStore } from "../../store";
 
 function generateRunId(): string {
   return generateHex(4);
@@ -18,6 +22,7 @@ export async function execute(
   runConfig: RunConfig,
   dataset: Dataset,
   progressCallback?: (sample: RunUpdateType) => void,
+  store?: EmpiricalStore,
 ): Promise<RunCompletion> {
   const runCreationDate = new Date();
   const runId = generateRunId();
@@ -29,7 +34,8 @@ export async function execute(
     ...runConfig,
     name: runConfig.name || getDefaultRunName(runConfig, runId),
   };
-  progressCallback?.({
+  const recorder = store?.getRunRecorder();
+  const data: RunMetadataUpdate = {
     type: "run_metadata",
     data: {
       run_config: updatedRunConfig,
@@ -39,7 +45,9 @@ export async function execute(
       },
       created_at: runCreationDate,
     },
-  });
+  };
+  recorder?.(data);
+  progressCallback?.(data);
   for (const datasetSample of dataset.samples) {
     const transform = getTransformer(runConfig);
     if (transform) {
@@ -57,12 +65,14 @@ export async function execute(
             };
             return data;
           })
-          .then((sample) => {
+          .then(async (sample) => {
             try {
-              progressCallback?.({
+              const update: RunSampleUpdate = {
                 type: "run_sample",
                 data: sample,
-              });
+              };
+              progressCallback?.(update);
+              await recorder?.(update);
             } catch (e) {
               console.warn(e);
             }
@@ -83,9 +93,9 @@ export async function execute(
             sample.scores = scores;
             return sample;
           })
-          .then((sample) => {
+          .then(async (sample) => {
             try {
-              progressCallback?.({
+              const data: RunSampleScoreUpdate = {
                 type: "run_sample_score",
                 data: {
                   run_id: sample.run_id,
@@ -93,7 +103,9 @@ export async function execute(
                   dataset_sample_id: sample.dataset_sample_id,
                   scores: sample.scores || [],
                 },
-              });
+              };
+              progressCallback?.(data);
+              await recorder?.(data);
             } catch (e) {
               console.warn(e);
             }
@@ -104,7 +116,7 @@ export async function execute(
     }
   }
 
-  await Promise.allSettled(completionsPromises);
+  await Promise.allSettled([...completionsPromises]);
 
   return {
     id: runId,

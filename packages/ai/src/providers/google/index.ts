@@ -80,7 +80,10 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
         return modelInstance
           .generateContent({ contents })
           .catch((err: Error) => {
-            retry(err);
+            // TODO: Replace with instanceof checks when the Gemini SDK exports errors
+            if (err.message.includes("[429 Too Many Requests]")) {
+              retry(err);
+            }
             throw err;
           });
       },

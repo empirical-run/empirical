@@ -16,7 +16,7 @@ test("sql-syntax works with backticks", async () => {
     {
       score: 1,
       name: "sql-syntax",
-      message: "",
+      message: "Output is valid SQL",
     },
   ]);
 });
@@ -85,7 +85,7 @@ WHERE stadium_id = (
     {
       score: 1,
       name: "sql-syntax",
-      message: "",
+      message: "Output is valid SQL",
     },
   ]);
 });

@@ -1,5 +1,24 @@
 # @empiricalrun/core
 
+## 0.5.0
+
+### Minor Changes
+
+- dd7af1f: fix: py-script execute's return type should be consistent with scorer's return type
+
+### Patch Changes
+
+- a8bc03a: feat: add support for duckdb for filtering and score summary
+- Updated dependencies [e77b76e]
+- Updated dependencies [9822db6]
+- Updated dependencies [06b1667]
+- Updated dependencies [5079335]
+- Updated dependencies [bbd5cd0]
+- Updated dependencies [b065dad]
+- Updated dependencies [2bc5465]
+  - @empiricalrun/ai@0.4.0
+  - @empiricalrun/scorer@0.1.5
+
 ## 0.4.0
 
 ### Minor Changes

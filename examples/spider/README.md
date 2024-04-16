@@ -3,7 +3,7 @@
 LLMs are good at converting natural language questions to SQL queries. This examples uses that
 scenario to demo Empirical. This example is based on the [Spider](https://github.com/taoyds/spider) dataset.
 
-In this example, we generate and score them on
+In this example, we generate SQL queries, and score them on
 
 1. SQL syntax (with the `sql-syntax` scorer): Checks if the output syntax is valid SQL. For example, if the output is in
    markdown syntax (with backticks), it is not a valid SQL query.
@@ -15,7 +15,7 @@ This example requires Python.
 
 ## Usage
 
-1. Run the prepare script to put together the example database.
+1. Run the prepare script to set up the example database with dummy data.
   ```sh
   python prepare.py
   ```

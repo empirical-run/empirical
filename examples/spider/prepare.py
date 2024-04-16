@@ -4,10 +4,8 @@ import sqlite3
 
 def create_and_load_database():
     sqlite_file_name = "concert_singer.db"
-
     if os.path.isfile(sqlite_file_name):
         os.remove(sqlite_file_name)
-    
     con = sqlite3.connect(sqlite_file_name)
     cur = con.cursor()
     # First create tables

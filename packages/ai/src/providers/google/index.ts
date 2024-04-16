@@ -77,8 +77,15 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     const completion = await promiseRetry<GenerateContentResult>(
       (retry) => {
         // TODO: move to model.startChat which support model config (e.g. temperature)
-        return modelInstance
-          .generateContent({ contents })
+        const chat = modelInstance.startChat({
+          generationConfig: {
+            maxOutputTokens: body.max_tokens || 1024,
+            // 0.9 is the default for 1.0 pro
+            temperature: body.temperature || 0.9,
+          },
+        });
+        return chat
+          .sendMessage(JSON.stringify(contents))
           .catch((err: Error) => {
             // TODO: Replace with instanceof checks when the Gemini SDK exports errors
             if (err.message.includes("[429 Too Many Requests]")) {

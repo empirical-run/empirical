@@ -13,9 +13,8 @@ export function PageHeader() {
       </section>
       <Separator orientation="vertical" className=" h-6" />
       <div className="flex w-full flex-1 ml-2">
-        <span className=" text-sm">
-          compare and evaluate multiple AI model completions on different
-          prompts and model
+        <span className=" text-sm text-muted-foreground">
+          Compare and evaluate AI models across all the scenarios that matter
         </span>
       </div>
     </header>

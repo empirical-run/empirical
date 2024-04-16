@@ -13,7 +13,4 @@ export class EmpiricalStore {
   getDatasetRecorder() {
     return this.store.getDatasetRecorder();
   }
-  getRunDetails() {
-    // return this.store.getRunDetails();
-  }
 }

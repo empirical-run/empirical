@@ -7,7 +7,7 @@ import path from "path";
 import opener from "opener";
 import dotenv from "dotenv";
 import packageJSON from "../../package.json";
-import { execute } from "@empiricalrun/core";
+import { EmpiricalStore, execute } from "@empiricalrun/core";
 import { RunsConfig } from "../types";
 import { loadDataset } from "./dataset";
 import { DatasetError } from "../error";
@@ -91,6 +91,9 @@ program
     let dataset: Dataset;
     try {
       dataset = await loadDataset(datasetConfig);
+      const store = new EmpiricalStore();
+      const datasetRecorder = store.getDatasetRecorder();
+      await datasetRecorder(dataset);
     } catch (error) {
       if (error instanceof DatasetError) {
         console.log(`${red("[Error]")} ${error.message}`);

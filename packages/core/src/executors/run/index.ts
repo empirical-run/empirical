@@ -38,7 +38,6 @@ export async function execute(
   };
   store = store ? store : new EmpiricalStore();
   const recorder = store.getRunRecorder();
-  const datasetRecorder = store.getDatasetRecorder();
   const data: RunMetadataUpdate = {
     type: "run_metadata",
     data: {
@@ -120,7 +119,7 @@ export async function execute(
     }
   }
 
-  await Promise.allSettled([...completionsPromises, datasetRecorder(dataset)]);
+  await Promise.allSettled([...completionsPromises]);
 
   return {
     id: runId,

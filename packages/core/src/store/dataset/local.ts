@@ -11,6 +11,9 @@ export const LocalDatasetStore = {
 
     const cwd = process.cwd();
     const fullPath = `${cachePath}/${dataset.id}.jsonl`;
+    if (fs.existsSync(`${cwd}/${fullPath}`)) {
+      return;
+    }
     fs.mkdirSync(`${cwd}/${cachePath}`, { recursive: true });
     fs.writeFileSync(`${cwd}/${fullPath}`, "");
     try {

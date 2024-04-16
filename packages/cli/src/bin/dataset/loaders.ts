@@ -39,7 +39,6 @@ async function jsonlLoader(contents: string): Promise<DatasetSample[]> {
 
 async function csvLoader(contents: string): Promise<DatasetSample[]> {
   const emptyRowsRegexp = new RegExp(/^,*$/);
-  console.log(contents);
   const updatedContents = contents
     .split("\n")
     .map((s) => (emptyRowsRegexp.test(s.trim()) ? "" : s))

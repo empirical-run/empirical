@@ -28,7 +28,7 @@ export const checkSqlSyntax: ScoringFn = async ({ output }) => {
     {
       score: isSQLQuery ? 1 : 0,
       name: syntaxName,
-      message: isSQLQuery ? "" : errorMsg,
+      message: isSQLQuery ? "SQL is valid" : errorMsg,
     },
   ];
 };

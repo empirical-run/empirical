@@ -4,6 +4,7 @@ import { MistralAIProvider } from "./mistral";
 import { GoogleAIProvider } from "./google";
 import { AnthropicAIProvider } from "./anthropic";
 import { FireworksAIProvider } from "./fireworks";
+import { AzureOpenAIProvider } from "./azure";
 
 export const chatProvider = new Map<string, ICreateChatCompletion>([
   [OpenAIProvider.name, OpenAIProvider.chat],
@@ -11,4 +12,5 @@ export const chatProvider = new Map<string, ICreateChatCompletion>([
   [GoogleAIProvider.name, GoogleAIProvider.chat],
   [AnthropicAIProvider.name, AnthropicAIProvider.chat],
   [FireworksAIProvider.name, FireworksAIProvider.chat],
+  [AzureOpenAIProvider.name, AzureOpenAIProvider.chat],
 ]);

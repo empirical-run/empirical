@@ -52,12 +52,28 @@ See [dataset](../dataset/basics) to learn more about sample inputs.
 | Provider | Description |
 |----------|-------------|
 | `openai` | All chat models are supported. Requires `OPENAI_API_KEY` environment variable. |
+| `azure` | All chat models from OpenAI that are hosted on Azure are supported. Requires `AZURE_OPENAI_API_KEY` and `AZURE_OPENAI_RESOURCE_NAME` environment variables. |
 | `anthropic` | Claude 3 models are supported. Requires `ANTHROPIC_API_KEY` environment variable. |
 | `mistral` | All chat models are supported. Requires `MISTRAL_API_KEY` environment variable. |
 | `google` | Gemini Pro models are supported. Requires `GOOGLE_API_KEY` environment variable. |
 | `fireworks` | Models hosted on Fireworks (e.g. `dbrx-instruct`) are supported. Requires `FIREWORKS_API_KEY` environment variable. |
 
 <AccordionGroup>
+<Accordion title="Using models from Azure OpenAI">
+
+#### Get API key
+
+- `AZURE_OPENAI_API_KEY`: This is the API key to authenticate with Azure. See [their docs](https://learn.microsoft.com/en-us/javascript/api/overview/azure/openai-readme?view=azure-node-preview#using-an-api-key-from-azure) to get the API key.
+- `AZURE_OPENAI_RESOURCE_NAME`: This the resource name which is used to create the base URL with the format `https://$AZURE_OPENAI_RESOURCE_NAME.openai.azure.com`
+
+#### Model configuration
+
+In the configuration file,
+- Set the `provider` to `azure`
+- Set `model` to the name of your model deployment
+
+</Accordion>
+
 <Accordion title="Using models from Google">
 
 #### Get API key

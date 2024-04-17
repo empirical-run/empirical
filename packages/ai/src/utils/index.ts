@@ -1,7 +1,7 @@
 export * from "./batch-tasks";
 
 export function replacePlaceholders(string: string, obj: any) {
-  return string.replace(/{{(\w+)}}/g, function (match, key) {
+  return string.replace(/{{\s*(\w+)\s*}}/g, function (match, key) {
     return obj[key];
   });
 }

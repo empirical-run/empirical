@@ -7,8 +7,17 @@ test("replace placeholders works", () => {
   );
 });
 
-test("replace placeholders works even with spaces", () => {
+test("replace placeholders works with spaces", () => {
   expect(replacePlaceholders("Hello, {{ name }}!", { name: "John" })).to.equal(
     "Hello, John!",
   );
+});
+
+test("replace placeholders works recursively", () => {
+  expect(
+    replacePlaceholders("Hello, {{ name }}!", {
+      name: "{{surname}}",
+      surname: "Doe",
+    }),
+  ).to.equal("Hello, Doe!");
 });

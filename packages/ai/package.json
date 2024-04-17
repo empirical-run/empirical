@@ -1,6 +1,6 @@
 {
   "name": "@empiricalrun/ai",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
@@ -16,7 +16,8 @@
     "build": "tsc --build",
     "clean": "tsc --build --clean",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "@empiricalrun/types": "workspace:*",

@@ -1,6 +1,6 @@
 {
   "name": "@empiricalrun/core",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
@@ -26,6 +26,7 @@
   "dependencies": {
     "@empiricalrun/ai": "workspace:^",
     "@empiricalrun/scorer": "workspace:*",
+    "duckdb-async": "^0.10.0",
     "openai": "^4.29.0",
     "python-shell": "^5.0.0"
   }

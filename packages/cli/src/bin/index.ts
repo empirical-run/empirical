@@ -7,7 +7,11 @@ import path from "path";
 import opener from "opener";
 import dotenv from "dotenv";
 import packageJSON from "../../package.json";
-import { execute } from "@empiricalrun/core";
+import {
+  EmpiricalStore,
+  execute,
+  getLocalDBInstance,
+} from "@empiricalrun/core";
 import { RunsConfig } from "../types";
 import { loadDataset } from "./dataset";
 import { DatasetError } from "../error";
@@ -29,6 +33,7 @@ import {
   ProgressBar,
   buildErrorLog,
   buildSuccessLog,
+  buildWarningLog,
   getCliProgressLoggerInstance,
 } from "./logger/cli-logger";
 
@@ -44,7 +49,7 @@ const outputFilePath = `${cwd}/${cacheDir}/${outputFileName}`;
 program
   .name("Empirical.run CLI")
   .description(
-    "CLI to compare and evaluate multiple AI model completions on different prompts and models",
+    "CLI to compare and evaluate AI models across all the scenarios that matter",
   )
   .version(packageJSON.version);
 
@@ -88,8 +93,11 @@ program
     const { runs, dataset: datasetConfig } = JSON.parse(jsonStr) as RunsConfig;
     // TODO: add check here for empty runs config. Add validator of the file
     let dataset: Dataset;
+    const store = new EmpiricalStore();
     try {
       dataset = await loadDataset(datasetConfig);
+      const datasetRecorder = store.getDatasetRecorder();
+      await datasetRecorder(dataset);
     } catch (error) {
       if (error instanceof DatasetError) {
         console.log(`${red("[Error]")} ${error.message}`);
@@ -118,14 +126,19 @@ program
       runs.map((r) => {
         r.parameters = r.parameters ? r.parameters : {};
         r.parameters.pythonPath = options.pythonPath;
-        return execute(r, dataset, (update) => {
-          if (update.type === "run_sample") {
-            progressBar.increment();
-          }
-          if (update.type === "run_sample_score") {
-            scoresProgressBar?.increment(update.data.scores.length);
-          }
-        });
+        return execute(
+          r,
+          dataset,
+          (update) => {
+            if (update.type === "run_sample") {
+              progressBar.increment();
+            }
+            if (update.type === "run_sample_score") {
+              scoresProgressBar?.increment(update.data.scores.length);
+            }
+          },
+          store,
+        );
       }),
     );
     cliProgressBar.stop();
@@ -161,6 +174,7 @@ program
       console.log(buildErrorLog(`${code}: ${message}`));
       process.exit(1);
     }
+    process.exit(0);
   });
 
 const defaultWebUIPort = 1337;
@@ -181,14 +195,52 @@ program
         : Number(options.port);
     const availablePort = await detect(port);
     if (availablePort !== port) {
-      console.log(
-        `${yellow("[Warning]")} Port ${port} is unavailable. Trying port ${availablePort}.`,
+      console.warn(
+        buildWarningLog(
+          `Port ${port} is unavailable. Trying port ${availablePort}.`,
+        ),
       );
     }
     // TODO: get rid of this with dataset id support
     app.use(express.json({ limit: "50mb" }));
     app.use(express.static(path.join(__dirname, "../webapp")));
     app.get("/api/results", (req, res) => res.sendFile(outputFilePath));
+    app.get("/api/runs/:id/score/distribution", async (req, res) => {
+      const dbInstance = await getLocalDBInstance();
+      const tableName = `runs${req.params.id}`;
+      const path = `.empiricalrun/runs/${req.params.id}.jsonl`;
+      // TODO: find a better solve for scenarios where this table exists
+      // currently it throws error while doing unnest
+      await dbInstance.exec(`drop table if exists ${tableName}`);
+      await dbInstance.exec(
+        `create table if not exists ${tableName} as select * from read_json_auto('${path}')`,
+      );
+      const messages = await dbInstance.all(
+        `select score.name, score.message as message, score.score, count(*) as count from ${tableName}, unnest(sample.scores) t(score) where sample is not null group by 1,2,3 order by 4 desc, 1 asc`,
+      );
+      const scores = await dbInstance.all(
+        `select score.name, score.score, count(*) as count from ${tableName}, unnest(sample.scores) t(score) where sample is not null group by 1,2 order by 3 desc, 1 asc`,
+      );
+
+      const messagesResp = JSON.parse(
+        JSON.stringify(messages, (key, value) =>
+          typeof value === "bigint" ? Number(value) : value,
+        ),
+      );
+      const scoresResp = JSON.parse(
+        JSON.stringify(scores, (key, value) =>
+          typeof value === "bigint" ? Number(value) : value,
+        ),
+      );
+      await dbInstance.exec(`drop table ${tableName}`);
+      res.send({
+        success: true,
+        data: {
+          scores: scoresResp,
+          messages: messagesResp,
+        },
+      });
+    });
     app.delete("/api/runs/:id", async (req, res) => {
       try {
         const file = await fs.readFile(outputFilePath);
@@ -221,7 +273,8 @@ program
       };
       const streamUpdate = (obj: any) => res.write(JSON.stringify(obj) + `\n`);
       // This endpoint expects to execute only one run
-      const completion = await execute(runs[0]!, dataset, streamUpdate);
+      let store = persistToFile ? new EmpiricalStore() : undefined;
+      const completion = await execute(runs[0]!, dataset, streamUpdate, store);
       setRunSummary([completion]);
       const statsUpdate: RunStatsUpdate = {
         type: "run_stats",

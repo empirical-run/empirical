@@ -1,5 +1,12 @@
 # @empiricalrun/types
 
+## 0.3.2
+
+### Patch Changes
+
+- 8ffc64e: feat: add or remove samples and run them on the comparison ui
+- 9822db6: feat: accept timeout as parameter in empiricalrc.json
+
 ## 0.3.1
 
 ### Patch Changes

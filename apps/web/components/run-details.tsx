@@ -52,7 +52,7 @@ export const RunDetails = ({
   return (
     <Card className="my-4 rounded-md">
       <CardHeader className="flex flex-row w-full justify-between pb-0">
-        <div className="flex flex-col">
+        <div className="flex flex-col self-center">
           <CardTitle className="flex flex-row space-x-1 items-center">
             <span>{runConfig.name}</span>
           </CardTitle>
@@ -74,7 +74,7 @@ export const RunDetails = ({
       </CardHeader>
       <CardContent>
         <Tabs defaultValue={defaultTabValue}>
-          <TabsList className="w-fit mb-4 rounded-sm">
+          <TabsList className="w-fit rounded-sm">
             {runConfig.type === "model" && (
               <TabsTrigger value="prompt" className="text-xs rounded-sm">
                 Prompt template

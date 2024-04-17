@@ -131,11 +131,11 @@ export default function SampleOutputCard({
       }`}
       onClick={onClickCard}
     >
-      <CardHeader className="p-2">
+      <CardHeader className="p-2 mt-2">
         {baseResult && baseSample && (
           <CardTitle className="flex flex-row space-x-2 items-center">
             <Scores scores={baseSample?.scores || []} />
-            <div className="flex flex-row space-x-2 justify-end items-start">
+            <div className="flex flex-row space-x-2 justify-end items-start self-baseline">
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <DotsVerticalIcon />
@@ -241,7 +241,7 @@ export default function SampleOutputCard({
           )}
         </section>
         {showOutput && (
-          <div className="flex gap-2 items-center justify-end">
+          <div className="flex gap-2 items-center px-2 mt-2">
             <RunSampleOutputMetric
               title="Finish reason"
               value={baseSample?.output?.finish_reason}

@@ -16,7 +16,8 @@
     "build": "tsc --build",
     "clean": "tsc --build --clean",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "@empiricalrun/types": "workspace:*",

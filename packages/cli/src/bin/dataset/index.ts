@@ -2,6 +2,7 @@ import { Dataset, DatasetConfig, DatasetSample } from "@empiricalrun/types";
 import { promises as fs } from "fs";
 import { loaders, hashContents, LoaderType } from "./loaders";
 import { DatasetError, DatasetErrorEnum } from "../../error";
+import { fetchWithRetry } from "@empiricalrun/fetch";
 
 const googleSheetIdentifier = "https://docs.google.com/spreadsheets/d/";
 
@@ -37,10 +38,10 @@ async function fetchContents(path: string): Promise<string> {
       pathUrl.searchParams.forEach((value, name) =>
         fetchUrl.searchParams.append(name, value),
       );
-      const resp = await fetch(fetchUrl.toString());
+      const resp = await fetchWithRetry(fetchUrl.toString());
       return await resp.text();
     } else if (path.startsWith("http")) {
-      const response = await fetch(path);
+      const response = await fetchWithRetry(path);
       return await response.text();
     } else {
       const data = await fs.readFile(path);

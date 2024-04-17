@@ -22,12 +22,15 @@ export function aggregateRunStats(
       return {
         name: score.name,
         count,
-        avgScore:
-          (score.count * score.avgScore +
-            (oldScore?.count || 0) * (oldScore?.avgScore || 0)) /
+        average:
+          (score.count * score.average +
+            (oldScore?.count || 0) * (oldScore?.average || 0)) /
           count,
       };
     }),
+    // TODO
+    latency: { average: 0 },
+    tokens_used: { average: 0 },
   };
 }
 
@@ -52,18 +55,21 @@ export function statsAfterRemoved(
       const foundScore =
         foundSample &&
         foundSample.scores?.find(({ name }) => name === score.name);
-      let { count, avgScore } = score;
+      let { count, average } = score;
       if (foundScore) {
-        const oldTotal = avgScore * count;
+        const oldTotal = average * count;
         count = count - 1;
         const newTotal = oldTotal - foundScore.score;
-        avgScore = newTotal / count;
+        average = newTotal / count;
       }
       return {
         ...score,
         count,
-        avgScore,
+        average,
       };
     }),
+    // TODO
+    latency: { average: 0 },
+    tokens_used: { average: 0 },
   };
 }

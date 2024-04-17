@@ -4,6 +4,7 @@ import { green, yellow, bold, cyan, red } from "picocolors";
 import { table } from "table";
 
 const percentStr = (value: number) => `${value.toFixed(0)}%`;
+const latencyStr = (value: number) => `${value.toFixed(0)}ms`;
 
 const setMetricColor = (metric: string, value: number) => {
   if (value === 1) {
@@ -25,15 +26,15 @@ function runStatsSummary(
 ): string[][] {
   // TODO: should get rid of this once config has separate scorer object
   const scorerNames = runs[0]?.stats?.scores.map((s) => s.name) || [];
-  return [
+  const rows = [
     [
-      enableColors ? bold("Stats") : "Stats",
+      " ",
       ...runs.map((c) =>
         enableColors ? bold(c.run_config.name) : c.run_config.name!,
       ),
     ],
     [
-      enableColors ? bold("outputs") : "outputs",
+      enableColors ? bold("Outputs") : "Outputs",
       ...runs.map((c) => {
         const metric = percentStr((c?.stats?.outputs.success || 0) * 100);
         return enableColors
@@ -41,23 +42,34 @@ function runStatsSummary(
           : metric;
       }),
     ],
-    ...scorerNames.map((sn) => {
-      return [
+  ];
+  if (scorerNames.length > 0) {
+    rows.push(["Scores", ...runs.map(() => " ")]);
+    scorerNames.map((sn) => {
+      rows.push([
         enableColors ? bold(sn) : sn,
         ...runs.map((c) => {
           const scoreStats = c.stats?.scores.filter((s) => s.name === sn)[0];
           if (scoreStats) {
-            const metric = percentStr(scoreStats.avgScore * 100);
+            const metric = percentStr(scoreStats.average * 100);
             return enableColors
-              ? setMetricColor(metric, scoreStats.avgScore)
+              ? setMetricColor(metric, scoreStats.average)
               : metric;
           } else {
             return percentStr(0);
           }
         }),
-      ];
+      ]);
+    });
+  }
+  rows.push([
+    "Avg latency",
+    ...runs.map((c) => {
+      const metric = latencyStr(c?.stats?.latency.average || 0);
+      return metric;
     }),
-  ];
+  ]);
+  return rows;
 }
 
 export function markdownSummary(runs: RunCompletion[]): string {
@@ -99,6 +111,8 @@ export function printStatsSummary(runs: RunCompletion[]) {
           lineIndex === 0 ||
           lineIndex === 1 ||
           lineIndex === 2 ||
+          lineIndex === 3 ||
+          lineIndex === rowCount - 1 ||
           lineIndex === rowCount
         );
       },

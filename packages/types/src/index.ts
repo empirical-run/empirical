@@ -102,7 +102,7 @@ export type RunConfig = ModelRunConfig | PyScriptRunConfig | JSScriptRunConfig;
 export interface ScoreStats {
   name: string;
   count: number;
-  avgScore: number;
+  average: number;
 }
 
 export interface RunCompletionStats {
@@ -112,6 +112,12 @@ export interface RunCompletionStats {
     failed: number;
   };
   scores: ScoreStats[];
+  latency: {
+    average: number;
+  };
+  tokens_used: {
+    average: number;
+  };
 }
 
 export interface RunCompletion {

@@ -43,7 +43,7 @@ export function ScoreSummary({
                   <section className="flex flex-row">
                     <ScoreBadge
                       title={scoreName}
-                      score={statsMap[scoreName]?.avgScore || 0}
+                      score={statsMap[scoreName]?.average || 0}
                     />
                   </section>
                   <section className="flex flex-row">
@@ -84,7 +84,7 @@ export function ScoreSummary({
                   <section className="flex flex-row">
                     <ScoreBadge
                       title={scoreName}
-                      score={statsMap[scoreName]?.avgScore || 0}
+                      score={statsMap[scoreName]?.average || 0}
                     />
                   </section>
                   <section className="flex flex-row">

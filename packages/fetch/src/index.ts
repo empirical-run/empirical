@@ -32,7 +32,7 @@ export const fetchWithRetry = async (
         throw response;
       }
       return response;
-    } catch (error: Response | any) {
+    } catch (error: any) {
       retryCount++;
       if (retryCount === maxRetries) {
         clearTimeout(timer);
@@ -40,7 +40,11 @@ export const fetchWithRetry = async (
       }
       let retry = true;
       if (options?.shouldRetry) {
-        retry = await options?.shouldRetry?.(error);
+        let errorForRetry = error;
+        if (errorForRetry instanceof Response) {
+          errorForRetry = (error as Response).clone();
+        }
+        retry = await options?.shouldRetry?.(errorForRetry);
       }
       if (!retry) {
         clearTimeout(timer);

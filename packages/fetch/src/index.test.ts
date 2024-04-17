@@ -72,3 +72,9 @@ describe("fetch: timeout tests", () => {
     expect(shouldRetry).toBeCalledTimes(1);
   });
 });
+
+test("fetch should be able to get data using url", async () => {
+  const resp = await fetchWithRetry("https://www.empirical.run");
+  const text = await resp?.text();
+  expect(text).toBeTruthy();
+});

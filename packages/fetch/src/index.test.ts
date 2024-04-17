@@ -7,7 +7,7 @@ import { afterEach } from "vitest";
 
 const originalFetch = global.fetch;
 
-describe("test retries of fetch package", () => {
+describe("fetch: retry tests", () => {
   beforeEach(() => {
     global.fetch = vi.fn().mockRejectedValue("");
   });
@@ -18,31 +18,57 @@ describe("test retries of fetch package", () => {
   test("check for 3 retries if fetch throws error", async () => {
     let isErrorResp = false;
     try {
-      await fetchWithRetry("", { retries: 3 });
+      await fetchWithRetry("", { maxRetries: 2 });
     } catch (e) {
       isErrorResp = true;
     }
     expect(isErrorResp).toBe(true);
-    expect(global.fetch).toBeCalledTimes(3);
+    expect(global.fetch).toBeCalledTimes(2);
+  });
+
+  test("shouldRetry method should override maxRetries", async () => {
+    let isErrorResp = false;
+    try {
+      await fetchWithRetry("", {
+        maxRetries: 2,
+        shouldRetry: async () => false,
+      });
+    } catch (e) {
+      isErrorResp = true;
+    }
+    expect(isErrorResp).toBe(true);
+    expect(global.fetch).toBeCalledTimes(1);
+  });
+
+  test("shouldRetry method should override maxRetries", async () => {
+    let isErrorResp = false;
+    try {
+      await fetchWithRetry("", {
+        maxRetries: 2,
+        shouldRetry: async () => false,
+      });
+    } catch (e) {
+      isErrorResp = true;
+    }
+    expect(isErrorResp).toBe(true);
+    expect(global.fetch).toBeCalledTimes(1);
   });
 });
 
-describe("test timeout of fetch package", () => {
-  beforeEach(() => {
-    global.fetch = vi.fn();
-  });
-
-  afterEach(() => {
-    global.fetch = originalFetch;
-  });
-  test("check for 3 retries if fetch throws error", async () => {
+describe("fetch: timeout tests", () => {
+  test("should retry if there is a timeout", async () => {
     let isErrorResp = false;
+    const shouldRetry = vi.fn().mockResolvedValue(true);
     try {
-      await fetchWithRetry("", { retries: 3 });
+      await fetchWithRetry("https://www.empirical.run", {
+        shouldRetry,
+        timeout: 5,
+        maxRetries: 2,
+      });
     } catch (e) {
       isErrorResp = true;
     }
     expect(isErrorResp).toBe(true);
-    expect(global.fetch).toBeCalledTimes(3);
+    expect(shouldRetry).toBeCalledTimes(1);
   });
 });

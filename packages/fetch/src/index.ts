@@ -1,12 +1,13 @@
 interface FetchInitOptions extends RequestInit {
-  retries?: number;
+  maxRetries?: number;
   timeout?: number;
-  shouldRetry?: (resp: Response) => boolean;
+  shouldRetry?: (resp: any) => Promise<boolean>;
+  backoffMultiple?: number;
 }
 
-const backoffDelay = (retryCount: number) => {
-  const delay = Math.pow(2, retryCount) * 100;
-  const randomMs = Math.random() * 100;
+const backoffDelay = (multiple: number = 2, retryCount: number) => {
+  const delay = Math.pow(multiple, retryCount) * 1000;
+  const randomMs = Math.random() * 1000;
   return delay + randomMs;
 };
 
@@ -21,23 +22,31 @@ export const fetchWithRetry = async (
     : undefined;
 
   let retryCount = 0;
-  const retries = reqOptions?.retries || 3;
-  while (retryCount < retries) {
+  const maxRetries = reqOptions?.maxRetries || 3;
+  while (retryCount < maxRetries) {
     try {
       reqOptions.signal = controller.signal;
       const response = await fetch(url, reqOptions);
       clearTimeout(timer);
       if (!response.ok) {
-        throw new Error(response.statusText);
+        throw response;
       }
       return response;
-    } catch (error) {
+    } catch (error: Response | any) {
       retryCount++;
-      if (retryCount >= retries) {
+      if (retryCount === maxRetries) {
         clearTimeout(timer);
         throw error;
       }
-      const delay = backoffDelay(retryCount);
+      let retry = true;
+      if (options?.shouldRetry) {
+        retry = await options?.shouldRetry?.(error);
+      }
+      if (!retry) {
+        clearTimeout(timer);
+        throw error;
+      }
+      const delay = backoffDelay(options?.backoffMultiple, retryCount);
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }

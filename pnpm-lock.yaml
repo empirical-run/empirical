@@ -168,6 +168,9 @@ importers:
       '@empiricalrun/core':
         specifier: workspace:*
         version: link:../core
+      '@empiricalrun/fetch':
+        specifier: workspace:*
+        version: link:../fetch
       '@empiricalrun/types':
         specifier: workspace:*
         version: link:../types
@@ -272,6 +275,8 @@ importers:
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
+
+  packages/fetch: {}
 
   packages/json-schema:
     dependencies:

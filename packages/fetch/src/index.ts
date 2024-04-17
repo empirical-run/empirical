@@ -1,11 +1,30 @@
 interface FetchInitOptions extends RequestInit {
+  /**
+   * total number of retries before each throwing error
+   * @type {number} default 3
+   * @memberof FetchInitOptions
+   */
   maxRetries?: number;
+  /**
+   * request timeout in ms
+   * @type {number}
+   * @memberof FetchInitOptions
+   */
   timeout?: number;
+  /**
+   * function to check if retry is needed
+   * @memberof FetchInitOptions
+   */
   shouldRetry?: (resp: any) => Promise<boolean>;
+  /**
+   * exponential backoff multiplier
+   * @type {number} default 1.5
+   * @memberof FetchInitOptions
+   */
   backoffMultiple?: number;
 }
 
-const backoffDelay = (multiple: number = 2, retryCount: number) => {
+const backoffDelay = (multiple: number = 1.5, retryCount: number) => {
   const delay = Math.pow(multiple, retryCount) * 1000;
   const randomMs = Math.random() * 1000;
   return delay + randomMs;
@@ -14,7 +33,7 @@ const backoffDelay = (multiple: number = 2, retryCount: number) => {
 export const fetchWithRetry = async (
   url: string,
   options?: FetchInitOptions,
-) => {
+): Promise<Response> => {
   const controller = new AbortController();
   const reqOptions = options || {};
   const timer = reqOptions?.timeout
@@ -34,7 +53,7 @@ export const fetchWithRetry = async (
       return response;
     } catch (error: any) {
       retryCount++;
-      if (retryCount === maxRetries) {
+      if (retryCount >= maxRetries) {
         clearTimeout(timer);
         throw error;
       }
@@ -54,4 +73,5 @@ export const fetchWithRetry = async (
       await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
+  throw "Failed to fetch response";
 };

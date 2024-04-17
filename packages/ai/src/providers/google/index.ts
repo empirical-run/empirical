@@ -90,6 +90,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
                     maxOutputTokens: body.max_tokens || 1024,
                     // 0.9 is the default for 1.0 pro
                     temperature: body.temperature || 0.9,
+                    ...body.parameters,
                   },
                 })
                 .sendMessage(JSON.stringify(contents))

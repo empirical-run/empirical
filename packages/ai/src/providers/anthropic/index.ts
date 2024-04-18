@@ -95,7 +95,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
               retry(err);
               throw err;
             }
-            return err;
+            throw err;
           });
       },
       {

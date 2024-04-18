@@ -1,10 +1,10 @@
 {
   "$schema": "https://assets.empirical.run/config/schema/latest.json",
+  "provider": "openai",
   "runs": [
     {
       "name": "less context setting",
       "type": "model",
-      "provider": "openai",
       "model": "gpt-3.5-turbo",
       "prompt": "{{user_message}}",
       "scorers": [
@@ -19,7 +19,6 @@
       "name": "adequate context setting",
       "type": "model",
       "model": "gpt-3.5-turbo",
-      "provider": "openai",
       "prompt": "You are Sarah, a political scientist. Respond to the user with your best answer. Make sure to respond to them with their name.\n\n{{user_name}}: {{user_message}}",
       "scorers": [
         {

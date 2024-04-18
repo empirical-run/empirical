@@ -77,7 +77,8 @@ interface ModelParameters {
 
 export interface ModelRunConfig extends RunConfigBase {
   type: "model";
-  provider: "openai" | "mistral" | "google" | "anthropic" | "fireworks";
+  provider?: "openai" | "mistral" | "google" | "anthropic" | "fireworks";
+  scorers?: Scorer[];
   model: string;
   prompt?: Prompt;
   parameters?: ModelParameters;

@@ -1,6 +1,6 @@
 ---
-title: 'Quick start'
-description: 'Try Empirical in 3 steps'
+title: "Quick start"
+description: "Try Empirical in 3 steps"
 ---
 
 Empirical bundles together a CLI and a web app. The CLI handles running tests and
@@ -32,6 +32,7 @@ Our test will succeed if the model outputs valid JSON.
     ```sh
     cat empiricalrc.json
     ```
+
   </Step>
 
   <Step title="Run the test">
@@ -43,6 +44,7 @@ Our test will succeed if the model outputs valid JSON.
 
     This step requires the `OPENAI_API_KEY` environment variable to authenticate with
     OpenAI. This execution will cost $0.0026, based on the selected models.
+
   </Step>
 
   <Step title="See results">
@@ -52,6 +54,7 @@ Our test will succeed if the model outputs valid JSON.
     ```sh
     npx @empiricalrun/cli ui
     ```
+
   </Step>
 
   <Step title="[Bonus] Fix GPT-4 Turbo">
@@ -75,21 +78,15 @@ Our test will succeed if the model outputs valid JSON.
     <Accordion title="empiricalrc.json: Updated with JSON mode">
     ```json empiricalrc.json
     {
+      "provider": "openai",
       "runs": [
         {
           "type": "model",
-          "provider": "openai",
           "model": "gpt-3.5-turbo",
           "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
-          "scorers": [
-            {
-              "type": "is-json"
-            }
-          ]
         },
         {
           "type": "model",
-          "provider": "openai",
           "model": "gpt-4-turbo-preview",
           "parameters": {
             "response_format": {
@@ -97,12 +94,12 @@ Our test will succeed if the model outputs valid JSON.
             }
           },
           "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
-          "scorers": [
+        }
+      ],
+      "scorers": [
             {
               "type": "is-json"
             }
-          ]
-        }
       ],
       "dataset": {
         "samples": [
@@ -124,9 +121,9 @@ Our test will succeed if the model outputs valid JSON.
 
     Re-running the test with `npx @empiricalrun/cli run` will give us better results
     for GPT-4 Turbo.
+
   </Step>
 </Steps>
-
 
 ## Make it yours
 

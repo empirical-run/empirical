@@ -102,7 +102,22 @@ program
 
     console.log(buildSuccessLog(`read ${configFileName} file successfully`));
     const jsonStr = data.toString();
-    const { runs, dataset: datasetConfig } = JSON.parse(jsonStr) as RunsConfig;
+    const {
+      runs,
+      dataset: datasetConfig,
+      provider,
+      scorers,
+    } = JSON.parse(jsonStr) as RunsConfig;
+    runs.forEach((run) => {
+      if (run.type === "model") {
+        if (provider && !run.provider) {
+          run["provider"] = provider;
+        }
+      }
+      if (!run.scorers && scorers) {
+        run["scorers"] = scorers;
+      }
+    });
     // TODO: add check here for empty runs config. Add validator of the file
     let dataset: Dataset;
     const store = new EmpiricalStore();

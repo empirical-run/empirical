@@ -1,5 +1,11 @@
 # @empiricalrun/cli
 
+## 0.5.4
+
+### Patch Changes
+
+- ebdc566: fix: ui breaking in case of too many sample inputs
+
 ## 0.5.3
 
 ### Patch Changes

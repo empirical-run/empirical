@@ -13,12 +13,6 @@
           "path": "score.py"
         }
       ]
-    },
-    {
-      "type": "model",
-      "provider": "openai",
-      "model": "gpt-3.5-turbo",
-      "prompt": "{{question}}"
     }
   ],
   "dataset": {

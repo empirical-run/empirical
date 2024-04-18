@@ -1,5 +1,16 @@
 # @empiricalrun/cli
 
+## 0.5.1
+
+### Patch Changes
+
+- 82739a9: feat: add fetch library which supports retry and timeouts
+- a4805df: fix: duck db table error creating more than 1 run from web app
+- Updated dependencies [82739a9]
+- Updated dependencies [a4805df]
+  - @empiricalrun/fetch@0.1.0
+  - @empiricalrun/core@0.5.1
+
 ## 0.5.0
 
 ### Minor Changes

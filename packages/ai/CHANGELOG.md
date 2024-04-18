@@ -1,5 +1,11 @@
 # @empiricalrun/ai
 
+## 0.4.1
+
+### Patch Changes
+
+- a952bd9: fix: recursively replace placeholders and allow whitespaces in them
+
 ## 0.4.0
 
 ### Minor Changes

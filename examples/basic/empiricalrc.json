@@ -5,42 +5,16 @@
       "type": "model",
       "provider": "openai",
       "model": "gpt-3.5-turbo",
-      "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
-      "scorers": [
-        {
-          "type": "is-json"
-        }
-      ]
+      "prompt": "I am providing you with a detailed financial summary for the month, broken down by category. Based on this data, generate a sarcastic comment.\n\nuser: {{user}}\nmonth: {{month}}Income: {{income}}\nInvested: {{invested}}\nOutgoing: {{outgoing}}\nFood and Drinks: {{food_drinks}}\nTransport: {{transport}}\nGift: {{gift}}\nCredit Bill: {{credit_bill}}\nServices: {{services}}\nShopping: {{shopping}}\nMedical: {{medical}}\nGroceries: {{groceries}}\nPersonal Expenses: {{personal}}\nDonation: {{donation}}\nHidden Charges: {{hidden_charges}}\nEntertainment: {{entertainment}}\nBill Payments: {{bill}}\nSubscription: {{subscription}}\nMiscellaneous: {{misc}}\nTravel: {{travel}}\nInvestment: {{investment}}\nLent Money: {{lent}}"
     },
     {
       "type": "model",
       "provider": "openai",
-      "model": "gpt-4-turbo-preview",
-      "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
-      "parameters": {
-        "response_format": {
-          "type": "json_object"
-        }
-      },
-      "scorers": [
-        {
-          "type": "is-json"
-        }
-      ]
+      "model": "gpt-4-turbo",
+      "prompt": "I am providing you with a detailed financial summary for the month, broken down by category. Based on this data, generate a sarcastic comment.\n\nuser: {{user}}\nmonth: {{month}}Income: {{income}}\nInvested: {{invested}}\nOutgoing: {{outgoing}}\nFood and Drinks: {{food_drinks}}\nTransport: {{transport}}\nGift: {{gift}}\nCredit Bill: {{credit_bill}}\nServices: {{services}}\nShopping: {{shopping}}\nMedical: {{medical}}\nGroceries: {{groceries}}\nPersonal Expenses: {{personal}}\nDonation: {{donation}}\nHidden Charges: {{hidden_charges}}\nEntertainment: {{entertainment}}\nBill Payments: {{bill}}\nSubscription: {{subscription}}\nMiscellaneous: {{misc}}\nTravel: {{travel}}\nInvestment: {{investment}}\nLent Money: {{lent}}"
     }
   ],
   "dataset": {
-    "samples": [
-      {
-        "inputs": {
-          "user_message": "Hi my name is John Doe. I'm 26 years old and I work in real estate."
-        }
-      },
-      {
-        "inputs": {
-          "user_message": "This is Alice. I am a nurse from Maryland. I was born in 1990."
-        }
-      }
-    ]
+    "path": "https://docs.google.com/spreadsheets/d/1j1kt3pywpza0SJPs-j_d1f4rXJPoCSzdZSZKNGaTWb0/edit"
   }
 }

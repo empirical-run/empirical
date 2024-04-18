@@ -151,7 +151,7 @@ export default function Page(): JSX.Element {
         }}
       >
         {runResults?.length > 0 && (
-          <div className="flex bg-zinc-900 sticky top-0 z-20 min-w-fit">
+          <div className="flex bg-zinc-900 sticky top-0 z-20">
             <RunColumnHeaders
               showPrompt={(run: RunResult) =>
                 showRunDetails(activeRun?.id === run.id ? undefined : run)
@@ -174,49 +174,47 @@ export default function Page(): JSX.Element {
             return (
               <InViewElement
                 key={`run-sample-${r}`}
-                className=" flex flex-row items-stretch min-h-[150px] w-full"
+                className=" flex flex-row items-stretch min-h-[150px] w-full bg-zinc-900"
               >
-                <div className="flex flex-1 bg-zinc-900">
-                  <div className="flex items-stretch flex-1 min-w-[500px]">
-                    <SampleCard
-                      sample={inputSample!}
-                      inputTabs={datasetInputNames}
-                      onSampleAdd={(sample) => addDatasetSample(sample)}
-                      onSampleInputUpdate={updateDatasetSampleInput}
-                      onSampleRemove={(sample) => {
-                        if (dataset?.samples.length === 1) {
-                          toast.toast({
-                            title: "Cannot remove the last sample",
-                          });
-                        } else {
-                          removeDatasetSample(sample);
-                        }
-                      }}
-                      onClickRunOnAllModels={onClickRunOnAllModelsForSample}
-                      // TODO: show run button also when input is edited
-                      hasMissingCompletion={hasMissingCompletion}
+                <div className="flex flex-1 min-w-[500px] overflow-hidden">
+                  <SampleCard
+                    sample={inputSample!}
+                    inputTabs={datasetInputNames}
+                    onSampleAdd={(sample) => addDatasetSample(sample)}
+                    onSampleInputUpdate={updateDatasetSampleInput}
+                    onSampleRemove={(sample) => {
+                      if (dataset?.samples.length === 1) {
+                        toast.toast({
+                          title: "Cannot remove the last sample",
+                        });
+                      } else {
+                        removeDatasetSample(sample);
+                      }
+                    }}
+                    onClickRunOnAllModels={onClickRunOnAllModelsForSample}
+                    // TODO: show run button also when input is edited
+                    hasMissingCompletion={hasMissingCompletion}
+                  />
+                </div>
+                {sampleCells.map((sample, i) => (
+                  <div
+                    className="flex flex-1 min-w-[500px]"
+                    key={`sample-${r}-${i}`}
+                  >
+                    <SampleOutputCard
+                      baseResult={runColumnHeaders?.[i]?.runResult}
+                      baseSample={sample}
+                      comparisonResults={runColumnHeaders.map(
+                        (s) => s.runResult!,
+                      )}
+                      onClickCard={() =>
+                        showRunDetails(runColumnHeaders[i]?.runResult!, true)
+                      }
+                      comparisonSamples={sampleCells}
+                      isActiveColumn={runColumnHeaders[i]?.active}
                     />
                   </div>
-                  {sampleCells.map((sample, i) => (
-                    <div
-                      className="flex flex-1 items-stretch min-w-[500px]"
-                      key={`sample-${r}-${i}`}
-                    >
-                      <SampleOutputCard
-                        baseResult={runColumnHeaders?.[i]?.runResult}
-                        baseSample={sample}
-                        comparisonResults={runColumnHeaders.map(
-                          (s) => s.runResult!,
-                        )}
-                        onClickCard={() =>
-                          showRunDetails(runColumnHeaders[i]?.runResult!, true)
-                        }
-                        comparisonSamples={sampleCells}
-                        isActiveColumn={runColumnHeaders[i]?.active}
-                      />
-                    </div>
-                  ))}
-                </div>
+                ))}
               </InViewElement>
             );
           })}

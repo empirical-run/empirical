@@ -24,9 +24,7 @@ export default function SampleCard({
   onClickRunOnAllModels: (sample: DatasetSample) => void;
 }) {
   return (
-    <Card
-      className={`flex flex-1 flex-col rounded-md items-stretch border-zinc-900`}
-    >
+    <Card className="flex flex-col rounded-md items-stretch border-zinc-900 w-full">
       <CardContent className="flex flex-col flex-1 p-2 pb-0 items-stretch relative">
         <JsonAsTab
           storeKey="input"

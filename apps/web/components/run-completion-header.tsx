@@ -142,7 +142,7 @@ export const RunColumnHeaders = ({
                   className={`${overlayBg}`}
                 />
                 <section className="flex flex-row space-x-2 text-muted-foreground items-center mx-4 my-2">
-                  <section className="flex flex-row flex-1 text-xs gap-1 items-center">
+                  <section className="flex flex-row flex-1 text-xs gap-2 items-center flex-wrap">
                     {(header.runResult?.stats?.scores || []).map((s) => (
                       <>
                         <section className="flex flex-row gap-1 items-center">

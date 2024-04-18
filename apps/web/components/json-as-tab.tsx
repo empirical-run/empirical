@@ -118,7 +118,7 @@ export function JsonAsTab({
       </div>
       {tabs.length > 0 && (
         <Tabs value={activeTab} className="h-full" onValueChange={onChangeTab}>
-          <TabsList className=" rounded-sm">
+          <TabsList className=" rounded-sm w-[calc(100%-140px)] overflow-x-scroll justify-start no-scrollbar">
             {tabs.map((name) => (
               <TabsTrigger
                 key={name}

@@ -15,17 +15,17 @@
       ]
     },
     {	
-      "type": "py-script",	
-      "path": "rag.py",	
-      "parameters": {	
-        "model": "gpt-4-turbo-preview"	
+      "type": "py-script",
+      "path": "rag.py",
+      "parameters": {
+        "model": "gpt-4-turbo-preview"
       },	
-      "scorers": [	
+      "scorers": [
         {	
-          "type": "py-script",	
-          "path": "score.py"	
-        }	
-      ]	
+          "type": "py-script",
+          "path": "score.py"
+        }
+      ]
     }
   ],
   "dataset": {

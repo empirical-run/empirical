@@ -1,5 +1,13 @@
 # @empiricalrun/core
 
+## 0.5.3
+
+### Patch Changes
+
+- Updated dependencies [ac10032]
+  - @empiricalrun/ai@0.4.2
+  - @empiricalrun/scorer@0.1.7
+
 ## 0.5.2
 
 ### Patch Changes

@@ -8,7 +8,11 @@ const wrapperScriptDirectory = path.join(__dirname, "..", "..", "..", "python");
 const wrapperScriptFile = "executor_wrapper.py";
 const executionOutputIdentifier = "execution_output:";
 
-export const scriptExecutor: Transformer = async (runConfig, sample) => {
+export const scriptExecutor: Transformer = async (
+  runConfig,
+  sample,
+  runtimeOptions,
+) => {
   let output = { value: "" };
   if (runConfig.type !== "py-script") {
     return {
@@ -42,7 +46,7 @@ export const scriptExecutor: Transformer = async (runConfig, sample) => {
   const runOutput = await new Promise<string[]>((resolve) => {
     let output: string[] = [];
     const shell = new PythonShell(wrapperScriptFile, {
-      pythonPath: runConfig.parameters?.pythonPath || undefined,
+      pythonPath: runtimeOptions?.pythonPath || undefined,
       scriptPath: wrapperScriptDirectory,
       args: pythonArgs,
     });

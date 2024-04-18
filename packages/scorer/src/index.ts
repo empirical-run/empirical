@@ -1,4 +1,10 @@
-import { Scorer, Score, DatasetSample, RunOutput } from "@empiricalrun/types";
+import {
+  Scorer,
+  Score,
+  DatasetSample,
+  RunOutput,
+  RuntimeOptions,
+} from "@empiricalrun/types";
 import { ScorerError, ScorerErrorEnum } from "./error";
 import getScoringFn from "./provider";
 
@@ -11,7 +17,7 @@ export default async function score({
   sample: DatasetSample;
   output: RunOutput;
   scorers: Scorer[] | undefined;
-  options?: object;
+  options?: RuntimeOptions;
 }): Promise<Score[]> {
   if (!scorers) {
     return [];

@@ -1,5 +1,13 @@
 # @empiricalrun/cli
 
+## 0.5.2
+
+### Patch Changes
+
+- 709f1f5: fix: cli not package not able to resolve fetch package
+- Updated dependencies [709f1f5]
+  - @empiricalrun/fetch@0.2.0
+
 ## 0.5.1
 
 ### Patch Changes

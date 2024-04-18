@@ -62,7 +62,9 @@ export function getStatsForRun(run: RunCompletion): RunCompletionStats {
       ),
     },
     scores: scoresStats,
-    latency: {
+    latency: latencies.length > 0 ? {
+      average: getAverage(tokens_used),
+    } : undefined,
       average: getAverage(latencies),
     },
     tokens_used: {

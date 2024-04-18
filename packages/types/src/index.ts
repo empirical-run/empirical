@@ -112,10 +112,10 @@ export interface RunCompletionStats {
     failed: number;
   };
   scores: ScoreStats[];
-  latency: {
+  latency?: {
     average: number;
   };
-  tokens_used: {
+  tokens_used?: {
     average: number;
   };
 }

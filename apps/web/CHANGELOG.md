@@ -1,5 +1,11 @@
 # web
 
+## 0.7.1
+
+### Patch Changes
+
+- ebdc566: fix: ui breaking in case of too many sample inputs
+
 ## 0.7.0
 
 ### Minor Changes

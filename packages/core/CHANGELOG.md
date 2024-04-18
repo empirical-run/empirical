@@ -1,5 +1,13 @@
 # @empiricalrun/core
 
+## 0.5.2
+
+### Patch Changes
+
+- f51254f: feat: add support for runtime config options
+  - @empiricalrun/ai@0.4.1
+  - @empiricalrun/scorer@0.1.6
+
 ## 0.5.1
 
 ### Patch Changes

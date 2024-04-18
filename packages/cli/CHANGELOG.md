@@ -1,5 +1,15 @@
 # @empiricalrun/cli
 
+## 0.5.3
+
+### Patch Changes
+
+- d62108b: feat: add cachedir to gitignore on init
+- f51254f: feat: add support for runtime config options
+- Updated dependencies [f51254f]
+  - @empiricalrun/core@0.5.2
+  - @empiricalrun/types@0.3.3
+
 ## 0.5.2
 
 ### Patch Changes

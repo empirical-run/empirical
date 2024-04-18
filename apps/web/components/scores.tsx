@@ -9,9 +9,9 @@ export function Scores({ scores }: { scores: Score[] }) {
   const scoresPresent = !!scores?.length;
   const showExpandViewOption = scoresPresent && scores.some((s) => !!s.message);
   return (
-    <div className="flex flex-row flex-1 justify-start px-2 gap-2">
+    <div className="flex flex-row flex-1 justify-start pl-2 gap-2">
       <div
-        className={`flex ${expandState ? "flex-col flex-1" : "flex-row"} justify-start gap-2`}
+        className={`flex ${expandState ? "flex-col flex-1" : "flex-row flex-wrap"} justify-start gap-2`}
       >
         {scores?.map((s) => {
           if (!s) {

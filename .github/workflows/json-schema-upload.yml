@@ -46,4 +46,4 @@ jobs:
         env:
           CLOUDFLARE_ZONE: ${{ secrets.CLOUDFLARE_ZONE }}
           CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
-          PURGE_URLS: '["https://assets.empirical.run/config%2Fschema%2Flatest.json"]'
+          PURGE_URLS: '["https://assets.empirical.run/config/schema/latest.json"]'

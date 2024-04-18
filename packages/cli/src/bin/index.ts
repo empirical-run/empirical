@@ -40,6 +40,7 @@ import {
 const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
 const configFileFullPath = `${cwd}/${configFileName}`;
+const gitIgnoreFullPath = `${cwd}/.gitignore`;
 const config = getDefaultRunsConfig(DefaultRunsConfigType.DEFAULT);
 
 const outputFileName = "output.json";
@@ -58,6 +59,10 @@ program
   .description("initialise empirical")
   .action(async () => {
     await fs.writeFile(configFileFullPath, JSON.stringify(config, null, 2));
+    await fs.appendFile(
+      gitIgnoreFullPath,
+      `\n# Ignore outputs from Empirical\n${cacheDir}\n`,
+    );
     console.log(
       buildSuccessLog(`created ${bold(`${configFileName}`)} in ${cwd}`),
     );

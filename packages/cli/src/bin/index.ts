@@ -21,6 +21,7 @@ import {
   RunConfig,
   RunCompletion,
   RunStatsUpdate,
+  RuntimeOptions,
 } from "@empiricalrun/types";
 import {
   failedOutputsSummary,
@@ -45,6 +46,7 @@ const config = getDefaultRunsConfig(DefaultRunsConfigType.DEFAULT);
 const outputFileName = "output.json";
 const cacheDir = ".empiricalrun";
 const outputFilePath = `${cwd}/${cacheDir}/${outputFileName}`;
+const runtimeOptionsPath = `${cwd}/${cacheDir}/runtime.json`;
 
 program
   .name("Empirical.run CLI")
@@ -75,7 +77,12 @@ program
     "Provide path to .env file to load environment variables",
   )
   .action(async (options) => {
-    dotenv.config({ path: options.envFile || [".env.local", ".env"] });
+    const envFilePath = options.envFile || [".env.local", ".env"];
+    const runTimeOptions: RuntimeOptions = {
+      envFilePath,
+      pythonPath: options.pythonPath,
+    };
+    dotenv.config({ path: runTimeOptions.envFilePath });
     console.log(yellow("Initiating run..."));
 
     let data;
@@ -125,7 +132,6 @@ program
     const completion = await Promise.all(
       runs.map((r) => {
         r.parameters = r.parameters ? r.parameters : {};
-        r.parameters.pythonPath = options.pythonPath;
         return execute(
           r,
           dataset,
@@ -138,6 +144,7 @@ program
             }
           },
           store,
+          runTimeOptions,
         );
       }),
     );
@@ -161,6 +168,7 @@ program
       };
       await fs.mkdir(`${cwd}/${cacheDir}`, { recursive: true });
       await fs.writeFile(outputFilePath, JSON.stringify(data, null, 2));
+      await fs.writeFile(runtimeOptionsPath, JSON.stringify(runTimeOptions));
     } else {
       await reportOnCI(completion, dataset);
     }
@@ -201,6 +209,18 @@ program
         ),
       );
     }
+
+    let runtimeOptions: RuntimeOptions | undefined;
+    try {
+      const dataStr = await fs.readFile(runtimeOptionsPath);
+      runtimeOptions = JSON.parse(dataStr.toString());
+      if (runtimeOptions?.envFilePath) {
+        dotenv.config({ path: runtimeOptions.envFilePath! });
+      }
+    } catch (e) {
+      runtimeOptions = undefined;
+    }
+
     // TODO: get rid of this with dataset id support
     app.use(express.json({ limit: "50mb" }));
     app.use(express.static(path.join(__dirname, "../webapp")));
@@ -274,7 +294,13 @@ program
       const streamUpdate = (obj: any) => res.write(JSON.stringify(obj) + `\n`);
       // This endpoint expects to execute only one run
       let store = persistToFile ? new EmpiricalStore() : undefined;
-      const completion = await execute(runs[0]!, dataset, streamUpdate, store);
+      const completion = await execute(
+        runs[0]!,
+        dataset,
+        streamUpdate,
+        store,
+        runtimeOptions,
+      );
       setRunSummary([completion]);
       const statsUpdate: RunStatsUpdate = {
         type: "run_stats",

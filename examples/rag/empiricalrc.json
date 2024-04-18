@@ -15,17 +15,10 @@
       ]
     },
     {
-      "type": "py-script",
-      "path": "rag.py",
-      "parameters": {
-        "model": "gpt-4-turbo-preview"
-      },
-      "scorers": [
-        {
-          "type": "py-script",
-          "path": "score.py"
-        }
-      ]
+      "type": "model",
+      "provider": "openai",
+      "model": "gpt-3.5-turbo",
+      "prompt": "{{question}}"
     }
   ],
   "dataset": {

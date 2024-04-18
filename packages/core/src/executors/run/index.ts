@@ -8,6 +8,7 @@ import {
   RunMetadataUpdate,
   RunSampleUpdate,
   RunSampleScoreUpdate,
+  RuntimeOptions,
 } from "@empiricalrun/types";
 import { generateHex } from "../../utils";
 import score from "@empiricalrun/scorer";
@@ -23,6 +24,7 @@ export async function execute(
   dataset: Dataset,
   progressCallback?: (sample: RunUpdateType) => void,
   store?: EmpiricalStore,
+  runtimeOptions?: RuntimeOptions,
 ): Promise<RunCompletion> {
   const runCreationDate = new Date();
   const runId = generateRunId();
@@ -53,7 +55,7 @@ export async function execute(
     if (transform) {
       // if llm error then add to the completion object but if something else throw error and stop the run
       completionsPromises.push(
-        transform(runConfig, datasetSample)
+        transform(runConfig, datasetSample, runtimeOptions)
           .then(({ output, error }) => {
             const data: RunSampleOutput = {
               inputs: datasetSample.inputs,
@@ -85,9 +87,7 @@ export async function execute(
                 sample: datasetSample!,
                 output: sample.output,
                 scorers,
-                options: {
-                  pythonPath: runConfig.parameters?.pythonPath,
-                },
+                options: runtimeOptions,
               });
             }
             sample.scores = scores;

@@ -1,5 +1,11 @@
 # @empiricalrun/types
 
+## 0.3.3
+
+### Patch Changes
+
+- f51254f: feat: add support for runtime config options
+
 ## 0.3.2
 
 ### Patch Changes

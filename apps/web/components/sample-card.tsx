@@ -25,7 +25,7 @@ export default function SampleCard({
 }) {
   return (
     <Card className="flex flex-col rounded-md items-stretch border-zinc-900 w-full">
-      <CardContent className="flex flex-col flex-1 p-2 pb-0 items-stretch relative">
+      <CardContent className="flex flex-col flex-1 p-2 mt-1 pb-0 items-stretch relative">
         <JsonAsTab
           storeKey="input"
           data={sample?.inputs}

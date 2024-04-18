@@ -50,7 +50,7 @@ export function JsonAsTab({
 
   return (
     <>
-      <div className="flex flex-row space-x-2 justify-end absolute right-4 top-4">
+      <div className="flex flex-row space-x-2 justify-end">
         <>
           {activeTabValue && (
             <Sheet>
@@ -118,7 +118,7 @@ export function JsonAsTab({
       </div>
       {tabs.length > 0 && (
         <Tabs value={activeTab} className="h-full" onValueChange={onChangeTab}>
-          <TabsList className=" rounded-sm w-[calc(100%-140px)] overflow-x-scroll justify-start no-scrollbar">
+          <TabsList className=" rounded-sm w-full overflow-x-scroll justify-start no-scrollbar">
             {tabs.map((name) => (
               <TabsTrigger
                 key={name}

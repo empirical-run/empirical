@@ -260,7 +260,7 @@ export default function SampleOutputCard({
               orientation="horizontal"
               className="w-[60%] self-center"
             />
-            <p className=" text-sm font-medium mt-2 mb-2">Metadata</p>
+            <p className=" text-sm font-medium mt-2">Metadata</p>
             <section className="relative flex flex-col flex-1">
               <JsonAsTab
                 storeKey={baseResult?.id!}

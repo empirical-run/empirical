@@ -32,6 +32,7 @@ if (typeof window !== "undefined") {
     const db = new duckdb.AsyncDuckDB(logger, worker);
     await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
     const conn = await db.connect();
+    conn.query("LOAD json");
     const streamResponse = await fetch(
       `https://assets-test.empirical.run/runs%2F102%2Foutput.json`,
     );

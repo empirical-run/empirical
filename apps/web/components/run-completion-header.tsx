@@ -91,12 +91,10 @@ export const RunColumnHeaders = ({
     const isActive = !!header.active;
     const overlayBg = isActive ? "bg-zinc-900" : "";
     const averageLatency =
-      header.runResult?.stats?.latency &&
-      header.runResult?.stats?.latency.average > 0 &&
+      header.runResult?.stats?.latency?.average &&
       header.runResult?.stats?.latency.average.toFixed(0);
     const averageTokens =
-      header.runResult?.stats?.tokens_used &&
-      header.runResult?.stats?.tokens_used.average > 0 &&
+      header.runResult?.stats?.tokens_used?.average &&
       header.runResult?.stats?.tokens_used.average.toFixed(0);
     return (
       <div

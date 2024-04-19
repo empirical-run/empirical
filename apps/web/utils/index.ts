@@ -14,6 +14,22 @@ export function aggregateRunStats(
   newStats: RunCompletionStats,
   oldStats: RunCompletionStats | undefined,
 ): RunCompletionStats {
+  let avgLatency = undefined;
+  if (oldStats?.latency?.average && newStats.latency?.average) {
+    const total =
+      oldStats.outputs.count * oldStats.latency.average +
+      newStats.outputs.count * newStats.latency.average;
+    avgLatency = total / (oldStats.outputs.count + newStats.outputs.count);
+  }
+
+  let avgTokensUsed = undefined;
+  if (oldStats?.tokens_used?.average && newStats.tokens_used?.average) {
+    const total =
+      oldStats.outputs.count * oldStats.tokens_used.average +
+      newStats.outputs.count * newStats.tokens_used.average;
+    avgTokensUsed = total / (oldStats.outputs.count + newStats.outputs.count);
+  }
+
   return {
     outputs: sumObjectsByKey(oldStats?.outputs || {}, newStats.outputs),
     scores: newStats.scores.map((score) => {
@@ -28,9 +44,8 @@ export function aggregateRunStats(
           count,
       };
     }),
-    // TODO
-    latency: { average: 0 },
-    tokens_used: { average: 0 },
+    latency: avgLatency ? { average: avgLatency } : undefined,
+    tokens_used: avgTokensUsed ? { average: avgTokensUsed } : undefined,
   };
 }
 
@@ -45,6 +60,26 @@ export function statsAfterRemoved(
   const { scores, outputs } = stats;
   const foundSample = samples.find((s) => s.dataset_sample_id === sample.id);
   const keyToChange = foundSample && foundSample.error ? "failed" : "success";
+
+  let avgLatency = run.stats?.latency?.average;
+  if (avgLatency && foundSample && foundSample.output.latency) {
+    const count = samples.length; // Assuming all outputs have latencies
+    const oldTotal = avgLatency * count;
+    avgLatency =
+      count > 1
+        ? (oldTotal - foundSample.output.latency) / (count - 1)
+        : undefined;
+  }
+  let avgTokensUsed = run.stats?.tokens_used?.average;
+  if (avgTokensUsed && foundSample && foundSample.output.tokens_used) {
+    const count = samples.length; // Assuming all outputs have tokens_used
+    const oldTotal = avgTokensUsed * count;
+    avgTokensUsed =
+      count > 1
+        ? (oldTotal - foundSample.output.tokens_used) / (count - 1)
+        : undefined;
+  }
+
   return {
     outputs: {
       ...outputs,
@@ -68,8 +103,7 @@ export function statsAfterRemoved(
         average,
       };
     }),
-    // TODO
-    latency: { average: 0 },
-    tokens_used: { average: 0 },
+    latency: avgLatency ? { average: avgLatency } : undefined,
+    tokens_used: avgTokensUsed ? { average: avgTokensUsed } : undefined,
   };
 }

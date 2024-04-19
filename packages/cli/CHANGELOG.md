@@ -1,5 +1,11 @@
 # @empiricalrun/cli
 
+## 0.5.6
+
+### Patch Changes
+
+- 837528d: feat: add support for sharing results using empirical link
+
 ## 0.5.5
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # web
 
+## 0.7.2
+
+### Patch Changes
+
+- 837528d: feat: add support for sharing results using empirical link
+
 ## 0.7.1
 
 ### Patch Changes

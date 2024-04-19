@@ -17,9 +17,9 @@ export class LocalRunMetadataStore {
     if (!fs.existsSync(`${fullPath}`)) {
       fs.mkdirSync(`${cwd}/${cachePath}`, { recursive: true });
       fs.writeFileSync(fullPath, "");
-      cmd = `create table runs (run JSON)`;
+      cmd = `create table if not exists runs (run JSON)`;
     } else {
-      cmd = `create table runs as select * from read_json_auto('${cachePath}/${fileName}')`;
+      cmd = `create table if not exists runs as select * from read_json_auto('${cachePath}/${fileName}')`;
     }
 
     if (!this.createTable) {

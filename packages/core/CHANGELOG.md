@@ -1,5 +1,30 @@
 # @empiricalrun/core
 
+## 0.5.3
+
+### Patch Changes
+
+- Updated dependencies [ac10032]
+  - @empiricalrun/ai@0.4.2
+  - @empiricalrun/scorer@0.1.7
+
+## 0.5.2
+
+### Patch Changes
+
+- f51254f: feat: add support for runtime config options
+  - @empiricalrun/ai@0.4.1
+  - @empiricalrun/scorer@0.1.6
+
+## 0.5.1
+
+### Patch Changes
+
+- a4805df: fix: duck db table error creating more than 1 run from web app
+- Updated dependencies [a952bd9]
+  - @empiricalrun/ai@0.4.1
+  - @empiricalrun/scorer@0.1.6
+
 ## 0.5.0
 
 ### Minor Changes

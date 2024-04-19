@@ -228,3 +228,8 @@ export type RunUpdateType =
   | RunSampleUpdate
   | RunSampleScoreUpdate
   | RunStatsUpdate;
+
+export interface RuntimeOptions {
+  envFilePath: string | string[];
+  pythonPath: string;
+}

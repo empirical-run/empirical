@@ -1,5 +1,46 @@
 # @empiricalrun/cli
 
+## 0.5.5
+
+### Patch Changes
+
+- @empiricalrun/core@0.5.3
+
+## 0.5.4
+
+### Patch Changes
+
+- ebdc566: fix: ui breaking in case of too many sample inputs
+
+## 0.5.3
+
+### Patch Changes
+
+- d62108b: feat: add cachedir to gitignore on init
+- f51254f: feat: add support for runtime config options
+- Updated dependencies [f51254f]
+  - @empiricalrun/core@0.5.2
+  - @empiricalrun/types@0.3.3
+
+## 0.5.2
+
+### Patch Changes
+
+- 709f1f5: fix: cli not package not able to resolve fetch package
+- Updated dependencies [709f1f5]
+  - @empiricalrun/fetch@0.2.0
+
+## 0.5.1
+
+### Patch Changes
+
+- 82739a9: feat: add fetch library which supports retry and timeouts
+- a4805df: fix: duck db table error creating more than 1 run from web app
+- Updated dependencies [82739a9]
+- Updated dependencies [a4805df]
+  - @empiricalrun/fetch@0.1.0
+  - @empiricalrun/core@0.5.1
+
 ## 0.5.0
 
 ### Minor Changes

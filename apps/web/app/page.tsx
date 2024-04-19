@@ -131,7 +131,7 @@ export default function Page(): JSX.Element {
 
   return (
     <main className="relative h-screen">
-      <PageHeader />
+      <PageHeader dataset={dataset!} runs={runResults} />
       {!runResults ||
         (!runResults.length && (
           <PageLoader className="mt-4" description="Loading results" />

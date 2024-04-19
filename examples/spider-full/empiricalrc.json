@@ -1,0 +1,40 @@
+{
+  "$schema": "https://assets.empirical.run/config/schema/latest.json",
+  "runs": [
+    {
+      "provider": "openai",
+      "type": "model",
+      "name": "default-prompt-gpt3.5",
+      "model": "gpt-3.5-turbo",
+      "prompt": "You are an SQLite expert who can convert natural language questions to SQL queries for the database schema given below.\n\nDatabase schema:\n{{schema}}\n\nAnswer the following question with only the SQL query.\n\nQuestion: {{question}}",
+      "scorers": [
+        {
+          "type": "sql-syntax"
+        },
+        {
+          "type": "py-script",
+          "path": "execution_accuracy.py"
+        }
+      ]
+    },
+    {
+      "provider": "openai",
+      "type": "model",
+      "name": "prompt-learner-gpt3.5",
+      "model": "gpt-3.5-turbo",
+      "prompt": "You are a helpful AI assistant.\nYou are helping a user with a SQLGeneration task.\nThe user gives you the following task description.\nPlease generate SQL query for the given texts to run on sqlite. I will use your output directly in sqlite so only give me the final executable SQL. Do not wrap it in backticks or quotes.\nHere are a few examples to help you understand the task better.\nschema: CREATE TABLE singer (\n singer_id NUMERIC PRIMARY KEY,\n    name TEXT,\n    country TEXT,\n    song_name TEXT,\n    song_release_year TEXT,\n    age NUMERIC,\n    is_male TIMESTAMP\n);\ntext: What is the average, minimum, and maximum age for all French singers?\nSQL: SELECT AVG(age), MIN(age), MAX(age) FROM singer WHERE country='France';\nThink step by step.\nGiven the text, you have to now generate a SQL query.Only output the SQL and nothing else.\nschema: {{schema}}\ntext: {{question}}\nSQL:",
+      "scorers": [
+        {
+          "type": "sql-syntax"
+        },
+        {
+          "type": "py-script",
+          "path": "execution_accuracy.py"
+        }
+      ]
+    }
+  ],
+  "dataset": {
+    "path": "https://docs.google.com/spreadsheets/d/1x_p0lX2pJEyGkFoe1A9nY3q87qOJUd547f2lz99ugiM/edit#gid=1000015421"
+  }
+}

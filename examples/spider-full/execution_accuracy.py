@@ -36,6 +36,11 @@ def remove_backticks(text):
         return pruned_text
 
 
+def clean_closing_braces(text):
+    """For Claude"""
+    return text.replace("</SQL>", "")
+
+
 def evaluate(output, inputs):
     database_name = inputs["database_name"]
     file_name = get_file_name()
@@ -43,7 +48,7 @@ def evaluate(output, inputs):
     con = sqlite3.connect(file_name)
     cur = con.cursor()
     try:
-        res = cur.execute(remove_backticks(output["value"]))
+        res = cur.execute(clean_closing_braces(remove_backticks(output["value"])))
         first_row = res.fetchone()
         if first_row:
             passed = 1
@@ -55,7 +60,3 @@ def evaluate(output, inputs):
         passed, message = 0, repr(e)
     os.remove(file_name)
     return [{"score": passed, "message": message, "name": "exec-accuracy"}]
-
-
-if __name__ == "__main__":
-    create_and_load_database('concert_singer', 'singer.db')

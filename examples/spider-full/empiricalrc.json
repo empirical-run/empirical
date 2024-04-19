@@ -32,6 +32,70 @@
           "path": "execution_accuracy.py"
         }
       ]
+    },
+    {
+      "type": "model",
+      "name": "default-prompt-claude3-haiku",
+      "provider": "anthropic",
+      "model": "claude-3-haiku",
+      "prompt": "You are an SQLite expert who can convert natural language questions to SQL queries for the database schema given below.\n\nDatabase schema:\n{{schema}}\n\nAnswer the following question with only the SQL query.\n\nQuestion: {{question}}",
+      "scorers": [
+        {
+          "type": "sql-syntax"
+        },
+        {
+          "type": "py-script",
+          "path": "execution_accuracy.py"
+        }
+      ]
+    },
+    {
+      "type": "model",
+      "name": "prompt-learner-claude3-haiku",
+      "provider": "anthropic",
+      "model": "claude-3-haiku",
+      "prompt": "You are a helpful AI assistant.\nYou are helping a user with a SQLGeneration task.\nThe user gives you the following task description.\n<task_description>Please generate SQL query for the given texts to run on sqlite. I will use your output directly in sqlite so only give me the final executable SQL. Do not wrap it in backticks or quotes.</task_description>\nHere are a few examples to help you understand the task better.\n<example>\n<schema> CREATE TABLE singer (\n singer_id NUMERIC PRIMARY KEY,\n    name TEXT,\n    country TEXT,\n    song_name TEXT,\n    song_release_year TEXT,\n    age NUMERIC,\n    is_male TIMESTAMP\n);\n</schema>\n<text> What is the average, minimum, and maximum age for all French singers?</text>\n<SQL> SELECT AVG(age), MIN(age), MAX(age) FROM singer WHERE country='France';</SQL>\n</example>\nThink step by step.\nGiven the text, you have to now generate a SQL query.\nOnly the SQL query is expected.\n <schema>{{schema}}</schema>\n <text>{{question}}</text> \n <SQL>",
+      "scorers": [
+        {
+          "type": "sql-syntax"
+        },
+        {
+          "type": "py-script",
+          "path": "execution_accuracy.py"
+        }
+      ]
+    },
+    {
+      "type": "model",
+      "name": "default-prompt-llama3-8b",
+      "provider": "fireworks",
+      "model": "llama-v3-8b-instruct",
+      "prompt": "You are an SQLite expert who can convert natural language questions to SQL queries for the database schema given below.\n\nDatabase schema:\n{{schema}}\n\nAnswer the following question with only the SQL query.\n\nQuestion: {{question}}",
+      "scorers": [
+        {
+          "type": "sql-syntax"
+        },
+        {
+          "type": "py-script",
+          "path": "execution_accuracy.py"
+        }
+      ]
+    },
+    {
+      "type": "model",
+      "name": "prompt-learner-llama3-8b",
+      "provider": "fireworks",
+      "model": "llama-v3-8b-instruct",
+      "prompt": "You are a helpful AI assistant.\nYou are helping a user with a SQLGeneration task.\nThe user gives you the following task description.\nPlease generate SQL query for the given texts to run on sqlite. I will use your output directly in sqlite so only give me the final executable SQL. Do not wrap it in backticks or quotes.\nHere are a few examples to help you understand the task better.\nschema: CREATE TABLE singer (\n singer_id NUMERIC PRIMARY KEY,\n    name TEXT,\n    country TEXT,\n    song_name TEXT,\n    song_release_year TEXT,\n    age NUMERIC,\n    is_male TIMESTAMP\n);\ntext: What is the average, minimum, and maximum age for all French singers?\nSQL: SELECT AVG(age), MIN(age), MAX(age) FROM singer WHERE country='France';\nThink step by step.\nGiven the text, you have to now generate a SQL query.Only output the SQL and nothing else.\nschema: {{schema}}\ntext: {{question}}\nSQL:",
+      "scorers": [
+        {
+          "type": "sql-syntax"
+        },
+        {
+          "type": "py-script",
+          "path": "execution_accuracy.py"
+        }
+      ]
     }
   ],
   "dataset": {

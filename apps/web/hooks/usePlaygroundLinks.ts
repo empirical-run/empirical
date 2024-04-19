@@ -38,6 +38,8 @@ function convertRuns(runs: RunResult[], playgroundDataset: any): any[] {
         prompt_template: r.run_config?.prompt || "",
         dataset: playgroundDataset,
         type: "quick",
+        run_exec_type: r.run_config.type,
+        parameters: r.run_config.parameters,
       },
       dataset_metadata: playgroundDataset.metadata,
       samples: r.samples.map((s) => {

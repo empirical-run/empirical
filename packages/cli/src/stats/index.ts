@@ -62,13 +62,14 @@ function runStatsSummary(
       ]);
     });
   }
-  rows.push([
-    "Avg latency",
-    ...runs.map((c) => {
-      const metric = latencyStr(c?.stats?.latency?.average || 0);
-      return metric;
-    }),
-  ]);
+  if (runs.some((r) => !!r.stats?.latency?.average)) {
+    rows.push([
+      "Avg latency",
+      ...runs.map(({ stats }) =>
+        stats?.latency?.average ? latencyStr(stats?.latency?.average) : " ",
+      ),
+    ]);
+  }
   return rows;
 }
 

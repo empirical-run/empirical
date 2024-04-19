@@ -75,3 +75,38 @@ test("markdown table works for github comment without scores", () => {
   setRunSummary(runs);
   expect(markdownSummary(runs)).to.equal(expected);
 });
+
+test("markdown table works for github comment without latency", () => {
+  const sample: RunSampleOutput = {
+    scores: [{ name: "test-score", score: 1, message: "Message" }],
+    output: {
+      value: "Output value",
+    },
+    dataset_sample_id: "abcd",
+    run_id: "1234",
+    inputs: {},
+  };
+  const runConfig = (id: string): RunConfig => ({
+    name: `Run (${id})`,
+    type: "model",
+    provider: "openai",
+    model: "gpt-3.5-turbo",
+    prompt: "Help me",
+  });
+  const runs: RunCompletion[] = ["1234", "2345"].map((id) => ({
+    id,
+    run_config: runConfig(id),
+    dataset_config: { id },
+    samples: [sample],
+    created_at: new Date(),
+  }));
+  const expected = `### Empirical Run Summary
+|            | Run (1234) | Run (2345) |
+|------------|------------|------------|
+| Outputs    | 100%       | 100%       |
+| Scores     |            |            |
+| test-score | 100%       | 100%       |
+`;
+  setRunSummary(runs);
+  expect(markdownSummary(runs)).to.equal(expected);
+});

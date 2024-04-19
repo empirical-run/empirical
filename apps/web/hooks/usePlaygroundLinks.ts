@@ -33,6 +33,7 @@ function convertRuns(runs: RunResult[], playgroundDataset: any): any[] {
         created_at: "",
         // @ts-ignore
         model: r.run_config?.model || "",
+        name: r.run_config.name || "",
         // @ts-ignore
         prompt_template: r.run_config?.prompt || "",
         dataset: playgroundDataset,
@@ -84,7 +85,7 @@ export function usePlaygroundLinks() {
       postData.quickRunResults = convertRuns(data.runs, postData.dataset);
       try {
         const response = await fetch(
-          "http://localhost:3000/api/links/playground",
+          "https://www.empirical.run/api/links/playground",
           {
             method: "POST",
             body: JSON.stringify({

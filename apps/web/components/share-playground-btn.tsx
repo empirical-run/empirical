@@ -33,7 +33,7 @@ export default function SharePlaygroundButton({
     });
     if (resp.success) {
       setLinkCreationPending(false);
-      setLink(`https://empirical.run/playground/${resp.data.id}`);
+      setLink(`https://www.empirical.run/playground/${resp.data.id}`);
     }
   }, [dataset, runs, savePlaygroundLink]);
 

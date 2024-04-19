@@ -62,13 +62,17 @@ export function getStatsForRun(run: RunCompletion): RunCompletionStats {
       ),
     },
     scores: scoresStats,
-    latency: latencies.length > 0 ? {
-      average: getAverage(tokens_used),
-    } : undefined,
-      average: getAverage(latencies),
-    },
-    tokens_used: {
-      average: getAverage(tokens_used),
-    },
+    latency:
+      latencies.length > 0
+        ? {
+            average: getAverage(latencies),
+          }
+        : undefined,
+    tokens_used:
+      tokens_used.length > 0
+        ? {
+            average: getAverage(tokens_used),
+          }
+        : undefined,
   };
 }

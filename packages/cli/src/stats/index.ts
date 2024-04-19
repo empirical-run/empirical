@@ -65,7 +65,7 @@ function runStatsSummary(
   rows.push([
     "Avg latency",
     ...runs.map((c) => {
-      const metric = latencyStr(c?.stats?.latency.average || 0);
+      const metric = latencyStr(c?.stats?.latency?.average || 0);
       return metric;
     }),
   ]);

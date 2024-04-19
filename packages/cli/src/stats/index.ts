@@ -98,6 +98,7 @@ export function markdownSummary(runs: RunCompletion[]): string {
 }
 
 export function printStatsSummary(runs: RunCompletion[]) {
+  const hasAvgLatency = runs.some(({ stats }) => !!stats?.latency?.average);
   console.log(
     table(runStatsSummary(runs, true), {
       header: {
@@ -113,8 +114,8 @@ export function printStatsSummary(runs: RunCompletion[]) {
           lineIndex === 1 ||
           lineIndex === 2 ||
           lineIndex === 3 ||
-          lineIndex === rowCount - 1 ||
-          lineIndex === rowCount
+          lineIndex === rowCount ||
+          (hasAvgLatency && lineIndex === rowCount - 1)
         );
       },
       columns: [{ alignment: "left" }],

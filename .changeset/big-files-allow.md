@@ -2,4 +2,4 @@
 "@empiricalrun/ai": minor
 ---
 
-feat: use startChat api for google LLMs
+feat: support for model parameters in gemini models

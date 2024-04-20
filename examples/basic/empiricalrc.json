@@ -3,42 +3,28 @@
   "runs": [
     {
       "type": "model",
-      "provider": "openai",
-      "model": "gpt-3.5-turbo",
-      "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
-      "scorers": [
-        {
-          "type": "is-json"
-        }
-      ]
+      "provider": "google",
+      "model": "gemini-1.0-pro",
+      "prompt": "{{user_message}}",
+      "parameters": {
+        "stopSequences": ["Asia"]
+      }
     },
     {
       "type": "model",
-      "provider": "openai",
-      "model": "gpt-4-turbo-preview",
-      "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
+      "provider": "google",
+      "model": "gemini-1.5-pro",
+      "prompt": "{{user_message}}",
       "parameters": {
-        "response_format": {
-          "type": "json_object"
-        }
-      },
-      "scorers": [
-        {
-          "type": "is-json"
-        }
-      ]
+        "stopSequences": ["Asia"]
+      }
     }
   ],
   "dataset": {
     "samples": [
       {
         "inputs": {
-          "user_message": "Hi my name is John Doe. I'm 26 years old and I work in real estate."
-        }
-      },
-      {
-        "inputs": {
-          "user_message": "This is Alice. I am a nurse from Maryland. I was born in 1990."
+          "user_message": "What is the largest continent in the world?"
         }
       }
     ]

@@ -50,7 +50,7 @@ test("passthrough model parameters works on gemini-1.0-pro", async () => {
     prompt: "What is the largest continent in the world?",
     parameters: {
       temperature: 0.1,
-      stopSequence: "Asia",
+      stopSequences: ["Asia"],
     },
   };
   const { output, error } = await modelExecutor(runConfig, {
@@ -70,7 +70,7 @@ test("passthrough model parameters works on gemini-1.5-pro", async () => {
     parameters: {
       // ranges from 1 to 2 for 1.5 pro
       temperature: 1.0,
-      stopSequence: "Asia",
+      stopSequences: ["Asia"],
     },
   };
   const { output, error } = await modelExecutor(runConfig, {

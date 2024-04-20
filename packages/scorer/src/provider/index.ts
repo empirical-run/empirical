@@ -10,13 +10,21 @@ import {
   semanticName,
   checkSqlSemantic,
 } from "./deterministic/sql";
-import { name as llmName, checkLlmCriteria } from "./model-graded/llm";
+import {
+  name as llmFaithfulnessName,
+  checkLlmFaithfulness,
+} from "./model-graded/faithfulness";
+import {
+  name as llmCriteriaName,
+  checkLlmCriteria,
+} from "./model-graded/criteria";
 
 const map = new Map<string, ScoringFn>([
   [jsonName, isJson],
   [syntaxName, checkSqlSyntax],
   [semanticName, checkSqlSemantic],
-  [llmName, checkLlmCriteria],
+  [llmCriteriaName, checkLlmCriteria],
+  [llmFaithfulnessName, checkLlmFaithfulness],
   [scriptName, scoreWithPythonScript],
 ]);
 

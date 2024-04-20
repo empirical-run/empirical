@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { checkLlmCriteria } from "./llm";
+import { checkLlmCriteria } from "./criteria";
 
 test("llm-criteria works with sql semantics", async () => {
   const [scoreResult] = await checkLlmCriteria({

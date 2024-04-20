@@ -67,9 +67,6 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const googleAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
   const timeout = body.timeout || DEFAULT_TIMEOUT;
   const isBetaModel = model.includes("gemini-1.5");
-  // Google's JS library does not fully support Gemini 1.5 Pro
-  // We have an open issue with details:
-  // https://github.com/google/generative-ai-js/issues/98
   const modelInstance = isBetaModel
     ? googleAI.getGenerativeModel({
         model: "gemini-pro",
@@ -77,21 +74,38 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     : googleAI.getGenerativeModel({ model }, { apiVersion: "v1beta", timeout });
   const contents = massageOpenAIMessagesToGoogleAI(messages);
   const { executionDone } = await batch.waitForTurn();
+  const maxOutputTokens = body.max_tokens || body.maxOutputTokens || 1024;
+  // Default temp for gemini-1.5-pro and gemini-1.0-pro-002
+  const temperature = body.temperature || 1.0;
+  // Deleting params not supported by the generationConfig but used by other sections of the program
+  const usedParameters = ["timeout", "max_tokens", "messages", "model"];
+  usedParameters.forEach((param) => {
+    if (body[param]) {
+      delete body[param];
+    }
+  });
+
+  const generationConfig = {
+    maxOutputTokens,
+    temperature,
+    ...body,
+  };
+
   try {
     const startedAt = Date.now();
     const completion = await promiseRetry<GenerateContentResult>(
       (retry) => {
         return (
           isBetaModel
-            ? modelInstance.generateContent({ contents })
+            ? // @ts-ignore temperature type conflict (number | null vs number | undefined), can be ignored since it has 1.0 as default
+              modelInstance.generateContent({
+                contents,
+                generationConfig,
+              })
             : modelInstance
                 .startChat({
-                  generationConfig: {
-                    maxOutputTokens: body.max_tokens || 1024,
-                    // 0.9 is the default for 1.0 pro
-                    temperature: body.temperature || 0.9,
-                    ...body.parameters,
-                  },
+                  // @ts-ignore same as above
+                  generationConfig,
                 })
                 .sendMessage(JSON.stringify(contents))
         ).catch((err: Error) => {
@@ -124,7 +138,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
         ]);
       totalTokens = completionTokens + promptTokens;
     } catch (e) {
-      console.warn(`Failed to fetch token usage for google:${model}`);
+      console.warn(`Failed to fetch token usage for google: ${model}`);
     }
 
     const response: IChatCompletion = {

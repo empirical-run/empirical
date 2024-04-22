@@ -1,5 +1,17 @@
 # @empiricalrun/cli
 
+## 0.6.0
+
+### Minor Changes
+
+- 65eec6a: feat: get aggregate latency and token numbers for the run
+
+### Patch Changes
+
+- Updated dependencies [65eec6a]
+  - @empiricalrun/types@0.4.0
+  - @empiricalrun/core@0.5.4
+
 ## 0.5.6
 
 ### Patch Changes

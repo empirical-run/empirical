@@ -1,5 +1,11 @@
 # web
 
+## 0.7.3
+
+### Patch Changes
+
+- 65eec6a: feat: get aggregate latency and token numbers for the run
+
 ## 0.7.2
 
 ### Patch Changes

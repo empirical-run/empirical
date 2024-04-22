@@ -1,5 +1,11 @@
 # @empiricalrun/ai
 
+## 0.5.0
+
+### Minor Changes
+
+- 66cddb3: feat: support for model parameters in gemini models
+
 ## 0.4.2
 
 ### Patch Changes

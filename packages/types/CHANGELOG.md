@@ -1,5 +1,11 @@
 # @empiricalrun/types
 
+## 0.4.0
+
+### Minor Changes
+
+- 65eec6a: feat: get aggregate latency and token numbers for the run
+
 ## 0.3.3
 
 ### Patch Changes

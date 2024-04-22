@@ -163,7 +163,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     executionDone();
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `Failed to fetch output from model ${body.model} with message ${(e as Error).message}`,
+      `Failed to fetch output from model ${model} with message ${(e as Error).message}`,
     );
   }
 };

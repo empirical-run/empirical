@@ -66,9 +66,6 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const { model, messages } = body;
   const googleAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
   const timeout = body.timeout || DEFAULT_TIMEOUT;
-  // Google's JS library does not fully support Gemini 1.5 Pro
-  // We have an open issue with details:
-  // https://github.com/google/generative-ai-js/issues/98
   const modelInstance = googleAI.getGenerativeModel({ model }, { timeout });
   const contents = massageOpenAIMessagesToGoogleAI(messages);
   const history = contents.slice(0, -1);

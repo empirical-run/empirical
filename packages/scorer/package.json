@@ -1,6 +1,6 @@
 {
   "name": "@empiricalrun/scorer",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"

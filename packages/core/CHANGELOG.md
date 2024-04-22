@@ -1,5 +1,14 @@
 # @empiricalrun/core
 
+## 0.5.4
+
+### Patch Changes
+
+- 65eec6a: feat: get aggregate latency and token numbers for the run
+- Updated dependencies [66cddb3]
+  - @empiricalrun/ai@0.5.0
+  - @empiricalrun/scorer@0.1.8
+
 ## 0.5.3
 
 ### Patch Changes

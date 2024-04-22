@@ -243,15 +243,15 @@ export default function SampleOutputCard({
         {showOutput && (
           <div className="flex gap-2 items-center px-2 mt-2">
             <RunSampleOutputMetric
-              title="Finish reason"
-              value={baseSample?.output?.finish_reason}
-              hideSeparator
-            />
-            <RunSampleOutputMetric
               title="Total tokens"
               value={baseSample?.output?.tokens_used}
+              hideSeparator
             />
             <RunSampleOutputMetric title="Latency" value={latency} />
+            <RunSampleOutputMetric
+              title="Finish reason"
+              value={baseSample?.output?.finish_reason}
+            />
           </div>
         )}
         {!diffView.enabled && baseSample?.output.metadata && (

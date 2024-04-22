@@ -66,13 +66,13 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const { model, messages } = body;
   const googleAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
   const timeout = body.timeout || DEFAULT_TIMEOUT;
-  const isBetaModel = model.includes("gemini-1.5");
-  const modelInstance = isBetaModel
-    ? googleAI.getGenerativeModel({
-        model: "gemini-pro",
-      })
-    : googleAI.getGenerativeModel({ model }, { apiVersion: "v1beta", timeout });
+  // Google's JS library does not fully support Gemini 1.5 Pro
+  // We have an open issue with details:
+  // https://github.com/google/generative-ai-js/issues/98
+  const modelInstance = googleAI.getGenerativeModel({ model }, { timeout });
   const contents = massageOpenAIMessagesToGoogleAI(messages);
+  const history = contents.slice(0, -1);
+  const message = contents[contents.length - 1]?.parts!;
   const { executionDone } = await batch.waitForTurn();
   const maxOutputTokens = body.max_tokens || body.maxOutputTokens || 1024;
   // Default temp for gemini-1.5-pro and gemini-1.0-pro-002
@@ -95,26 +95,20 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     const startedAt = Date.now();
     const completion = await promiseRetry<GenerateContentResult>(
       (retry) => {
-        return (
-          isBetaModel
-            ? // @ts-ignore temperature type conflict (number | null vs number | undefined), can be ignored since it has 1.0 as default
-              modelInstance.generateContent({
-                contents,
-                generationConfig,
-              })
-            : modelInstance
-                .startChat({
-                  // @ts-ignore same as above
-                  generationConfig,
-                })
-                .sendMessage(JSON.stringify(contents))
-        ).catch((err: Error) => {
-          // TODO: Replace with instanceof checks when the Gemini SDK exports errors
-          if (err.message.includes("[429 Too Many Requests]")) {
-            retry(err);
-          }
-          throw err;
-        });
+        return modelInstance
+          .startChat({
+            // @ts-ignore same as above
+            generationConfig,
+            history,
+          })
+          .sendMessage(message)
+          .catch((err: Error) => {
+            // TODO: Replace with instanceof checks when the Gemini SDK exports errors
+            if (err.message.includes("[429 Too Many Requests]")) {
+              retry(err);
+            }
+            throw err;
+          });
       },
       {
         randomize: true,

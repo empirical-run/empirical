@@ -98,33 +98,29 @@ test("script scorer works for a humaneval output that has backticks", async () =
   ]);
 });
 
-test(
-  "script scorer times out a long running script",
-  async () => {
-    const sample: DatasetSample = {
-      id: "0",
-      inputs: {},
-    };
-    const longRunningScript = __dirname + "/test-assets/long_running.py";
-    expect(
-      await scoreWithPythonScript({
-        sample,
-        output: { value: "" },
-        config: {
-          type: "py-script",
-          path: longRunningScript,
-        },
-      }),
-    ).toStrictEqual([
-      {
-        score: 0,
-        name: "py-script",
-        message: "Scorer script timed out",
+test("script scorer times out a long running script", async () => {
+  const sample: DatasetSample = {
+    id: "0",
+    inputs: {},
+  };
+  const longRunningScript = __dirname + "/test-assets/long_running.py";
+  expect(
+    await scoreWithPythonScript({
+      sample,
+      output: { value: "" },
+      config: {
+        type: "py-script",
+        path: longRunningScript,
       },
-    ]);
-  },
-  { timeout: 21000 },
-);
+    }),
+  ).toStrictEqual([
+    {
+      score: 0,
+      name: "py-script",
+      message: "Scorer script timed out",
+    },
+  ]);
+}, 21000);
 
 test("script scorer works with a python script that throws", async () => {
   const sample: DatasetSample = {

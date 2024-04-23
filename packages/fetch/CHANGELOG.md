@@ -1,5 +1,11 @@
 # @empiricalrun/fetch
 
+## 0.3.0
+
+### Minor Changes
+
+- 7a67267: feat: add azure-openai model provider
+
 ## 0.2.0
 
 ### Minor Changes

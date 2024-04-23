@@ -1,5 +1,18 @@
 # @empiricalrun/cli
 
+## 0.7.0
+
+### Minor Changes
+
+- 7a67267: feat: add azure-openai model provider
+
+### Patch Changes
+
+- Updated dependencies [7a67267]
+  - @empiricalrun/fetch@0.3.0
+  - @empiricalrun/types@0.5.0
+  - @empiricalrun/core@0.5.5
+
 ## 0.6.0
 
 ### Minor Changes

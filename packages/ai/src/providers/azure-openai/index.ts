@@ -46,6 +46,9 @@ const createChatCompletion: ICreateChatCompletion = async (
       timeout: body.timeout || DEFAULT_TIMEOUT,
       backoffMultiple: 1.8,
     });
+    if (!response.ok) {
+      throw response;
+    }
     data = await response.json();
     const latency = new Date().getTime() - requestStartTime;
     return {
@@ -53,9 +56,16 @@ const createChatCompletion: ICreateChatCompletion = async (
       latency,
     };
   } catch (e) {
+    if (e instanceof Response) {
+      throw new AIError(
+        AIErrorEnum.FAILED_CHAT_COMPLETION,
+        `Failed to fetch output from model ${body.model}: api response status: ${e.status}`,
+      );
+    }
+    console.log(e);
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `Failed to fetch output from model ${body.model}: ${(e as any)?.error?.message}`,
+      `Failed to fetch output from model ${body.model}: ${e}`,
     );
   }
 };

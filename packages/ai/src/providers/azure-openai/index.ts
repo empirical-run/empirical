@@ -15,7 +15,7 @@ const createChatCompletion: ICreateChatCompletion = async (
   if (!process.env.AZURE_OPENAI_RESOURCE_NAME) {
     throw new AIError(
       AIErrorEnum.MISSING_PARAMETERS,
-      " AZURE_OPENAI_RESOURCE_NAME is not set as environment variable",
+      "AZURE_OPENAI_RESOURCE_NAME is not set as environment variable",
     );
   }
   const apiVersion = body.apiVersion || "2024-02-15-preview";
@@ -56,17 +56,12 @@ const createChatCompletion: ICreateChatCompletion = async (
       latency,
     };
   } catch (e) {
+    let errMsg = `Failed to fetch output from model ${body.model}: ${e}`;
     if (e instanceof Response) {
-      throw new AIError(
-        AIErrorEnum.FAILED_CHAT_COMPLETION,
-        `Failed to fetch output from model ${body.model}: api response status: ${e.status}`,
-      );
+      errMsg = `Failed to fetch output from model ${body.model}: api response status: ${e.status}`;
     }
-    console.log(e);
-    throw new AIError(
-      AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `Failed to fetch output from model ${body.model}: ${e}`,
-    );
+    console.error(errMsg);
+    throw new AIError(AIErrorEnum.FAILED_CHAT_COMPLETION, errMsg);
   }
 };
 

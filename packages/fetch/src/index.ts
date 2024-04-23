@@ -15,7 +15,10 @@ interface FetchInitOptions extends RequestInit {
    * function to check if retry is needed
    * @memberof FetchInitOptions
    */
-  shouldRetry?: (resp: any) => Promise<boolean>;
+  shouldRetry?: (
+    resp: Response | Error,
+    retryCount: number,
+  ) => Promise<boolean>;
   /**
    * exponential backoff multiplier
    * @type {number} default 1.5
@@ -37,7 +40,10 @@ export const fetchWithRetry = async (
   const controller = new AbortController();
   const reqOptions = options || {};
   const timer = reqOptions?.timeout
-    ? setTimeout(() => controller.abort(), reqOptions?.timeout)
+    ? setTimeout(
+        () => controller.abort("Request timed out"),
+        reqOptions?.timeout,
+      )
     : undefined;
 
   let retryCount = 0;
@@ -63,7 +69,7 @@ export const fetchWithRetry = async (
         if (errorForRetry instanceof Response) {
           errorForRetry = (error as Response).clone();
         }
-        retry = await options?.shouldRetry?.(errorForRetry);
+        retry = await options?.shouldRetry?.(errorForRetry, retryCount);
       }
       if (!retry) {
         clearTimeout(timer);

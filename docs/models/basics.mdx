@@ -52,11 +52,11 @@ See [dataset](../dataset/basics) to learn more about sample inputs.
 | Provider | Description |
 |----------|-------------|
 | `openai` | All chat models are supported. Requires `OPENAI_API_KEY` environment variable. |
+| `azure-openai` | All chat models from OpenAI that are hosted on Azure are supported. Requires `AZURE_OPENAI_API_KEY` and `AZURE_OPENAI_RESOURCE_NAME` environment variables. |
 | `anthropic` | Claude 3 models are supported. Requires `ANTHROPIC_API_KEY` environment variable. |
 | `mistral` | All chat models are supported. Requires `MISTRAL_API_KEY` environment variable. |
 | `google` | Gemini Pro models are supported. Requires `GOOGLE_API_KEY` environment variable. |
 | `fireworks` | Models hosted on Fireworks (e.g. `dbrx-instruct`) are supported. Requires `FIREWORKS_API_KEY` environment variable. |
-| `azure-openai` | All chat models from OpenAI that are hosted on Azure are supported. Requires `AZURE_OPENAI_API_KEY` and `AZURE_OPENAI_RESOURCE_NAME` environment variables. |
 
 <AccordionGroup>
 <Accordion title="Using models from Azure OpenAI">
@@ -71,6 +71,25 @@ See [dataset](../dataset/basics) to learn more about sample inputs.
 In the configuration file,
 - Set the `provider` to `azure-openai`
 - Set `model` to the name of your model deployment
+
+#### Additional parameters
+
+- By default, the `api-version` parameter is set to "2024-02-15-preview". If you need to override this, set the `apiVersion` parameter
+
+
+```json
+"runs": [
+  {
+    "type": "model",
+    "provider": "azure-openai",
+    "model": "gpt-35-deployment",
+    "prompt": "Hey I'm {{user_name}}",
+    "parameters": {
+      "apiVersion": "2024-02-15-preview"
+    }
+  }
+]
+```
 
 </Accordion>
 <Accordion title="Using models from Google">

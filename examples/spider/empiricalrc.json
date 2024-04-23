@@ -2,8 +2,8 @@
   "$schema": "https://assets.empirical.run/config/schema/latest.json",
   "runs": [
     {
-      "provider": "openai",
       "type": "model",
+      "provider": "openai",
       "model": "gpt-3.5-turbo",
       "prompt": "You are an SQLite expert who can convert natural language questions to SQL queries for the database schema given below.\n\nDatabase schema:\n{{schema}}\n\nAnswer the following question with only the SQL query.\n\nQuestion: {{question}}",
       "scorers": [

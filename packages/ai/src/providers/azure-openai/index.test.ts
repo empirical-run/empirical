@@ -1,18 +1,18 @@
-import { expect, test } from "vitest";
+import { expect, test, describe } from "vitest";
 import { AzureOpenAIProvider } from "./index";
 
-test("passthrough model parameters are sent in request", async () => {
-  const chatCompletion = await AzureOpenAIProvider.chat({
-    // TODO: check if this is a viable solution. Can deployment name be a replacement for model ?
-    model: "gpt-35-deployment",
-    messages: [
-      {
-        role: "user",
-        content: "What is the largest continent in the world?",
-      },
-    ],
-    temperature: 0.1,
-  });
-  expect(chatCompletion.choices.length).toBeGreaterThan(0);
-  expect(chatCompletion.choices[0]?.message.content).toContain("Asia");
-}, 10000);
+describe.concurrent("Azure OpenAI provider tests", () => {
+  test("end to end test azure openai call", async () => {
+    const chatCompletion = await AzureOpenAIProvider.chat({
+      model: "gpt-35-deployment",
+      messages: [
+        {
+          role: "user",
+          content: "What is the largest continent in the world?",
+        },
+      ],
+    });
+    expect(chatCompletion.choices.length).toBeGreaterThan(0);
+    expect(chatCompletion.choices[0]?.message.content).toContain("Asia");
+  }, 10000);
+});

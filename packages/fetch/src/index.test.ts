@@ -7,7 +7,7 @@ import { afterEach } from "vitest";
 
 const originalFetch = global.fetch;
 
-describe.concurrent("fetch: retry tests", () => {
+describe("fetch: retry tests", () => {
   beforeEach(() => {
     global.fetch = vi.fn().mockRejectedValue("");
   });
@@ -55,7 +55,7 @@ describe.concurrent("fetch: retry tests", () => {
   });
 });
 
-describe.concurrent("fetch: timeout tests", () => {
+describe("fetch: timeout tests", () => {
   test("should retry if there is a timeout", async () => {
     let isErrorResp = false;
     const shouldRetry = vi.fn().mockResolvedValue(true);

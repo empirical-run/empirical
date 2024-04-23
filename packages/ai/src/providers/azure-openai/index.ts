@@ -1,0 +1,66 @@
+import { IChatCompletion, ICreateChatCompletion } from "@empiricalrun/types";
+import { fetchWithRetry } from "@empiricalrun/fetch";
+import { AIError, AIErrorEnum } from "../../error";
+import { DEFAULT_TIMEOUT } from "../../constants";
+
+const createChatCompletion: ICreateChatCompletion = async (
+  body,
+): Promise<IChatCompletion> => {
+  if (!process.env.AZURE_OPENAI_API_KEY) {
+    throw new AIError(
+      AIErrorEnum.MISSING_PARAMETERS,
+      "AZURE_OPENAI_API_KEY is not set as environment variable",
+    );
+  }
+  if (!process.env.AZURE_OPENAI_RESOURCE_NAME) {
+    throw new AIError(
+      AIErrorEnum.MISSING_PARAMETERS,
+      " AZURE_OPENAI_RESOURCE_NAME is not set as environment variable",
+    );
+  }
+  const apiVersion = body.apiVersion || "2024-02-15-preview";
+  const endpoint = `https://${process.env.AZURE_OPENAI_RESOURCE_NAME}.openai.azure.com/openai/deployments/${body.model}/chat/completions?api-version=${apiVersion}`;
+  let data: IChatCompletion;
+  let requestStartTime = new Date().getTime();
+  try {
+    const response = await fetchWithRetry(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "api-key": process.env.AZURE_OPENAI_API_KEY!,
+      },
+      body: JSON.stringify(body),
+      maxRetries: 5,
+      shouldRetry: async (resp, retryCount) => {
+        if (resp instanceof Response) {
+          console.log(
+            `Retrying request for azure-openai model: ${body.model}. Retry count: ${retryCount}`,
+          );
+          if (resp.status === 429) {
+            requestStartTime = new Date().getTime();
+            return true;
+          }
+        }
+        return false;
+      },
+      timeout: body.timeout || DEFAULT_TIMEOUT,
+      backoffMultiple: 1.8,
+    });
+    data = await response.json();
+    const latency = new Date().getTime() - requestStartTime;
+    return {
+      ...data,
+      latency,
+    };
+  } catch (e) {
+    throw new AIError(
+      AIErrorEnum.FAILED_CHAT_COMPLETION,
+      `Failed to fetch output from model ${body.model}: ${(e as any)?.error?.message}`,
+    );
+  }
+};
+
+export const AzureOpenAIProvider = {
+  name: "azure-openai",
+  chat: createChatCompletion,
+};

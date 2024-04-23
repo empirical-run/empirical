@@ -40,7 +40,10 @@ export const fetchWithRetry = async (
   const controller = new AbortController();
   const reqOptions = options || {};
   const timer = reqOptions?.timeout
-    ? setTimeout(() => controller.abort(), reqOptions?.timeout)
+    ? setTimeout(
+        () => controller.abort("Request timed out"),
+        reqOptions?.timeout,
+      )
     : undefined;
 
   let retryCount = 0;

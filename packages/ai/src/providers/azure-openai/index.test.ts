@@ -1,4 +1,4 @@
-import { expect, test, describe, vi } from "vitest";
+import { expect, test, describe, vi, beforeEach, afterEach } from "vitest";
 import { AzureOpenAIProvider } from "./index";
 import { AIError } from "../../error";
 
@@ -38,10 +38,37 @@ describe.concurrent("Azure OpenAI provider tests", () => {
     }
   }, 10000);
 
-  test("handle fetch errors", async () => {
-    const originalFetch = global.fetch;
-    const errorStr = "Failed to fetch";
+  test("handle timeout errors", async () => {
+    try {
+      await AzureOpenAIProvider.chat({
+        model: "gpt-35", // unavailable model deployment name
+        messages: [
+          {
+            role: "user",
+            content: "What is the largest continent in the world?",
+          },
+        ],
+        timeout: 1, // set timeout to 1ms
+      });
+    } catch (e) {
+      expect(e).toBeInstanceOf(AIError);
+      expect((e as AIError).message).toBe(
+        `Failed to fetch output from model gpt-35: Request timed out`,
+      );
+    }
+  }, 10000);
+});
+
+describe("Azure OpenAI provider fetch errors", () => {
+  const originalFetch = global.fetch;
+  beforeEach(() => {
     global.fetch = vi.fn().mockRejectedValue("Failed to fetch");
+  });
+  afterEach(() => {
+    global.fetch = originalFetch;
+  });
+  test("handle fetch errors", async () => {
+    const errorStr = "Failed to fetch";
     try {
       await AzureOpenAIProvider.chat({
         model: "gpt-35", // unavailable model deployment name
@@ -58,6 +85,5 @@ describe.concurrent("Azure OpenAI provider tests", () => {
         `Failed to fetch output from model gpt-35: ${errorStr}`,
       );
     }
-    global.fetch = originalFetch;
   }, 10000);
 });

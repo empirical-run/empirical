@@ -1,6 +1,6 @@
 {
   "name": "@empiricalrun/ai",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"

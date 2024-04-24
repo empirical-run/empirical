@@ -40,10 +40,7 @@ export const fetchWithRetry = async (
   const controller = new AbortController();
   const reqOptions = options || {};
   const timer = reqOptions?.timeout
-    ? setTimeout(
-        () => controller.abort("Request timed out"),
-        reqOptions?.timeout,
-      )
+    ? setTimeout(() => controller.abort(), reqOptions?.timeout)
     : undefined;
 
   let retryCount = 0;
@@ -59,12 +56,9 @@ export const fetchWithRetry = async (
       return response;
     } catch (error: any) {
       retryCount++;
-      if (retryCount >= maxRetries) {
-        clearTimeout(timer);
-        throw error;
-      }
-      let retry = true;
-      if (options?.shouldRetry) {
+      const maxRetryReached = retryCount >= maxRetries;
+      let retry = !maxRetryReached;
+      if (options?.shouldRetry && !maxRetryReached) {
         let errorForRetry = error;
         if (errorForRetry instanceof Response) {
           errorForRetry = (error as Response).clone();
@@ -72,7 +66,9 @@ export const fetchWithRetry = async (
         retry = await options?.shouldRetry?.(errorForRetry, retryCount);
       }
       if (!retry) {
-        clearTimeout(timer);
+        if (error instanceof DOMException && error.name === "AbortError") {
+          throw "Request timed out";
+        }
         throw error;
       }
       const delay = backoffDelay(options?.backoffMultiple, retryCount);

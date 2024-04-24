@@ -67,7 +67,6 @@ describe("fetch: timeout tests", () => {
         maxRetries: 2,
       });
     } catch (e: any) {
-      console.log(e);
       isErrorResp = true;
       errorResp = e;
     }

@@ -1,0 +1,15 @@
+{
+  "runs": [
+    {
+      "type": "assistant",
+      "assistantId": "asst_xyK085ub8c30tG3iwkaW9Moh",
+      "prompt": "{{question}}",
+      "parameters": {
+        "model": "gpt-3.5-turbo"
+      }
+    }
+  ],
+  "dataset": {
+    "path": "https://docs.google.com/spreadsheets/d/1U8fBQ9TxtR5pUS0Bg0n1xcU_6EXkhGUOj1CS-TAAHmU/edit#gid=0"
+  }
+}

@@ -83,6 +83,15 @@ export interface ModelRunConfig extends RunConfigBase {
   parameters?: ModelParameters;
 }
 
+export interface AssistantsRunConfig extends RunConfigBase {
+  type: "assistant";
+  assistantId: string;
+  prompt: string;
+  parameters?: {
+    [key: string]: any;
+  };
+}
+
 export interface JSScriptRunConfig extends RunConfigBase {
   type: "js-script";
   path: string;
@@ -97,7 +106,11 @@ export interface PyScriptRunConfig extends RunConfigBase {
   };
 }
 
-export type RunConfig = ModelRunConfig | PyScriptRunConfig | JSScriptRunConfig;
+export type RunConfig =
+  | ModelRunConfig
+  | PyScriptRunConfig
+  | JSScriptRunConfig
+  | AssistantsRunConfig;
 
 export interface ScoreStats {
   name: string;

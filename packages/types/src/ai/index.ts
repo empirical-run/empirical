@@ -14,6 +14,18 @@ export interface ICreateChatCompletion {
   (body: IChatCompletionCreateParams): Promise<IChatCompletion>;
 }
 
+export interface IAssistantRunResponse
+  extends OpenAI.Beta.Threads.Messages.Message {}
+
+export interface ICreateAndRunAssistantThread {
+  (
+    body: OpenAI.Beta.ThreadCreateAndRunParamsNonStreaming,
+  ): Promise<IAssistantRunResponse>;
+}
+
+export interface ThreadMessage
+  extends OpenAI.Beta.Threads.ThreadCreateParams.Message {}
+
 export interface IChatCompletions {
   create: ICreateChatCompletion;
 }
@@ -41,6 +53,7 @@ export interface IEmpiricalAIError extends Error {
 export interface IAIProvider {
   name: string;
   chat: ICreateChatCompletion;
+  assistant?: ICreateAndRunAssistantThread;
 }
 
 export interface ICustomAI extends AI {

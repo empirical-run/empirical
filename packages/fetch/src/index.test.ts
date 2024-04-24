@@ -58,7 +58,7 @@ describe("fetch: retry tests", () => {
 describe("fetch: timeout tests", () => {
   test("should retry if there is a timeout", async () => {
     let isErrorResp = false;
-    // let errorResp: any;
+    let errorResp: any;
     const shouldRetry = vi.fn().mockResolvedValue(true);
     try {
       await fetchWithRetry("https://www.empirical.run", {
@@ -69,10 +69,10 @@ describe("fetch: timeout tests", () => {
     } catch (e: any) {
       console.log(e);
       isErrorResp = true;
-      // errorResp = e;
+      errorResp = e;
     }
     expect(isErrorResp).toBe(true);
-    // expect(errorResp).toBe("Request timed out");
+    expect(errorResp).toBe("Request timed out");
     expect(shouldRetry).toBeCalledTimes(1);
   });
 });

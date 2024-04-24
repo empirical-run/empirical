@@ -15,7 +15,7 @@ describe("fetch: retry tests", () => {
   afterEach(() => {
     global.fetch = originalFetch;
   });
-  test("check for 3 retries if fetch throws error", async () => {
+  test("check for 2 retries if fetch throws error", async () => {
     let isErrorResp = false;
     try {
       await fetchWithRetry("", { maxRetries: 2 });
@@ -40,7 +40,7 @@ describe("fetch: retry tests", () => {
     expect(global.fetch).toBeCalledTimes(1);
   });
 
-  test("shouldRetry method should override maxRetries", async () => {
+  test("shouldRetry method override maxRetries", async () => {
     let isErrorResp = false;
     try {
       await fetchWithRetry("", {
@@ -58,6 +58,7 @@ describe("fetch: retry tests", () => {
 describe("fetch: timeout tests", () => {
   test("should retry if there is a timeout", async () => {
     let isErrorResp = false;
+    // let errorResp: any;
     const shouldRetry = vi.fn().mockResolvedValue(true);
     try {
       await fetchWithRetry("https://www.empirical.run", {
@@ -65,10 +66,13 @@ describe("fetch: timeout tests", () => {
         timeout: 5,
         maxRetries: 2,
       });
-    } catch (e) {
+    } catch (e: any) {
+      console.log(e);
       isErrorResp = true;
+      // errorResp = e;
     }
     expect(isErrorResp).toBe(true);
+    // expect(errorResp).toBe("Request timed out");
     expect(shouldRetry).toBeCalledTimes(1);
   });
 });

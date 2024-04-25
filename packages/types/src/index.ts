@@ -7,7 +7,7 @@ export enum RoleType {
 }
 
 export type ChatPrompt = {
-  role: string;
+  role: "system" | "user" | "assistant";
   content: string;
 };
 

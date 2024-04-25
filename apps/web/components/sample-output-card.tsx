@@ -244,7 +244,7 @@ export default function SampleOutputCard({
           )}
         </section>
         {showOutput && (
-          <div className="flex gap-2 items-center px-2 mt-2">
+          <div className="flex gap-2 items-center mt-2">
             <RunSampleOutputMetric
               title="Total tokens"
               value={baseSample?.output?.tokens_used}

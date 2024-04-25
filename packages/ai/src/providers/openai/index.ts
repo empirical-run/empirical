@@ -11,7 +11,7 @@ import { AIError, AIErrorEnum } from "../../error";
 import { DEFAULT_TIMEOUT } from "../../constants";
 import { BatchTaskManager } from "../../utils";
 
-const batchTaskManager = new BatchTaskManager(2, 100);
+const batchTaskManager = new BatchTaskManager(1, 100);
 
 const createChatCompletion: ICreateChatCompletion = async (body) => {
   const apiKey = process.env.OPENAI_API_KEY;

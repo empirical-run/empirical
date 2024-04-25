@@ -38,7 +38,8 @@
         },
         {
           "type": "llm-criteria",
-          "criteria": "{{ success criteria }}"
+          "criteria": "{{ success criteria }}",
+          "name": "success-criteria"
         }
       ]
     }

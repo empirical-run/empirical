@@ -22,7 +22,7 @@ To test an LLM, specify the following properties in the configuration:
 
 - `provider`: Name of the inference provider (e.g. `openai`, or other [supported providers](#supported-providers))
 - `model`: Name of the model (e.g. `gpt-3.5-turbo` or `claude-3-haiku`)
-- `prompt`: Prompt sent to the model, with optional [placeholders](#placeholders)
+- `prompt`: [Prompt](#prompt) sent to the model, with optional [placeholders](#placeholders)
 - `name` [optional]: A name or label for this run (auto-generated if not specified)
 
 You can configure as many model providers as you like. These models will be shown in a 
@@ -38,6 +38,30 @@ side-by-side comparison view in the web reporter.
   }
 ]
 ```
+
+### Prompt
+The prompt serves as the initial input provided to the model to generate a response. 
+This property accepts either a string or a JSON chat format.
+
+The JSON chat format allows for a sequence of messages to be provided as the prompt. Each message should have a `role` and `content`. 
+```json empiricalrc.json
+{
+  "runs": [
+    {
+      "prompt": [{
+        "role": "system",
+        "content": "You are an SQLite expert who can convert natural language questions to SQL queries...."
+      }, {
+        "role": "user",
+        "content": "How many singers do we have?"
+      }]
+    }
+  ]
+}
+```
+The [Text-to-SQL example](https://github.com/empirical-run/empirical/tree/main/examples/spider)
+uses this prompt format to test conversion of natural language questions to SQL queries.
+
 
 ### Placeholders
 

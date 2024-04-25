@@ -136,7 +136,7 @@ function getDefaultRunName(runConfig: RunConfig, id: string): string {
   } else if (runConfig.type === "py-script" || runConfig.type === "js-script") {
     name = runConfig.path;
   } else if (runConfig.type === "assistant") {
-    name = runConfig.assistantId;
+    name = runConfig.assistant_id;
   }
   return `Run #${id}: ${name}`;
 }

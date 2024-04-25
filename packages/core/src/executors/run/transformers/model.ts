@@ -18,7 +18,7 @@ export const assistantExecutor: Transformer = async function (
       },
     };
   }
-  const { assistantId, parameters, prompt } = runConfig;
+  const { assistant_id, parameters, prompt } = runConfig;
   const ai = new EmpiricalAI("openai");
   const messages: ThreadMessage[] = [
     {
@@ -29,7 +29,7 @@ export const assistantExecutor: Transformer = async function (
   let value = "";
   try {
     const message = await ai.assistant.runAssistant({
-      assistant_id: assistantId,
+      assistant_id,
       thread: {
         messages,
       },

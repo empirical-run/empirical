@@ -85,7 +85,7 @@ export interface ModelRunConfig extends RunConfigBase {
 
 export interface AssistantsRunConfig extends RunConfigBase {
   type: "assistant";
-  assistantId: string;
+  assistant_id: string;
   prompt: string;
   parameters?: {
     [key: string]: any;

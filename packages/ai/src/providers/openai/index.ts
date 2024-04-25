@@ -11,7 +11,7 @@ import { AIError, AIErrorEnum } from "../../error";
 import { DEFAULT_TIMEOUT } from "../../constants";
 import { BatchTaskManager } from "../../utils";
 
-const batchTaskManager = new BatchTaskManager(1, 100);
+const batchTaskManager = new BatchTaskManager(2, 100);
 
 const createChatCompletion: ICreateChatCompletion = async (body) => {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -142,7 +142,7 @@ const runAssistant: ICreateAndRunAssistantThread = async (body) => {
     executionDone();
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `Failed to fetch output from assistant ${body.assistant_id}: ${(err as any)?.error?.message}`,
+      `Failed to fetch output from assistant ${body.assistant_id}: ${(err as any)?.message}`,
     );
   }
 };

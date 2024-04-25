@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSyncedTabs } from "../hooks/useSyncedTab";
 import {
   Sheet,
@@ -40,13 +40,32 @@ export function JsonAsTab({
     () => defaultTabs || Object.keys(data),
     [data, defaultTabs],
   );
-  const { activeTab, onChangeTab } = useSyncedTabs(tabs, storeKey);
+  const { activeTab: remoteActiveTab, onChangeTab: remoteOnChangeTab } =
+    useSyncedTabs(tabs, storeKey);
+  const [activeTab, setActiveTab] = useState<string | undefined>();
   const activeTabValue = useMemo(() => {
     if (activeTab && data) {
       return data[activeTab];
     }
     return undefined;
   }, [activeTab, data]);
+
+  useEffect(() => {
+    if (remoteActiveTab && data[remoteActiveTab]) {
+      setActiveTab(remoteActiveTab);
+    } else if (!activeTab) {
+      setActiveTab(Object.keys(data)[0]);
+    }
+  }, [remoteActiveTab]);
+
+  const onChangeTab = useCallback(
+    (tab: string) => {
+      console.log(tab);
+      setActiveTab(tab);
+      remoteOnChangeTab(tab);
+    },
+    [remoteOnChangeTab],
+  );
 
   return (
     <>
@@ -117,7 +136,12 @@ export function JsonAsTab({
         </>
       </div>
       {tabs.length > 0 && (
-        <Tabs value={activeTab} className="h-full" onValueChange={onChangeTab}>
+        <Tabs
+          value={activeTab}
+          defaultValue={activeTab}
+          className="h-full"
+          onValueChange={onChangeTab}
+        >
           <TabsList className=" rounded-sm w-full overflow-x-scroll justify-start no-scrollbar">
             {tabs.map((name) => (
               <TabsTrigger

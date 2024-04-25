@@ -121,6 +121,10 @@ export default function SampleOutputCard({
         : 0,
     [baseSample],
   );
+  const hasMetadata = useMemo(
+    () => !!Object.keys(baseSample?.output.metadata || {}).length,
+    [baseSample?.output.metadata],
+  );
   return (
     <Card
       className={`flex flex-col flex-1 ${
@@ -212,7 +216,7 @@ export default function SampleOutputCard({
         ref={containerWrapper}
       >
         <section className="flex flex-col">
-          {showOutput && baseSample?.output.metadata && (
+          {showOutput && hasMetadata && (
             <p className=" text-sm font-medium mb-2">Output</p>
           )}
           {diffView.enabled && baseSample && (
@@ -253,7 +257,7 @@ export default function SampleOutputCard({
             />
           </div>
         )}
-        {!diffView.enabled && baseSample?.output.metadata && (
+        {!diffView.enabled && hasMetadata && (
           <section className="flex flex-col h-[200px] mt-2">
             <p className=" text-sm font-medium mt-2">Metadata</p>
             <section className="relative flex flex-col flex-1">

@@ -156,8 +156,8 @@ importers:
         specifier: ^0.0.0
         version: 0.0.0
       openai:
-        specifier: ^4.38.3
-        version: 4.38.3
+        specifier: ^4.38.5
+        version: 4.38.5
       promise-retry:
         specifier: ^2.0.1
         version: 2.0.1
@@ -6348,6 +6348,22 @@ packages:
 
   /openai@4.38.3:
     resolution: {integrity: sha512-mIL9WtrFNOanpx98mJ+X/wkoepcxdqqu0noWFoNQHl/yODQ47YM7NEYda7qp8JfjqpLFVxY9mQhshoS/Fqac0A==}
+    hasBin: true
+    dependencies:
+      '@types/node': 18.19.24
+      '@types/node-fetch': 2.6.11
+      abort-controller: 3.0.0
+      agentkeepalive: 4.5.0
+      form-data-encoder: 1.7.2
+      formdata-node: 4.4.1
+      node-fetch: 2.7.0
+      web-streams-polyfill: 3.3.3
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /openai@4.38.5:
+    resolution: {integrity: sha512-Ym5GJL98ZhLJJ7enBx53jjG3vwN/fsB+Ozh46nnRZZS9W1NiYqbwkJ+sXd3dkCIiWIgcyyOPL2Zr8SQAzbpj3g==}
     hasBin: true
     dependencies:
       '@types/node': 18.19.24

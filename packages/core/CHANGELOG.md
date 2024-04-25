@@ -1,5 +1,17 @@
 # @empiricalrun/core
 
+## 0.5.6
+
+### Patch Changes
+
+- ba98ebb: feat: add support for chat format prompt
+- 4150b1f: fix: typo in chat prompt type
+- Updated dependencies [ba98ebb]
+- Updated dependencies [d81cff4]
+- Updated dependencies [4150b1f]
+  - @empiricalrun/ai@0.6.1
+  - @empiricalrun/scorer@0.1.10
+
 ## 0.5.5
 
 ### Patch Changes

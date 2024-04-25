@@ -1,5 +1,35 @@
 # @empiricalrun/cli
 
+## 0.8.0
+
+### Minor Changes
+
+- ba98ebb: feat: add support for chat format prompt
+
+### Patch Changes
+
+- d81cff4: fix: error messaging in case of request timeout
+- 4150b1f: fix: typo in chat prompt type
+- Updated dependencies [ba98ebb]
+- Updated dependencies [d81cff4]
+- Updated dependencies [4150b1f]
+  - @empiricalrun/types@0.5.1
+  - @empiricalrun/core@0.5.6
+  - @empiricalrun/fetch@0.3.1
+
+## 0.7.0
+
+### Minor Changes
+
+- 7a67267: feat: add azure-openai model provider
+
+### Patch Changes
+
+- Updated dependencies [7a67267]
+  - @empiricalrun/fetch@0.3.0
+  - @empiricalrun/types@0.5.0
+  - @empiricalrun/core@0.5.5
+
 ## 0.6.0
 
 ### Minor Changes

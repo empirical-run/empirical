@@ -1,5 +1,22 @@
 # @empiricalrun/scorer
 
+## 0.1.10
+
+### Patch Changes
+
+- 4150b1f: fix: typo in chat prompt type
+- Updated dependencies [ba98ebb]
+- Updated dependencies [d81cff4]
+- Updated dependencies [4150b1f]
+  - @empiricalrun/ai@0.6.1
+
+## 0.1.9
+
+### Patch Changes
+
+- Updated dependencies [7a67267]
+  - @empiricalrun/ai@0.6.0
+
 ## 0.1.8
 
 ### Patch Changes

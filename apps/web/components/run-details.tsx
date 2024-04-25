@@ -21,12 +21,25 @@ export const RunDetails = ({
   const defaultTabValue = runConfig.type === "model" ? "prompt" : "parameters";
   const [runConfigState, setRunConfigState] = useState<RunConfig | undefined>();
   useEffect(() => setRunConfigState(runConfig), [runConfig]);
+  const [error, setError] = useState<string | undefined>();
   const updatePrompt = useCallback(
     (prompt: string | undefined = "") => {
+      let updatedPrompt = prompt;
+      try {
+        updatedPrompt = JSON.parse(prompt);
+      } catch (error) {
+        if (runConfig.type === "model") {
+          if (typeof runConfig.prompt === "object") {
+            setError("Invalid prompt object");
+            return;
+          }
+        }
+      }
       if (runConfigState && runConfigState.type === "model") {
+        setError(undefined);
         setRunConfigState({
           ...runConfigState,
-          prompt,
+          prompt: updatedPrompt,
         });
       }
     },
@@ -63,6 +76,7 @@ export const RunDetails = ({
             size={"sm"}
             className="pl-1"
             onClick={onClickRunCallback}
+            disabled={!!error}
           >
             <TriangleRightIcon width={20} height={20} />
             <span>Run</span>
@@ -87,8 +101,14 @@ export const RunDetails = ({
           {runConfig.type === "model" && (
             <TabsContent value="prompt">
               <CodeViewer
-                value={runConfig.prompt as string}
-                language="prompt"
+                value={
+                  typeof runConfig.prompt === "string"
+                    ? runConfig.prompt
+                    : JSON.stringify(runConfig.prompt || "", null, 2)
+                }
+                language={
+                  typeof runConfig.prompt === "string" ? "prompt" : "json"
+                }
                 onChange={updatePrompt}
               />
             </TabsContent>

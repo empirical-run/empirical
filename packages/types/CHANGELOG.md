@@ -1,5 +1,18 @@
 # @empiricalrun/types
 
+## 0.5.1
+
+### Patch Changes
+
+- ba98ebb: feat: add support for chat format prompt
+- 4150b1f: fix: typo in chat prompt type
+
+## 0.5.0
+
+### Minor Changes
+
+- 7a67267: feat: add azure-openai model provider
+
 ## 0.4.0
 
 ### Minor Changes

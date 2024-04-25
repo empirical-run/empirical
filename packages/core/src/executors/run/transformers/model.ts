@@ -1,4 +1,10 @@
-import { RunConfig, ThreadMessage } from "@empiricalrun/types";
+import {
+  ChatPrompt,
+  DatasetSampleInputs,
+  Prompt,
+  RunConfig,
+  ThreadMessage,
+} from "@empiricalrun/types";
 import { Transformer } from "./interface";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { AIError, EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
@@ -74,6 +80,28 @@ export const assistantExecutor: Transformer = async function (
   }
 };
 
+export const massagePrompt = (
+  prompt: Prompt,
+  inputs: DatasetSampleInputs,
+): ChatCompletionMessageParam[] => {
+  if (Array.isArray(prompt)) {
+    const massagedPrompts = (prompt as ChatPrompt[]).map((p) => {
+      const message: ChatCompletionMessageParam = {
+        role: p.role,
+        content: p.content ? replacePlaceholders(p.content, inputs) : "",
+      };
+      return message;
+    });
+    return massagedPrompts;
+  }
+  return [
+    {
+      role: "user",
+      content: prompt ? replacePlaceholders(prompt, inputs) : "",
+    },
+  ];
+};
+
 export const modelExecutor: Transformer = async function (
   runConfig: RunConfig,
   sample,
@@ -89,13 +117,19 @@ export const modelExecutor: Transformer = async function (
       },
     };
   }
+  if (!runConfig.prompt) {
+    return {
+      output: {
+        value: "",
+      },
+      error: {
+        code: "",
+        message: "No prompt provided for model execution",
+      },
+    };
+  }
   const { prompt, model, provider, parameters } = runConfig;
-  const messages: ChatCompletionMessageParam[] = [
-    {
-      role: "user",
-      content: replacePlaceholders(prompt as string, sample.inputs),
-    },
-  ];
+  const messages = massagePrompt(prompt, sample.inputs);
   const ai = new EmpiricalAI(provider);
   let value = "",
     tokens_used,

@@ -1,5 +1,11 @@
 # web
 
+## 0.8.0
+
+### Minor Changes
+
+- ba98ebb: feat: add support for chat format prompt
+
 ## 0.7.3
 
 ### Patch Changes

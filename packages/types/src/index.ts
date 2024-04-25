@@ -7,8 +7,8 @@ export enum RoleType {
 }
 
 export type ChatPrompt = {
-  role: string;
-  comment: string;
+  role: "system" | "user" | "assistant";
+  content: string;
 };
 
 export interface ScorerBase {
@@ -77,7 +77,13 @@ interface ModelParameters {
 
 export interface ModelRunConfig extends RunConfigBase {
   type: "model";
-  provider: "openai" | "mistral" | "google" | "anthropic" | "fireworks";
+  provider:
+    | "openai"
+    | "mistral"
+    | "google"
+    | "anthropic"
+    | "fireworks"
+    | "azure-openai";
   model: string;
   prompt?: Prompt;
   parameters?: ModelParameters;

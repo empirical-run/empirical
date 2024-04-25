@@ -1,5 +1,11 @@
 # @empiricalrun/fetch
 
+## 0.3.1
+
+### Patch Changes
+
+- d81cff4: fix: error messaging in case of request timeout
+
 ## 0.3.0
 
 ### Minor Changes

@@ -22,7 +22,6 @@ import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import EmptySampleCompletion from "./empty-sample-completion";
 import { RunResult } from "../types";
 import SampleCompletionError from "./sample-completion-error";
-import { Separator } from "./ui/separator";
 import { JsonAsTab } from "./json-as-tab";
 import { RunSampleOutputMetric } from "./run-response-metadata";
 import { Scores } from "./scores";
@@ -256,10 +255,6 @@ export default function SampleOutputCard({
         )}
         {!diffView.enabled && baseSample?.output.metadata && (
           <section className="flex flex-col h-[200px] mt-2">
-            <Separator
-              orientation="horizontal"
-              className="w-[60%] self-center"
-            />
             <p className=" text-sm font-medium mt-2">Metadata</p>
             <section className="relative flex flex-col flex-1">
               <JsonAsTab

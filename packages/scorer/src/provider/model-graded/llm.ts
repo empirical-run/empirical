@@ -8,7 +8,7 @@ async function askLlmForEvalResult(
   const ai = new EmpiricalAI("openai");
   const completion = await ai.chat.completions.create({
     messages,
-    model: "gpt-3.5-turbo",
+    model: "gpt-4-turbo",
     temperature: 0.1,
     tools: [
       {

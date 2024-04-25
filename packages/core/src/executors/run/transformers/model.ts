@@ -2,7 +2,6 @@ import { RunConfig, ThreadMessage } from "@empiricalrun/types";
 import { Transformer } from "./interface";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { AIError, EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
-import OpenAI from "openai";
 
 export const assistantExecutor: Transformer = async function (
   runConfig: RunConfig,
@@ -36,13 +35,25 @@ export const assistantExecutor: Transformer = async function (
       },
       ...parameters,
     });
+
+    const hasCitation = message.citations && message.citations.length > 0;
+    const hasToolCall = message.tool_calls && message.tool_calls.length > 0;
+    let metadata: any = {};
+    // Don't populate metadata - just to keep the UI neater
+    if (hasCitation) {
+      metadata.citations = message.citations;
+    }
+    if (hasToolCall) {
+      metadata.tool_calls = message.tool_calls;
+    }
+
     return {
       output: {
-        value: (message.content[0]! as OpenAI.Beta.Threads.TextContentBlock)
-          .text.value,
-        // tokens_used, --> These will come from run.usage
-        // finish_reason,
+        value: message.content,
+        metadata,
+        tokens_used: message.usage?.total_tokens,
         // latency,
+        // finish_reason,
       },
     };
   } catch (e: any) {

@@ -1,12 +1,12 @@
 export * from "./batch-tasks";
 
 export function replacePlaceholders(string: string, obj: any) {
-  const regex = /{{\s*(\w+)\s*}}/g;
+  const regex = /{{([^}]*)}}/g;
   let replacement = string;
   let found = replacement.match(regex);
   while (found) {
     replacement = replacement.replace(regex, function (match, key) {
-      return obj[key];
+      return obj[key.trim()];
     });
     found = replacement.match(regex);
   }

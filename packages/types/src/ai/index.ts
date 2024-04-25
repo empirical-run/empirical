@@ -14,8 +14,19 @@ export interface ICreateChatCompletion {
   (body: IChatCompletionCreateParams): Promise<IChatCompletion>;
 }
 
-export interface IAssistantRunResponse
-  extends OpenAI.Beta.Threads.Messages.Message {}
+export interface Citation {
+  file_id?: string;
+  quote?: string;
+  text: string;
+}
+
+export interface IAssistantRunResponse {
+  content: string;
+  citations: Citation[];
+  tool_calls?: any[];
+  usage?: OpenAI.CompletionUsage;
+  latency?: number;
+}
 
 export interface ICreateAndRunAssistantThread {
   (

@@ -8,7 +8,7 @@ export enum RoleType {
 
 export type ChatPrompt = {
   role: string;
-  comment: string;
+  content: string;
 };
 
 export interface ScorerBase {

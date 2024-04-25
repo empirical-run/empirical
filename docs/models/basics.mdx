@@ -43,7 +43,11 @@ side-by-side comparison view in the web reporter.
 The prompt serves as the initial input provided to the model to generate a response. 
 This property accepts either a string or a JSON chat format.
 
-The JSON chat format allows for a sequence of messages to be provided as the prompt. Each message should have a `role` and `content`. 
+The JSON chat format allows for a sequence of messages comprising the conversation so far. 
+Each message object has two required fields:
+- `role`: Role of the messenger (either `system`, `user` or `assistant`)
+- `content`: The content of the message
+
 ```json empiricalrc.json
 {
   "runs": [
@@ -61,6 +65,19 @@ The JSON chat format allows for a sequence of messages to be provided as the pro
 ```
 The [Text-to-SQL example](https://github.com/empirical-run/empirical/tree/main/examples/spider)
 uses this prompt format to test conversion of natural language questions to SQL queries.
+
+String based prompts are wrapped in `user` role message before sending to the model.
+```json empiricalrc.json
+{
+  "runs": [
+    {
+      "prompt": "Extract the name, age and location from the message, and respond with a JSON object ..."
+    }
+  ]
+}
+```
+The [basic example](https://github.com/empirical-run/empirical/tree/main/examples/basic) uses this prompt 
+format to test extraction of named entities from natural language text.
 
 
 ### Placeholders

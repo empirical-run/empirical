@@ -49,6 +49,31 @@ const cacheDir = ".empiricalrun";
 const outputFilePath = `${cwd}/${cacheDir}/${outputFileName}`;
 const runtimeOptionsPath = `${cwd}/${cacheDir}/runtime.json`;
 
+const readConfig = async (): Promise<RunsConfig> => {
+  let data: string;
+  try {
+    data = (await fs.readFile(configFileFullPath)).toString();
+    console.log(buildSuccessLog(`read ${configFileName} file successfully`));
+  } catch (err) {
+    console.log(buildErrorLog(`Failed to read ${configFileName} file`));
+    console.log(yellow("Please ensure running init command first"));
+    process.exit(1);
+  }
+  const { runs, dataset, scorers } = JSON.parse(data) as RunsConfig;
+
+  runs.forEach((r) => {
+    // if scorers are not set for a run, then override it with the global scorers
+    if (!r.scorers && scorers) {
+      r.scorers = scorers;
+    }
+  });
+
+  return {
+    runs,
+    dataset,
+  };
+};
+
 program
   .name("Empirical.run CLI")
   .description(
@@ -90,19 +115,9 @@ program
     dotenv.config({ path: runTimeOptions.envFilePath });
     console.log(yellow("Initiating run..."));
 
-    let data;
     const startTime = performance.now();
-    try {
-      data = await fs.readFile(configFileFullPath);
-    } catch (err) {
-      console.log(buildErrorLog(`Failed to read ${configFileName} file`));
-      console.log(yellow("Please ensure running init command first"));
-      process.exit(1);
-    }
+    const { runs, dataset: datasetConfig } = await readConfig();
 
-    console.log(buildSuccessLog(`read ${configFileName} file successfully`));
-    const jsonStr = data.toString();
-    const { runs, dataset: datasetConfig } = JSON.parse(jsonStr) as RunsConfig;
     // TODO: add check here for empty runs config. Add validator of the file
     let dataset: Dataset;
     const store = new EmpiricalStore();

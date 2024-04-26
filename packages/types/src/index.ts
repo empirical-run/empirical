@@ -94,6 +94,12 @@ export interface AssistantsRunConfig extends RunConfigBase {
   assistant_id: string;
   prompt: string;
   parameters?: {
+    model?: string;
+    temperature?: number;
+    instructions?: string;
+    tool_choice?: any;
+
+    // Passthrough
     [key: string]: any;
   };
 }

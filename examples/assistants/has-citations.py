@@ -2,10 +2,10 @@ import json
 
 
 def evaluate(output, inputs):
-    metadata = output.get("metadata")
-    citations = metadata.get("citations") if metadata else None
     should_have_citation = inputs.get("should have citations") == "yes"
+
     if should_have_citation:
+        citations = output.get("metadata", {}).get("citations")
         return [
             {
                 "score": 1 if citations else 0,

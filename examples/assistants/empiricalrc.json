@@ -3,48 +3,24 @@
     {
       "type": "assistant",
       "assistant_id": "asst_xyK085ub8c30tG3iwkaW9Moh",
-      "prompt": "{{question}}",
+      "prompt": "{{ question }}",
       "parameters": {
-        "model": "gpt-3.5-turbo",
-        "temperature": 0.1,
-        "instructions": "You are a helpful assistant for a gaming payments company that connects merchants (gaming apps) with their users. Users pay on the gaming apps, and this company processes their payments\n\nUsers need help regarding their transactions and have questions that they will ask you. You need to represent this company and their merchant, and talk to the user in a helpful and polite tone.\n\nIf you don't have any answers, then say you don't know. NEVER SAY ANYTHING YOU ARE NOT CERTAIN ABOUT.",
-        "tool_choice": "auto"
-      },
-      "scorers": [
-        {
-          "type": "py-script",
-          "path": "has-citations.py"
-        },
-        {
-          "type": "llm-criteria",
-          "criteria": "{{ success criteria }}",
-          "name": "success-criteria"
-        }
-      ]
-    },
-    {
-      "type": "assistant",
-      "assistant_id": "asst_xyK085ub8c30tG3iwkaW9Moh",
-      "prompt": "{{question}}",
-      "parameters": {
-        "model": "gpt-4-turbo",
-        "temperature": 0.1,
-        "instructions": "You are a helpful assistant for a gaming payments company that connects merchants (gaming apps) with their users. Users pay on the gaming apps, and this company processes their payments\n\nUsers need help regarding their transactions and have questions that they will ask you. You need to represent this company and their merchant, and talk to the user in a helpful and polite tone.\n\nIf you don't have any answers, then say you don't know. NEVER SAY ANYTHING YOU ARE NOT CERTAIN ABOUT."
-      },
-      "scorers": [
-        {
-          "type": "py-script",
-          "path": "has-citations.py"
-        },
-        {
-          "type": "llm-criteria",
-          "criteria": "{{ success criteria }}",
-          "name": "success-criteria"
-        }
-      ]
+        "temperature": 0.1
+      }
     }
   ],
   "dataset": {
     "path": "https://docs.google.com/spreadsheets/d/1U8fBQ9TxtR5pUS0Bg0n1xcU_6EXkhGUOj1CS-TAAHmU/edit#gid=0"
-  }
+  },
+  "scorers": [
+    {
+      "type": "llm-criteria",
+      "criteria": "{{ success criteria }}",
+      "name": "success-criteria"
+    },
+    {
+      "type": "py-script",
+      "path": "has-citations.py"
+    }
+  ]
 }

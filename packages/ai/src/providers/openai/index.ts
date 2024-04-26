@@ -1,17 +1,18 @@
 import {
   IAIProvider,
   IChatCompletion,
-  Citation,
   ICreateChatCompletion,
   ICreateAndRunAssistantThread,
+  IAssistantRunResponse,
 } from "@empiricalrun/types";
 import OpenAI from "openai";
 import promiseRetry from "promise-retry";
 import { AIError, AIErrorEnum } from "../../error";
 import { DEFAULT_TIMEOUT } from "../../constants";
 import { BatchTaskManager } from "../../utils";
+import { AssistantStreamEvent } from "openai/resources/beta/assistants.mjs";
 
-const batchTaskManager = new BatchTaskManager(1, 100);
+const batchTaskManager = new BatchTaskManager(20, 100);
 
 const createChatCompletion: ICreateChatCompletion = async (body) => {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -86,63 +87,110 @@ const runAssistant: ICreateAndRunAssistantThread = async (body) => {
   const { executionDone } = await batchTaskManager.waitForTurn();
   try {
     // https://platform.openai.com/docs/assistants/overview/step-4-create-a-run?context=without-streaming&lang=node.js
-    const run = await openai.beta.threads.createAndRunPoll(body, {
-      pollIntervalMs: 500, // Default is 5000
-    });
+    const finalResp = await promiseRetry<IAssistantRunResponse>(
+      // @ts-ignore
+      (retry, attempt) => {
+        return (async () => {
+          const thread = await openai.beta.threads.create({
+            messages: body.thread?.messages,
+          });
+          const run = await openai.beta.threads.runs.create(thread.id, {
+            assistant_id: body.assistant_id,
+            stream: true,
+          });
+          const stream = run.toReadableStream();
+          const reader = stream.getReader();
+          let asstRunResp: IAssistantRunResponse = {
+            citations: [],
+            content: "",
+          };
+          while (true && reader) {
+            const { done, value } = await reader.read();
+            const resp = new Response(value);
+            const text = await resp.text();
+            if (text) {
+              const eventData: AssistantStreamEvent = JSON.parse(text);
+              if (eventData.event === "thread.message.completed") {
+                if (eventData.data.content?.[0]?.type === "text") {
+                  const txt = eventData.data.content?.[0].text;
+                  asstRunResp.content = txt.value;
+                  const citations = txt.annotations.map((ann) => ({
+                    text: ann.text,
+                    file_id:
+                      ann.type === "file_citation"
+                        ? ann.file_citation.file_id
+                        : ann.file_path.file_id,
+                    quote:
+                      ann.type === "file_citation"
+                        ? ann.file_citation.quote
+                        : undefined,
+                  }));
+                  asstRunResp.citations = citations;
+                } else {
+                  // TODO: throw error
+                  asstRunResp.content = `Unknown content type: ${eventData.data.content?.[0]?.type} as response`;
+                }
+              }
+
+              if (eventData.event === "thread.run.completed") {
+                asstRunResp.usage = eventData.data.usage || undefined;
+              }
+
+              if (eventData.event === "thread.run.requires_action") {
+                const { tool_calls } = eventData.data.required_action
+                  ?.submit_tool_outputs || {
+                  tool_calls: [],
+                };
+                const toolSummary = tool_calls.map((tc) => {
+                  return `${tc.function.name} with args ${tc.function.arguments}`;
+                });
+                asstRunResp.content = `Attempting to make tool call: ${toolSummary.join(", ") || ""}`;
+                asstRunResp.tool_calls = tool_calls;
+              }
+
+              if (eventData.event === "thread.run.failed") {
+                throw new AIError(
+                  AIErrorEnum.FAILED_CHAT_COMPLETION,
+                  `Failed to complete the run: ${JSON.stringify(eventData.data.last_error)}`,
+                );
+              }
+            }
+            if (done) {
+              break;
+            }
+          }
+          return asstRunResp;
+        })().catch((err: any) => {
+          if ((err.message as string).includes("server_error")) {
+            console.log(
+              `Retrying request due to server error (attempt ${attempt})`,
+            );
+            retry(err);
+          } else {
+            throw err;
+          }
+        });
+      },
+      {
+        randomize: true,
+        minTimeout: 1000,
+      },
+    );
     executionDone();
     // Run statuses: https://platform.openai.com/docs/assistants/how-it-works/run-lifecycle
-    if (run.status === "requires_action") {
-      const { tool_calls } = run.required_action?.submit_tool_outputs ?? {
-        tool_calls: [],
-      };
-      const toolSummary = tool_calls.map((tc) => {
-        return `${tc.function.name} with args ${tc.function.arguments}`;
-      });
-      return {
-        content: `Attempting to make tool call: ${toolSummary.join(", ")}`,
-        citations: [],
-        tool_calls,
-      };
-    } else if (run.status === "completed") {
-      // TODO: give usage and latency
-      const messages = await openai.beta.threads.messages.list(run.thread_id);
-      const message = messages.data.find(({ role }) => role === "assistant");
-      if (message) {
-        const msgText = (
-          message.content[0]! as OpenAI.Beta.Threads.TextContentBlock
-        ).text;
-        const citations: Citation[] = msgText.annotations.map((ann) => ({
-          text: ann.text,
-          file_id:
-            ann.type === "file_citation"
-              ? ann.file_citation.file_id
-              : ann.file_path.file_id,
-          quote:
-            ann.type === "file_citation" ? ann.file_citation.quote : undefined,
-        }));
-        return {
-          content: msgText.value,
-          citations,
-          tool_calls: [],
-          usage: run.usage!,
-        };
-      } else {
-        throw new AIError(
-          AIErrorEnum.FAILED_CHAT_COMPLETION,
-          "No assistant message found in the run response",
-        );
-      }
-    } else {
-      throw new AIError(
-        AIErrorEnum.FAILED_CHAT_COMPLETION,
-        `Failed to complete the run: ${JSON.stringify(run.last_error)}`,
-      );
-    }
-  } catch (err) {
+    // if (error) {
+    //   throw new AIError(
+    //     AIErrorEnum.FAILED_CHAT_COMPLETION,
+    //     `Failed to complete the run: ${JSON.stringify(error)}`,
+    //   );
+    // }
+    return finalResp;
+  } catch (err: any) {
     executionDone();
+    console.error(err);
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `Failed to fetch output from assistant ${body.assistant_id}: ${(err as any)?.message}`,
+      `Failed to fetch output from assistant ${body.assistant_id}: ${err.message || err}`,
     );
   }
 };

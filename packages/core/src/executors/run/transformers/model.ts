@@ -45,7 +45,6 @@ export const assistantExecutor: Transformer = async function (
     const hasCitation = message.citations && message.citations.length > 0;
     const hasToolCall = message.tool_calls && message.tool_calls.length > 0;
     let metadata: any = {};
-    // Don't populate metadata - just to keep the UI neater
     if (hasCitation) {
       metadata.citations = message.citations;
     }

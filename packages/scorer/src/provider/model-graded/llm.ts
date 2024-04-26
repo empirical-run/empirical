@@ -60,10 +60,11 @@ export const checkLlmCriteria: ScoringFn = async ({
       },
     ];
   }
+  const scorerName = config.name || name;
   if (!output.value) {
     return [
       {
-        name,
+        name: scorerName,
         score: 0,
         message: "no output value to score",
       },
@@ -80,7 +81,7 @@ export const checkLlmCriteria: ScoringFn = async ({
   if (!criteria) {
     return [
       {
-        name,
+        name: scorerName,
         score: 0,
         message: "criteria is not specified for the scorer",
       },
@@ -97,7 +98,7 @@ export const checkLlmCriteria: ScoringFn = async ({
     return [
       {
         score: result === "Yes" ? 1 : 0,
-        name: config.name || name,
+        name: scorerName,
         message: reason,
       },
     ];
@@ -105,7 +106,7 @@ export const checkLlmCriteria: ScoringFn = async ({
     return [
       {
         score: 0,
-        name: config.name || name,
+        name: scorerName,
         message:
           (err as Error).message ||
           "Failed to call LLM using @empiricalrun/ai package",

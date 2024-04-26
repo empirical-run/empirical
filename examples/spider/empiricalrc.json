@@ -14,15 +14,6 @@
                     "role": "user",
                     "content": "Question: {{question}} \n\nAnswer the above question with only the SQL query."
                 }
-            ],
-            "scorers": [
-                {
-                    "type": "sql-syntax"
-                },
-                {
-                    "type": "py-script",
-                    "path": "execution_accuracy.py"
-                }
             ]
         },
         {
@@ -37,15 +28,6 @@
                 {
                     "role": "user",
                     "content": "Question: {{question}} \n\nAnswer the above question with only the SQL query."
-                }
-            ],
-            "scorers": [
-                {
-                    "type": "sql-syntax"
-                },
-                {
-                    "type": "py-script",
-                    "path": "execution_accuracy.py"
                 }
             ]
         },
@@ -62,19 +44,19 @@
                     "role": "user",
                     "content": "Question: {{question}} \n\nAnswer the above question with only the SQL query."
                 }
-            ],
-            "scorers": [
-                {
-                    "type": "sql-syntax"
-                },
-                {
-                    "type": "py-script",
-                    "path": "execution_accuracy.py"
-                }
             ]
         }
     ],
     "dataset": {
         "path": "https://docs.google.com/spreadsheets/d/1x_p0lX2pJEyGkFoe1A9nY3q87qOJUd547f2lz99ugiM/edit#gid=0"
-    }
+    },
+    "scorers": [
+        {
+            "type": "sql-syntax"
+        },
+        {
+            "type": "py-script",
+            "path": "execution_accuracy.py"
+        }
+    ]
 }

@@ -57,7 +57,7 @@ export const assistantExecutor: Transformer = async function (
         value: message.content,
         metadata,
         tokens_used: message.usage?.total_tokens,
-        // latency,
+        latency: message.latency,
         // finish_reason,
       },
     };

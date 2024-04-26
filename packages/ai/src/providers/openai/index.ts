@@ -87,6 +87,7 @@ const runAssistant: ICreateAndRunAssistantThread = async (body) => {
   const { executionDone } = await batchTaskManager.waitForTurn();
   try {
     // https://platform.openai.com/docs/assistants/overview/step-4-create-a-run?context=without-streaming&lang=node.js
+    let requestStartTime = Date.now();
     const finalResp = await promiseRetry<IAssistantRunResponse>(
       // @ts-ignore
       (retry, attempt) => {
@@ -165,6 +166,7 @@ const runAssistant: ICreateAndRunAssistantThread = async (body) => {
             console.log(
               `Retrying request due to server error (attempt ${attempt})`,
             );
+            requestStartTime = Date.now();
             retry(err);
           } else {
             throw err;
@@ -177,13 +179,8 @@ const runAssistant: ICreateAndRunAssistantThread = async (body) => {
       },
     );
     executionDone();
-    // Run statuses: https://platform.openai.com/docs/assistants/how-it-works/run-lifecycle
-    // if (error) {
-    //   throw new AIError(
-    //     AIErrorEnum.FAILED_CHAT_COMPLETION,
-    //     `Failed to complete the run: ${JSON.stringify(error)}`,
-    //   );
-    // }
+    const latency = Date.now() - requestStartTime;
+    finalResp.latency = latency;
     return finalResp;
   } catch (err: any) {
     executionDone();

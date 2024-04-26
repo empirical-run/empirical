@@ -1,17 +1,24 @@
 import { Dataset, DatasetConfig, DatasetSample } from "@empiricalrun/types";
 import { promises as fs } from "fs";
-import { loaders, hashContents } from "./loaders";
+import { loaders, hashContents, LoaderType } from "./loaders";
 import { DatasetError, DatasetErrorEnum } from "../../error";
+import { fetchWithRetry } from "@empiricalrun/fetch";
 
-function parseDataset(
+const googleSheetIdentifier = "https://docs.google.com/spreadsheets/d/";
+
+async function parseDataset(
   path: string,
   contents: string,
-): DatasetSample[] | undefined {
-  const extension = path.split(".").pop();
+): Promise<DatasetSample[] | undefined> {
+  //TODO: fix this file support check
+  const extension = path.startsWith(googleSheetIdentifier)
+    ? LoaderType.csv
+    : path.split(".").pop();
 
   if (extension && loaders.has(extension)) {
     const loaderFn = loaders.get(extension)!;
-    return loaderFn(contents);
+    const dataset = await loaderFn(contents);
+    return dataset;
   } else {
     throw new DatasetError(
       DatasetErrorEnum.UNSUPPORTED_FILE_EXTENSION,
@@ -22,8 +29,19 @@ function parseDataset(
 
 async function fetchContents(path: string): Promise<string> {
   try {
-    if (path.startsWith("http")) {
-      const response = await fetch(path);
+    if (path.startsWith(googleSheetIdentifier)) {
+      const documentId = path.replace(googleSheetIdentifier, "").split("/")[0];
+      const fetchPath = `https://docs.google.com/spreadsheets/d/${documentId}/export?format=csv`;
+      // extract hash params from URL
+      const pathUrl = new URL(path.replaceAll("#", "?"));
+      const fetchUrl = new URL(fetchPath);
+      pathUrl.searchParams.forEach((value, name) =>
+        fetchUrl.searchParams.append(name, value),
+      );
+      const resp = await fetchWithRetry(fetchUrl.toString());
+      return await resp.text();
+    } else if (path.startsWith("http")) {
+      const response = await fetchWithRetry(path);
       return await response.text();
     } else {
       const data = await fs.readFile(path);
@@ -49,7 +67,7 @@ export async function loadDataset(config: DatasetConfig): Promise<Dataset> {
     }));
   } else if ("path" in config) {
     contents = await fetchContents(config.path); // wrap and throw if fetching fails
-    const parsed = parseDataset(config.path, contents);
+    const parsed = await parseDataset(config.path, contents);
     if (parsed) {
       samples = parsed;
     }

@@ -1,5 +1,48 @@
 # web
 
+## 0.8.0
+
+### Minor Changes
+
+- ba98ebb: feat: add support for chat format prompt
+
+## 0.7.3
+
+### Patch Changes
+
+- 65eec6a: feat: get aggregate latency and token numbers for the run
+
+## 0.7.2
+
+### Patch Changes
+
+- 837528d: feat: add support for sharing results using empirical link
+
+## 0.7.1
+
+### Patch Changes
+
+- ebdc566: fix: ui breaking in case of too many sample inputs
+
+## 0.7.0
+
+### Minor Changes
+
+- 8ffc64e: feat: add or remove samples and run them on the comparison ui
+- a8bc03a: feat: add support for duckdb for filtering and score summary
+- d3a24a6: feat: update scores UI to accomodate score message
+
+### Patch Changes
+
+- 036c015: fix: update the tabs UI to a more minimal design
+- 2bc5465: fix: minor improvements for execution accuracy in spider example
+
+## 0.6.0
+
+### Minor Changes
+
+- a94aa16: feat: add stop reason and token usage metrics to run output
+
 ## 0.5.0
 
 ### Minor Changes

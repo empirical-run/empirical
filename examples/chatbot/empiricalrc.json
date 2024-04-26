@@ -1,5 +1,5 @@
 {
-  "$schema": "https://assets.empirical.run/config/schema/v0.4.0.json",
+  "$schema": "https://assets.empirical.run/config/schema/latest.json",
   "runs": [
     {
       "name": "less context setting",
@@ -36,14 +36,6 @@
     }
   ],
   "dataset": {
-    "samples": [
-      {
-        "id": "1",
-        "inputs": {
-          "user_name": "Jason",
-          "user_message": "How do you feel about the death of democracy?"
-        }
-      }
-    ]
+    "path": "https://docs.google.com/spreadsheets/d/1AsMekKCG74m1PbBZQN_sEJgaW0b9Xarg4ms4mhG3i5k/edit#gid=0"
   }
 }

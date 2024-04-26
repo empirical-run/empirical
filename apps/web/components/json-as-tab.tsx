@@ -7,6 +7,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
+import {
+  TriangleRightIcon,
+  PlusCircledIcon,
+  MinusCircledIcon,
+} from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
 import { ArrowTopRightIcon } from "@radix-ui/react-icons";
 import CodeViewer from "./ui/code-viewer";
@@ -16,10 +21,20 @@ export function JsonAsTab({
   storeKey = "",
   data,
   defaultTabs,
+  showRunButton,
+  onSampleAdd,
+  onSampleRemove,
+  onEditorContentUpdate,
+  onClickRunAll,
 }: {
   storeKey: string;
   data: { [key: string]: any };
   defaultTabs?: string[];
+  showRunButton?: boolean;
+  onSampleAdd?: () => void;
+  onSampleRemove?: () => void;
+  onEditorContentUpdate?: (key: string, value: string) => void;
+  onClickRunAll?: () => void;
 }) {
   const tabs = useMemo(
     () => defaultTabs || Object.keys(data),
@@ -32,9 +47,10 @@ export function JsonAsTab({
     }
     return undefined;
   }, [activeTab, data]);
+
   return (
     <>
-      <div className="flex flex-row space-x-2 justify-end absolute right-4 top-4">
+      <div className="flex flex-row space-x-2 justify-end">
         <>
           {activeTabValue && (
             <Sheet>
@@ -59,7 +75,7 @@ export function JsonAsTab({
                         ? activeTabValue
                         : JSON.stringify(activeTabValue, null, 2)
                     }
-                    readOnly
+                    readOnly // expand sheet is readonly
                     scrollable
                     language="json"
                   />
@@ -67,11 +83,42 @@ export function JsonAsTab({
               </SheetContent>
             </Sheet>
           )}
+          {onClickRunAll && showRunButton && (
+            <Button
+              variant={"secondary"}
+              size={"xs"}
+              className="flex flex-row pl-1"
+              onClick={onClickRunAll}
+            >
+              <TriangleRightIcon width={18} height={18} />
+              <span>Run this row</span>
+            </Button>
+          )}
+          {onSampleAdd && (
+            <Button
+              variant={"link"}
+              size={"xs"}
+              onClick={() => onSampleAdd()}
+              className=" self-end justify-end p-0"
+            >
+              <PlusCircledIcon />
+            </Button>
+          )}
+          {onSampleRemove && (
+            <Button
+              variant={"link"}
+              size={"xs"}
+              onClick={() => onSampleRemove()}
+              className=" self-end justify-end p-0"
+            >
+              <MinusCircledIcon />
+            </Button>
+          )}
         </>
       </div>
       {tabs.length > 0 && (
         <Tabs value={activeTab} className="h-full" onValueChange={onChangeTab}>
-          <TabsList className=" rounded-sm">
+          <TabsList className=" rounded-sm w-full overflow-x-scroll justify-start no-scrollbar">
             {tabs.map((name) => (
               <TabsTrigger
                 key={name}
@@ -98,9 +145,10 @@ export function JsonAsTab({
                       ? value
                       : JSON.stringify(value, null, 2)
                   }
-                  language="json"
-                  readOnly
+                  language="text"
+                  readOnly={false}
                   scrollable
+                  onChange={(value) => onEditorContentUpdate?.(key, value!)}
                 />
               </TabsContent>
             );

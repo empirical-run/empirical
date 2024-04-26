@@ -65,7 +65,7 @@ export function useRunResultTableView({ runs = [] }: { runs: RunResult[] }) {
   const [activeRun, setActiveRun] = useState<RunResult | undefined>();
   const tableHeaders = useMemo(() => {
     const tableHeaders: RunResultTableHeader[] = [
-      { title: "Inputs", type: "input" },
+      { title: "Samples", type: "input" },
     ];
     runs?.forEach((run) => {
       if (!run) {

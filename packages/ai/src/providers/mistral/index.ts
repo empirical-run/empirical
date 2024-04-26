@@ -6,6 +6,7 @@ import {
 import { BatchTaskManager, getPassthroughParams } from "../../utils";
 import { ToolCalls, ResponseFormat } from "@mistralai/mistralai";
 import { AIError, AIErrorEnum } from "../../error";
+import { DEFAULT_TIMEOUT } from "../../constants";
 
 type MistralChatMessage = {
   role: string;
@@ -29,12 +30,23 @@ const createChatCompletion: ICreateChatCompletion = async function (body) {
     );
   }
   const MistralClient = await importMistral();
-  const mistralai = new MistralClient(process.env.MISTRAL_API_KEY);
-  const { executionDone } = await batch.waitForTurn();
   const { model, messages, ...config } = body;
+  const mistralai = new MistralClient(
+    process.env.MISTRAL_API_KEY,
+    undefined,
+    // type issue in https://github.com/mistralai/client-js/blob/e33a2f3e5f6fb88fd083e8e7d9c3c081d1c7c0e4/src/client.js#L51, will submit a PR later
+    // @ts-ignore default value for retries
+    5,
+    (config.timeout || DEFAULT_TIMEOUT) / 1000, // Mistral expects values in seconds
+  );
+  if (config.timeout) {
+    delete config.timeout;
+  }
+  const { executionDone } = await batch.waitForTurn();
   try {
     // typecasting as there is a minor difference in role being openai enum vs string
     const mistralMessages = messages as MistralChatMessage[];
+    const startedAt = Date.now();
     // no retry needed as mistral internally handles it well
     const completions = await mistralai.chat({
       model,
@@ -47,14 +59,15 @@ const createChatCompletion: ICreateChatCompletion = async function (body) {
       ...getPassthroughParams(config),
     });
     executionDone();
+    const latency = Date.now() - startedAt;
     // typecasting as the only difference present in mistral interface is the it doesnt contain logprobs.
     // currently its not being used. hence typecasting it for now.
-    return completions as IChatCompletion;
+    return { ...completions, latency } as IChatCompletion;
   } catch (err) {
     executionDone();
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `failed chat completion for model ${body.model} with message ${(err as Error).message}`,
+      `Failed to fetch output from model ${body.model} with message ${(err as Error).message}`,
     );
   }
 };

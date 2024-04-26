@@ -1,7 +1,34 @@
-import { RunConfig } from "@empiricalrun/types";
+import {
+  ChatPrompt,
+  DatasetSampleInputs,
+  Prompt,
+  RunConfig,
+} from "@empiricalrun/types";
 import { Transformer } from "./interface";
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import { AIError, EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
+
+export const massagePrompt = (
+  prompt: Prompt,
+  inputs: DatasetSampleInputs,
+): ChatCompletionMessageParam[] => {
+  if (Array.isArray(prompt)) {
+    const massagedPrompts = (prompt as ChatPrompt[]).map((p) => {
+      const message: ChatCompletionMessageParam = {
+        role: p.role,
+        content: p.content ? replacePlaceholders(p.content, inputs) : "",
+      };
+      return message;
+    });
+    return massagedPrompts;
+  }
+  return [
+    {
+      role: "user",
+      content: prompt ? replacePlaceholders(prompt, inputs) : "",
+    },
+  ];
+};
 
 export const modelExecutor: Transformer = async function (
   runConfig: RunConfig,
@@ -18,15 +45,24 @@ export const modelExecutor: Transformer = async function (
       },
     };
   }
+  if (!runConfig.prompt) {
+    return {
+      output: {
+        value: "",
+      },
+      error: {
+        code: "",
+        message: "No prompt provided for model execution",
+      },
+    };
+  }
   const { prompt, model, provider, parameters } = runConfig;
-  const messages: ChatCompletionMessageParam[] = [
-    {
-      role: "user",
-      content: replacePlaceholders(prompt as string, sample.inputs),
-    },
-  ];
+  const messages = massagePrompt(prompt, sample.inputs);
   const ai = new EmpiricalAI(provider);
-  let value = "";
+  let value = "",
+    tokens_used,
+    finish_reason,
+    latency;
   try {
     const completion = await ai.chat.completions.create({
       model,
@@ -34,6 +70,9 @@ export const modelExecutor: Transformer = async function (
       ...parameters,
     });
     value = completion.choices?.[0]?.message.content || "";
+    tokens_used = completion.usage?.total_tokens || 0;
+    finish_reason = completion.choices?.[0]?.finish_reason || "";
+    latency = completion.latency || 0;
   } catch (e: any) {
     const error = {
       code: "RE101",
@@ -53,6 +92,9 @@ export const modelExecutor: Transformer = async function (
   return {
     output: {
       value,
+      tokens_used,
+      finish_reason,
+      latency,
     },
   };
 };

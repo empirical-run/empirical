@@ -4,10 +4,11 @@ import { ChatCompletionMessageParam } from "openai/resources/chat/completions.mj
 import promiseRetry from "promise-retry";
 import { BatchTaskManager, getPassthroughParams } from "../../utils";
 import { AIError, AIErrorEnum } from "../../error";
+import { DEFAULT_TIMEOUT } from "../../constants";
 
 const batchTaskManager = new BatchTaskManager(5);
 
-const finishReaonReverseMap = new Map<
+const finishReasonReverseMap = new Map<
   "end_turn" | "max_tokens" | "stop_sequence" | null,
   "length" | "stop" | "tool_calls" | "content_filter" | "function_call"
 >([
@@ -54,13 +55,19 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       "process.env.ANTHROPIC_API_KEY is not set",
     );
   }
+  const { model, messages, ...config } = body;
+  const timeout = config.timeout || DEFAULT_TIMEOUT;
+  if (config.timeout) {
+    delete config.timeout;
+  }
   const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
+    timeout: timeout,
   });
-  const { model, messages, ...config } = body;
   const { contents, systemPrompt } = convertOpenAIToAnthropicAI(messages);
   const { executionDone } = await batchTaskManager.waitForTurn();
   try {
+    const startedAt = Date.now();
     const response = await promiseRetry<Anthropic.Messages.Message>(
       (retry) => {
         return anthropic.messages
@@ -88,7 +95,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
               retry(err);
               throw err;
             }
-            return err;
+            throw err;
           });
       },
       {
@@ -96,18 +103,25 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
         minTimeout: 1000,
       },
     );
-
     executionDone();
-
+    const latency = Date.now() - startedAt;
+    // renaming to terms used by openai, mistral
+    const { input_tokens: prompt_tokens, output_tokens: completion_tokens } =
+      response.usage;
     return {
       id: response.id,
       model,
       object: "chat.completion",
       created: Date.now() / 1000,
+      usage: {
+        total_tokens: prompt_tokens + completion_tokens,
+        completion_tokens,
+        prompt_tokens,
+      },
       choices: [
         {
           finish_reason:
-            finishReaonReverseMap.get(response.stop_reason) || "stop",
+            finishReasonReverseMap.get(response.stop_reason) || "stop",
           index: 0,
           message: {
             content: response.content[0]?.text || null,
@@ -116,12 +130,13 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
           logprobs: null,
         },
       ],
+      latency,
     };
   } catch (e) {
     executionDone();
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `failed chat completion for model ${body.model} with message ${(e as Error).message} `,
+      `Failed to fetch output from model ${body.model}: ${(e as Error).message}`,
     );
   }
 };

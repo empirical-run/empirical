@@ -20,11 +20,12 @@ import { RunSampleOutput } from "@empiricalrun/types";
 import { DiffEditor, DiffOnMount } from "@monaco-editor/react";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import EmptySampleCompletion from "./empty-sample-completion";
-import ScoreBadge from "./ui/score-badge";
 import { RunResult } from "../types";
 import SampleCompletionError from "./sample-completion-error";
 import { Separator } from "./ui/separator";
 import { JsonAsTab } from "./json-as-tab";
+import { RunSampleOutputMetric } from "./run-response-metadata";
+import { Scores } from "./scores";
 
 type Diff = {
   type: string;
@@ -114,6 +115,13 @@ export default function SampleOutputCard({
 
   const isEmptyOutput = !baseSample?.output;
   const isLoading = !!baseResult?.loading && isEmptyOutput;
+  const latency = useMemo(
+    () =>
+      baseSample?.output?.latency && baseSample.output.latency > 0
+        ? `${baseSample?.output.latency}ms`
+        : 0,
+    [baseSample],
+  );
   return (
     <Card
       className={`flex flex-col flex-1 ${
@@ -123,23 +131,11 @@ export default function SampleOutputCard({
       }`}
       onClick={onClickCard}
     >
-      <CardHeader className="p-2">
+      <CardHeader className="p-2 mt-2">
         {baseResult && baseSample && (
           <CardTitle className="flex flex-row space-x-2 items-center">
-            <div className="flex flex-1 flex-row space-x-2 justify-end">
-              {baseSample.scores?.map((s) => {
-                if (!s) {
-                  return null;
-                }
-                return (
-                  <ScoreBadge
-                    title={s.name}
-                    score={s.score}
-                    description={s.message}
-                    className="flex flex-row space-x-1"
-                  />
-                );
-              })}
+            <Scores scores={baseSample?.scores || []} />
+            <div className="flex flex-row space-x-2 justify-end items-start self-baseline">
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <DotsVerticalIcon />
@@ -213,7 +209,7 @@ export default function SampleOutputCard({
         )}
       </CardHeader>
       <CardContent
-        className="flex flex-col h-full p-2 gap-4"
+        className="flex flex-col h-full p-4 gap-2"
         ref={containerWrapper}
       >
         <section className="flex flex-col">
@@ -244,13 +240,27 @@ export default function SampleOutputCard({
             />
           )}
         </section>
+        {showOutput && (
+          <div className="flex gap-2 items-center px-2 mt-2">
+            <RunSampleOutputMetric
+              title="Total tokens"
+              value={baseSample?.output?.tokens_used}
+              hideSeparator
+            />
+            <RunSampleOutputMetric title="Latency" value={latency} />
+            <RunSampleOutputMetric
+              title="Finish reason"
+              value={baseSample?.output?.finish_reason}
+            />
+          </div>
+        )}
         {!diffView.enabled && baseSample?.output.metadata && (
           <section className="flex flex-col h-[200px] mt-2">
             <Separator
               orientation="horizontal"
               className="w-[60%] self-center"
             />
-            <p className=" text-sm font-medium mt-2 mb-2">Metadata</p>
+            <p className=" text-sm font-medium mt-2">Metadata</p>
             <section className="relative flex flex-col flex-1">
               <JsonAsTab
                 storeKey={baseResult?.id!}

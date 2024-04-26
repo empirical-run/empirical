@@ -1,5 +1,64 @@
 # @empiricalrun/scorer
 
+## 0.1.10
+
+### Patch Changes
+
+- 4150b1f: fix: typo in chat prompt type
+- Updated dependencies [ba98ebb]
+- Updated dependencies [d81cff4]
+- Updated dependencies [4150b1f]
+  - @empiricalrun/ai@0.6.1
+
+## 0.1.9
+
+### Patch Changes
+
+- Updated dependencies [7a67267]
+  - @empiricalrun/ai@0.6.0
+
+## 0.1.8
+
+### Patch Changes
+
+- Updated dependencies [66cddb3]
+  - @empiricalrun/ai@0.5.0
+
+## 0.1.7
+
+### Patch Changes
+
+- Updated dependencies [ac10032]
+  - @empiricalrun/ai@0.4.2
+
+## 0.1.6
+
+### Patch Changes
+
+- Updated dependencies [a952bd9]
+  - @empiricalrun/ai@0.4.1
+
+## 0.1.5
+
+### Patch Changes
+
+- 5079335: fix: sql syntax scorer should fail for empty output
+- b065dad: chore: improve message string for valid sql-syntax
+- 2bc5465: fix: minor improvements for execution accuracy in spider example
+- Updated dependencies [e77b76e]
+- Updated dependencies [9822db6]
+- Updated dependencies [06b1667]
+- Updated dependencies [bbd5cd0]
+- Updated dependencies [2bc5465]
+  - @empiricalrun/ai@0.4.0
+
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies [a94aa16]
+  - @empiricalrun/ai@0.3.0
+
 ## 0.1.3
 
 ### Patch Changes

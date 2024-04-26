@@ -40,3 +40,10 @@ jobs:
           r2-bucket: ${{ secrets.R2_BUCKET }}
           source-dir: ./packages/json-schema/dist/
           destination-dir: ./config/schema/
+
+      - name: Purge cache for latest schema
+        uses: jakejarvis/cloudflare-purge-action@master
+        env:
+          CLOUDFLARE_ZONE: ${{ secrets.CLOUDFLARE_ZONE }}
+          CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }}
+          PURGE_URLS: '["https://assets.empirical.run/config/schema/latest.json"]'

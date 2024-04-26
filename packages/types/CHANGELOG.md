@@ -1,5 +1,43 @@
 # @empiricalrun/types
 
+## 0.5.1
+
+### Patch Changes
+
+- ba98ebb: feat: add support for chat format prompt
+- 4150b1f: fix: typo in chat prompt type
+
+## 0.5.0
+
+### Minor Changes
+
+- 7a67267: feat: add azure-openai model provider
+
+## 0.4.0
+
+### Minor Changes
+
+- 65eec6a: feat: get aggregate latency and token numbers for the run
+
+## 0.3.3
+
+### Patch Changes
+
+- f51254f: feat: add support for runtime config options
+
+## 0.3.2
+
+### Patch Changes
+
+- 8ffc64e: feat: add or remove samples and run them on the comparison ui
+- 9822db6: feat: accept timeout as parameter in empiricalrc.json
+
+## 0.3.1
+
+### Patch Changes
+
+- a94aa16: feat: add stop reason and token usage metrics to run output
+
 ## 0.3.0
 
 ### Minor Changes

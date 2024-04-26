@@ -7,8 +7,8 @@ export enum RoleType {
 }
 
 export type ChatPrompt = {
-  role: string;
-  comment: string;
+  role: "system" | "user" | "assistant";
+  content: string;
 };
 
 export interface ScorerBase {
@@ -68,6 +68,7 @@ interface ModelParameters {
   seed?: number;
   stop?: string | Array<string>;
   top_logprobs?: number;
+  timeout?: number;
 
   // For other models, we coerce the above known parameters to appropriate slots
   // If users require other parameters, we support passthrough for other key names
@@ -76,7 +77,13 @@ interface ModelParameters {
 
 export interface ModelRunConfig extends RunConfigBase {
   type: "model";
-  provider: "openai" | "mistral" | "google" | "anthropic" | "fireworks";
+  provider:
+    | "openai"
+    | "mistral"
+    | "google"
+    | "anthropic"
+    | "fireworks"
+    | "azure-openai";
   model: string;
   prompt?: Prompt;
   parameters?: ModelParameters;
@@ -101,7 +108,7 @@ export type RunConfig = ModelRunConfig | PyScriptRunConfig | JSScriptRunConfig;
 export interface ScoreStats {
   name: string;
   count: number;
-  avgScore: number;
+  average: number;
 }
 
 export interface RunCompletionStats {
@@ -111,6 +118,12 @@ export interface RunCompletionStats {
     failed: number;
   };
   scores: ScoreStats[];
+  latency?: {
+    average: number;
+  };
+  tokens_used?: {
+    average: number;
+  };
 }
 
 export interface RunCompletion {
@@ -122,9 +135,11 @@ export interface RunCompletion {
   created_at: Date;
 }
 
+export type DatasetSampleInputs = { [key: string]: string };
+
 export type DatasetSample = {
   id: string;
-  inputs: { [key: string]: string };
+  inputs: DatasetSampleInputs;
   expected?: string;
 };
 
@@ -135,7 +150,7 @@ export type Dataset = {
 
 export type DatasetSampleConfig = {
   id?: string;
-  inputs: { [key: string]: string };
+  inputs: DatasetSampleInputs;
   expected?: string;
 };
 
@@ -155,13 +170,16 @@ export enum ModelTypes {
 export type RunOutput = {
   value: string | null | undefined;
   metadata?: object | undefined;
+  finish_reason?: string;
+  tokens_used?: number;
+  latency?: number;
 };
 
 export type RunSampleOutput = {
   id?: string;
   annotations?: string[];
   scores?: Score[];
-  inputs: { [key: string]: string };
+  inputs: DatasetSampleInputs;
   output: RunOutput;
   expected?: {
     value: string;
@@ -216,3 +234,8 @@ export type RunUpdateType =
   | RunSampleUpdate
   | RunSampleScoreUpdate
   | RunStatsUpdate;
+
+export interface RuntimeOptions {
+  envFilePath: string | string[];
+  pythonPath: string;
+}

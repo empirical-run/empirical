@@ -1,6 +1,7 @@
 import { RunsConfig } from "../../../types";
 
 export const config: RunsConfig = {
+  $schema: "https://assets.empirical.run/config/schema/latest.json",
   runs: [
     {
       type: "model",

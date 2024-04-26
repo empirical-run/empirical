@@ -37,6 +37,7 @@ import {
   buildWarningLog,
   getCliProgressLoggerInstance,
 } from "./logger/cli-logger";
+import cors from "cors";
 
 const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
@@ -228,6 +229,11 @@ program
 
     // TODO: get rid of this with dataset id support
     app.use(express.json({ limit: "50mb" }));
+    app.use(cors());
+    app.use(function setCommonHeaders(req, res, next) {
+      res.set("Access-Control-Allow-Private-Network", "true");
+      next();
+    });
     app.use(express.static(path.join(__dirname, "../webapp")));
     app.get("/api/results", (req, res) => res.sendFile(outputFilePath));
     app.get("/api/runs/:id/score/distribution", async (req, res) => {

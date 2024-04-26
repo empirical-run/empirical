@@ -80,12 +80,7 @@ Our test will succeed if the model outputs valid JSON.
           "type": "model",
           "provider": "openai",
           "model": "gpt-3.5-turbo",
-          "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
-          "scorers": [
-            {
-              "type": "is-json"
-            }
-          ]
+          "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}"
         },
         {
           "type": "model",
@@ -96,12 +91,7 @@ Our test will succeed if the model outputs valid JSON.
               "type": "json_object"
             }
           },
-          "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
-          "scorers": [
-            {
-              "type": "is-json"
-            }
-          ]
+          "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}"
         }
       ],
       "dataset": {
@@ -117,7 +107,12 @@ Our test will succeed if the model outputs valid JSON.
             }
           }
         ]
-      }
+      },
+      "scorers": [
+        {
+          "type": "is-json"
+        }
+      ]
     }
     ```
     </Accordion>

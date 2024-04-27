@@ -9,11 +9,6 @@ export const config: RunsConfig = {
       model: "gpt-3.5-turbo",
       prompt:
         "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
-      scorers: [
-        {
-          type: "is-json",
-        },
-      ],
     },
     {
       type: "model",
@@ -21,11 +16,6 @@ export const config: RunsConfig = {
       model: "gpt-4-turbo-preview",
       prompt:
         "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
-      scorers: [
-        {
-          type: "is-json",
-        },
-      ],
     },
   ],
   dataset: {
@@ -44,4 +34,9 @@ export const config: RunsConfig = {
       },
     ],
   },
+  scorers: [
+    {
+      type: "is-json",
+    },
+  ],
 };

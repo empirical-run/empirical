@@ -17,13 +17,13 @@ export interface ScorerBase {
 }
 
 export interface LLMScorer extends ScorerBase {
-  type: "llm-criteria";
+  type: "llm-critic";
   name?: string;
   criteria: string;
 }
 
 export interface DeterministicScorer extends ScorerBase {
-  type: "is-json" | "sql-syntax" | "sql-semantic";
+  type: "json-syntax" | "sql-syntax" | "sql-semantic";
 }
 
 export interface ScriptScorer extends ScorerBase {

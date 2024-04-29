@@ -8,14 +8,17 @@ export class Telemetry {
   store;
   constructor() {
     this.store = new EmpiricalStore();
+    const hasDisabled = process.env.EMPIRICAL_DISABLE_TELEMETRY === "1";
     try {
-      const apiKey = POSTHOG_API_KEY;
-      if (!apiKey.includes("dummy-value")) {
-        this.client = new PostHog(apiKey, {
-          host: "https://us.i.posthog.com",
-          flushAt: 0,
-          flushInterval: 500,
-        });
+      if (!hasDisabled) {
+        const apiKey = POSTHOG_API_KEY;
+        if (!apiKey.includes("dummy-value")) {
+          this.client = new PostHog(apiKey, {
+            host: "https://us.i.posthog.com",
+            flushAt: 0,
+            flushInterval: 500,
+          });
+        }
       }
     } catch (err) {
       //

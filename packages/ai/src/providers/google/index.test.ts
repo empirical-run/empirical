@@ -18,7 +18,7 @@ describe.concurrent("test google ai provider", () => {
     expect(chatCompletion.choices[0]?.message.content).not.toContain("Asia");
   }, 10000);
 
-  test("test JSON mode fro gemini-1.5-pro-latest using passthrough parameter", async () => {
+  test("test JSON mode for gemini-1.5-pro-latest using passthrough parameter", async () => {
     const chatCompletion = await GoogleAIProvider.chat({
       model: "gemini-1.5-pro-latest",
       messages: [
@@ -36,7 +36,7 @@ describe.concurrent("test google ai provider", () => {
     expect(
       JSON.parse(chatCompletion.choices[0]?.message.content!)[0]["recipe_name"],
     ).toBeDefined();
-  }, 10000);
+  }, 20000);
 
   test("passthrough model parameters works on gemini-1.5-pro", async () => {
     const chatCompletion = await GoogleAIProvider.chat({

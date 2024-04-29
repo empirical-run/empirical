@@ -30,9 +30,21 @@ export default async function score({
         .map((scorer) => {
           const scoringFn = getScoringFn(scorer);
           if (!scoringFn) {
+            const errorMessage = (scorer: Scorer) => {
+              let recommendation: string = "";
+              if ((scorer.type as string) === "llm-criteria") {
+                recommendation = 'Did you mean "llm-critic"?';
+              } else if ((scorer.type as string) === "is-json") {
+                recommendation = 'Did you mean "json-syntax"?';
+              } else {
+                recommendation =
+                  "See supported scorers: https://docs.empirical.run/scoring/basics";
+              }
+              return `Invalid scorer name "${scorer.type}". ${recommendation}`;
+            };
             throw new ScorerError(
               ScorerErrorEnum.INCORRECT_PARAMETERS,
-              `Incorrect scorer name "${scorer.type}" provided.`,
+              errorMessage(scorer),
             );
           }
           return scoringFn({

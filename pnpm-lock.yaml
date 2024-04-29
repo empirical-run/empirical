@@ -211,9 +211,6 @@ importers:
       picocolors:
         specifier: ^1.0.0
         version: 1.0.0
-      posthog-node:
-        specifier: ^4.0.1
-        version: 4.0.1
       table:
         specifier: ^6.8.2
         version: 6.8.2
@@ -248,6 +245,9 @@ importers:
       openai:
         specifier: ^4.29.0
         version: 4.29.0
+      posthog-node:
+        specifier: ^4.0.1
+        version: 4.0.1
       python-shell:
         specifier: ^5.0.0
         version: 5.0.0
@@ -258,6 +258,9 @@ importers:
       '@empiricalrun/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
 
   packages/eslint-config:
     devDependencies:
@@ -3813,7 +3816,6 @@ packages:
   /dotenv@16.4.5:
     resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
     engines: {node: '>=12'}
-    dev: false
 
   /duckdb-async@0.10.0:
     resolution: {integrity: sha512-YMDYulx5JLzT01CkqfG813h3ikCF3Pf7nV2xH1OZdVB6q0A6Rofrtf0x1CIotXY33fifgFY1jte3WPzD+3708Q==}

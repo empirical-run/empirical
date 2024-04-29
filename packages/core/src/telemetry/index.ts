@@ -1,13 +1,15 @@
-import { EmpiricalStore } from "@empiricalrun/core";
+import { EmpiricalStore } from "../store";
 import { RunConfig, Dataset } from "@empiricalrun/types";
 import { PostHog } from "posthog-node";
+import { POSTHOG_API_KEY } from "./constants";
 
 export class Telemetry {
   client;
   store;
   constructor() {
-    if (process.env.POSTHOG_API_KEY) {
-      this.client = new PostHog(process.env.POSTHOG_API_KEY, {
+    const apiKey = POSTHOG_API_KEY;
+    if (!apiKey.includes("dummy-value")) {
+      this.client = new PostHog(apiKey, {
         host: "https://us.i.posthog.com",
         flushAt: 0,
         flushInterval: 500,

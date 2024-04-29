@@ -23,6 +23,7 @@ import {
   RunStatsUpdate,
   RuntimeOptions,
 } from "@empiricalrun/types";
+import { Telemetry, runEventProperties } from "@empiricalrun/core";
 import {
   failedOutputsSummary,
   printStatsSummary,
@@ -37,7 +38,6 @@ import {
   buildWarningLog,
   getCliProgressLoggerInstance,
 } from "./logger/cli-logger";
-import { Telemetry, runEventProperties } from "../telemetry";
 
 const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
@@ -95,7 +95,6 @@ program
     console.log(
       buildSuccessLog(`created ${bold(`${configFileName}`)} in ${cwd}`),
     );
-    await fs.mkdir(`${cwd}/${cacheDir}`, { recursive: true });
     await telemetry.logEvent("init");
     await telemetry.shutdown();
   });

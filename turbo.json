@@ -13,7 +13,7 @@
     "AZURE_OPENAI_API_KEY",
     "AZURE_OPENAI_RESOURCE_NAME",
     "POSTHOG_API_KEY",
-    "EMPIRICAL_DISABLE_TELEMETRY"
+    "EMPIRICAL_TELEMETRY"
   ],
   "pipeline": {
     "build": {

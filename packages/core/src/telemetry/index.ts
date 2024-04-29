@@ -8,7 +8,7 @@ export class Telemetry {
   store;
   constructor() {
     this.store = new EmpiricalStore();
-    const hasDisabled = process.env.EMPIRICAL_DISABLE_TELEMETRY === "1";
+    const hasDisabled = process.env.EMPIRICAL_TELEMETRY === "0";
     try {
       if (!hasDisabled) {
         const apiKey = POSTHOG_API_KEY;

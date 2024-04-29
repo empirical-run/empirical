@@ -1,7 +1,7 @@
 import { RunConfig } from "@empiricalrun/types";
 import { modelExecutor } from "./model";
 import { Transformer } from "./interface";
-import { scriptExecutor } from "./script";
+import { getScriptExecutor } from "./script";
 
 export const getTransformer = (
   runConfig: RunConfig,
@@ -9,6 +9,6 @@ export const getTransformer = (
   if (runConfig.type === "model") {
     return modelExecutor;
   } else if (runConfig.type === "py-script") {
-    return scriptExecutor;
+    return getScriptExecutor(runConfig);
   }
 };

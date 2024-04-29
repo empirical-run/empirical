@@ -113,7 +113,7 @@ export interface PyScriptRunConfig extends RunConfigBase {
   type: "py-script";
   path: string;
   parameters?: {
-    pythonPath?: string;
+    concurrency?: number;
     [key: string]: any;
   };
 }

@@ -32,7 +32,7 @@ export default async function score({
           if (!scoringFn) {
             throw new ScorerError(
               ScorerErrorEnum.INCORRECT_PARAMETERS,
-              `Incorrect scorer name "${scorer}" provided.`,
+              `Incorrect scorer name "${scorer.type}" provided.`,
             );
           }
           return scoringFn({

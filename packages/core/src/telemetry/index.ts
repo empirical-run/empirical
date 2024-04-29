@@ -78,6 +78,8 @@ export function runEventProperties(runs: RunConfig[], dataset: Dataset) {
   return {
     dataset_size: dataset.samples?.length || 0,
     providers_count_model: runs.filter(({ type }) => type === "model").length,
+    providers_count_assistant: runs.filter(({ type }) => type === "assistant")
+      .length,
     providers_count_script: runs.filter(({ type }) => type.endsWith("script"))
       .length,
   };

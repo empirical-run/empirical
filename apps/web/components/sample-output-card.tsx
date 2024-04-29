@@ -22,7 +22,6 @@ import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import EmptySampleCompletion from "./empty-sample-completion";
 import { RunResult } from "../types";
 import SampleCompletionError from "./sample-completion-error";
-import { Separator } from "./ui/separator";
 import { JsonAsTab } from "./json-as-tab";
 import { RunSampleOutputMetric } from "./run-response-metadata";
 import { Scores } from "./scores";
@@ -122,6 +121,10 @@ export default function SampleOutputCard({
         : 0,
     [baseSample],
   );
+  const hasMetadata = useMemo(
+    () => !!Object.keys(baseSample?.output.metadata || {}).length,
+    [baseSample?.output.metadata],
+  );
   return (
     <Card
       className={`flex flex-col flex-1 ${
@@ -213,7 +216,7 @@ export default function SampleOutputCard({
         ref={containerWrapper}
       >
         <section className="flex flex-col">
-          {showOutput && baseSample?.output.metadata && (
+          {showOutput && hasMetadata && (
             <p className=" text-sm font-medium mb-2">Output</p>
           )}
           {diffView.enabled && baseSample && (
@@ -241,7 +244,7 @@ export default function SampleOutputCard({
           )}
         </section>
         {showOutput && (
-          <div className="flex gap-2 items-center px-2 mt-2">
+          <div className="flex gap-2 items-center mt-2">
             <RunSampleOutputMetric
               title="Total tokens"
               value={baseSample?.output?.tokens_used}
@@ -254,12 +257,8 @@ export default function SampleOutputCard({
             />
           </div>
         )}
-        {!diffView.enabled && baseSample?.output.metadata && (
+        {!diffView.enabled && hasMetadata && (
           <section className="flex flex-col h-[200px] mt-2">
-            <Separator
-              orientation="horizontal"
-              className="w-[60%] self-center"
-            />
             <p className=" text-sm font-medium mt-2">Metadata</p>
             <section className="relative flex flex-col flex-1">
               <JsonAsTab

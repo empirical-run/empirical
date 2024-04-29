@@ -60,6 +60,16 @@ export const checkLlmCriteria: ScoringFn = async ({
       },
     ];
   }
+  const scorerName = config.name || name;
+  if (!output.value) {
+    return [
+      {
+        name: scorerName,
+        score: 0,
+        message: "no output value to score",
+      },
+    ];
+  }
   if (config.criteria) {
     let replacements: any = { ...sample.inputs };
     if (sample.expected) {
@@ -68,7 +78,15 @@ export const checkLlmCriteria: ScoringFn = async ({
     }
     criteria = replacePlaceholders(config.criteria, replacements);
   }
-
+  if (!criteria) {
+    return [
+      {
+        name: scorerName,
+        score: 0,
+        message: "criteria is not specified for the scorer",
+      },
+    ];
+  }
   const prompt = `Criteria: ${criteria}\n\nOutput: ${output.value}`;
   const messages: OpenAI.ChatCompletionMessageParam[] = [
     { role: "system", content: systemPrompt },
@@ -80,7 +98,7 @@ export const checkLlmCriteria: ScoringFn = async ({
     return [
       {
         score: result === "Yes" ? 1 : 0,
-        name: config.name || name,
+        name: scorerName,
         message: reason,
       },
     ];
@@ -88,7 +106,7 @@ export const checkLlmCriteria: ScoringFn = async ({
     return [
       {
         score: 0,
-        name: config.name || name,
+        name: scorerName,
         message:
           (err as Error).message ||
           "Failed to call LLM using @empiricalrun/ai package",

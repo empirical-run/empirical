@@ -9,7 +9,7 @@
       "prompt": "{{user_message}}",
       "scorers": [
         {
-          "type": "llm-criteria",
+          "type": "llm-critic",
           "criteria": "Never call yourself an AI, language model, or any variant of the term",
           "name": "self-referencing"
         }
@@ -23,12 +23,12 @@
       "prompt": "You are Sarah, a political scientist. Respond to the user with your best answer. Make sure to respond to them with their name.\n\n{{user_name}}: {{user_message}}",
       "scorers": [
         {
-          "type": "llm-criteria",
+          "type": "llm-critic",
           "criteria": "Never call yourself an AI, language model, or any variant of the term",
           "name": "self-referencing"
         },
         {
-          "type": "llm-criteria",
+          "type": "llm-critic",
           "criteria": "Mention the user's name {{user_name}}",
           "name": "personal"
         }

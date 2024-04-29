@@ -6,14 +6,11 @@ export class Telemetry {
   client;
   store;
   constructor() {
-    this.client = new PostHog(
-      "phc_i8M8uSXpDBIGSJNmv9EM0k9Mg9JGDDsrjR1IqNMasLG",
-      {
-        host: "https://us.i.posthog.com",
-        flushAt: 0,
-        flushInterval: 500,
-      },
-    );
+    this.client = new PostHog(process.env.POSTHOG_API_KEY, {
+      host: "https://us.i.posthog.com",
+      flushAt: 0,
+      flushInterval: 500,
+    });
     this.store = new EmpiricalStore();
   }
 

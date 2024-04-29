@@ -1,5 +1,16 @@
 # @empiricalrun/types
 
+## 0.6.0
+
+### Minor Changes
+
+- 2517c74: feat: add support for openai assistants
+- 215c54a: chore: change scorer names to json-syntax and llm-critic
+
+### Patch Changes
+
+- bc3aa56: fix: py-script getting timed out
+
 ## 0.5.1
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @empiricalrun/core
 
+## 0.6.0
+
+### Minor Changes
+
+- 3ed659b: feat: add telemetry for usage analytics
+- 2517c74: feat: add support for openai assistants
+
+### Patch Changes
+
+- bc3aa56: fix: py-script getting timed out
+- Updated dependencies [2517c74]
+- Updated dependencies [bc3aa56]
+- Updated dependencies [215c54a]
+- Updated dependencies [2ad19be]
+  - @empiricalrun/scorer@0.2.0
+  - @empiricalrun/ai@0.7.0
+
 ## 0.5.6
 
 ### Patch Changes

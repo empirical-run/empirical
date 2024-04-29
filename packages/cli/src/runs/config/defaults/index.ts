@@ -36,7 +36,7 @@ export const config: RunsConfig = {
   },
   scorers: [
     {
-      type: "is-json",
+      type: "json-syntax",
     },
   ],
 };

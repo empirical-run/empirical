@@ -7,45 +7,57 @@ export class Telemetry {
   client;
   store;
   constructor() {
-    const apiKey = POSTHOG_API_KEY;
-    if (!apiKey.includes("dummy-value")) {
-      this.client = new PostHog(apiKey, {
-        host: "https://us.i.posthog.com",
-        flushAt: 0,
-        flushInterval: 500,
-      });
-    }
     this.store = new EmpiricalStore();
-  }
-
-  async userId(): Promise<string> {
-    return (await this.store.getUserData()).id;
+    try {
+      const apiKey = POSTHOG_API_KEY;
+      if (!apiKey.includes("dummy-value")) {
+        this.client = new PostHog(apiKey, {
+          host: "https://us.i.posthog.com",
+          flushAt: 0,
+          flushInterval: 500,
+        });
+      }
+    } catch (err) {
+      //
+    }
   }
 
   async shutdown() {
-    if (this.client) {
-      await this.client.shutdown();
+    try {
+      if (this.client) {
+        await this.client.shutdown();
+      }
+    } catch (err) {
+      //
     }
   }
 
-  defaultProperties() {
+  async logEvent(event: string, properties: Record<string, any> = {}) {
+    try {
+      if (this.client) {
+        this.client.capture({
+          distinctId: await this.userId(),
+          event: `cli.${event}`,
+          properties: {
+            ...properties,
+            ...this.defaultProperties(),
+          },
+        });
+      }
+    } catch (err) {
+      //
+    }
+  }
+
+  private async userId(): Promise<string> {
+    return (await this.store.getUserData()).id;
+  }
+
+  private defaultProperties() {
     return {
       is_ci: process.env.CI === "true",
       ci_platform: getCiPlatformName(),
     };
-  }
-
-  async logEvent(event: string, properties: Record<string, any> = {}) {
-    if (this.client) {
-      this.client.capture({
-        distinctId: await this.userId(),
-        event: `cli.${event}`,
-        properties: {
-          ...properties,
-          ...this.defaultProperties(),
-        },
-      });
-    }
   }
 }
 
@@ -53,8 +65,7 @@ function getCiPlatformName() {
   // eslint-disable-next-line turbo/no-undeclared-env-vars
   if (process.env.GITLAB_CI === "true") {
     return "gitlab";
-  }
-  if (process.env.GITHUB_ACTIONS === "true") {
+  } else if (process.env.GITHUB_ACTIONS === "true") {
     return "github";
   }
   return "unknown";

@@ -6,11 +6,13 @@ export class Telemetry {
   client;
   store;
   constructor() {
-    this.client = new PostHog(process.env.POSTHOG_API_KEY, {
-      host: "https://us.i.posthog.com",
-      flushAt: 0,
-      flushInterval: 500,
-    });
+    if (process.env.POSTHOG_API_KEY) {
+      this.client = new PostHog(process.env.POSTHOG_API_KEY, {
+        host: "https://us.i.posthog.com",
+        flushAt: 0,
+        flushInterval: 500,
+      });
+    }
     this.store = new EmpiricalStore();
   }
 
@@ -19,7 +21,9 @@ export class Telemetry {
   }
 
   async shutdown() {
-    await this.client.shutdown();
+    if (this.client) {
+      await this.client.shutdown();
+    }
   }
 
   defaultProperties() {
@@ -30,14 +34,16 @@ export class Telemetry {
   }
 
   async logEvent(event: string, properties: Record<string, any> = {}) {
-    this.client.capture({
-      distinctId: await this.userId(),
-      event: `cli.${event}`,
-      properties: {
-        ...properties,
-        ...this.defaultProperties(),
-      },
-    });
+    if (this.client) {
+      this.client.capture({
+        distinctId: await this.userId(),
+        event: `cli.${event}`,
+        properties: {
+          ...properties,
+          ...this.defaultProperties(),
+        },
+      });
+    }
   }
 }
 

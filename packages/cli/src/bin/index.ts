@@ -223,10 +223,6 @@ program
     "port to run the empirical webapp on",
     `${defaultWebUIPort}`,
   )
-  // .hook("postAction", async () => {
-  //   console.log("-- -here");
-  //   await telemetry.shutdown();
-  // })
   .action(async (options) => {
     console.log(yellow("Initiating webapp..."));
     const app = express();

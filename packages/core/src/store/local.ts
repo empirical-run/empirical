@@ -3,18 +3,25 @@ import { LocalRunMetadataStore } from "./run-metadata";
 import { LocalRunStore } from "./run";
 import { LocalDatasetMetadataStore } from "./dataset-metadata/local";
 import { LocalDatasetStore } from "./dataset/local";
+import { LocalUserStore } from "./user/local";
 
 export class LocalStore {
   runMetadataStore;
   runStore;
   datasetMetadataStore;
   datasetStore;
+  userIdStore;
   constructor() {
     this.runMetadataStore = new LocalRunMetadataStore();
     this.runStore = new LocalRunStore();
     this.datasetMetadataStore = LocalDatasetMetadataStore;
     this.datasetStore = LocalDatasetStore;
+    this.userIdStore = new LocalUserStore();
   }
+  getUserData = () => {
+    return this.userIdStore.getOrCreateIdentity();
+  };
+
   getRunRecorder = () => {
     return async (update: RunUpdateType) => {
       if (update.type === "run_metadata") {

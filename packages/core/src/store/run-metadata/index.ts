@@ -13,7 +13,7 @@ export class LocalRunMetadataStore {
     const dbInstance = await getLocalDBInstance();
     const cwd = process.cwd();
     let cmd = "";
-    const fullPath = `${process.cwd()}/${cachePath}/${fileName}`;
+    const fullPath = `${cwd}/${cachePath}/${fileName}`;
     if (!fs.existsSync(`${fullPath}`)) {
       fs.mkdirSync(`${cwd}/${cachePath}`, { recursive: true });
       fs.writeFileSync(fullPath, "");

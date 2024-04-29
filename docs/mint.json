@@ -43,7 +43,8 @@
         "quickstart",
         "examples",
         "configuration",
-        "running-in-ci"
+        "running-in-ci",
+        "telemetry"
       ]
     },
     {

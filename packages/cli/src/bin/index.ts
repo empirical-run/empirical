@@ -23,6 +23,7 @@ import {
   RunStatsUpdate,
   RuntimeOptions,
 } from "@empiricalrun/types";
+import { Telemetry, runEventProperties } from "@empiricalrun/core";
 import {
   failedOutputsSummary,
   printStatsSummary,
@@ -41,13 +42,13 @@ import {
 const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
 const configFileFullPath = `${cwd}/${configFileName}`;
-const gitIgnoreFullPath = `${cwd}/.gitignore`;
 const config = getDefaultRunsConfig(DefaultRunsConfigType.DEFAULT);
 
-const outputFileName = "output.json";
 const cacheDir = ".empiricalrun";
-const outputFilePath = `${cwd}/${cacheDir}/${outputFileName}`;
+const outputFilePath = `${cwd}/${cacheDir}/output.json`;
 const runtimeOptionsPath = `${cwd}/${cacheDir}/runtime.json`;
+
+const telemetry = new Telemetry();
 
 const readConfig = async (): Promise<RunsConfig> => {
   let data: string;
@@ -86,6 +87,7 @@ program
   .description("initialise empirical")
   .action(async () => {
     await fs.writeFile(configFileFullPath, JSON.stringify(config, null, 2));
+    const gitIgnoreFullPath = `${cwd}/.gitignore`;
     await fs.appendFile(
       gitIgnoreFullPath,
       `\n# Ignore outputs from Empirical\n${cacheDir}\n`,
@@ -93,6 +95,8 @@ program
     console.log(
       buildSuccessLog(`created ${bold(`${configFileName}`)} in ${cwd}`),
     );
+    await telemetry.logEvent("init");
+    await telemetry.shutdown();
   });
 
 program
@@ -193,6 +197,7 @@ program
       await reportOnCI(completion, dataset);
     }
 
+    await telemetry.logEvent("run", runEventProperties(runs, dataset));
     const failedOutputs = failedOutputsSummary(completion);
     if (failedOutputs) {
       const { code, message } = failedOutputs;
@@ -200,9 +205,12 @@ program
         buildErrorLog("Some outputs were not generated successfully"),
       );
       console.log(buildErrorLog(`${code}: ${message}`));
+      await telemetry.shutdown();
       process.exit(1);
+    } else {
+      await telemetry.shutdown();
+      process.exit(0);
     }
-    process.exit(0);
   });
 
 const defaultWebUIPort = 1337;
@@ -311,6 +319,10 @@ program
         dataset: Dataset;
         persistToFile: boolean;
       };
+      await telemetry.logEvent("execute_from_ui", {
+        ...runEventProperties(runs, dataset),
+        persist_to_file: persistToFile,
+      });
       const streamUpdate = (obj: any) => res.write(JSON.stringify(obj) + `\n`);
       // This endpoint expects to execute only one run
       let store = persistToFile ? new EmpiricalStore() : undefined;
@@ -342,7 +354,14 @@ program
     app.listen(availablePort, () => {
       console.log(cyan(`Empirical app running on ${underline(fullUrl)}`));
       opener(fullUrl);
+      telemetry.logEvent("open_ui");
     });
   });
 
 program.parse();
+
+process.on("SIGINT", async function () {
+  // Overriding ctrl-C handler to shutdown telemetry for ui command
+  await telemetry.shutdown();
+  process.exit();
+});

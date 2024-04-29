@@ -1,5 +1,24 @@
 # @empiricalrun/cli
 
+## 0.9.0
+
+### Minor Changes
+
+- 2517c74: feat: add support for openai assistants
+- db945c2: feat: ability to add global scorers
+
+### Patch Changes
+
+- 3ed659b: feat: add telemetry for usage analytics
+- bc3aa56: fix: py-script getting timed out
+- 215c54a: chore: change scorer names to json-syntax and llm-critic
+- Updated dependencies [3ed659b]
+- Updated dependencies [2517c74]
+- Updated dependencies [bc3aa56]
+- Updated dependencies [215c54a]
+  - @empiricalrun/core@0.6.0
+  - @empiricalrun/types@0.6.0
+
 ## 0.8.0
 
 ### Minor Changes

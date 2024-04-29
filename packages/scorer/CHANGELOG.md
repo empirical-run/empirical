@@ -1,5 +1,20 @@
 # @empiricalrun/scorer
 
+## 0.2.0
+
+### Minor Changes
+
+- 2517c74: feat: add support for openai assistants
+- 215c54a: chore: change scorer names to json-syntax and llm-critic
+
+### Patch Changes
+
+- bc3aa56: fix: py-script getting timed out
+- 2ad19be: chore: better error messages for scorer names
+- Updated dependencies [2517c74]
+- Updated dependencies [bc3aa56]
+  - @empiricalrun/ai@0.7.0
+
 ## 0.1.10
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # web
 
+## 0.9.0
+
+### Minor Changes
+
+- 2517c74: feat: add support for openai assistants
+
 ## 0.8.0
 
 ### Minor Changes

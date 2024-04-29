@@ -1,5 +1,15 @@
 # @empiricalrun/ai
 
+## 0.7.0
+
+### Minor Changes
+
+- 2517c74: feat: add support for openai assistants
+
+### Patch Changes
+
+- bc3aa56: fix: py-script getting timed out
+
 ## 0.6.1
 
 ### Patch Changes

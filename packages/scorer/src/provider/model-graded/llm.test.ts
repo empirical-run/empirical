@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 import { checkLlmCriteria } from "./llm";
 
-test("llm-criteria works with sql semantics", async () => {
+test("llm-critic works with sql semantics", async () => {
   const [scoreResult] = await checkLlmCriteria({
     sample: {
       id: "1",
@@ -13,16 +13,16 @@ test("llm-criteria works with sql semantics", async () => {
       value: "SELECT country ,  count(*) FROM singer GROUP BY country",
     },
     config: {
-      type: "llm-criteria",
+      type: "llm-critic",
       criteria:
         "The output query is semantically (ignoring aliases) equivalent to {{expected}}",
     },
   });
   expect(scoreResult?.score).toBe(1);
-  expect(scoreResult?.name).toBe("llm-criteria");
+  expect(scoreResult?.name).toBe("llm-critic");
 });
 
-test("llm-criteria can detect ai self-referencing in the response", async () => {
+test("llm-critic can detect ai self-referencing in the response", async () => {
   const [scoreResult] = await checkLlmCriteria({
     sample: {
       id: "1",
@@ -33,12 +33,12 @@ test("llm-criteria can detect ai self-referencing in the response", async () => 
         "As a language model I cannot tell the difference between this query and this one",
     },
     config: {
-      type: "llm-criteria",
+      type: "llm-critic",
       criteria: "Never call yourself a language model",
     },
   });
   expect(scoreResult?.score).toBe(0);
-  expect(scoreResult?.name).toBe("llm-criteria");
+  expect(scoreResult?.name).toBe("llm-critic");
 });
 
 test("llm-criteria fails if criteria is empty", async () => {

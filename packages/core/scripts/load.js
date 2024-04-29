@@ -16,12 +16,14 @@ function main() {
   const apiKey = loadKeyFromEnv();
   const fileName = "./src/telemetry/constants.ts";
   const content = fs.readFileSync(fileName, "utf8");
-  fs.writeFileSync(fileName,
-    content.replace("dummy-value-replaced-during-build-time", apiKey));
+  fs.writeFileSync(
+    fileName,
+    content.replace("dummy-value-replaced-during-build-time", apiKey),
+  );
 }
 
 main();
 
 module.exports = {
-  loadKeyFromEnv
+  loadKeyFromEnv,
 };

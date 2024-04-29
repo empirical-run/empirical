@@ -17,7 +17,6 @@ export const getScriptExecutor = (runConfig: RunConfig): Transformer => {
     ? Math.min(runConfig.parameters?.concurrency, maxThreads)
     : maxThreads;
 
-  console.log(`Executing script with ${batchCount} threads.`);
   const batch = new BatchTaskManager(batchCount, 100);
 
   return async (runConfig, sample, runtimeOptions) => {

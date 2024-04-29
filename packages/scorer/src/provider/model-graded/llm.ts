@@ -41,7 +41,7 @@ async function askLlmForEvalResult(
   return JSON.parse(response!.function.arguments);
 }
 
-export const name = "llm-criteria";
+export const name = "llm-critic";
 
 const systemPrompt = `You are an expert evaluator who grades an output string based on a criteria. The output must fulfil the criteria to pass the evaluation.`;
 
@@ -51,7 +51,7 @@ export const checkLlmCriteria: ScoringFn = async ({
   config,
 }) => {
   let criteria = "";
-  if (config.type !== "llm-criteria") {
+  if (config.type !== "llm-critic") {
     return [
       {
         name,
@@ -63,7 +63,7 @@ export const checkLlmCriteria: ScoringFn = async ({
   if (config.criteria) {
     let replacements: any = { ...sample.inputs };
     if (sample.expected) {
-      // llm-criteria supports {{expected}} as placeholder
+      // llm-critic supports {{expected}} as placeholder
       replacements.expected = sample.expected;
     }
     criteria = replacePlaceholders(config.criteria, replacements);

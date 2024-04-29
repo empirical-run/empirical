@@ -57,7 +57,6 @@ test("llm-criteria fails if criteria is empty", async () => {
       criteria: "{{empty}}",
     },
   });
-  console.log(scoreResult);
   expect(scoreResult?.score).toBe(0);
   expect(scoreResult?.message).toBe("criteria is not specified for the scorer");
   expect(scoreResult?.name).toBe("llm-criteria");

@@ -76,26 +76,18 @@ const runAssistant: ICreateAndRunAssistantThread = async (body) => {
       "process.env.OPENAI_API_KEY is not set",
     );
   }
-  // const timeout = body.timeout || DEFAULT_TIMEOUT;
-  // if (body.timeout) {
-  //   delete body.timeout;
-  // }
+
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-    // timeout,
   });
   const { executionDone } = await batchTaskManager.waitForTurn();
   try {
-    // https://platform.openai.com/docs/assistants/overview/step-4-create-a-run?context=without-streaming&lang=node.js
     let requestStartTime = Date.now();
     const finalResp = await promiseRetry<IAssistantRunResponse>(
       // @ts-ignore
       (retry, attempt) => {
         return (async () => {
-          const thread = await openai.beta.threads.create({
-            messages: body.thread?.messages,
-          });
-          const run = await openai.beta.threads.runs.create(thread.id, {
+          const run = await openai.beta.threads.createAndRun({
             assistant_id: body.assistant_id,
             stream: true,
           });
@@ -128,8 +120,10 @@ const runAssistant: ICreateAndRunAssistantThread = async (body) => {
                   }));
                   asstRunResp.citations = citations;
                 } else {
-                  // TODO: throw error
-                  asstRunResp.content = `Unknown content type: ${eventData.data.content?.[0]?.type} as response`;
+                  throw new AIError(
+                    AIErrorEnum.UNSUPPORTED_COMPLETION_TYPE,
+                    `Unsupported completion type: ${eventData.data.content?.[0]?.type}`,
+                  );
                 }
               }
 

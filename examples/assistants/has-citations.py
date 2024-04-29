@@ -1,6 +1,3 @@
-import json
-
-
 def evaluate(output, inputs):
     should_have_citation = inputs.get("should have citations") == "yes"
 
@@ -9,7 +6,7 @@ def evaluate(output, inputs):
         return [
             {
                 "score": 1 if citations else 0,
-                "message": json.dumps(citations[0]) if citations else "No citations found",
+                "message": "" if citations else "No citations found",
                 "name": "has-citations",
             }
         ]

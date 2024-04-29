@@ -58,7 +58,6 @@ export const assistantExecutor: Transformer = async function (
         metadata,
         tokens_used: message.usage?.total_tokens,
         latency: message.latency,
-        // finish_reason,
       },
     };
   } catch (e: any) {

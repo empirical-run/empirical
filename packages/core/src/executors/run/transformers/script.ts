@@ -82,7 +82,7 @@ export const getScriptExecutor = (runConfig: RunConfig): Transformer => {
         });
 
         shell.on("pythonError", (message) => {
-          reject(message);
+          reject(message.traceback);
         });
 
         shell.end(() => {

@@ -12,18 +12,14 @@ async def executor():
     result = None
 
     if hasattr(user_module, "execute"):
-        try:
-            if inspect.iscoroutinefunction(user_module.execute):
-                result = await user_module.execute(
-                    json.loads(sys.argv[3]), json.loads(sys.argv[4])
-                )
-            else:
-                result = user_module.execute(
-                    json.loads(sys.argv[3]), json.loads(sys.argv[4])
-                )
-        except Exception as e:
-            print(e)
-            raise RuntimeError(e)
+        if inspect.iscoroutinefunction(user_module.execute):
+            result = await user_module.execute(
+                json.loads(sys.argv[3]), json.loads(sys.argv[4])
+            )
+        else:
+            result = user_module.execute(
+                json.loads(sys.argv[3]), json.loads(sys.argv[4])
+            )
     else:
         raise KeyError(
             "Error: failed to find `execute` method in the python script provided."

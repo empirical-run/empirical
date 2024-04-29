@@ -88,6 +88,7 @@ const runAssistant: ICreateAndRunAssistantThread = async (body) => {
       (retry, attempt) => {
         return (async () => {
           const run = await openai.beta.threads.createAndRun({
+            thread: body.thread,
             assistant_id: body.assistant_id,
             stream: true,
           });

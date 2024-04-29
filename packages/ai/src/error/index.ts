@@ -8,6 +8,8 @@ export enum AIErrorEnum {
   MISSING_PARAMETERS = "AI202",
   // failed completions
   FAILED_CHAT_COMPLETION = "AI301",
+  // unsupported response type like image / audio
+  UNSUPPORTED_COMPLETION_TYPE = "AI302",
   // rate limiting
   RATE_LIMITED = "AI401",
 }

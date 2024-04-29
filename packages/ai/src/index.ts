@@ -4,8 +4,9 @@ import {
   IModel,
   IChatCompletions,
   ICreateChatCompletion,
+  ICreateAndRunAssistantThread,
 } from "@empiricalrun/types";
-import { chatProvider } from "./providers";
+import { assistantProvider, chatProvider } from "./providers";
 import { OpenAIProvider } from "./providers/openai";
 import { AIError, AIErrorEnum } from "./error";
 export * from "./utils";
@@ -28,7 +29,7 @@ class ChatCompletions implements IChatCompletions {
       if (err instanceof AIError) {
         throw err;
       } else {
-        const message = `Failed chat completion for ${this.provider} provider ${body.model} model`;
+        const message = `Failed chat completion for ${this.provider} model: ${body.model}`;
         throw new AIError(AIErrorEnum.UNKNOWN, message);
       }
     }
@@ -42,6 +43,30 @@ class Chat implements IChat {
   }
 }
 
+class Assistant {
+  constructor(private provider: string) {}
+  runAssistant: ICreateAndRunAssistantThread = async (body) => {
+    const provider = assistantProvider.get(this.provider);
+    if (!provider) {
+      throw new AIError(
+        AIErrorEnum.INCORRECT_PARAMETERS,
+        ` ${this.provider} ai provider is not supported`,
+      );
+    }
+    try {
+      const run = await provider(body);
+      return run;
+    } catch (err) {
+      if (err instanceof AIError) {
+        throw err;
+      } else {
+        const message = `Failed assistant run for ${this.provider} assistant: ${body.assistant_id}`;
+        throw new AIError(AIErrorEnum.UNKNOWN, message);
+      }
+    }
+  };
+}
+
 class Models {
   constructor() {}
   // get the list of supported models by empiricalrun
@@ -52,9 +77,11 @@ class Models {
 
 export class EmpiricalAI implements AI {
   chat;
+  assistant;
   models;
   constructor(private provider: string = OpenAIProvider.name) {
     this.chat = new Chat(this.provider);
+    this.assistant = new Assistant(this.provider);
     this.models = new Models();
   }
 }

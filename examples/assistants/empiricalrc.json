@@ -14,7 +14,7 @@
   },
   "scorers": [
     {
-      "type": "llm-criteria",
+      "type": "llm-critic",
       "criteria": "{{ success criteria }}",
       "name": "success-criteria"
     },

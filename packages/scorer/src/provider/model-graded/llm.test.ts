@@ -41,7 +41,7 @@ test("llm-critic can detect ai self-referencing in the response", async () => {
   expect(scoreResult?.name).toBe("llm-critic");
 });
 
-test("llm-criteria fails if criteria is empty", async () => {
+test("llm-critic fails if criteria is empty", async () => {
   const [scoreResult] = await checkLlmCriteria({
     sample: {
       id: "1",
@@ -53,11 +53,11 @@ test("llm-criteria fails if criteria is empty", async () => {
       value: "Some output from our model.",
     },
     config: {
-      type: "llm-criteria",
+      type: "llm-critic",
       criteria: "{{empty}}",
     },
   });
   expect(scoreResult?.score).toBe(0);
   expect(scoreResult?.message).toBe("criteria is not specified for the scorer");
-  expect(scoreResult?.name).toBe("llm-criteria");
+  expect(scoreResult?.name).toBe("llm-critic");
 });

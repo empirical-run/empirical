@@ -77,7 +77,11 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     executionDone();
     return { ...completion, latency };
   } catch (err) {
-    throw new AIError(AIErrorEnum.FAILED_CHAT_COMPLETION, "Unknown error");
+    if (err instanceof AIError) {
+      throw err;
+    } else {
+      throw new AIError(AIErrorEnum.FAILED_CHAT_COMPLETION, "Unknown error");
+    }
   }
 };
 

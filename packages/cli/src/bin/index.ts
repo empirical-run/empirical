@@ -153,6 +153,7 @@ program
         name: "Scores ",
       });
     }
+    await telemetry.logEvent("run_start", runEventProperties(runs, dataset));
     const completion = await Promise.all(
       runs.map((r) => {
         r.parameters = r.parameters ? r.parameters : {};
@@ -197,7 +198,7 @@ program
       await reportOnCI(completion, dataset);
     }
 
-    await telemetry.logEvent("run", runEventProperties(runs, dataset));
+    await telemetry.logEvent("run_complete", runEventProperties(runs, dataset));
     const failedOutputs = failedOutputsSummary(completion);
     if (failedOutputs) {
       const { code, message } = failedOutputs;

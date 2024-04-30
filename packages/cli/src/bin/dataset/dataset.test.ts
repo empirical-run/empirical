@@ -89,3 +89,18 @@ test("load dataset from csv having empty columns", async () => {
   expect(samples[0]?.inputs?.user_name).toBe("john");
   expect(Object.keys(samples[0]?.inputs || {}).length).toBe(1);
 });
+
+test("load dataset from csv with number columns", async () => {
+  const csvLoader = loaders.get(LoaderType.csv)!;
+  const csvStr = `
+  name,age,location
+  arjun,32,india
+  saikat,20,india
+  `;
+  const samples = await csvLoader(csvStr);
+  expect(samples.length).toBe(2);
+  expect(samples[0]?.inputs?.name).toBe("arjun");
+  expect(samples[0]?.inputs?.age).toBe(32);
+  expect(samples[1]?.inputs?.age).toBe(20);
+  expect(samples[1]?.inputs?.location).toBe("india");
+});

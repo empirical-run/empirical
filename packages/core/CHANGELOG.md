@@ -1,5 +1,18 @@
 # @empiricalrun/core
 
+## 0.6.1
+
+### Patch Changes
+
+- 2b0cc32: feat: add support for assistant run config defaults
+- 51f2f52: fix: add retry logs for model api calls
+- Updated dependencies [c7e5a4a]
+- Updated dependencies [2b0cc32]
+- Updated dependencies [9f15c2d]
+- Updated dependencies [51f2f52]
+  - @empiricalrun/scorer@0.2.1
+  - @empiricalrun/ai@0.8.0
+
 ## 0.6.0
 
 ### Minor Changes

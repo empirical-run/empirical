@@ -1,5 +1,11 @@
 # @empiricalrun/types
 
+## 0.6.1
+
+### Patch Changes
+
+- c7e5a4a: chore: remove sql semantic scorer
+
 ## 0.6.0
 
 ### Minor Changes

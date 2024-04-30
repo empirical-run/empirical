@@ -47,7 +47,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
             err instanceof OpenAI.InternalServerError
           ) {
             console.warn(
-              `Retrying request for openai model: ${body.model}. Retry count: ${attempt}`,
+              `Retrying request for openai model: ${body.model}. Retry attempt: ${attempt}`,
             );
             retry(err);
             throw err;

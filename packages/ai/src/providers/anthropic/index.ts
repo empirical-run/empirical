@@ -93,7 +93,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
               err instanceof Anthropic.InternalServerError
             ) {
               console.warn(
-                `Retrying request for anthropic model: ${body.model}. Retry count: ${attempt}`,
+                `Retrying request for anthropic model: ${body.model}. Retry attempt: ${attempt}`,
               );
               retry(err);
               throw err;

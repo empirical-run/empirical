@@ -102,7 +102,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
             // TODO: Replace with instanceof checks when the Gemini SDK exports errors
             if (err.message.includes("[429 Too Many Requests]")) {
               console.warn(
-                `Retrying request for google model: ${body.model}. Retry count: ${attempt}`,
+                `Retrying request for google model: ${body.model}. Retry attempt: ${attempt}`,
               );
               retry(err);
             }

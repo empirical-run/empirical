@@ -65,7 +65,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
               "Fireworks API rate limit reached",
             );
             console.warn(
-              `Retrying request for fireworks model: ${body.model}. Got response status code ${response.status}. Retry count: ${attempt}`,
+              `Retrying request for fireworks model: ${body.model}. Got response status code ${response.status}. Retry attempt: ${attempt}`,
             );
             retry(err);
             throw err;

@@ -153,7 +153,7 @@ program
         name: "Scores ",
       });
     }
-    await telemetry.logEvent("run_start", runEventProperties(runs, dataset));
+    telemetry.logEvent("run.start", runEventProperties(runs, dataset));
     const completion = await Promise.all(
       runs.map((r) => {
         r.parameters = r.parameters ? r.parameters : {};
@@ -198,7 +198,7 @@ program
       await reportOnCI(completion, dataset);
     }
 
-    await telemetry.logEvent("run_complete", runEventProperties(runs, dataset));
+    await telemetry.logEvent("run.complete", runEventProperties(runs, dataset));
     const failedOutputs = failedOutputsSummary(completion);
     if (failedOutputs) {
       const { code, message } = failedOutputs;
@@ -320,7 +320,7 @@ program
         dataset: Dataset;
         persistToFile: boolean;
       };
-      await telemetry.logEvent("execute_from_ui", {
+      telemetry.logEvent("ui.run.start", {
         ...runEventProperties(runs, dataset),
         persist_to_file: persistToFile,
       });
@@ -355,7 +355,7 @@ program
     app.listen(availablePort, () => {
       console.log(cyan(`Empirical app running on ${underline(fullUrl)}`));
       opener(fullUrl);
-      telemetry.logEvent("open_ui");
+      telemetry.logEvent("ui.open");
     });
   });
 

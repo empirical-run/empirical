@@ -1,11 +1,8 @@
-import {
-  ICreateChatCompletion,
-  IAIProvider,
-  IChatCompletion,
-} from "@empiricalrun/types";
+import { ICreateChatCompletion, IAIProvider } from "@empiricalrun/types";
 import { BatchTaskManager, getPassthroughParams } from "../../utils";
 import { AIError, AIErrorEnum } from "../../error";
-import promiseRetry from "promise-retry";
+import { fetchWithRetry } from "@empiricalrun/fetch";
+import { DEFAULT_TIMEOUT } from "../../constants";
 
 const batchTaskManager = new BatchTaskManager(10);
 
@@ -38,53 +35,56 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const { executionDone } = await batchTaskManager.waitForTurn();
 
   try {
-    const startedAt = Date.now();
-    const completion = await promiseRetry<IChatCompletion>(
-      (retry, attempt) => {
-        return fetch("https://api.fireworks.ai/inference/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-          body: payload,
-        }).then(async (response) => {
-          const parsed = await response.json();
-
-          if (response.status === 200) {
-            return parsed;
-          } else if (response.status === 400) {
-            throw new AIError(
-              AIErrorEnum.INCORRECT_PARAMETERS,
-              `Incorrect request payload: ${parsed.error?.message || "Unknown error"}`,
-            );
-          } else if (response.status === 429 || response.status >= 500) {
-            const err = new AIError(
-              AIErrorEnum.RATE_LIMITED,
-              "Fireworks API rate limit reached",
-            );
-            console.warn(
-              `Retrying request for fireworks model: ${body.model}. Got response status code ${response.status}. Retry attempt: ${attempt}`,
-            );
-            retry(err);
-            throw err;
-          }
-        });
-      },
+    let startedAt = Date.now();
+    const response = await fetchWithRetry(
+      "https://api.fireworks.ai/inference/v1/chat/completions",
       {
-        randomize: true,
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: payload,
+        maxRetries: 5,
+        timeout: body.timeout || DEFAULT_TIMEOUT,
+        backoffMultiple: 1.8,
+        shouldRetry: async (err, attempt) => {
+          if (err instanceof Response && err.status === 429) {
+            console.warn(
+              `Retrying request for fireworks model: ${body.model}. Retry attempt: ${attempt}`,
+            );
+            startedAt = Date.now();
+            return true;
+          }
+          return false;
+        },
       },
     );
+    const completion = await response.json();
     const latency = Date.now() - startedAt;
     executionDone();
     return { ...completion, latency };
-  } catch (err) {
-    if (err instanceof AIError) {
-      throw err;
-    } else {
-      throw new AIError(AIErrorEnum.FAILED_CHAT_COMPLETION, "Unknown error");
+  } catch (e) {
+    executionDone();
+    let error = new AIError(
+      AIErrorEnum.FAILED_CHAT_COMPLETION,
+      `Failed to fetch output from fireworks model ${body.model}: ${e}`,
+    );
+    if (e instanceof Response) {
+      let parsed: any = {};
+      try {
+        parsed = await e.json();
+      } catch (e) {
+        // ignore error
+      }
+      error = new AIError(
+        AIErrorEnum.FAILED_CHAT_COMPLETION,
+        `Failed to fetch output from fireworks model ${body.model}: HTTP status ${e.status}: ${parsed.error?.message || "Unknown error"}`,
+      );
     }
+    console.error(error.message);
+    throw error;
   }
 };
 

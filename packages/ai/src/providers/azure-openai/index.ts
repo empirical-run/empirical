@@ -39,11 +39,11 @@ const createChatCompletion: ICreateChatCompletion = async (
       maxRetries: 5,
       shouldRetry: async (resp, retryCount) => {
         if (resp instanceof Response) {
-          console.warn(
-            `Retrying request for azure-openai model: ${body.model}. Retry attempt: ${retryCount}`,
-          );
           if (resp.status === 429) {
             requestStartTime = new Date().getTime();
+            console.warn(
+              `Retrying request for azure-openai model: ${body.model}. Retry attempt: ${retryCount}`,
+            );
             return true;
           }
         }
@@ -67,8 +67,6 @@ const createChatCompletion: ICreateChatCompletion = async (
     let errMsg = `Failed to fetch output from model ${body.model}: ${e}`;
     if (e instanceof Response) {
       errMsg = `Failed to fetch output from model ${body.model}: api response status: ${e.status}`;
-    } else if (e instanceof Error) {
-      errMsg = `Failed to fetch output from model ${body.model}: error: ${e.message}`;
     }
     console.error(errMsg);
     throw new AIError(AIErrorEnum.FAILED_CHAT_COMPLETION, errMsg);

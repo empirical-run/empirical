@@ -30,16 +30,15 @@ test("py-script scorer works for a correct humaneval output", async () => {
       },
       config: {
         type: "py-script",
+        name: "unit-tests",
         path: humanEvalScriptPath,
       },
     }),
-  ).toStrictEqual([
-    {
-      score: 1,
-      name: "unit-tests",
-      message: "Tests passed",
-    },
-  ]);
+  ).toStrictEqual({
+    score: 1,
+    name: "unit-tests",
+    message: "Tests passed",
+  });
 });
 
 test("py-script scorer works for a incorrect humaneval output", async () => {
@@ -56,16 +55,15 @@ test("py-script scorer works for a incorrect humaneval output", async () => {
       output: { value: humanEvalSample.output },
       config: {
         type: "py-script",
+        name: "unit-tests",
         path: humanEvalScriptPath,
       },
     }),
-  ).toStrictEqual([
-    {
-      score: 0,
-      name: "unit-tests",
-      message: "NameError(\"name 'truncate_number123' is not defined\")",
-    },
-  ]);
+  ).toStrictEqual({
+    score: 0,
+    name: "unit-tests",
+    message: "NameError(\"name 'truncate_number123' is not defined\")",
+  });
 });
 
 test("py-script scorer works for a humaneval output that has backticks", async () => {
@@ -84,16 +82,15 @@ test("py-script scorer works for a humaneval output that has backticks", async (
       },
       config: {
         type: "py-script",
+        name: "unit-tests",
         path: humanEvalScriptPath,
       },
     }),
-  ).toStrictEqual([
-    {
-      score: 1,
-      name: "unit-tests",
-      message: "Tests passed",
-    },
-  ]);
+  ).toStrictEqual({
+    score: 1,
+    name: "unit-tests",
+    message: "Tests passed",
+  });
 });
 
 test("py-script scorer times out a long running script", async () => {

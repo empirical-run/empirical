@@ -6,6 +6,7 @@ on:
 jobs:
   publish:
     name: Publish packages
+    # Update json-schema-upload.yml if you are changing the name above
     timeout-minutes: 8
     runs-on: ubuntu-latest
     steps:

@@ -22,4 +22,4 @@ def evaluate(output, inputs):
     except Exception as e:
         passed, reason = 0, repr(e)
     
-    return [{"score": passed, "message": reason, "name": "unit-tests"}]
+    return {"score": passed, "message": reason}

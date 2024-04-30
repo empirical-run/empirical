@@ -1,5 +1,15 @@
 # @empiricalrun/ai
 
+## 0.8.0
+
+### Minor Changes
+
+- 2b0cc32: feat: add support for assistant run config defaults
+
+### Patch Changes
+
+- 51f2f52: fix: add retry logs for model api calls
+
 ## 0.7.0
 
 ### Minor Changes

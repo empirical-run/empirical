@@ -46,7 +46,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
             err instanceof OpenAI.APIConnectionTimeoutError ||
             err instanceof OpenAI.InternalServerError
           ) {
-            console.log(
+            console.warn(
               `Retrying request for openai model: ${body.model}. Retry count: ${attempt}`,
             );
             retry(err);
@@ -161,7 +161,7 @@ const runAssistant: ICreateAndRunAssistantThread = async (body) => {
           return asstRunResp;
         })().catch((err: any) => {
           if ((err.message as string).includes("server_error")) {
-            console.log(
+            console.warn(
               `Retrying request due to server error (attempt ${attempt})`,
             );
             requestStartTime = Date.now();

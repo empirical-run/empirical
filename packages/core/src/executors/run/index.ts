@@ -12,7 +12,7 @@ import {
 } from "@empiricalrun/types";
 import { generateHex } from "../../utils";
 import score from "@empiricalrun/scorer";
-import { getTransformer } from "./transformers";
+import { setDefaults, getTransformer } from "./transformers";
 import { EmpiricalStore } from "../../store";
 
 function generateRunId(): string {
@@ -20,7 +20,7 @@ function generateRunId(): string {
 }
 
 export async function execute(
-  runConfig: RunConfig,
+  config: RunConfig,
   dataset: Dataset,
   progressCallback?: (sample: RunUpdateType) => void,
   store?: EmpiricalStore,
@@ -28,19 +28,17 @@ export async function execute(
 ): Promise<RunCompletion> {
   const runCreationDate = new Date();
   const runId = generateRunId();
-  const { scorers } = runConfig;
   const completionsPromises: Promise<RunSampleOutput>[] = [];
   const sampleCompletions: RunSampleOutput[] = [];
   // TODO: move this metadata creation logic to single place
-  const updatedRunConfig = {
-    ...runConfig,
-    name: runConfig.name || getDefaultRunName(runConfig, runId),
-  };
+  const transform = getTransformer(config);
+  const runConfig = await setDefaults(config, runId);
+  const { scorers } = runConfig;
   const recorder = store?.getRunRecorder();
   const data: RunMetadataUpdate = {
     type: "run_metadata",
     data: {
-      run_config: updatedRunConfig,
+      run_config: runConfig,
       id: runId,
       dataset_config: {
         id: dataset.id,
@@ -50,7 +48,6 @@ export async function execute(
   };
   recorder?.(data);
   progressCallback?.(data);
-  const transform = getTransformer(runConfig);
   if (!transform) {
     throw new Error(
       `No transformer found for run config type: ${runConfig.type}`,
@@ -123,23 +120,11 @@ export async function execute(
 
   return {
     id: runId,
-    run_config: updatedRunConfig,
+    run_config: runConfig,
     dataset_config: {
       id: dataset.id,
     },
     samples: sampleCompletions,
     created_at: runCreationDate,
   };
-}
-
-function getDefaultRunName(runConfig: RunConfig, id: string): string {
-  let name = "";
-  if (runConfig.type === "model") {
-    name = runConfig.model;
-  } else if (runConfig.type === "py-script" || runConfig.type === "js-script") {
-    name = runConfig.path;
-  } else if (runConfig.type === "assistant") {
-    name = runConfig.assistant_id;
-  }
-  return `Run #${id}: ${name}`;
 }

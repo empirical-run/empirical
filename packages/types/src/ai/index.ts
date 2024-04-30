@@ -34,6 +34,15 @@ export interface ICreateAndRunAssistantThread {
   ): Promise<IAssistantRunResponse>;
 }
 
+export interface IAssistantRetrieve {
+  (assistant_id: string): Promise<OpenAI.Beta.Assistant>;
+}
+
+export interface IAssistant {
+  run: ICreateAndRunAssistantThread;
+  retrieve: IAssistantRetrieve;
+}
+
 export interface ThreadMessage
   extends OpenAI.Beta.Threads.ThreadCreateParams.Message {}
 
@@ -64,7 +73,7 @@ export interface IEmpiricalAIError extends Error {
 export interface IAIProvider {
   name: string;
   chat: ICreateChatCompletion;
-  assistant?: ICreateAndRunAssistantThread;
+  assistant?: IAssistant;
 }
 
 export interface ICustomAI extends AI {

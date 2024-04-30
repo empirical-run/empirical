@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { IAIProvider, ICreateChatCompletion } from "@empiricalrun/types";
-import { ChatCompletionMessageParam } from "openai/resources/chat/completions.mjs";
+import OpenAI from "openai";
 import promiseRetry from "promise-retry";
 import { BatchTaskManager, getPassthroughParams } from "../../utils";
 import { AIError, AIErrorEnum } from "../../error";
@@ -28,7 +28,7 @@ const canonicalModelName = (modelName: string) => {
 };
 
 const convertOpenAIToAnthropicAI = function (
-  messages: ChatCompletionMessageParam[],
+  messages: OpenAI.ChatCompletionMessageParam[],
 ): { contents: Anthropic.MessageParam[]; systemPrompt: string } {
   const [systemMessage] = messages.filter((m) => m.role === "system");
   const filteredMessages = messages.filter((m) => m.role !== "system");

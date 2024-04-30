@@ -10,7 +10,6 @@ import promiseRetry from "promise-retry";
 import { AIError, AIErrorEnum } from "../../error";
 import { DEFAULT_TIMEOUT } from "../../constants";
 import { BatchTaskManager } from "../../utils";
-import { AssistantStreamEvent } from "openai/resources/beta/assistants.mjs";
 
 const batchTaskManager = new BatchTaskManager(20, 100);
 
@@ -103,7 +102,8 @@ const runAssistant: ICreateAndRunAssistantThread = async (body) => {
             const resp = new Response(value);
             const text = await resp.text();
             if (text) {
-              const eventData: AssistantStreamEvent = JSON.parse(text);
+              const eventData: OpenAI.Beta.AssistantStreamEvent =
+                JSON.parse(text);
               if (eventData.event === "thread.message.completed") {
                 if (eventData.data.content?.[0]?.type === "text") {
                   const txt = eventData.data.content?.[0].text;
@@ -187,8 +187,20 @@ const runAssistant: ICreateAndRunAssistantThread = async (body) => {
   }
 };
 
+export const retrieve = async (
+  assistant_id: string,
+): Promise<OpenAI.Beta.Assistant> => {
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+  return await openai.beta.assistants.retrieve(assistant_id);
+};
+
 export const OpenAIProvider: IAIProvider = {
   name: "openai",
   chat: createChatCompletion,
-  assistant: runAssistant,
+  assistant: {
+    run: runAssistant,
+    retrieve,
+  },
 };

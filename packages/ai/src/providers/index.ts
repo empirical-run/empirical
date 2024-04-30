@@ -1,7 +1,4 @@
-import {
-  ICreateAndRunAssistantThread,
-  ICreateChatCompletion,
-} from "@empiricalrun/types";
+import { IAssistant, ICreateChatCompletion } from "@empiricalrun/types";
 import { OpenAIProvider } from "./openai";
 import { MistralAIProvider } from "./mistral";
 import { GoogleAIProvider } from "./google";
@@ -18,6 +15,6 @@ export const chatProvider = new Map<string, ICreateChatCompletion>([
   [AzureOpenAIProvider.name, AzureOpenAIProvider.chat],
 ]);
 
-export const assistantProvider = new Map<string, ICreateAndRunAssistantThread>([
+export const assistantProvider = new Map<string, IAssistant>([
   [OpenAIProvider.name, OpenAIProvider.assistant!],
 ]);

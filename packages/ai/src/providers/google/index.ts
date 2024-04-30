@@ -10,8 +10,7 @@ import {
   GenerateContentResult,
   POSSIBLE_ROLES,
 } from "@google/generative-ai";
-//TODO: fix this import to empirical types
-import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import OpenAI from "openai";
 import { BatchTaskManager } from "../../utils";
 import crypto from "crypto";
 import promiseRetry from "promise-retry";
@@ -23,7 +22,7 @@ type Role = (typeof POSSIBLE_ROLES)[number];
 const batch = new BatchTaskManager(5);
 
 const massageOpenAIMessagesToGoogleAI = function (
-  messages: ChatCompletionMessageParam[],
+  messages: OpenAI.ChatCompletionMessageParam[],
 ): Content[] {
   const [systemMessage] = messages.filter((m) => m.role === "system");
   let systemMessageContent = "";

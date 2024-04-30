@@ -5,6 +5,7 @@ import {
   IChatCompletions,
   ICreateChatCompletion,
   ICreateAndRunAssistantThread,
+  IAssistantRetrieve,
 } from "@empiricalrun/types";
 import { assistantProvider, chatProvider } from "./providers";
 import { OpenAIProvider } from "./providers/openai";
@@ -54,13 +55,34 @@ class Assistant {
       );
     }
     try {
-      const run = await provider(body);
+      const run = await provider.run(body);
       return run;
     } catch (err) {
       if (err instanceof AIError) {
         throw err;
       } else {
         const message = `Failed assistant run for ${this.provider} assistant: ${body.assistant_id}`;
+        throw new AIError(AIErrorEnum.UNKNOWN, message);
+      }
+    }
+  };
+
+  retrieve: IAssistantRetrieve = async (assistant_id: string) => {
+    const provider = assistantProvider.get(this.provider);
+    if (!provider) {
+      throw new AIError(
+        AIErrorEnum.INCORRECT_PARAMETERS,
+        ` ${this.provider} ai provider is not supported`,
+      );
+    }
+    try {
+      const run = await provider.retrieve(assistant_id);
+      return run;
+    } catch (err) {
+      if (err instanceof AIError) {
+        throw err;
+      } else {
+        const message = `Failed retrieve assistant for ${this.provider} assistant: ${assistant_id}`;
         throw new AIError(AIErrorEnum.UNKNOWN, message);
       }
     }

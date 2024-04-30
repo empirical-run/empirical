@@ -3,13 +3,20 @@ import path from "path";
 import { Transformer } from "./interface";
 import { BatchTaskManager } from "@empiricalrun/ai";
 import os from "os";
-import { RunConfig } from "@empiricalrun/types";
+import { PyScriptRunConfig, RunConfig } from "@empiricalrun/types";
 
 //TODO: make this configurable
 const scriptTimeout = 20000;
 const wrapperScriptDirectory = path.join(__dirname, "..", "..", "..", "python");
 const wrapperScriptFile = "executor_wrapper.py";
 const executionOutputIdentifier = "execution_output:";
+
+export const setPyScriptDefaults = async (
+  runConfig: PyScriptRunConfig,
+): Promise<PyScriptRunConfig> => {
+  runConfig.name = runConfig.name || runConfig.path;
+  return runConfig;
+};
 
 export const getScriptExecutor = (runConfig: RunConfig): Transformer => {
   const maxThreads = os.cpus().length;

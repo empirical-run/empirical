@@ -92,6 +92,7 @@ export interface ModelRunConfig extends RunConfigBase {
 export interface AssistantsRunConfig extends RunConfigBase {
   type: "assistant";
   assistant_id: string;
+  provider?: "openai";
   prompt: string;
   parameters?: {
     model?: string;

@@ -1,5 +1,15 @@
 # @empiricalrun/scorer
 
+## 0.2.1
+
+### Patch Changes
+
+- c7e5a4a: chore: remove sql semantic scorer
+- 9f15c2d: feat: py-script scorer has a simpler return type
+- Updated dependencies [2b0cc32]
+- Updated dependencies [51f2f52]
+  - @empiricalrun/ai@0.8.0
+
 ## 0.2.0
 
 ### Minor Changes

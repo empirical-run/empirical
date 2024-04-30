@@ -1,5 +1,18 @@
 # @empiricalrun/cli
 
+## 0.9.1
+
+### Patch Changes
+
+- 2b0cc32: feat: add support for assistant run config defaults
+- 51f2f52: fix: add retry logs for model api calls
+- 5f043b6: feat: csv loader should parse numbers
+- Updated dependencies [c7e5a4a]
+- Updated dependencies [2b0cc32]
+- Updated dependencies [51f2f52]
+  - @empiricalrun/types@0.6.1
+  - @empiricalrun/core@0.6.1
+
 ## 0.9.0
 
 ### Minor Changes

@@ -69,7 +69,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   try {
     const startedAt = Date.now();
     const response = await promiseRetry<Anthropic.Messages.Message>(
-      (retry) => {
+      (retry, attempt) => {
         return anthropic.messages
           .create({
             model: canonicalModelName(model),
@@ -92,6 +92,9 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
               err instanceof Anthropic.APIConnectionTimeoutError ||
               err instanceof Anthropic.InternalServerError
             ) {
+              console.log(
+                `Retrying request for anthropic model: ${body.model}. Retry count: ${attempt}`,
+              );
               retry(err);
               throw err;
             }

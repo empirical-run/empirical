@@ -33,7 +33,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   try {
     const startedAt = Date.now();
     const completions = await promiseRetry<IChatCompletion>(
-      (retry) => {
+      (retry, attempt) => {
         return openai.chat.completions.create(body).catch((err) => {
           if (
             err instanceof OpenAI.RateLimitError &&
@@ -46,6 +46,9 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
             err instanceof OpenAI.APIConnectionTimeoutError ||
             err instanceof OpenAI.InternalServerError
           ) {
+            console.log(
+              `Retrying request for openai model: ${body.model}. Retry count: ${attempt}`,
+            );
             retry(err);
             throw err;
           }

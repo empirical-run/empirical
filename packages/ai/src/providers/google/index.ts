@@ -90,7 +90,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   try {
     const startedAt = Date.now();
     const completion = await promiseRetry<GenerateContentResult>(
-      (retry) => {
+      (retry, attempt) => {
         return modelInstance
           .startChat({
             // @ts-ignore same as above
@@ -101,6 +101,9 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
           .catch((err: Error) => {
             // TODO: Replace with instanceof checks when the Gemini SDK exports errors
             if (err.message.includes("[429 Too Many Requests]")) {
+              console.warn(
+                `Retrying request for google model: ${body.model}. Retry count: ${attempt}`,
+              );
               retry(err);
             }
             throw err;

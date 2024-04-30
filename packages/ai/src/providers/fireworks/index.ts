@@ -40,7 +40,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   try {
     const startedAt = Date.now();
     const completion = await promiseRetry<IChatCompletion>(
-      (retry) => {
+      (retry, attempt) => {
         return fetch("https://api.fireworks.ai/inference/v1/chat/completions", {
           method: "POST",
           headers: {
@@ -63,6 +63,9 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
             const err = new AIError(
               AIErrorEnum.RATE_LIMITED,
               "Fireworks API rate limit reached",
+            );
+            console.warn(
+              `Retrying request for fireworks model: ${body.model}. Got response status code ${response.status}. Retry count: ${attempt}`,
             );
             retry(err);
             throw err;

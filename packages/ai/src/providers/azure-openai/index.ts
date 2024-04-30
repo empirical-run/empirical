@@ -39,8 +39,8 @@ const createChatCompletion: ICreateChatCompletion = async (
       maxRetries: 5,
       shouldRetry: async (resp, retryCount) => {
         if (resp instanceof Response) {
-          console.log(
-            `Retrying request for azure-openai model: ${body.model}. Retry count: ${retryCount}`,
+          console.warn(
+            `Retrying request for azure-openai model: ${body.model}. Retry attempt: ${retryCount}`,
           );
           if (resp.status === 429) {
             requestStartTime = new Date().getTime();

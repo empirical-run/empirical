@@ -22,8 +22,8 @@ export interface LLMScorer extends ScorerBase {
   criteria: string;
 }
 
-export interface DeterministicScorer extends ScorerBase {
-  type: "json-syntax" | "sql-syntax" | "sql-semantic";
+export interface SyntaxScorer extends ScorerBase {
+  type: "json-syntax" | "sql-syntax";
 }
 
 export interface ScriptScorer extends ScorerBase {
@@ -32,7 +32,7 @@ export interface ScriptScorer extends ScorerBase {
   path: string;
 }
 
-export type Scorer = LLMScorer | DeterministicScorer | ScriptScorer;
+export type Scorer = LLMScorer | SyntaxScorer | ScriptScorer;
 
 export type Prompt = string | ChatPrompt[];
 

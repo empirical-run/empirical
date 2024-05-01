@@ -26,6 +26,9 @@ export function JsonAsTab({
   onSampleRemove,
   onEditorContentUpdate,
   onClickRunAll,
+  showExpandOption = true,
+  readonlyContent = false,
+  scrollableContent = true,
 }: {
   storeKey: string;
   data: { [key: string]: any };
@@ -35,6 +38,9 @@ export function JsonAsTab({
   onSampleRemove?: () => void;
   onEditorContentUpdate?: (key: string, value: string) => void;
   onClickRunAll?: () => void;
+  showExpandOption?: boolean;
+  readonlyContent?: boolean;
+  scrollableContent?: boolean;
 }) {
   const tabs = useMemo(
     () => defaultTabs || Object.keys(data),
@@ -70,7 +76,7 @@ export function JsonAsTab({
     <>
       <div className="flex flex-row space-x-2 justify-end">
         <>
-          {activeTabValue && (
+          {activeTabValue && showExpandOption && (
             <Sheet>
               <SheetTrigger asChild>
                 <Button
@@ -169,8 +175,8 @@ export function JsonAsTab({
                       : JSON.stringify(value, null, 2)
                   }
                   language="text"
-                  readOnly={false}
-                  scrollable
+                  readOnly={readonlyContent}
+                  scrollable={scrollableContent}
                   onChange={(value) => onEditorContentUpdate?.(key, value!)}
                 />
               </TabsContent>

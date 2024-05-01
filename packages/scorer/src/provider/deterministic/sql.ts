@@ -1,5 +1,6 @@
 import { Parser } from "node-sql-parser";
 import { ScoringFn } from "../../interface/scorer";
+import { extractTargetFromOutput } from "../../util";
 
 export const syntaxName = "sql-syntax";
 
@@ -7,7 +8,8 @@ export const checkSqlSyntax: ScoringFn = async ({ output }) => {
   let isSQLQuery = false;
   let errorMsg = "SQL is invalid";
   const parser = new Parser();
-  if (!output || !output.value) {
+  const target = extractTargetFromOutput(output);
+  if (!target) {
     return [
       {
         score: 0,

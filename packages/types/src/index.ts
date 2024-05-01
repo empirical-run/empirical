@@ -19,10 +19,12 @@ export interface ScorerBase {
 export interface LLMScorer extends ScorerBase {
   type: "llm-critic";
   name?: string;
+  target?: string;
   criteria: string;
 }
 
 export interface SyntaxScorer extends ScorerBase {
+  target?: string;
   type: "json-syntax" | "sql-syntax";
 }
 
@@ -193,6 +195,7 @@ export type RunOutput = {
   finish_reason?: string;
   tokens_used?: number;
   latency?: number;
+  tool_calls?: any[];
 };
 
 export type RunSampleOutput = {

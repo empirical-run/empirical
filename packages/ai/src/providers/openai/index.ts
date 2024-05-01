@@ -140,10 +140,7 @@ const runAssistant: ICreateAndRunAssistantThread = async (body) => {
                   ?.submit_tool_outputs || {
                   tool_calls: [],
                 };
-                const toolSummary = tool_calls.map((tc) => {
-                  return `${tc.function.name} with args ${tc.function.arguments}`;
-                });
-                asstRunResp.content = `Attempting to make tool call: ${toolSummary.join(", ") || ""}`;
+                asstRunResp.content = "";
                 asstRunResp.tool_calls = tool_calls;
               }
 

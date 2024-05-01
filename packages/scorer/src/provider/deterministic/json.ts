@@ -1,4 +1,5 @@
 import { ScoringFn } from "../../interface/scorer";
+import { extractTargetFromOutput } from "../../util";
 
 export const name = "json-syntax";
 
@@ -14,7 +15,8 @@ export const isJson: ScoringFn = async ({ output, config }) => {
   }
   let isValid = false;
   let invalidMsg = "JSON is invalid";
-  if (output !== undefined && output !== null) {
+  const target = extractTargetFromOutput(output, config.target);
+  if (target) {
     try {
       JSON.parse(output.value!);
       isValid = true;

@@ -1,6 +1,7 @@
 import { ScoringFn } from "../../interface/scorer";
 import OpenAI from "openai";
 import { EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
+import { extractTargetFromOutput } from "../../util";
 
 async function askLlmForEvalResult(
   messages: OpenAI.ChatCompletionMessageParam[],
@@ -61,7 +62,8 @@ export const checkLlmCriteria: ScoringFn = async ({
     ];
   }
   const scorerName = config.name || name;
-  if (!output.value) {
+  const target = extractTargetFromOutput(output, config.target);
+  if (!target) {
     return [
       {
         name: scorerName,
@@ -87,7 +89,7 @@ export const checkLlmCriteria: ScoringFn = async ({
       },
     ];
   }
-  const prompt = `Criteria: ${criteria}\n\nOutput: ${output.value}`;
+  const prompt = `Criteria: ${criteria}\n\nOutput: ${target}`;
   const messages: OpenAI.ChatCompletionMessageParam[] = [
     { role: "system", content: systemPrompt },
     { role: "user", content: prompt },

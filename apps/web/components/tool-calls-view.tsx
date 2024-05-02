@@ -1,7 +1,12 @@
+import { ChatCompletionMessageToolCall } from "@empiricalrun/types";
 import CodeViewer from "./ui/code-viewer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 
-export function ToolCalls({ toolCalls }: { toolCalls: any[] | undefined }) {
+export function ToolCalls({
+  toolCalls,
+}: {
+  toolCalls: ChatCompletionMessageToolCall[] | undefined;
+}) {
   if (!toolCalls) {
     return null;
   }
@@ -11,8 +16,9 @@ export function ToolCalls({ toolCalls }: { toolCalls: any[] | undefined }) {
   const tabs = toolCalls.filter((t) => t.type === "function");
   return (
     <>
-      <Tabs defaultValue={tabs[0].id} className="h-full">
+      <Tabs defaultValue={tabs[0]?.id} className="h-full">
         <TabsList className=" rounded-sm w-full overflow-x-scroll justify-start no-scrollbar">
+          <p className=" font-semibold text-sm mr-2 text-white">Tool Calls</p>
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.id}

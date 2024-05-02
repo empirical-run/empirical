@@ -57,12 +57,13 @@ export default function SampleOutputCard({
 
   const showCompareAgainst = useMemo(
     () =>
-      baseSample?.expected?.value ||
-      comparisonSamples?.some(
-        (comparisonSample, index) =>
-          comparisonSample?.output &&
-          comparisonResults?.[index]?.id !== baseResult?.id,
-      ),
+      baseSample?.output.value &&
+      (baseSample?.expected?.value ||
+        comparisonSamples?.some(
+          (comparisonSample, index) =>
+            comparisonSample?.output &&
+            comparisonResults?.[index]?.id !== baseResult?.id,
+        )),
     [
       baseResult?.id,
       baseSample?.expected?.value,
@@ -140,12 +141,12 @@ export default function SampleOutputCard({
           <CardTitle className="flex flex-row space-x-2 items-center">
             <Scores scores={baseSample?.scores || []} />
             <div className="flex flex-row space-x-2 justify-end items-start self-baseline">
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <DotsVerticalIcon />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {showCompareAgainst ? (
+              {showCompareAgainst && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <DotsVerticalIcon />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
                     <>
                       <DropdownMenuLabel className="text-xs">
                         Compare against
@@ -201,9 +202,9 @@ export default function SampleOutputCard({
                         );
                       })}
                     </>
-                  ) : null}
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
           </CardTitle>
         )}
@@ -217,9 +218,6 @@ export default function SampleOutputCard({
         ref={containerWrapper}
       >
         <section className="flex flex-col">
-          {baseSample?.output.tool_calls && (
-            <p className=" text-sm font-medium mb-2">Tool calls</p>
-          )}
           {diffView.enabled && baseSample && (
             <DiffEditor
               original={baseSample?.output.value || ""}

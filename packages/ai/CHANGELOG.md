@@ -1,5 +1,16 @@
 # @empiricalrun/ai
 
+## 0.9.0
+
+### Minor Changes
+
+- bde6bf0: feat: add support for configuring assistant tools
+- 93e12e0: feat: add support for assistant tool calls
+
+### Patch Changes
+
+- d6d8b5c: fix: fireworks error should not get absorbed
+
 ## 0.8.0
 
 ### Minor Changes

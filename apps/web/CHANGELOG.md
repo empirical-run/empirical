@@ -1,5 +1,17 @@
 # web
 
+## 0.10.0
+
+### Minor Changes
+
+- 2b03d24: feat: dedicated edit UI for assistant instructions
+- bde6bf0: feat: add support for configuring assistant tools
+- 93e12e0: feat: add support for assistant tool calls
+
+### Patch Changes
+
+- d8842ef: fix: output and dataset sample alignment issues
+
 ## 0.9.0
 
 ### Minor Changes

@@ -1,5 +1,12 @@
 # @empiricalrun/types
 
+## 0.7.0
+
+### Minor Changes
+
+- bde6bf0: feat: add support for configuring assistant tools
+- 93e12e0: feat: add support for assistant tool calls
+
 ## 0.6.1
 
 ### Patch Changes

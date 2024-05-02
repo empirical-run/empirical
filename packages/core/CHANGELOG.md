@@ -1,5 +1,21 @@
 # @empiricalrun/core
 
+## 0.7.0
+
+### Minor Changes
+
+- bde6bf0: feat: add support for configuring assistant tools
+- 93e12e0: feat: add support for assistant tool calls
+
+### Patch Changes
+
+- 2b03d24: feat: dedicated edit UI for assistant instructions
+- Updated dependencies [d6d8b5c]
+- Updated dependencies [bde6bf0]
+- Updated dependencies [93e12e0]
+  - @empiricalrun/ai@0.9.0
+  - @empiricalrun/scorer@0.2.2
+
 ## 0.6.1
 
 ### Patch Changes

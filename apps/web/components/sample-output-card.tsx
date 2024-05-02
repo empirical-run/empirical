@@ -214,7 +214,7 @@ export default function SampleOutputCard({
         )}
       </CardHeader>
       <CardContent
-        className="flex flex-col h-full p-4 gap-2"
+        className="flex flex-col h-full px-4 py-2"
         ref={containerWrapper}
       >
         <section className="flex flex-col">
@@ -266,7 +266,7 @@ export default function SampleOutputCard({
           </div>
         )}
         {!diffView.enabled && hasMetadata && (
-          <section className="flex flex-col h-[200px] mt-2">
+          <section className="flex flex-col mt-2">
             <section className="relative flex flex-col flex-1">
               <JsonAsTab
                 storeKey={baseResult?.id!}

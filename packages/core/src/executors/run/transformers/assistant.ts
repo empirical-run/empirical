@@ -11,16 +11,20 @@ export const getAssistantDefaults = async (
 ): Promise<AssistantsRunConfig> => {
   runConfig.name = runConfig.name || runConfig.assistant_id;
   runConfig.provider = runConfig.provider || "openai";
-  const ai = new EmpiricalAI(runConfig.provider);
-  const assistant = await ai.assistant.retrieve(runConfig.assistant_id);
-  runConfig.parameters = runConfig.parameters || {};
-  runConfig.parameters.instructions =
-    runConfig.parameters.instructions || assistant.instructions || "";
-  runConfig.parameters.model = runConfig.parameters?.model || assistant.model;
-  runConfig.parameters.temperature =
-    runConfig.parameters.temperature || assistant.temperature || undefined;
-  runConfig.parameters.tools =
-    runConfig.parameters?.tools || assistant.tools || undefined;
+  try {
+    const ai = new EmpiricalAI(runConfig.provider);
+    const assistant = await ai.assistant.retrieve(runConfig.assistant_id);
+    runConfig.parameters = runConfig.parameters || {};
+    runConfig.parameters.instructions =
+      runConfig.parameters.instructions || assistant.instructions || "";
+    runConfig.parameters.model = runConfig.parameters?.model || assistant.model;
+    runConfig.parameters.temperature =
+      runConfig.parameters.temperature || assistant.temperature || undefined;
+    runConfig.parameters.tools =
+      runConfig.parameters?.tools || assistant.tools || undefined;
+  } catch (e) {
+    console.warn("Failed to fetch assistant default parameters");
+  }
   return runConfig;
 };
 

@@ -1,5 +1,21 @@
 # @empiricalrun/cli
 
+## 0.10.0
+
+### Minor Changes
+
+- 93e12e0: feat: add support for assistant tool calls
+
+### Patch Changes
+
+- 2b03d24: feat: dedicated edit UI for assistant instructions
+- bde6bf0: feat: add support for configuring assistant tools
+- Updated dependencies [2b03d24]
+- Updated dependencies [bde6bf0]
+- Updated dependencies [93e12e0]
+  - @empiricalrun/core@0.7.0
+  - @empiricalrun/types@0.7.0
+
 ## 0.9.1
 
 ### Patch Changes

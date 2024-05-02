@@ -1,4 +1,4 @@
-import { ChatCompletionMessageToolCall } from "./ai";
+import { ChatCompletionMessageToolCall, ToolCall } from "./ai";
 
 export * from "./ai";
 
@@ -101,6 +101,7 @@ export interface AssistantsRunConfig extends RunConfigBase {
     temperature?: number;
     instructions?: string;
     tool_choice?: any;
+    tools?: ToolCall[];
 
     // Passthrough
     [key: string]: any;

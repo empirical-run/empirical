@@ -16,9 +16,11 @@ export const getAssistantDefaults = async (
   runConfig.parameters = runConfig.parameters || {};
   runConfig.parameters.instructions =
     runConfig.parameters.instructions || assistant.instructions || "";
-  runConfig.parameters.model = runConfig.parameters.model || assistant.model;
+  runConfig.parameters.model = runConfig.parameters?.model || assistant.model;
   runConfig.parameters.temperature =
     runConfig.parameters.temperature || assistant.temperature || undefined;
+  runConfig.parameters.tools =
+    runConfig.parameters?.tools || assistant.tools || undefined;
   return runConfig;
 };
 

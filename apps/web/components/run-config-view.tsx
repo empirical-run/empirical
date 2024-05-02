@@ -6,7 +6,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { TriangleRightIcon } from "@radix-ui/react-icons";
 import { useCallback, useEffect, useState } from "react";
 
-export const RunDetails = ({
+type RunConfigType = RunConfig["type"];
+enum RunConfigTab {
+  prompt = "prompt",
+  parameters = "parameters",
+  instructions = "instructions",
+}
+
+const defaultTabMap: Record<RunConfigType, RunConfigTab> = {
+  model: RunConfigTab.prompt,
+  "py-script": RunConfigTab.parameters,
+  "js-script": RunConfigTab.parameters,
+  assistant: RunConfigTab.instructions,
+};
+
+export const RunConfigView = ({
   onClose,
   runConfig,
   onClickRun,
@@ -18,7 +32,8 @@ export const RunDetails = ({
   if (!runConfig) {
     return null;
   }
-  const defaultTabValue = runConfig.type === "model" ? "prompt" : "parameters";
+  const defaultTabValue =
+    defaultTabMap[runConfig.type] || RunConfigTab.parameters;
   const [runConfigState, setRunConfigState] = useState<RunConfig | undefined>();
   useEffect(() => setRunConfigState(runConfig), [runConfig]);
   const [error, setError] = useState<string | undefined>();
@@ -45,6 +60,23 @@ export const RunDetails = ({
     },
     [runConfigState],
   );
+
+  const updateInstructions = useCallback(
+    (instruction: string | undefined = "") => {
+      console.log(instruction);
+      if (runConfigState && runConfig.type === "assistant") {
+        setRunConfigState({
+          ...runConfigState,
+          parameters: {
+            ...runConfigState?.parameters,
+            instructions: instruction,
+          },
+        });
+      }
+    },
+    [runConfigState],
+  );
+
   const updateParameters = useCallback(
     (parametersStr: string | undefined = "") => {
       if (runConfigState) {
@@ -90,32 +122,55 @@ export const RunDetails = ({
         <Tabs defaultValue={defaultTabValue}>
           <TabsList className="w-fit rounded-sm">
             {runConfig.type === "model" && (
-              <TabsTrigger value="prompt" className="text-xs rounded-sm">
+              <TabsTrigger
+                value={RunConfigTab.prompt}
+                className="text-xs rounded-sm"
+              >
                 Prompt template
               </TabsTrigger>
             )}
-            <TabsTrigger value="parameters" className="text-xs rounded-sm">
+            {runConfig.type === "assistant" && (
+              <TabsTrigger
+                value={RunConfigTab.instructions}
+                className="text-xs rounded-sm"
+              >
+                Instructions
+              </TabsTrigger>
+            )}
+            <TabsTrigger
+              value={RunConfigTab.parameters}
+              className="text-xs rounded-sm"
+            >
               Parameters
             </TabsTrigger>
           </TabsList>
-          {runConfig.type === "model" && (
-            <TabsContent value="prompt">
+          {runConfigState?.type === "model" && (
+            <TabsContent value={RunConfigTab.prompt}>
               <CodeViewer
                 value={
-                  typeof runConfig.prompt === "string"
-                    ? runConfig.prompt
-                    : JSON.stringify(runConfig.prompt || "", null, 2)
+                  typeof runConfigState.prompt === "string"
+                    ? runConfigState.prompt
+                    : JSON.stringify(runConfigState.prompt || "", null, 2)
                 }
                 language={
-                  typeof runConfig.prompt === "string" ? "prompt" : "json"
+                  typeof runConfigState.prompt === "string" ? "prompt" : "json"
                 }
                 onChange={updatePrompt}
               />
             </TabsContent>
           )}
-          <TabsContent value="parameters">
+          {runConfigState?.type === "assistant" && (
+            <TabsContent value={RunConfigTab.instructions}>
+              <CodeViewer
+                value={runConfigState?.parameters?.instructions || ""}
+                language="text"
+                onChange={updateInstructions}
+              />
+            </TabsContent>
+          )}
+          <TabsContent value={RunConfigTab.parameters}>
             <CodeViewer
-              value={JSON.stringify(runConfig.parameters || "", null, 2)}
+              value={JSON.stringify(runConfigState?.parameters || "", null, 2)}
               language="json"
               onChange={updateParameters}
             />

@@ -14,7 +14,8 @@ export const getAssistantDefaults = async (
   const ai = new EmpiricalAI(runConfig.provider);
   const assistant = await ai.assistant.retrieve(runConfig.assistant_id);
   runConfig.parameters = runConfig.parameters || {};
-  runConfig.parameters.instructions = assistant.instructions || "";
+  runConfig.parameters.instructions =
+    runConfig.parameters.instructions || assistant.instructions || "";
   runConfig.parameters.model = runConfig.parameters.model || assistant.model;
   runConfig.parameters.temperature =
     runConfig.parameters.temperature || assistant.temperature || undefined;

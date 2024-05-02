@@ -9,7 +9,7 @@ import InViewElement from "../components/ui/in-view";
 import SampleCard from "../components/sample-card";
 import SampleOutputCard from "../components/sample-output-card";
 import { DatasetSample, RunConfig } from "@empiricalrun/types";
-import { RunDetails } from "../components/run-details";
+import { RunConfigView } from "../components/run-details";
 import { RunResult } from "../types";
 import { useToast } from "../components/ui/use-toast";
 
@@ -52,7 +52,7 @@ export default function Page(): JSX.Element {
     () => tableHeaders.filter((h) => h.type == "completion"),
     [tableHeaders],
   );
-  const showRunDetails = useCallback(
+  const showRunConfig = useCallback(
     (run: RunResult | undefined, showOnlyIfActive: boolean = false) => {
       if ((showOnlyIfActive && activeRun) || !showOnlyIfActive) {
         setActiveRun(run);
@@ -137,7 +137,7 @@ export default function Page(): JSX.Element {
           <PageLoader className="mt-4" description="Loading results" />
         ))}
       {activeRun && (
-        <RunDetails
+        <RunConfigView
           runConfig={activeRun.run_config!}
           onClose={() => setActiveRun(undefined)}
           onClickRun={updateActiveRunConfigAndExecute}
@@ -155,7 +155,7 @@ export default function Page(): JSX.Element {
             <div className="flex bg-zinc-900 sticky top-0 z-20 min-w-fit">
               <RunColumnHeaders
                 showPrompt={(run: RunResult) =>
-                  showRunDetails(activeRun?.id === run.id ? undefined : run)
+                  showRunConfig(activeRun?.id === run.id ? undefined : run)
                 }
                 headers={tableHeaders}
                 onClickAddRun={addNewRun}
@@ -211,7 +211,7 @@ export default function Page(): JSX.Element {
                           (s) => s.runResult!,
                         )}
                         onClickCard={() =>
-                          showRunDetails(runColumnHeaders[i]?.runResult!, true)
+                          showRunConfig(runColumnHeaders[i]?.runResult!, true)
                         }
                         comparisonSamples={sampleCells}
                         isActiveColumn={runColumnHeaders[i]?.active}

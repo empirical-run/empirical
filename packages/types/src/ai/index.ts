@@ -31,6 +31,8 @@ export interface IAssistantRunResponse {
   latency?: number;
 }
 
+export type ToolCall = OpenAI.Beta.AssistantTool;
+
 export interface ICreateAndRunAssistantThread {
   (
     body: OpenAI.Beta.ThreadCreateAndRunParamsNonStreaming,

@@ -214,7 +214,7 @@ export default function SampleOutputCard({
         )}
       </CardHeader>
       <CardContent
-        className="flex flex-col h-full p-4 gap-2"
+        className="flex flex-col h-full px-4 py-2"
         ref={containerWrapper}
       >
         <section className="flex flex-col">

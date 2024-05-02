@@ -144,22 +144,22 @@ export const RunConfigView = ({
               Parameters
             </TabsTrigger>
           </TabsList>
-          {runConfig.type === "model" && (
+          {runConfigState?.type === "model" && (
             <TabsContent value={RunConfigTab.prompt}>
               <CodeViewer
                 value={
-                  typeof runConfig.prompt === "string"
-                    ? runConfig.prompt
-                    : JSON.stringify(runConfig.prompt || "", null, 2)
+                  typeof runConfigState.prompt === "string"
+                    ? runConfigState.prompt
+                    : JSON.stringify(runConfigState.prompt || "", null, 2)
                 }
                 language={
-                  typeof runConfig.prompt === "string" ? "prompt" : "json"
+                  typeof runConfigState.prompt === "string" ? "prompt" : "json"
                 }
                 onChange={updatePrompt}
               />
             </TabsContent>
           )}
-          {runConfig.type === "assistant" && (
+          {runConfigState?.type === "assistant" && (
             <TabsContent value={RunConfigTab.instructions}>
               <CodeViewer
                 value={runConfigState?.parameters?.instructions || ""}

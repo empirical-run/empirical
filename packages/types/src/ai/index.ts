@@ -32,6 +32,7 @@ export interface IAssistantRunResponse {
 }
 
 export type ToolCall = OpenAI.Beta.AssistantTool;
+export type FunctionToolCall = OpenAI.Beta.FunctionTool;
 
 export interface ICreateAndRunAssistantThread {
   (

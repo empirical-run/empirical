@@ -1,4 +1,8 @@
-import { ChatCompletionMessageToolCall, ToolCall } from "./ai";
+import {
+  ChatCompletionMessageToolCall,
+  ToolCall,
+  FunctionToolCall,
+} from "./ai";
 
 export * from "./ai";
 
@@ -71,6 +75,7 @@ interface ModelParameters {
   stop?: string | Array<string>;
   top_logprobs?: number;
   timeout?: number;
+  tools?: FunctionToolCall[];
 
   // For other models, we coerce the above known parameters to appropriate slots
   // If users require other parameters, we support passthrough for other key names

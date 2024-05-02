@@ -63,8 +63,7 @@ export const RunConfigView = ({
 
   const updateInstructions = useCallback(
     (instruction: string | undefined = "") => {
-      console.log(instruction);
-      if (runConfigState && runConfig.type === "assistant") {
+      if (runConfigState && runConfigState.type === "assistant") {
         setRunConfigState({
           ...runConfigState,
           parameters: {

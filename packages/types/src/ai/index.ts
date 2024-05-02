@@ -14,6 +14,9 @@ export interface ICreateChatCompletion {
   (body: IChatCompletionCreateParams): Promise<IChatCompletion>;
 }
 
+export interface ChatCompletionMessageToolCall
+  extends OpenAI.ChatCompletionMessageToolCall {}
+
 export interface Citation {
   file_id?: string;
   quote?: string;
@@ -23,7 +26,7 @@ export interface Citation {
 export interface IAssistantRunResponse {
   content: string;
   citations: Citation[];
-  tool_calls?: any[];
+  tool_calls?: ChatCompletionMessageToolCall[];
   usage?: OpenAI.CompletionUsage;
   latency?: number;
 }

@@ -3,8 +3,7 @@
 [![npm](https://img.shields.io/npm/v/@empiricalrun/cli)](https://npmjs.com/package/@empiricalrun/cli)
 [![Discord](https://img.shields.io/badge/discord-empirical.run-blue?logo=discord&logoColor=white&color=5d68e8)](https://discord.gg/NeR6jj8dw9)
 
-Empirical is the fastest way to test different LLMs, prompts and other model configurations, across all the scenarios
-that matter for your application.
+Empirical is the fastest way to test your LLM app and iterate over prompts and other model configuration.
 
 With Empirical, you can:
 
@@ -14,8 +13,7 @@ With Empirical, you can:
 - Score your outputs with [scoring functions](https://docs.empirical.run/scoring/basics)
 - Run [tests on CI/CD](https://docs.empirical.run/running-in-ci)
 
-[Watch demo video](https://www.loom.com/share/5992fdf0edc443e282f44936e6c32672) | [See all docs](https://docs.empirical.run)
-
+https://github.com/empirical-run/empirical/assets/284612/3309283c-ddad-4c4e-8175-08a32460686c
 
 ## Usage
 

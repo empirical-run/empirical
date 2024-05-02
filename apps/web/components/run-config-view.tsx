@@ -156,6 +156,8 @@ export const RunConfigView = ({
                   typeof runConfigState.prompt === "string" ? "prompt" : "json"
                 }
                 onChange={updatePrompt}
+                scrollable
+                minHeightForScroll={250}
               />
             </TabsContent>
           )}
@@ -165,6 +167,8 @@ export const RunConfigView = ({
                 value={runConfigState?.parameters?.instructions || ""}
                 language="text"
                 onChange={updateInstructions}
+                scrollable
+                minHeightForScroll={250}
               />
             </TabsContent>
           )}
@@ -173,6 +177,8 @@ export const RunConfigView = ({
               value={JSON.stringify(runConfigState?.parameters || "", null, 2)}
               language="json"
               onChange={updateParameters}
+              scrollable
+              minHeightForScroll={250}
             />
           </TabsContent>
         </Tabs>

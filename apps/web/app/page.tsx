@@ -9,7 +9,7 @@ import InViewElement from "../components/ui/in-view";
 import SampleCard from "../components/sample-card";
 import SampleOutputCard from "../components/sample-output-card";
 import { DatasetSample, RunConfig } from "@empiricalrun/types";
-import { RunConfigView } from "../components/run-details";
+import { RunConfigView } from "../components/run-config-view";
 import { RunResult } from "../types";
 import { useToast } from "../components/ui/use-toast";
 

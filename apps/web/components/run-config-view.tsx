@@ -32,7 +32,8 @@ export const RunConfigView = ({
   if (!runConfig) {
     return null;
   }
-  const defaultTabValue = defaultTabMap[runConfig.type] || "parameters";
+  const defaultTabValue =
+    defaultTabMap[runConfig.type] || RunConfigTab.parameters;
   const [runConfigState, setRunConfigState] = useState<RunConfig | undefined>();
   useEffect(() => setRunConfigState(runConfig), [runConfig]);
   const [error, setError] = useState<string | undefined>();

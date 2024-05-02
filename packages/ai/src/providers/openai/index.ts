@@ -138,7 +138,7 @@ const runAssistant: ICreateAndRunAssistantThread = async (body) => {
               if (eventData.event === "thread.run.requires_action") {
                 const { tool_calls } = eventData.data.required_action
                   ?.submit_tool_outputs || {
-                  tool_calls: [],
+                  tool_calls: undefined,
                 };
                 asstRunResp.content = "";
                 asstRunResp.tool_calls = tool_calls;

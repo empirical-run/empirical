@@ -1,3 +1,5 @@
+import { ChatCompletionMessageToolCall } from "./ai";
+
 export * from "./ai";
 
 export enum RoleType {
@@ -193,7 +195,7 @@ export type RunOutput = {
   finish_reason?: string;
   tokens_used?: number;
   latency?: number;
-  tool_calls?: any[];
+  tool_calls?: ChatCompletionMessageToolCall[];
 };
 
 export type RunSampleOutput = {

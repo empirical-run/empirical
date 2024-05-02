@@ -25,6 +25,7 @@ import SampleCompletionError from "./sample-completion-error";
 import { JsonAsTab } from "./json-as-tab";
 import { RunSampleOutputMetric } from "./run-response-metadata";
 import { Scores } from "./scores";
+import { ToolCalls } from "./tool-calls-view";
 
 type Diff = {
   type: string;
@@ -216,8 +217,8 @@ export default function SampleOutputCard({
         ref={containerWrapper}
       >
         <section className="flex flex-col">
-          {showOutput && hasMetadata && (
-            <p className=" text-sm font-medium mb-2">Output</p>
+          {baseSample?.output.tool_calls && (
+            <p className=" text-sm font-medium mb-2">Tool calls</p>
           )}
           {diffView.enabled && baseSample && (
             <DiffEditor
@@ -236,11 +237,16 @@ export default function SampleOutputCard({
             />
           )}
           {showOutput && (
-            <CodeViewer
-              value={baseSample?.output.value || ""}
-              language="json"
-              readOnly
-            />
+            <>
+              {!baseSample?.output.tool_calls && (
+                <CodeViewer
+                  value={baseSample?.output.value || ""}
+                  language="json"
+                  readOnly
+                />
+              )}
+              <ToolCalls toolCalls={baseSample?.output.tool_calls} />
+            </>
           )}
         </section>
         {showOutput && (
@@ -250,7 +256,11 @@ export default function SampleOutputCard({
               value={baseSample?.output?.tokens_used}
               hideSeparator
             />
-            <RunSampleOutputMetric title="Latency" value={latency} />
+            <RunSampleOutputMetric
+              title="Latency"
+              value={latency}
+              hideSeparator={!baseSample?.output?.tokens_used}
+            />
             <RunSampleOutputMetric
               title="Finish reason"
               value={baseSample?.output?.finish_reason}
@@ -259,11 +269,13 @@ export default function SampleOutputCard({
         )}
         {!diffView.enabled && hasMetadata && (
           <section className="flex flex-col h-[200px] mt-2">
-            <p className=" text-sm font-medium mt-2">Metadata</p>
             <section className="relative flex flex-col flex-1">
               <JsonAsTab
                 storeKey={baseResult?.id!}
                 data={baseSample?.output.metadata!}
+                showExpandOption={false}
+                scrollableContent={false}
+                readonlyContent
               />
             </section>
           </section>

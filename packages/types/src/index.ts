@@ -193,6 +193,7 @@ export type RunOutput = {
   finish_reason?: string;
   tokens_used?: number;
   latency?: number;
+  tool_calls?: any[];
 };
 
 export type RunSampleOutput = {

@@ -165,10 +165,7 @@ export default function CodeViewer({
   }, [customCommands, readOnly]);
 
   return (
-    <div
-      className="h-full min-h-[40px] w-full relative max-h-[300px]"
-      ref={containerRef}
-    >
+    <div className="h-full min-h-[40px] w-full relative" ref={containerRef}>
       <Editor
         value={value}
         height="100%"

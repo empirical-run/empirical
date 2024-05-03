@@ -4,7 +4,12 @@ import {
   ICreateChatCompletion,
 } from "@empiricalrun/types";
 import { BatchTaskManager, getPassthroughParams } from "../../utils";
-import { ToolCalls, ResponseFormat } from "@mistralai/mistralai";
+import {
+  ToolCalls,
+  ResponseFormat,
+  Function,
+  ToolChoice,
+} from "@mistralai/mistralai";
 import { AIError, AIErrorEnum } from "../../error";
 import { DEFAULT_TIMEOUT } from "../../constants";
 
@@ -56,6 +61,8 @@ const createChatCompletion: ICreateChatCompletion = async function (body) {
       topP: config.top_p || undefined,
       randomSeed: config.seed || undefined,
       responseFormat: config.response_format as ResponseFormat,
+      tools: body.tools as { type: string; function: Function }[],
+      toolChoice: body.tool_choice as ToolChoice,
       ...getPassthroughParams(config),
     });
     executionDone();

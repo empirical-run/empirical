@@ -78,6 +78,45 @@
           }
         ]
       }
+    },
+    {
+      "type": "model",
+      "provider": "anthropic",
+      "model": "claude-3-haiku",
+      "prompt": "{{user_message}}",
+      "parameters": {
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "extract_data",
+              "description": "extract name age and location from message",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "location": {
+                    "type": "string",
+                    "description": "If not available this should be empty string"
+                  },
+                  "age": {
+                    "type": "number",
+                    "description": "age of the person, e.g. 34, 52"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "the name of the person, e.g. Alexa"
+                  }
+                },
+                "required": [
+                  "location",
+                  "name",
+                  "age"
+                ]
+              }
+            }
+          }
+        ]
+      }
     }
   ],
   "dataset": {

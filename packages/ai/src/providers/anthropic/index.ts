@@ -1,5 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { IAIProvider, ICreateChatCompletion } from "@empiricalrun/types";
+import {
+  ChatCompletionMessageToolCall,
+  FunctionToolCall,
+  IAIProvider,
+  ICreateChatCompletion,
+} from "@empiricalrun/types";
 import OpenAI from "openai";
 import promiseRetry from "promise-retry";
 import { BatchTaskManager, getPassthroughParams } from "../../utils";
@@ -9,12 +14,13 @@ import { DEFAULT_TIMEOUT } from "../../constants";
 const batchTaskManager = new BatchTaskManager(5);
 
 const finishReasonReverseMap = new Map<
-  "end_turn" | "max_tokens" | "stop_sequence" | null,
+  "end_turn" | "max_tokens" | "stop_sequence" | "tool_use" | null,
   "length" | "stop" | "tool_calls" | "content_filter" | "function_call"
 >([
   ["end_turn", "stop"],
   ["max_tokens", "length"],
   ["stop_sequence", "stop"],
+  ["tool_use", "tool_calls"],
   [null, "stop"],
 ]);
 
@@ -48,6 +54,26 @@ const convertOpenAIToAnthropicAI = function (
   return { contents, systemPrompt: systemMessage?.content?.toString() || "" };
 };
 
+const massageToolsForAnthropicAI = (
+  tools: FunctionToolCall[] | undefined,
+): { tools?: Anthropic.Beta.Tools.Tool[] } => {
+  if (tools) {
+    const anthropicTools: Anthropic.Beta.Tools.Tool[] = tools.map((t) => {
+      return {
+        name: t.function.name,
+        description: t.function.description,
+        input_schema: t.function
+          .parameters as Anthropic.Beta.Tools.Tool.InputSchema,
+      };
+    });
+    return {
+      tools: anthropicTools,
+    };
+  }
+
+  return {};
+};
+
 const createChatCompletion: ICreateChatCompletion = async (body) => {
   if (!process.env.ANTHROPIC_API_KEY) {
     throw new AIError(
@@ -68,9 +94,9 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const { executionDone } = await batchTaskManager.waitForTurn();
   try {
     const startedAt = Date.now();
-    const response = await promiseRetry<Anthropic.Messages.Message>(
+    const response = await promiseRetry<Anthropic.Beta.Tools.ToolsBetaMessage>(
       (retry, attempt) => {
-        return anthropic.messages
+        return anthropic.beta.tools.messages
           .create({
             model: canonicalModelName(model),
             messages: contents,
@@ -83,6 +109,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
                 ? [config.stop]
                 : undefined,
             top_p: config.top_p || undefined,
+            ...massageToolsForAnthropicAI(body.tools),
             ...getPassthroughParams(config),
           })
           .catch((err) => {
@@ -111,6 +138,24 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     // renaming to terms used by openai, mistral
     const { input_tokens: prompt_tokens, output_tokens: completion_tokens } =
       response.usage;
+    const toolCalls: ChatCompletionMessageToolCall[] = response.content
+      .filter((content) => content.type === "tool_use")
+      .map((c) => {
+        const { id, name, input } = c as Anthropic.Beta.Tools.ToolUseBlock;
+        return {
+          id,
+          type: "function",
+          function: {
+            name,
+            arguments: JSON.stringify(input),
+          },
+        };
+      });
+
+    const textBlocks = response.content.filter(
+      (content) => content.type === "text",
+    ) as Anthropic.TextBlock[];
+
     return {
       id: response.id,
       model,
@@ -127,7 +172,8 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
             finishReasonReverseMap.get(response.stop_reason) || "stop",
           index: 0,
           message: {
-            content: response.content[0]?.text || null,
+            content: textBlocks[0]?.text || null,
+            tool_calls: toolCalls.length ? toolCalls : undefined,
             role: response.role,
           },
           logprobs: null,

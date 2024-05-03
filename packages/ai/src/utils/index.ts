@@ -29,6 +29,8 @@ function isReservedParameter(paramName: string) {
     "stop",
     "top_logprobs",
     "timeout",
+    "tools",
+    "tool_choice",
   ];
   return reservedParameters.indexOf(paramName) >= 0;
 }

@@ -24,7 +24,6 @@ function runStatsSummary(
   runs: RunCompletion[],
   enableColors: boolean,
 ): string[][] {
-  // TODO: should get rid of this once config has separate scorer object
   const scorerNames = [
     ...new Set(
       runs.flatMap(

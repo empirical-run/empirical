@@ -1,4 +1,10 @@
-import { Scorer, Score, DatasetSample, RunOutput } from "@empiricalrun/types";
+import {
+  Scorer,
+  Score,
+  DatasetSample,
+  RunOutput,
+  RuntimeOptions,
+} from "@empiricalrun/types";
 import { ScorerError, ScorerErrorEnum } from "./error";
 import getScoringFn from "./provider";
 
@@ -11,7 +17,7 @@ export default async function score({
   sample: DatasetSample;
   output: RunOutput;
   scorers: Scorer[] | undefined;
-  options?: object;
+  options?: RuntimeOptions;
 }): Promise<Score[]> {
   if (!scorers) {
     return [];
@@ -24,9 +30,19 @@ export default async function score({
         .map((scorer) => {
           const scoringFn = getScoringFn(scorer);
           if (!scoringFn) {
+            const errorMessage = (scorer: Scorer) => {
+              let recommendation: string =
+                "See supported scorers: https://docs.empirical.run/scoring/basics";
+              if ((scorer.type as string) === "llm-criteria") {
+                recommendation = 'Did you mean "llm-critic"?';
+              } else if ((scorer.type as string) === "is-json") {
+                recommendation = 'Did you mean "json-syntax"?';
+              }
+              return `Invalid scorer name "${scorer.type}". ${recommendation}`;
+            };
             throw new ScorerError(
               ScorerErrorEnum.INCORRECT_PARAMETERS,
-              `Incorrect scorer name "${scorer}" provided.`,
+              errorMessage(scorer),
             );
           }
           return scoringFn({

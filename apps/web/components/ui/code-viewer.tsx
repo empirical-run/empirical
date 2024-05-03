@@ -48,6 +48,7 @@ export default function CodeViewer({
   focus = false,
   scrollable = false,
   onMount = () => {},
+  minHeightForScroll,
 }: {
   value: string;
   language?: string;
@@ -57,6 +58,7 @@ export default function CodeViewer({
   focus?: boolean;
   scrollable?: boolean;
   onMount?: () => void;
+  minHeightForScroll?: number;
 }) {
   const monaco = useMonaco();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -114,7 +116,16 @@ export default function CodeViewer({
             editorContentHeight > 40 ? editorContentHeight : 40;
 
           if (scrollable && containerRef.current) {
-            element.style.height = containerRef.current.clientHeight + "px";
+            if (minHeightForScroll) {
+              const height =
+                editorContentHeight > minHeightForScroll
+                  ? minHeightForScroll
+                  : editorContentHeight;
+              containerRef.current.style.height = height + "px";
+              element.style.height = height + "px";
+            } else {
+              element.style.height = containerRef.current.clientHeight + "px";
+            }
             return;
           }
           const newHeight = `${contentHeight}px`;

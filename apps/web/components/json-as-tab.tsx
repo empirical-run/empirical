@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSyncedTabs } from "../hooks/useSyncedTab";
 import {
   Sheet,
@@ -26,6 +26,9 @@ export function JsonAsTab({
   onSampleRemove,
   onEditorContentUpdate,
   onClickRunAll,
+  showExpandOption = true,
+  readonlyContent = false,
+  scrollableContent = true,
 }: {
   storeKey: string;
   data: { [key: string]: any };
@@ -35,23 +38,45 @@ export function JsonAsTab({
   onSampleRemove?: () => void;
   onEditorContentUpdate?: (key: string, value: string) => void;
   onClickRunAll?: () => void;
+  showExpandOption?: boolean;
+  readonlyContent?: boolean;
+  scrollableContent?: boolean;
 }) {
   const tabs = useMemo(
     () => defaultTabs || Object.keys(data),
     [data, defaultTabs],
   );
-  const { activeTab, onChangeTab } = useSyncedTabs(tabs, storeKey);
+  const { activeTab: remoteActiveTab, onChangeTab: remoteOnChangeTab } =
+    useSyncedTabs(tabs, storeKey);
+  const [activeTab, setActiveTab] = useState<string | undefined>();
   const activeTabValue = useMemo(() => {
     if (activeTab && data) {
       return data[activeTab];
     }
     return undefined;
   }, [activeTab, data]);
+
+  useEffect(() => {
+    if (remoteActiveTab && data[remoteActiveTab]) {
+      setActiveTab(remoteActiveTab);
+    } else if (!activeTab) {
+      setActiveTab(Object.keys(data)[0]);
+    }
+  }, [remoteActiveTab]);
+
+  const onChangeTab = useCallback(
+    (tab: string) => {
+      setActiveTab(tab);
+      remoteOnChangeTab(tab);
+    },
+    [remoteOnChangeTab],
+  );
+
   return (
     <>
-      <div className="flex flex-row space-x-2 justify-end absolute right-4 top-4">
+      <div className="flex flex-row space-x-2 justify-end">
         <>
-          {activeTabValue && (
+          {activeTabValue && showExpandOption && (
             <Sheet>
               <SheetTrigger asChild>
                 <Button
@@ -116,8 +141,13 @@ export function JsonAsTab({
         </>
       </div>
       {tabs.length > 0 && (
-        <Tabs value={activeTab} className="h-full" onValueChange={onChangeTab}>
-          <TabsList className=" rounded-sm">
+        <Tabs
+          value={activeTab}
+          defaultValue={activeTab}
+          className="h-full"
+          onValueChange={onChangeTab}
+        >
+          <TabsList className=" rounded-sm w-full overflow-x-scroll justify-start no-scrollbar">
             {tabs.map((name) => (
               <TabsTrigger
                 key={name}
@@ -144,9 +174,9 @@ export function JsonAsTab({
                       ? value
                       : JSON.stringify(value, null, 2)
                   }
-                  language="json"
-                  readOnly={false}
-                  scrollable
+                  language="text"
+                  readOnly={readonlyContent}
+                  scrollable={scrollableContent}
                   onChange={(value) => onEditorContentUpdate?.(key, value!)}
                 />
               </TabsContent>

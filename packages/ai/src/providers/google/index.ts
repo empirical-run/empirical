@@ -10,8 +10,7 @@ import {
   GenerateContentResult,
   POSSIBLE_ROLES,
 } from "@google/generative-ai";
-//TODO: fix this import to empirical types
-import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import OpenAI from "openai";
 import { BatchTaskManager } from "../../utils";
 import crypto from "crypto";
 import promiseRetry from "promise-retry";
@@ -23,7 +22,7 @@ type Role = (typeof POSSIBLE_ROLES)[number];
 const batch = new BatchTaskManager(5);
 
 const massageOpenAIMessagesToGoogleAI = function (
-  messages: ChatCompletionMessageParam[],
+  messages: OpenAI.ChatCompletionMessageParam[],
 ): Content[] {
   const [systemMessage] = messages.filter((m) => m.role === "system");
   let systemMessageContent = "";
@@ -66,24 +65,45 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const { model, messages } = body;
   const googleAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
   const timeout = body.timeout || DEFAULT_TIMEOUT;
-  const modelInstance = googleAI.getGenerativeModel(
-    { model },
-    { apiVersion: "v1beta", timeout },
-  );
+  const modelInstance = googleAI.getGenerativeModel({ model }, { timeout });
   const contents = massageOpenAIMessagesToGoogleAI(messages);
+  const history = contents.slice(0, -1);
+  const message = contents[contents.length - 1]?.parts!;
   const { executionDone } = await batch.waitForTurn();
+  const maxOutputTokens = body.max_tokens || body.maxOutputTokens || 1024;
+  // Default temp for gemini-1.5-pro and gemini-1.0-pro-002
+  const temperature = body.temperature || 1.0;
+  // Deleting params not supported by the generationConfig but used by other sections of the program
+  const usedParameters = ["timeout", "max_tokens", "messages", "model"];
+  usedParameters.forEach((param) => {
+    if (body[param]) {
+      delete body[param];
+    }
+  });
+
+  const generationConfig = {
+    maxOutputTokens,
+    temperature,
+    ...body,
+  };
+
   try {
     const startedAt = Date.now();
     const completion = await promiseRetry<GenerateContentResult>(
-      (retry) => {
-        // TODO: move to model.startChat which support model config (e.g. temperature)
+      (retry, attempt) => {
         return modelInstance
-          .generateContent({ contents })
+          .startChat({
+            // @ts-ignore same as above
+            generationConfig,
+            history,
+          })
+          .sendMessage(message)
           .catch((err: Error) => {
             // TODO: Replace with instanceof checks when the Gemini SDK exports errors
-            console.log(err.message);
             if (err.message.includes("[429 Too Many Requests]")) {
-              console.log("Attempting to retry");
+              console.warn(
+                `Retrying request for google model: ${body.model}. Retry attempt: ${attempt}`,
+              );
               retry(err);
             }
             throw err;
@@ -102,25 +122,16 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
       completionTokens = 0;
 
     try {
-      // Google's JS library does not fully support Gemini 1.5 Pro
-      // because of which the `countTokens` method needs to be requested
-      // via an older model. We have an open issue with details:
-      // https://github.com/google/generative-ai-js/issues/98
-      const tokenCounterModelInstance = model.includes("gemini-1.5")
-        ? googleAI.getGenerativeModel({
-            model: "gemini-pro",
-          })
-        : modelInstance;
       [{ totalTokens: completionTokens }, { totalTokens: promptTokens }] =
         await Promise.all([
-          tokenCounterModelInstance.countTokens(responseContent),
-          tokenCounterModelInstance.countTokens({
+          modelInstance.countTokens(responseContent),
+          modelInstance.countTokens({
             contents,
           }),
         ]);
       totalTokens = completionTokens + promptTokens;
     } catch (e) {
-      console.warn(`Failed to fetch token usage for google:${model}`);
+      console.warn(`Failed to fetch token usage for google: ${model}`);
     }
 
     const response: IChatCompletion = {
@@ -149,9 +160,10 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     return response;
   } catch (e) {
     executionDone();
+    console.error(e);
     throw new AIError(
       AIErrorEnum.FAILED_CHAT_COMPLETION,
-      `Failed to fetch output from model ${body.model} with message ${(e as Error).message}`,
+      `Failed to fetch output from model ${model} with message ${(e as Error).message}`,
     );
   }
 };

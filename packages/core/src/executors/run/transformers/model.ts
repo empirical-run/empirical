@@ -1,7 +1,42 @@
-import { RunConfig } from "@empiricalrun/types";
+import {
+  ChatPrompt,
+  DatasetSampleInputs,
+  ModelRunConfig,
+  Prompt,
+  RunConfig,
+} from "@empiricalrun/types";
 import { Transformer } from "./interface";
-import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import OpenAI from "openai";
 import { AIError, EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
+
+export const setModelDefaults = async (
+  runConfig: ModelRunConfig,
+): Promise<ModelRunConfig> => {
+  runConfig.name = runConfig.name || runConfig.model;
+  return runConfig;
+};
+
+export const massagePrompt = (
+  prompt: Prompt,
+  inputs: DatasetSampleInputs,
+): OpenAI.ChatCompletionMessageParam[] => {
+  if (Array.isArray(prompt)) {
+    const massagedPrompts = (prompt as ChatPrompt[]).map((p) => {
+      const message: OpenAI.ChatCompletionMessageParam = {
+        role: p.role,
+        content: p.content ? replacePlaceholders(p.content, inputs) : "",
+      };
+      return message;
+    });
+    return massagedPrompts;
+  }
+  return [
+    {
+      role: "user",
+      content: prompt ? replacePlaceholders(prompt, inputs) : "",
+    },
+  ];
+};
 
 export const modelExecutor: Transformer = async function (
   runConfig: RunConfig,
@@ -18,13 +53,19 @@ export const modelExecutor: Transformer = async function (
       },
     };
   }
+  if (!runConfig.prompt) {
+    return {
+      output: {
+        value: "",
+      },
+      error: {
+        code: "",
+        message: "No prompt provided for model execution",
+      },
+    };
+  }
   const { prompt, model, provider, parameters } = runConfig;
-  const messages: ChatCompletionMessageParam[] = [
-    {
-      role: "user",
-      content: replacePlaceholders(prompt as string, sample.inputs),
-    },
-  ];
+  const messages = massagePrompt(prompt, sample.inputs);
   const ai = new EmpiricalAI(provider);
   let value = "",
     tokens_used,

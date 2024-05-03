@@ -1,5 +1,91 @@
 # @empiricalrun/scorer
 
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [d6d8b5c]
+- Updated dependencies [bde6bf0]
+- Updated dependencies [93e12e0]
+  - @empiricalrun/ai@0.9.0
+
+## 0.2.1
+
+### Patch Changes
+
+- c7e5a4a: chore: remove sql semantic scorer
+- 9f15c2d: feat: py-script scorer has a simpler return type
+- Updated dependencies [2b0cc32]
+- Updated dependencies [51f2f52]
+  - @empiricalrun/ai@0.8.0
+
+## 0.2.0
+
+### Minor Changes
+
+- 2517c74: feat: add support for openai assistants
+- 215c54a: chore: change scorer names to json-syntax and llm-critic
+
+### Patch Changes
+
+- bc3aa56: fix: py-script getting timed out
+- 2ad19be: chore: better error messages for scorer names
+- Updated dependencies [2517c74]
+- Updated dependencies [bc3aa56]
+  - @empiricalrun/ai@0.7.0
+
+## 0.1.10
+
+### Patch Changes
+
+- 4150b1f: fix: typo in chat prompt type
+- Updated dependencies [ba98ebb]
+- Updated dependencies [d81cff4]
+- Updated dependencies [4150b1f]
+  - @empiricalrun/ai@0.6.1
+
+## 0.1.9
+
+### Patch Changes
+
+- Updated dependencies [7a67267]
+  - @empiricalrun/ai@0.6.0
+
+## 0.1.8
+
+### Patch Changes
+
+- Updated dependencies [66cddb3]
+  - @empiricalrun/ai@0.5.0
+
+## 0.1.7
+
+### Patch Changes
+
+- Updated dependencies [ac10032]
+  - @empiricalrun/ai@0.4.2
+
+## 0.1.6
+
+### Patch Changes
+
+- Updated dependencies [a952bd9]
+  - @empiricalrun/ai@0.4.1
+
+## 0.1.5
+
+### Patch Changes
+
+- 5079335: fix: sql syntax scorer should fail for empty output
+- b065dad: chore: improve message string for valid sql-syntax
+- 2bc5465: fix: minor improvements for execution accuracy in spider example
+- Updated dependencies [e77b76e]
+- Updated dependencies [9822db6]
+- Updated dependencies [06b1667]
+- Updated dependencies [bbd5cd0]
+- Updated dependencies [2bc5465]
+  - @empiricalrun/ai@0.4.0
+
 ## 0.1.4
 
 ### Patch Changes

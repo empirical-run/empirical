@@ -15,7 +15,7 @@ export class BatchTaskManager {
   /**
    * Creates an instance of BatchTaskManager.
    * @param {number} size size of batch allowed to execute at a time
-   * @param {number} [coolingPeriod=1000] cooling period time after one batch is done executing
+   * @param {number} [coolingPeriod=1000] cooling period time (in ms) after one batch is done executing
    * @memberof BatchTaskManager
    */
   constructor(

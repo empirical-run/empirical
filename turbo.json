@@ -9,18 +9,16 @@
     "FIREWORKS_API_KEY",
     "CI",
     "GITHUB_ACTIONS",
-    "GITHUB_OUTPUT"
+    "GITHUB_OUTPUT",
+    "AZURE_OPENAI_API_KEY",
+    "AZURE_OPENAI_RESOURCE_NAME",
+    "POSTHOG_API_KEY",
+    "EMPIRICAL_TELEMETRY"
   ],
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"],
-      "env": [
-        "GOOGLE_API_KEY",
-        "MISTRAL_API_KEY",
-        "OPENAI_API_KEY",
-        "ANTHROPIC_API_KEY"
-      ]
+      "outputs": [".next/**", "!.next/cache/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]

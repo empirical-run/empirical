@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { IAIProvider, ICreateChatCompletion } from "@empiricalrun/types";
-import { ChatCompletionMessageParam } from "openai/resources/chat/completions.mjs";
+import OpenAI from "openai";
 import promiseRetry from "promise-retry";
 import { BatchTaskManager, getPassthroughParams } from "../../utils";
 import { AIError, AIErrorEnum } from "../../error";
@@ -28,7 +28,7 @@ const canonicalModelName = (modelName: string) => {
 };
 
 const convertOpenAIToAnthropicAI = function (
-  messages: ChatCompletionMessageParam[],
+  messages: OpenAI.ChatCompletionMessageParam[],
 ): { contents: Anthropic.MessageParam[]; systemPrompt: string } {
   const [systemMessage] = messages.filter((m) => m.role === "system");
   const filteredMessages = messages.filter((m) => m.role !== "system");
@@ -69,7 +69,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   try {
     const startedAt = Date.now();
     const response = await promiseRetry<Anthropic.Messages.Message>(
-      (retry) => {
+      (retry, attempt) => {
         return anthropic.messages
           .create({
             model: canonicalModelName(model),
@@ -92,10 +92,13 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
               err instanceof Anthropic.APIConnectionTimeoutError ||
               err instanceof Anthropic.InternalServerError
             ) {
+              console.warn(
+                `Retrying request for anthropic model: ${body.model}. Retry attempt: ${attempt}`,
+              );
               retry(err);
               throw err;
             }
-            return err;
+            throw err;
           });
       },
       {

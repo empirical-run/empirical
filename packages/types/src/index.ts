@@ -1,3 +1,5 @@
+import { ChatCompletionMessageToolCall, ToolCall } from "./ai";
+
 export * from "./ai";
 
 export enum RoleType {
@@ -7,8 +9,8 @@ export enum RoleType {
 }
 
 export type ChatPrompt = {
-  role: string;
-  comment: string;
+  role: "system" | "user" | "assistant";
+  content: string;
 };
 
 export interface ScorerBase {
@@ -17,13 +19,13 @@ export interface ScorerBase {
 }
 
 export interface LLMScorer extends ScorerBase {
-  type: "llm-criteria";
+  type: "llm-critic";
   name?: string;
   criteria: string;
 }
 
-export interface DeterministicScorer extends ScorerBase {
-  type: "is-json" | "sql-syntax" | "sql-semantic";
+export interface SyntaxScorer extends ScorerBase {
+  type: "json-syntax" | "sql-syntax";
 }
 
 export interface ScriptScorer extends ScorerBase {
@@ -32,7 +34,7 @@ export interface ScriptScorer extends ScorerBase {
   path: string;
 }
 
-export type Scorer = LLMScorer | DeterministicScorer | ScriptScorer;
+export type Scorer = LLMScorer | SyntaxScorer | ScriptScorer;
 
 export type Prompt = string | ChatPrompt[];
 
@@ -77,10 +79,33 @@ interface ModelParameters {
 
 export interface ModelRunConfig extends RunConfigBase {
   type: "model";
-  provider: "openai" | "mistral" | "google" | "anthropic" | "fireworks";
+  provider:
+    | "openai"
+    | "mistral"
+    | "google"
+    | "anthropic"
+    | "fireworks"
+    | "azure-openai";
   model: string;
   prompt?: Prompt;
   parameters?: ModelParameters;
+}
+
+export interface AssistantsRunConfig extends RunConfigBase {
+  type: "assistant";
+  assistant_id: string;
+  provider?: "openai";
+  prompt: string;
+  parameters?: {
+    model?: string;
+    temperature?: number;
+    instructions?: string;
+    tool_choice?: any;
+    tools?: ToolCall[];
+
+    // Passthrough
+    [key: string]: any;
+  };
 }
 
 export interface JSScriptRunConfig extends RunConfigBase {
@@ -92,17 +117,21 @@ export interface PyScriptRunConfig extends RunConfigBase {
   type: "py-script";
   path: string;
   parameters?: {
-    pythonPath?: string;
+    concurrency?: number;
     [key: string]: any;
   };
 }
 
-export type RunConfig = ModelRunConfig | PyScriptRunConfig | JSScriptRunConfig;
+export type RunConfig =
+  | ModelRunConfig
+  | PyScriptRunConfig
+  | JSScriptRunConfig
+  | AssistantsRunConfig;
 
 export interface ScoreStats {
   name: string;
   count: number;
-  avgScore: number;
+  average: number;
 }
 
 export interface RunCompletionStats {
@@ -112,6 +141,12 @@ export interface RunCompletionStats {
     failed: number;
   };
   scores: ScoreStats[];
+  latency?: {
+    average: number;
+  };
+  tokens_used?: {
+    average: number;
+  };
 }
 
 export interface RunCompletion {
@@ -161,6 +196,7 @@ export type RunOutput = {
   finish_reason?: string;
   tokens_used?: number;
   latency?: number;
+  tool_calls?: ChatCompletionMessageToolCall[];
 };
 
 export type RunSampleOutput = {
@@ -222,3 +258,8 @@ export type RunUpdateType =
   | RunSampleUpdate
   | RunSampleScoreUpdate
   | RunStatsUpdate;
+
+export interface RuntimeOptions {
+  envFilePath: string | string[];
+  pythonPath: string;
+}

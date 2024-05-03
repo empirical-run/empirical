@@ -9,7 +9,7 @@ export default function SampleCompletionError({
     <section className="flex justify-center h-full w-full">
       <section className="flex flex-col items-center space-y-1 text-muted-foreground">
         <ExclamationTriangleIcon height={22} width={22} />
-        <p className="text-center text-sm w-3/5">{errorMessage}</p>
+        <p className="text-center text-sm w-3/5 break-words">{errorMessage}</p>
       </section>
     </section>
   );

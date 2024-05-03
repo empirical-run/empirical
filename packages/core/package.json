@@ -1,6 +1,6 @@
 {
   "name": "@empiricalrun/core",
-  "version": "0.4.0",
+  "version": "0.7.0",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
@@ -13,7 +13,7 @@
     "url": "https://github.com/empirical-run/empirical.git"
   },
   "scripts": {
-    "build": "tsc --build && cp -r src/python/ dist/python/",
+    "build": "node scripts/load.js && tsc --build && cp -r src/python/ dist/python/ && node scripts/revert.js",
     "clean": "tsc --build --clean",
     "lint": "eslint .",
     "test": "vitest run",
@@ -21,12 +21,15 @@
   },
   "devDependencies": {
     "@empiricalrun/types": "workspace:*",
-    "@empiricalrun/typescript-config": "workspace:*"
+    "@empiricalrun/typescript-config": "workspace:*",
+    "dotenv": "^16.4.5"
   },
   "dependencies": {
     "@empiricalrun/ai": "workspace:^",
     "@empiricalrun/scorer": "workspace:*",
+    "duckdb-async": "^0.10.0",
     "openai": "^4.29.0",
+    "posthog-node": "^4.0.1",
     "python-shell": "^5.0.0"
   }
 }

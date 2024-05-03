@@ -41,7 +41,7 @@ async function askLlmForEvalResult(
   return JSON.parse(response!.function.arguments);
 }
 
-export const name = "llm-criteria";
+export const name = "llm-critic";
 
 const systemPrompt = `You are an expert evaluator who grades an output string based on a criteria. The output must fulfil the criteria to pass the evaluation.`;
 
@@ -51,7 +51,7 @@ export const checkLlmCriteria: ScoringFn = async ({
   config,
 }) => {
   let criteria = "";
-  if (config.type !== "llm-criteria") {
+  if (config.type !== "llm-critic") {
     return [
       {
         name,
@@ -60,15 +60,33 @@ export const checkLlmCriteria: ScoringFn = async ({
       },
     ];
   }
+  const scorerName = config.name || name;
+  if (!output.value) {
+    return [
+      {
+        name: scorerName,
+        score: 0,
+        message: "no output value to score",
+      },
+    ];
+  }
   if (config.criteria) {
     let replacements: any = { ...sample.inputs };
     if (sample.expected) {
-      // llm-criteria supports {{expected}} as placeholder
+      // llm-critic supports {{expected}} as placeholder
       replacements.expected = sample.expected;
     }
     criteria = replacePlaceholders(config.criteria, replacements);
   }
-
+  if (!criteria) {
+    return [
+      {
+        name: scorerName,
+        score: 0,
+        message: "criteria is not specified for the scorer",
+      },
+    ];
+  }
   const prompt = `Criteria: ${criteria}\n\nOutput: ${output.value}`;
   const messages: OpenAI.ChatCompletionMessageParam[] = [
     { role: "system", content: systemPrompt },
@@ -80,7 +98,7 @@ export const checkLlmCriteria: ScoringFn = async ({
     return [
       {
         score: result === "Yes" ? 1 : 0,
-        name: config.name || name,
+        name: scorerName,
         message: reason,
       },
     ];
@@ -88,7 +106,7 @@ export const checkLlmCriteria: ScoringFn = async ({
     return [
       {
         score: 0,
-        name: config.name || name,
+        name: scorerName,
         message:
           (err as Error).message ||
           "Failed to call LLM using @empiricalrun/ai package",

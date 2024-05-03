@@ -7,7 +7,11 @@ import path from "path";
 import opener from "opener";
 import dotenv from "dotenv";
 import packageJSON from "../../package.json";
-import { execute } from "@empiricalrun/core";
+import {
+  EmpiricalStore,
+  execute,
+  getLocalDBInstance,
+} from "@empiricalrun/core";
 import { RunsConfig } from "../types";
 import { loadDataset } from "./dataset";
 import { DatasetError } from "../error";
@@ -17,7 +21,9 @@ import {
   RunConfig,
   RunCompletion,
   RunStatsUpdate,
+  RuntimeOptions,
 } from "@empiricalrun/types";
+import { Telemetry, runEventProperties } from "@empiricalrun/core";
 import {
   failedOutputsSummary,
   printStatsSummary,
@@ -29,6 +35,7 @@ import {
   ProgressBar,
   buildErrorLog,
   buildSuccessLog,
+  buildWarningLog,
   getCliProgressLoggerInstance,
 } from "./logger/cli-logger";
 
@@ -37,9 +44,36 @@ const cwd = process.cwd();
 const configFileFullPath = `${cwd}/${configFileName}`;
 const config = getDefaultRunsConfig(DefaultRunsConfigType.DEFAULT);
 
-const outputFileName = "output.json";
 const cacheDir = ".empiricalrun";
-const outputFilePath = `${cwd}/${cacheDir}/${outputFileName}`;
+const outputFilePath = `${cwd}/${cacheDir}/output.json`;
+const runtimeOptionsPath = `${cwd}/${cacheDir}/runtime.json`;
+
+const telemetry = new Telemetry();
+
+const readConfig = async (): Promise<RunsConfig> => {
+  let data: string;
+  try {
+    data = (await fs.readFile(configFileFullPath)).toString();
+    console.log(buildSuccessLog(`read ${configFileName} file successfully`));
+  } catch (err) {
+    console.log(buildErrorLog(`Failed to read ${configFileName} file`));
+    console.log(yellow("Please ensure running init command first"));
+    process.exit(1);
+  }
+  const { runs, dataset, scorers } = JSON.parse(data) as RunsConfig;
+
+  runs.forEach((r) => {
+    // if scorers are not set for a run, then override it with the global scorers
+    if (!r.scorers && scorers) {
+      r.scorers = scorers;
+    }
+  });
+
+  return {
+    runs,
+    dataset,
+  };
+};
 
 program
   .name("Empirical.run CLI")
@@ -53,9 +87,16 @@ program
   .description("initialise empirical")
   .action(async () => {
     await fs.writeFile(configFileFullPath, JSON.stringify(config, null, 2));
+    const gitIgnoreFullPath = `${cwd}/.gitignore`;
+    await fs.appendFile(
+      gitIgnoreFullPath,
+      `\n# Ignore outputs from Empirical\n${cacheDir}\n`,
+    );
     console.log(
       buildSuccessLog(`created ${bold(`${configFileName}`)} in ${cwd}`),
     );
+    await telemetry.logEvent("init");
+    await telemetry.shutdown();
   });
 
 program
@@ -70,26 +111,24 @@ program
     "Provide path to .env file to load environment variables",
   )
   .action(async (options) => {
-    dotenv.config({ path: options.envFile || [".env.local", ".env"] });
+    const envFilePath = options.envFile || [".env.local", ".env"];
+    const runTimeOptions: RuntimeOptions = {
+      envFilePath,
+      pythonPath: options.pythonPath,
+    };
+    dotenv.config({ path: runTimeOptions.envFilePath });
     console.log(yellow("Initiating run..."));
 
-    let data;
     const startTime = performance.now();
-    try {
-      data = await fs.readFile(configFileFullPath);
-    } catch (err) {
-      console.log(buildErrorLog(`Failed to read ${configFileName} file`));
-      console.log(yellow("Please ensure running init command first"));
-      process.exit(1);
-    }
+    const { runs, dataset: datasetConfig } = await readConfig();
 
-    console.log(buildSuccessLog(`read ${configFileName} file successfully`));
-    const jsonStr = data.toString();
-    const { runs, dataset: datasetConfig } = JSON.parse(jsonStr) as RunsConfig;
     // TODO: add check here for empty runs config. Add validator of the file
     let dataset: Dataset;
+    const store = new EmpiricalStore();
     try {
       dataset = await loadDataset(datasetConfig);
+      const datasetRecorder = store.getDatasetRecorder();
+      await datasetRecorder(dataset);
     } catch (error) {
       if (error instanceof DatasetError) {
         console.log(`${red("[Error]")} ${error.message}`);
@@ -114,18 +153,24 @@ program
         name: "Scores ",
       });
     }
+    telemetry.logEvent("run.start", runEventProperties(runs, dataset));
     const completion = await Promise.all(
       runs.map((r) => {
         r.parameters = r.parameters ? r.parameters : {};
-        r.parameters.pythonPath = options.pythonPath;
-        return execute(r, dataset, (update) => {
-          if (update.type === "run_sample") {
-            progressBar.increment();
-          }
-          if (update.type === "run_sample_score") {
-            scoresProgressBar?.increment(update.data.scores.length);
-          }
-        });
+        return execute(
+          r,
+          dataset,
+          (update) => {
+            if (update.type === "run_sample") {
+              progressBar.increment();
+            }
+            if (update.type === "run_sample_score") {
+              scoresProgressBar?.increment(update.data.scores.length);
+            }
+          },
+          store,
+          runTimeOptions,
+        );
       }),
     );
     cliProgressBar.stop();
@@ -148,10 +193,12 @@ program
       };
       await fs.mkdir(`${cwd}/${cacheDir}`, { recursive: true });
       await fs.writeFile(outputFilePath, JSON.stringify(data, null, 2));
+      await fs.writeFile(runtimeOptionsPath, JSON.stringify(runTimeOptions));
     } else {
       await reportOnCI(completion, dataset);
     }
 
+    await telemetry.logEvent("run.complete", runEventProperties(runs, dataset));
     const failedOutputs = failedOutputsSummary(completion);
     if (failedOutputs) {
       const { code, message } = failedOutputs;
@@ -159,9 +206,12 @@ program
         buildErrorLog("Some outputs were not generated successfully"),
       );
       console.log(buildErrorLog(`${code}: ${message}`));
+      await telemetry.shutdown();
       process.exit(1);
+    } else {
+      await telemetry.shutdown();
+      process.exit(0);
     }
-    process.exit(0);
   });
 
 const defaultWebUIPort = 1337;
@@ -182,14 +232,64 @@ program
         : Number(options.port);
     const availablePort = await detect(port);
     if (availablePort !== port) {
-      console.log(
-        `${yellow("[Warning]")} Port ${port} is unavailable. Trying port ${availablePort}.`,
+      console.warn(
+        buildWarningLog(
+          `Port ${port} is unavailable. Trying port ${availablePort}.`,
+        ),
       );
     }
+
+    let runtimeOptions: RuntimeOptions | undefined;
+    try {
+      const dataStr = await fs.readFile(runtimeOptionsPath);
+      runtimeOptions = JSON.parse(dataStr.toString());
+      if (runtimeOptions?.envFilePath) {
+        dotenv.config({ path: runtimeOptions.envFilePath! });
+      }
+    } catch (e) {
+      runtimeOptions = undefined;
+    }
+
     // TODO: get rid of this with dataset id support
     app.use(express.json({ limit: "50mb" }));
     app.use(express.static(path.join(__dirname, "../webapp")));
     app.get("/api/results", (req, res) => res.sendFile(outputFilePath));
+    app.get("/api/runs/:id/score/distribution", async (req, res) => {
+      const dbInstance = await getLocalDBInstance();
+      const tableName = `runs${req.params.id}`;
+      const path = `.empiricalrun/runs/${req.params.id}.jsonl`;
+      // TODO: find a better solve for scenarios where this table exists
+      // currently it throws error while doing unnest
+      await dbInstance.exec(`drop table if exists ${tableName}`);
+      await dbInstance.exec(
+        `create table if not exists ${tableName} as select * from read_json_auto('${path}')`,
+      );
+      const messages = await dbInstance.all(
+        `select score.name, score.message as message, score.score, count(*) as count from ${tableName}, unnest(sample.scores) t(score) where sample is not null group by 1,2,3 order by 4 desc, 1 asc`,
+      );
+      const scores = await dbInstance.all(
+        `select score.name, score.score, count(*) as count from ${tableName}, unnest(sample.scores) t(score) where sample is not null group by 1,2 order by 3 desc, 1 asc`,
+      );
+
+      const messagesResp = JSON.parse(
+        JSON.stringify(messages, (key, value) =>
+          typeof value === "bigint" ? Number(value) : value,
+        ),
+      );
+      const scoresResp = JSON.parse(
+        JSON.stringify(scores, (key, value) =>
+          typeof value === "bigint" ? Number(value) : value,
+        ),
+      );
+      await dbInstance.exec(`drop table ${tableName}`);
+      res.send({
+        success: true,
+        data: {
+          scores: scoresResp,
+          messages: messagesResp,
+        },
+      });
+    });
     app.delete("/api/runs/:id", async (req, res) => {
       try {
         const file = await fs.readFile(outputFilePath);
@@ -220,9 +320,20 @@ program
         dataset: Dataset;
         persistToFile: boolean;
       };
+      telemetry.logEvent("ui.run.start", {
+        ...runEventProperties(runs, dataset),
+        persist_to_file: persistToFile,
+      });
       const streamUpdate = (obj: any) => res.write(JSON.stringify(obj) + `\n`);
       // This endpoint expects to execute only one run
-      const completion = await execute(runs[0]!, dataset, streamUpdate);
+      let store = persistToFile ? new EmpiricalStore() : undefined;
+      const completion = await execute(
+        runs[0]!,
+        dataset,
+        streamUpdate,
+        store,
+        runtimeOptions,
+      );
       setRunSummary([completion]);
       const statsUpdate: RunStatsUpdate = {
         type: "run_stats",
@@ -244,7 +355,14 @@ program
     app.listen(availablePort, () => {
       console.log(cyan(`Empirical app running on ${underline(fullUrl)}`));
       opener(fullUrl);
+      telemetry.logEvent("ui.open");
     });
   });
 
 program.parse();
+
+process.on("SIGINT", async function () {
+  // Overriding ctrl-C handler to shutdown telemetry for ui command
+  await telemetry.shutdown();
+  process.exit();
+});

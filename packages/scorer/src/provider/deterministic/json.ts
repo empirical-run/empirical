@@ -1,6 +1,6 @@
 import { ScoringFn } from "../../interface/scorer";
 
-export const name = "is-json";
+export const name = "json-syntax";
 
 export const isJson: ScoringFn = async ({ output, config }) => {
   if (config.type !== name) {

@@ -6,6 +6,15 @@ import { MinusCircledIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { RunResult } from "../types";
 import { BarLoader } from "react-spinners";
 import ScoreBadge from "./ui/score-badge";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "./ui/sheet";
+import { ScoreSummary } from "./score-summary";
+import { RunSampleOutputMetric } from "./run-response-metadata";
 
 export type Header = {
   title: string;
@@ -81,6 +90,12 @@ export const RunColumnHeaders = ({
     }
     const isActive = !!header.active;
     const overlayBg = isActive ? "bg-zinc-900" : "";
+    const averageLatency =
+      header.runResult?.stats?.latency?.average &&
+      header.runResult?.stats?.latency.average.toFixed(0);
+    const averageTokens =
+      header.runResult?.stats?.tokens_used?.average &&
+      header.runResult?.stats?.tokens_used.average.toFixed(0);
     return (
       <div
         key={`header-${index}`}
@@ -134,18 +149,65 @@ export const RunColumnHeaders = ({
                   className={`${overlayBg}`}
                 />
                 <section className="flex flex-row space-x-2 text-muted-foreground items-center mx-4 my-2">
-                  <section className="flex flex-row text-xs gap-1 items-center">
+                  <section className="flex flex-row flex-1 text-xs gap-2 items-center flex-wrap">
                     {(header.runResult?.stats?.scores || []).map((s) => (
                       <>
                         <section className="flex flex-row gap-1 items-center">
-                          <ScoreBadge title={s.name} score={s.avgScore} />
+                          <ScoreBadge title={s.name} score={s.average} />
                         </section>
                       </>
                     ))}
                   </section>
+                  <section className=" flex flex-row text-xs gap-1 items-center">
+                    {(header.runResult?.stats?.scores || []).length > 0 && (
+                      <Sheet>
+                        <SheetTrigger asChild>
+                          <Button variant={"secondary"} size={"xs"}>
+                            Show summary
+                          </Button>
+                        </SheetTrigger>
+                        <SheetContent className="w-[500px] sm:w-[540px]">
+                          <SheetHeader>
+                            <SheetTitle>Scores summary</SheetTitle>
+                          </SheetHeader>
+                          <div className="py-4 h-full overflow-scroll">
+                            <ScoreSummary
+                              runId={header.runResult.id}
+                              stats={header.runResult.stats}
+                            />
+                          </div>
+                        </SheetContent>
+                      </Sheet>
+                    )}
+                  </section>
                 </section>
               </>
             )}
+
+          {(averageLatency || averageTokens) && (
+            <>
+              <Separator orientation="horizontal" className={`${overlayBg}`} />
+              <section className="flex flex-row space-x-2 text-muted-foreground items-center mx-4 my-2">
+                <section className="flex flex-row flex-1 text-xs gap-2 items-center">
+                  {averageTokens && (
+                    <RunSampleOutputMetric
+                      title="Average tokens"
+                      value={averageTokens}
+                      hideSeparator
+                    />
+                  )}
+                  {averageLatency && (
+                    <RunSampleOutputMetric
+                      title="Average latency"
+                      value={`${averageLatency}ms`}
+                      hideSeparator={!averageTokens}
+                    />
+                  )}
+                </section>
+              </section>
+            </>
+          )}
+
           {header.runResult?.loading && (
             <>
               <Separator orientation="horizontal" className={`${overlayBg}`} />

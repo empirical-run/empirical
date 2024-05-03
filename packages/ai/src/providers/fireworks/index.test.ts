@@ -32,11 +32,11 @@ describe("Fireworks provider tool calls", () => {
         },
       ],
     });
-    expect(resp.choices[0].message.tool_calls?.[0].function.name).toBe(
+    expect(resp.choices[0]?.message.tool_calls?.[0]?.function.name).toBe(
       "extract_data",
     );
-    expect(resp.choices[0].message.tool_calls?.[0].function.arguments).contains(
-      '"John Doe"',
-    );
+    expect(
+      resp.choices[0]?.message.tool_calls?.[0]?.function.arguments,
+    ).contains('"John Doe"');
   }, 10000);
 });

@@ -16,7 +16,7 @@ describe.concurrent("test google ai provider", () => {
     });
     expect(chatCompletion.choices.length).toBeGreaterThan(0);
     expect(chatCompletion.choices[0]?.message.content).not.toContain("Asia");
-  }, 10000);
+  }, 20000);
 
   test("test JSON mode for gemini-1.5-pro-latest using passthrough parameter", async () => {
     const chatCompletion = await GoogleAIProvider.chat({
@@ -36,11 +36,11 @@ describe.concurrent("test google ai provider", () => {
     expect(
       JSON.parse(chatCompletion.choices[0]?.message.content!)[0]["recipe_name"],
     ).toBeDefined();
-  }, 20000);
+  }, 120000);
 
-  test("passthrough model parameters works on gemini-1.5-pro", async () => {
+  test("passthrough model parameters works", async () => {
     const chatCompletion = await GoogleAIProvider.chat({
-      model: "gemini-1.5-pro-latest",
+      model: "gemini-1.0-pro",
       messages: [
         {
           role: "user",
@@ -52,7 +52,7 @@ describe.concurrent("test google ai provider", () => {
     });
     expect(chatCompletion.choices.length).toBeGreaterThan(0);
     expect(chatCompletion.choices[0]?.message.content).not.toContain("Asia");
-  }, 10000);
+  }, 20000);
 
   test("availability of total tokens in response", async () => {
     const chatCompletion = await GoogleAIProvider.chat({
@@ -68,5 +68,43 @@ describe.concurrent("test google ai provider", () => {
     expect(chatCompletion.choices.length).toBeGreaterThan(0);
     expect(chatCompletion.choices[0]?.message.content).toContain("Asia");
     expect(chatCompletion.usage?.total_tokens).toBeGreaterThan(0);
-  }, 10000);
+  }, 20000);
+
+  test("handle tool call", async () => {
+    const resp = await GoogleAIProvider.chat({
+      model: "gemini-1.0-pro",
+      messages: [
+        {
+          role: "user",
+          content:
+            "Extract data from message: Hi my name is John Doe. I'm 26 years old and I work in real estate.",
+        },
+      ],
+      tools: [
+        {
+          type: "function",
+          function: {
+            name: "extract_data",
+            description: "extract name from message",
+            parameters: {
+              type: "object",
+              properties: {
+                name: {
+                  type: "string",
+                  description: "the name of the person, e.g. Alexa",
+                },
+              },
+              required: ["name"],
+            },
+          },
+        },
+      ],
+    });
+    expect(resp.choices[0].message.tool_calls?.[0].function.name).toBe(
+      "extract_data",
+    );
+    expect(resp.choices[0].message.tool_calls?.[0].function.arguments).contains(
+      '"John Doe"',
+    );
+  }, 20000);
 });

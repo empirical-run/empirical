@@ -13,7 +13,7 @@ export function ToolCalls({
   if (toolCalls.length === 0) {
     return null;
   }
-  const tabs = toolCalls.filter((t) => t.type === "function");
+  const tabs = toolCalls.filter((t) => t.type === "function" || !t.type);
   return (
     <>
       <Tabs defaultValue={tabs[0]?.id} className="h-full">

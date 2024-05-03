@@ -57,7 +57,7 @@ export default function SampleOutputCard({
 
   const showCompareAgainst = useMemo(
     () =>
-      baseSample?.output.value &&
+      !baseSample?.output.tool_calls?.length &&
       (baseSample?.expected?.value ||
         comparisonSamples?.some(
           (comparisonSample, index) =>
@@ -127,6 +127,10 @@ export default function SampleOutputCard({
     () => !!Object.keys(baseSample?.output.metadata || {}).length,
     [baseSample?.output.metadata],
   );
+  const showCardHeader = useMemo(
+    () => baseSample?.scores && showCompareAgainst,
+    [showCompareAgainst, baseSample?.scores],
+  );
   return (
     <Card
       className={`flex flex-col flex-1 ${
@@ -136,87 +140,89 @@ export default function SampleOutputCard({
       }`}
       onClick={onClickCard}
     >
-      <CardHeader className="p-2 mt-2">
-        {baseResult && baseSample && (
-          <CardTitle className="flex flex-row space-x-2 items-center">
-            <Scores scores={baseSample?.scores || []} />
-            <div className="flex flex-row space-x-2 justify-end items-start self-baseline">
-              {showCompareAgainst && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <DotsVerticalIcon />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <>
-                      <DropdownMenuLabel className="text-xs">
-                        Compare against
-                      </DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuCheckboxItem
-                        checked={!diffView.enabled}
-                        onCheckedChange={clearDiffView}
-                      >
-                        <span className="text-xs">none</span>
-                      </DropdownMenuCheckboxItem>
-                      {baseSample?.expected?.value && (
+      {showCardHeader && (
+        <CardHeader className="p-2 mt-2">
+          {baseResult && baseSample && (
+            <CardTitle className="flex flex-row space-x-2 items-center">
+              <Scores scores={baseSample?.scores || []} />
+              <div className="flex flex-row space-x-2 justify-end items-start self-baseline">
+                {showCompareAgainst && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <DotsVerticalIcon />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <>
+                        <DropdownMenuLabel className="text-xs">
+                          Compare against
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
                         <DropdownMenuCheckboxItem
-                          checked={
-                            diffView.enabled && diffView.type === "expected"
-                          }
-                          onCheckedChange={() => {
-                            enableDiffView({
-                              type: "expected",
-                              text: baseSample?.expected?.value || "",
-                            });
-                          }}
+                          checked={!diffView.enabled}
+                          onCheckedChange={clearDiffView}
                         >
-                          <span className="text-xs">expected</span>
+                          <span className="text-xs">none</span>
                         </DropdownMenuCheckboxItem>
-                      )}
-                      {comparisonSamples?.map((s, i) => {
-                        const result = comparisonResults?.[i];
-                        if (result?.id === baseResult.id) {
-                          return;
-                        }
-                        return (
+                        {baseSample?.expected?.value && (
                           <DropdownMenuCheckboxItem
-                            key={`${baseResult.id}-${baseSample.id}-comparison-${i}`}
                             checked={
-                              diffView.enabled && diffView.type === result?.id
+                              diffView.enabled && diffView.type === "expected"
                             }
                             onCheckedChange={() => {
                               enableDiffView({
-                                type: result?.id || "",
-                                text: s?.output.value || "",
+                                type: "expected",
+                                text: baseSample?.expected?.value || "",
                               });
                             }}
                           >
-                            <span className="text-xs">
-                              {result?.run_config.name}
-                            </span>
-                            <span className=" text-muted-foreground ml-2 font-light">
-                              {" "}
-                              #{result?.id}
-                            </span>
+                            <span className="text-xs">expected</span>
                           </DropdownMenuCheckboxItem>
-                        );
-                      })}
-                    </>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
-            </div>
-          </CardTitle>
-        )}
-        {isEmptyOutput && <EmptySampleCompletion loading={isLoading} />}
-        {baseSample?.error && (
-          <SampleCompletionError errorMessage={baseSample.error.message} />
-        )}
-      </CardHeader>
+                        )}
+                        {comparisonSamples?.map((s, i) => {
+                          const result = comparisonResults?.[i];
+                          if (result?.id === baseResult.id) {
+                            return;
+                          }
+                          return (
+                            <DropdownMenuCheckboxItem
+                              key={`${baseResult.id}-${baseSample.id}-comparison-${i}`}
+                              checked={
+                                diffView.enabled && diffView.type === result?.id
+                              }
+                              onCheckedChange={() => {
+                                enableDiffView({
+                                  type: result?.id || "",
+                                  text: s?.output.value || "",
+                                });
+                              }}
+                            >
+                              <span className="text-xs">
+                                {result?.run_config.name}
+                              </span>
+                              <span className=" text-muted-foreground ml-2 font-light">
+                                {" "}
+                                #{result?.id}
+                              </span>
+                            </DropdownMenuCheckboxItem>
+                          );
+                        })}
+                      </>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+              </div>
+            </CardTitle>
+          )}
+        </CardHeader>
+      )}
       <CardContent
         className="flex flex-col h-full px-4 py-2"
         ref={containerWrapper}
       >
+        {isEmptyOutput && <EmptySampleCompletion loading={isLoading} />}
+        {baseSample?.error && (
+          <SampleCompletionError errorMessage={baseSample.error.message} />
+        )}
         <section className="flex flex-col">
           {diffView.enabled && baseSample && (
             <DiffEditor

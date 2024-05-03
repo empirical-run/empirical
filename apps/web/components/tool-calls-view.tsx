@@ -18,7 +18,9 @@ export function ToolCalls({
     <>
       <Tabs defaultValue={tabs[0]?.id} className="h-full">
         <TabsList className=" rounded-sm w-full overflow-x-scroll justify-start no-scrollbar">
-          <p className=" font-semibold text-sm mr-2 text-white">Tool Calls</p>
+          <p className="font-semibold text-xs mr-2 text-muted-foreground self-center mt-1">
+            TOOL CALLS
+          </p>
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.id}

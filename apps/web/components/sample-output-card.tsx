@@ -128,12 +128,12 @@ export default function SampleOutputCard({
     [baseSample?.output.metadata],
   );
   const showCardHeader = useMemo(
-    () => baseSample?.scores && showCompareAgainst,
+    () => baseSample?.scores || showCompareAgainst,
     [showCompareAgainst, baseSample?.scores],
   );
   return (
     <Card
-      className={`flex flex-col flex-1 ${
+      className={`flex flex-col flex-1 w-full ${
         isActiveColumn
           ? "border-x border-muted rounded-none"
           : "border-zinc-900 rounded-md"

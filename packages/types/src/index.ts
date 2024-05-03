@@ -2,6 +2,7 @@ import {
   ChatCompletionMessageToolCall,
   ToolCall,
   FunctionToolCall,
+  ChatCompletionToolChoice,
 } from "./ai";
 
 export * from "./ai";
@@ -76,6 +77,7 @@ interface ModelParameters {
   top_logprobs?: number;
   timeout?: number;
   tools?: FunctionToolCall[];
+  tool_choice?: ChatCompletionToolChoice;
 
   // For other models, we coerce the above known parameters to appropriate slots
   // If users require other parameters, we support passthrough for other key names

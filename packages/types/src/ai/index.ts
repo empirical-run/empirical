@@ -33,6 +33,7 @@ export interface IAssistantRunResponse {
 
 export type ToolCall = OpenAI.Beta.AssistantTool;
 export type FunctionToolCall = OpenAI.Beta.FunctionTool;
+export type ChatCompletionToolChoice = OpenAI.ChatCompletionToolChoiceOption;
 
 export interface ICreateAndRunAssistantThread {
   (

@@ -1,0 +1,98 @@
+{
+  "$schema": "https://assets.empirical.run/config/schema/latest.json",
+  "runs": [
+    {
+      "type": "model",
+      "provider": "openai",
+      "model": "gpt-3.5-turbo",
+      "prompt": "{{user_message}}",
+      "parameters": {
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "extract_data",
+              "description": "extract name age and location from message",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "location": {
+                    "type": "string",
+                    "description": "If not available this should be empty string"
+                  },
+                  "age": {
+                    "type": "number",
+                    "description": "age of the person, e.g. 34, 52"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "the name of the person, e.g. Alexa"
+                  }
+                },
+                "required": [
+                  "location",
+                  "name",
+                  "age"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "model",
+      "provider": "google",
+      "model": "gemini-1.0-pro",
+      "prompt": "{{user_message}}",
+      "parameters": {
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "extract_data",
+              "description": "extract name age and location from message",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "location": {
+                    "type": "string",
+                    "description": "If not available this should be empty string"
+                  },
+                  "age": {
+                    "type": "number",
+                    "description": "age of the person, e.g. 34, 52"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "the name of the person, e.g. Alexa"
+                  }
+                },
+                "required": [
+                  "location",
+                  "name",
+                  "age"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "dataset": {
+    "samples": [
+      {
+        "inputs": {
+          "user_message": "Hi my name is John Doe. I'm 26 years old and I work in real estate."
+        }
+      },
+      {
+        "inputs": {
+          "user_message": "This is Alice. I am a nurse from Maryland. I was born in 1990."
+        }
+      }
+    ]
+  },
+  "scorers": []
+}

@@ -17,15 +17,22 @@ const createChatCompletion: ICreateChatCompletion = async (
       "AZURE_OPENAI_API_KEY is not set as environment variable",
     );
   }
-  if (!process.env.AZURE_OPENAI_RESOURCE_NAME) {
+  if (!(process.env.AZURE_OPENAI_RESOURCE_NAME || process.env.AZURE_OPENAI_BASE_URL)) {
     throw new AIError(
       AIErrorEnum.MISSING_PARAMETERS,
-      "AZURE_OPENAI_RESOURCE_NAME is not set as environment variable",
+      "AZURE_OPENAI_RESOURCE_NAME or AZURE_OPENAI_BASE_URL is not set as environment variable",
+    );
+  }
+  if(process.env.AZURE_OPENAI_RESOURCE_NAME && process.env.AZURE_OPENAI_BASE_URL) {
+    throw new AIError(
+      AIErrorEnum.INCORRECT_PARAMETERS,
+      "Both AZURE_OPENAI_RESOURCE_NAME and AZURE_OPENAI_BASE_URL should not be set as environment variable at the same time. Please set only one of them.",
     );
   }
   const { executionDone } = await batch.waitForTurn();
   const apiVersion = body.apiVersion || "2024-02-15-preview";
-  const endpoint = `https://${process.env.AZURE_OPENAI_RESOURCE_NAME}.openai.azure.com/openai/deployments/${body.model}/chat/completions?api-version=${apiVersion}`;
+  const baseURL = process.env.AZURE_OPENAI_BASE_URL || `https://${process.env.AZURE_OPENAI_RESOURCE_NAME}.openai.azure.com`;
+  const endpoint = `${baseURL}/openai/deployments/${body.model}/chat/completions?api-version=${apiVersion}`;
   let data: IChatCompletion;
   let requestStartTime = new Date().getTime();
   try {

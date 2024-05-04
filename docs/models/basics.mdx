@@ -106,7 +106,7 @@ See [dataset](../dataset/basics) to learn more about sample inputs.
 
 - `AZURE_OPENAI_API_KEY`: This is the API key to authenticate with Azure. See [their docs](https://learn.microsoft.com/en-us/javascript/api/overview/azure/openai-readme?view=azure-node-preview#using-an-api-key-from-azure) to get the API key.
 
-#### Specific base url
+#### Specify base url
 You can specify the base URL of the Azure OpenAI endpoint by setting **either** one of the following environment variables:
 - `AZURE_OPENAI_RESOURCE_NAME`: This the resource name which is used to create the endpoint base URL with the format `https://$AZURE_OPENAI_RESOURCE_NAME.openai.azure.com`
 - `AZURE_OPENAI_BASE_URL`: This is if you want to specify the entire base URL used to access the chat completions API with the format `$AZURE_OPENAI_BASE_URL/openai/deployments/<model>/chat/completions`. For example - `https://some-custom-url.com`

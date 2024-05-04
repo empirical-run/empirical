@@ -93,7 +93,7 @@ See [dataset](../dataset/basics) to learn more about sample inputs.
 | Provider | Description |
 |----------|-------------|
 | `openai` | All chat models are supported. Requires `OPENAI_API_KEY` environment variable. |
-| `azure-openai` | All chat models from OpenAI that are hosted on Azure are supported. Requires `AZURE_OPENAI_API_KEY` and `AZURE_OPENAI_RESOURCE_NAME` environment variables. |
+| `azure-openai` | All chat models from OpenAI that are hosted on Azure are supported. Requires `AZURE_OPENAI_API_KEY` and either of `AZURE_OPENAI_RESOURCE_NAME` or `AZURE_OPENAI_BASE_URL` environment variables. |
 | `anthropic` | Claude 3 models are supported. Requires `ANTHROPIC_API_KEY` environment variable. |
 | `mistral` | All chat models are supported. Requires `MISTRAL_API_KEY` environment variable. |
 | `google` | Gemini Pro models are supported. Requires `GOOGLE_API_KEY` environment variable. |
@@ -106,6 +106,7 @@ See [dataset](../dataset/basics) to learn more about sample inputs.
 
 - `AZURE_OPENAI_API_KEY`: This is the API key to authenticate with Azure. See [their docs](https://learn.microsoft.com/en-us/javascript/api/overview/azure/openai-readme?view=azure-node-preview#using-an-api-key-from-azure) to get the API key.
 - `AZURE_OPENAI_RESOURCE_NAME`: This the resource name which is used to create the endpoint with the format `https://$AZURE_OPENAI_RESOURCE_NAME.openai.azure.com`
+- `AZURE_OPENAI_BASE_URL`: This is the base URL of the Azure OpenAI endpoint. If you have a different base URL, you can use this to set this environment variable instead of `AZURE_OPENAI_RESOURCE_NAME`.
 
 #### Model configuration
 

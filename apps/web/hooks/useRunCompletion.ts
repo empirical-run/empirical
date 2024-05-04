@@ -316,9 +316,12 @@ export function useRunResults() {
             .filter((s) => !!s)
             .map((s) => JSON.parse(s))
             .map((u) => {
-              // Overwrite the new run id with the existing run id
+              // The server creates a new run id and name, but we want
+              // to keep the existing run id/name because the response is
+              // replaced "in place", and does not create a new column
               if (u.type === "run_metadata") {
                 u.data.id = run.id;
+                u.data.run_config.name = run.run_config.name;
               } else if (u.type === "run_sample") {
                 u.data.run_id = run.id;
               } else if (u.type === "run_sample_score") {

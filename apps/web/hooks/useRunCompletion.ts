@@ -69,6 +69,25 @@ export function useRunResults() {
     [setRunResults],
   );
 
+  const clearOutputsForSample = useCallback(
+    (runId: string, sample: DatasetSample) => {
+      setRunResults((prevRunResults) => {
+        if (!prevRunResults) {
+          return prevRunResults;
+        }
+        return prevRunResults.map((run) => {
+          if (run.id === runId) {
+            run.samples = run.samples.filter(
+              (s) => s.dataset_sample_id !== sample.id,
+            );
+          }
+          return run;
+        });
+      });
+    },
+    [setRunResults],
+  );
+
   const executeRun = useCallback(
     async (run: RunResult, dataset: Dataset) => {
       let runId = run.id;
@@ -274,6 +293,7 @@ export function useRunResults() {
     async (runs: RunResult[], sample: DatasetSample) => {
       runs.forEach(async (run) => {
         setLoadingStateForRun(run.id, true);
+        clearOutputsForSample(run.id, sample);
         for await (const chunk of streamFetch("/api/runs/execute", {
           method: "POST",
           headers: {
@@ -296,9 +316,12 @@ export function useRunResults() {
             .filter((s) => !!s)
             .map((s) => JSON.parse(s))
             .map((u) => {
-              // Overwrite the new run id with the existing run id
+              // The server creates a new run id and name, but we want
+              // to keep the existing run id/name because the response is
+              // replaced "in place", and does not create a new column
               if (u.type === "run_metadata") {
                 u.data.id = run.id;
+                u.data.run_config.name = run.run_config.name;
               } else if (u.type === "run_sample") {
                 u.data.run_id = run.id;
               } else if (u.type === "run_sample_score") {

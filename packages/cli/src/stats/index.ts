@@ -24,8 +24,13 @@ function runStatsSummary(
   runs: RunCompletion[],
   enableColors: boolean,
 ): string[][] {
-  // TODO: should get rid of this once config has separate scorer object
-  const scorerNames = runs[0]?.stats?.scores.map((s) => s.name) || [];
+  const scorerNames = [
+    ...new Set(
+      runs.flatMap(
+        (run) => run?.stats?.scores?.map((score) => score.name) || [],
+      ),
+    ),
+  ];
   const rows = [
     [
       " ",
@@ -56,7 +61,7 @@ function runStatsSummary(
               ? setMetricColor(metric, scoreStats.average)
               : metric;
           } else {
-            return percentStr(0);
+            return "-";
           }
         }),
       ]);

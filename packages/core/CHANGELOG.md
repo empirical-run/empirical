@@ -1,5 +1,19 @@
 # @empiricalrun/core
 
+## 0.8.0
+
+### Minor Changes
+
+- 973c9b2: feat: add support for tool calls
+
+### Patch Changes
+
+- Updated dependencies [973c9b2]
+- Updated dependencies [f3b632e]
+- Updated dependencies [0b2d1c0]
+  - @empiricalrun/ai@0.10.0
+  - @empiricalrun/scorer@0.2.3
+
 ## 0.7.0
 
 ### Minor Changes

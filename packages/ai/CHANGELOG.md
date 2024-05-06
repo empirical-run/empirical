@@ -1,5 +1,16 @@
 # @empiricalrun/ai
 
+## 0.10.0
+
+### Minor Changes
+
+- 973c9b2: feat: add support for tool calls
+- f3b632e: feat: allow passing a base URL for azure-openai provider
+
+### Patch Changes
+
+- 0b2d1c0: fix: handle rate_limit_exceeded in openai assistants
+
 ## 0.9.0
 
 ### Minor Changes

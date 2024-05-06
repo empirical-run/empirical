@@ -1,6 +1,6 @@
 [
     {
-        "query": "What are people saying about Ramen Nagi, So Gong, and McDonalds and how would you compare them?",
+        "query": "What are people saying about Ramen Nagi, So Gong, and McDonald's and how would you compare them?",
         "expected_tool_call": [
             {
                 "name": "get_some_reviews",
@@ -8,20 +8,20 @@
                     "restaurant_names": [
                         "Ramen Nagi",
                         "So Gong",
-                        "McDonalds"
+                        "McDonald's"
                     ]
                 }
             }
         ]
     },
     {
-        "query": "Would you say McDonalds in Palo Alto is better than McDonalds in Menlo Park?",
+        "query": "Would you say McDonald's in Palo Alto is better than McDonald's in Menlo Park?",
         "expected_tool_call": [
             {
                 "name": "get_some_reviews",
                 "arguments": {
                     "restaurant_names": [
-                        "McDonalds"
+                        "McDonald's"
                     ],
                     "city": "Palo Alto"
                 }
@@ -30,7 +30,7 @@
                 "name": "get_some_reviews",
                 "arguments": {
                     "restaurant_names": [
-                         "McDonalds"
+                         "McDonald's"
                     ],
                     "city": "Menlo Park"
                 }
@@ -38,13 +38,13 @@
         ]
     },
     {
-        "query": "I heard that people say McDonalds in Japan is classier than the one in Palo Alto. Can you confirm?",
+        "query": "I heard that people say McDonald's in Japan is classier than the one in Palo Alto. Can you confirm?",
         "expected_tool_call": [
             {
                 "name": "get_some_reviews",
                 "arguments": {
                     "restaurant_names": [
-                         "McDonalds"
+                         "McDonald's"
                     ],
                     "city": "Japan"
                 }
@@ -53,7 +53,7 @@
                 "name": "get_some_reviews",
                 "arguments": {
                     "restaurant_names": [
-                        "McDonalds"
+                        "McDonald's"
                     ],
                     "city": "Palo Alto"
                 }

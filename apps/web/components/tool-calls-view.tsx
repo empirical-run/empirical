@@ -13,12 +13,18 @@ export function ToolCalls({
   if (toolCalls.length === 0) {
     return null;
   }
-  const tabs = toolCalls.filter((t) => t.type === "function");
+  const tabs = toolCalls.filter((t) => t.type === "function" || !t.type);
   return (
     <>
-      <Tabs defaultValue={tabs[0]?.id} className="h-full">
+      <Tabs
+        defaultValue={tabs[0]?.id}
+        className="h-full"
+        key={`tool-calls-${tabs[0]?.id}`}
+      >
         <TabsList className=" rounded-sm w-full overflow-x-scroll justify-start no-scrollbar">
-          <p className=" font-semibold text-sm mr-2 text-white">Tool Calls</p>
+          <p className="font-semibold text-xs mr-2 text-muted-foreground self-center mt-1 whitespace-nowrap">
+            TOOL CALLS
+          </p>
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.id}

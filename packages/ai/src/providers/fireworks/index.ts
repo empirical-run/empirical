@@ -22,6 +22,8 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     n: config.n,
     stop: config.stop,
     response_format: config.response_format,
+    tools: body.tools,
+    tool_choice: body.tool_choice,
     ...getPassthroughParams(config),
   });
   const apiKey = process.env.FIREWORKS_API_KEY;

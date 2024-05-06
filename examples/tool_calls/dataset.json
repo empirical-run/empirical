@@ -1,0 +1,63 @@
+[
+    {
+        "query": "What are people saying about Ramen Nagi, So Gong, and McDonalds and how would you compare them?",
+        "expected_tool_call": [
+            {
+                "name": "get_some_reviews",
+                "arguments": {
+                    "restaurant_names": [
+                        "Ramen Nagi",
+                        "So Gong",
+                        "McDonalds"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "query": "Would you say McDonalds in Palo Alto is better than McDonalds in Menlo Park?",
+        "expected_tool_call": [
+            {
+                "name": "get_some_reviews",
+                "arguments": {
+                    "restaurant_names": [
+                        "McDonalds"
+                    ],
+                    "city": "Palo Alto"
+                }
+            },
+            {
+                "name": "get_some_reviews",
+                "arguments": {
+                    "restaurant_names": [
+                         "McDonalds"
+                    ],
+                    "city": "Menlo Park"
+                }
+            }
+        ]
+    },
+    {
+        "query": "I heard that people say McDonalds in Japan is classier than the one in Palo Alto. Can you confirm?",
+        "expected_tool_call": [
+            {
+                "name": "get_some_reviews",
+                "arguments": {
+                    "restaurant_names": [
+                         "McDonalds"
+                    ],
+                    "city": "Japan"
+                }
+            },
+            {
+                "name": "get_some_reviews",
+                "arguments": {
+                    "restaurant_names": [
+                        "McDonalds"
+                    ],
+                    "city": "Palo Alto"
+                }
+            }
+        ]
+    }
+]

@@ -70,7 +70,8 @@ export const modelExecutor: Transformer = async function (
   let value = "",
     tokens_used,
     finish_reason,
-    latency;
+    latency,
+    tool_calls;
   try {
     const completion = await ai.chat.completions.create({
       model,
@@ -80,6 +81,7 @@ export const modelExecutor: Transformer = async function (
     value = completion.choices?.[0]?.message.content || "";
     tokens_used = completion.usage?.total_tokens || 0;
     finish_reason = completion.choices?.[0]?.finish_reason || "";
+    tool_calls = completion.choices?.[0]?.message.tool_calls || undefined;
     latency = completion.latency || 0;
   } catch (e: any) {
     const error = {
@@ -103,6 +105,7 @@ export const modelExecutor: Transformer = async function (
       tokens_used,
       finish_reason,
       latency,
+      tool_calls,
     },
   };
 };

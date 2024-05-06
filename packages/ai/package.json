@@ -24,7 +24,7 @@
     "@types/promise-retry": "^1.1.6"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.19.0",
+    "@anthropic-ai/sdk": "^0.20.8",
     "@empiricalrun/fetch": "workspace:^",
     "@google/generative-ai": "^0.7.1",
     "@mistralai/mistralai": "^0.1.3",

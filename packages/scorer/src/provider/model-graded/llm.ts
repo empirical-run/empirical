@@ -61,15 +61,6 @@ export const checkLlmCriteria: ScoringFn = async ({
     ];
   }
   const scorerName = config.name || name;
-  if (!output.value) {
-    return [
-      {
-        name: scorerName,
-        score: 0,
-        message: "no output value to score",
-      },
-    ];
-  }
   if (config.criteria) {
     let replacements: any = { ...sample.inputs };
     if (sample.expected) {
@@ -79,11 +70,14 @@ export const checkLlmCriteria: ScoringFn = async ({
     criteria = replacePlaceholders(config.criteria, replacements);
   }
   if (!criteria) {
+    return [];
+  }
+  if (!output.value) {
     return [
       {
         name: scorerName,
         score: 0,
-        message: "criteria is not specified for the scorer",
+        message: "no output value to score",
       },
     ];
   }

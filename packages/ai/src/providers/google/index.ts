@@ -2,6 +2,8 @@ import {
   IAIProvider,
   IChatCompletion,
   ICreateChatCompletion,
+  ChatCompletionToolChoice,
+  FunctionToolCall,
 } from "@empiricalrun/types";
 import {
   GoogleGenerativeAI,
@@ -9,6 +11,10 @@ import {
   Part,
   GenerateContentResult,
   POSSIBLE_ROLES,
+  Tool,
+  ToolConfig,
+  FunctionCallingMode,
+  FunctionDeclaration,
 } from "@google/generative-ai";
 import OpenAI from "openai";
 import { BatchTaskManager } from "../../utils";
@@ -55,6 +61,55 @@ const massageOpenAIMessagesToGoogleAI = function (
   return contents;
 };
 
+const massageToolsAndToolsChoice = function (
+  tools?: FunctionToolCall[],
+  tool_choice?: ChatCompletionToolChoice,
+): {
+  tools?: Tool[];
+  toolConfig?: ToolConfig;
+} {
+  if (!tools) {
+    return {};
+  }
+  let googTools: Tool[] | undefined;
+  let googToolConfig: ToolConfig | undefined;
+  if (tools) {
+    googTools = [
+      {
+        functionDeclarations: tools.map(
+          (t) => t.function,
+        ) as FunctionDeclaration[],
+      },
+    ];
+  }
+
+  if (tool_choice) {
+    googToolConfig = {
+      functionCallingConfig: {
+        mode: FunctionCallingMode.AUTO,
+      },
+    };
+    if (tool_choice === "none") {
+      googToolConfig.functionCallingConfig.mode = FunctionCallingMode.NONE;
+    }
+    if (typeof tool_choice !== "string") {
+      googToolConfig.functionCallingConfig.allowedFunctionNames = [
+        tool_choice.function.name,
+      ];
+      googToolConfig.functionCallingConfig.mode = FunctionCallingMode.ANY;
+    }
+  }
+  return {
+    tools: googTools,
+    toolConfig: {
+      functionCallingConfig: {
+        mode: FunctionCallingMode.AUTO,
+        allowedFunctionNames: [],
+      },
+    },
+  };
+};
+
 const createChatCompletion: ICreateChatCompletion = async (body) => {
   if (!process.env.GOOGLE_API_KEY) {
     throw new AIError(
@@ -69,12 +124,22 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const contents = massageOpenAIMessagesToGoogleAI(messages);
   const history = contents.slice(0, -1);
   const message = contents[contents.length - 1]?.parts!;
-  const { executionDone } = await batch.waitForTurn();
   const maxOutputTokens = body.max_tokens || body.maxOutputTokens || 1024;
   // Default temp for gemini-1.5-pro and gemini-1.0-pro-002
   const temperature = body.temperature || 1.0;
+  const toolAndToolConfig = massageToolsAndToolsChoice(
+    body.tools,
+    body.tool_choice,
+  );
   // Deleting params not supported by the generationConfig but used by other sections of the program
-  const usedParameters = ["timeout", "max_tokens", "messages", "model"];
+  const usedParameters = [
+    "timeout",
+    "max_tokens",
+    "messages",
+    "model",
+    "tools",
+    "tools_choice",
+  ];
   usedParameters.forEach((param) => {
     if (body[param]) {
       delete body[param];
@@ -86,7 +151,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
     temperature,
     ...body,
   };
-
+  const { executionDone } = await batch.waitForTurn();
   try {
     const startedAt = Date.now();
     const completion = await promiseRetry<GenerateContentResult>(
@@ -96,13 +161,14 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
             // @ts-ignore same as above
             generationConfig,
             history,
+            ...toolAndToolConfig,
           })
           .sendMessage(message)
           .catch((err: Error) => {
             // TODO: Replace with instanceof checks when the Gemini SDK exports errors
             if (err.message.includes("[429 Too Many Requests]")) {
               console.warn(
-                `Retrying request for google model: ${body.model}. Retry attempt: ${attempt}`,
+                `Retrying request for google model: ${model}. Retry attempt: ${attempt}`,
               );
               retry(err);
             }
@@ -143,6 +209,16 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
           message: {
             content: responseContent,
             role: "assistant",
+            tool_calls: completion.response.functionCalls()?.map((f) => {
+              return {
+                id: crypto.randomUUID(),
+                type: "function",
+                function: {
+                  name: f.name,
+                  arguments: JSON.stringify(f.args),
+                },
+              };
+            }),
           },
           logprobs: null,
         },

@@ -1,4 +1,9 @@
-import { ChatCompletionMessageToolCall, ToolCall } from "./ai";
+import {
+  ChatCompletionMessageToolCall,
+  ToolCall,
+  FunctionToolCall,
+  ChatCompletionToolChoice,
+} from "./ai";
 
 export * from "./ai";
 
@@ -71,6 +76,8 @@ interface ModelParameters {
   stop?: string | Array<string>;
   top_logprobs?: number;
   timeout?: number;
+  tools?: FunctionToolCall[];
+  tool_choice?: ChatCompletionToolChoice;
 
   // For other models, we coerce the above known parameters to appropriate slots
   // If users require other parameters, we support passthrough for other key names
@@ -158,7 +165,7 @@ export interface RunCompletion {
   created_at: Date;
 }
 
-export type DatasetSampleInputs = { [key: string]: string };
+export type DatasetSampleInputs = { [key: string]: unknown };
 
 export type DatasetSample = {
   id: string;

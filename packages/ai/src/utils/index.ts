@@ -5,6 +5,12 @@ export function replacePlaceholders(string: string, obj: any) {
   let replacement = string;
   let found = replacement.match(regex);
   while (found) {
+    const containsOnlyPlaceholder = replacement.replace(regex, "") === "";
+    if (containsOnlyPlaceholder) {
+      const regexMatch = Array.from(replacement.matchAll(regex));
+      const [, key] = regexMatch[0]!;
+      return obj[key!.trim()];
+    }
     replacement = replacement.replace(regex, function (match, key) {
       return obj[key.trim()];
     });
@@ -29,6 +35,8 @@ function isReservedParameter(paramName: string) {
     "stop",
     "top_logprobs",
     "timeout",
+    "tools",
+    "tool_choice",
   ];
   return reservedParameters.indexOf(paramName) >= 0;
 }

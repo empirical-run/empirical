@@ -51,7 +51,8 @@
       "group": "Model providers",
       "pages": [
         "models/basics",
-        "models/custom"
+        "models/custom",
+        "models/assistants"
       ]
     },
     {

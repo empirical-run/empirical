@@ -7,14 +7,13 @@ Empirical can test how different models and model configurations work for your
 application. You can define which models and configurations to test in the
 [configuration file](../configuration).
 
-Empirical supports two types of model providers:
+Empirical supports three types of model providers:
 
-- `model`: API calls to off-the-shelf LLMs, like OpenAI's GPT4
-- `py-script`: Custom models or applications defined by a Python module
+- `model`: API calls to LLMs that are hosted by inference platforms, like OpenAI's GPT4
+- `py-script`: Custom models or applications defined as a Python module. See [the Python guide](./custom) to configure this.
+- `assistant`: API calls to OpenAI Assistants. See [the Assistants guide](./assistants) to configure this. 
 
-To configure a custom model with Python, see [the Python guide](./custom).
-
-The rest of this doc focuses on the `model` type.
+The rest of this guide focuses on the `model` type.
 
 ## Run configuration for LLMs
 

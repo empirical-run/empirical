@@ -118,6 +118,7 @@ program
     };
     dotenv.config({ path: runTimeOptions.envFilePath });
     console.log(yellow("Initiating run..."));
+    telemetry.logEvent("run.start");
 
     const startTime = performance.now();
     const { runs, dataset: datasetConfig } = await readConfig();
@@ -153,7 +154,6 @@ program
         name: "Scores ",
       });
     }
-    telemetry.logEvent("run.start", runEventProperties(runs, dataset));
     const completion = await Promise.all(
       runs.map((r) => {
         r.parameters = r.parameters ? r.parameters : {};

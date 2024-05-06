@@ -156,7 +156,11 @@ const runAssistant: ICreateAndRunAssistantThread = async (body) => {
           }
           return asstRunResp;
         })().catch((err: any) => {
-          if ((err.message as string).includes("server_error")) {
+          const serverError = (err.message as string).includes("server_error");
+          const rateLimitError = (err.message as string).includes(
+            "rate_limit_exceeded",
+          );
+          if (serverError || rateLimitError) {
             console.warn(
               `Retrying request due to server error (attempt ${attempt})`,
             );

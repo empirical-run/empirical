@@ -165,7 +165,7 @@ export interface RunCompletion {
   created_at: Date;
 }
 
-export type DatasetSampleInputs = { [key: string]: string };
+export type DatasetSampleInputs = { [key: string]: unknown };
 
 export type DatasetSample = {
   id: string;

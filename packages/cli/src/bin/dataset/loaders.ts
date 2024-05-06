@@ -7,8 +7,16 @@ type LoaderFunction = (contents: string) => Promise<DatasetSample[]>;
 
 async function jsonLoader(contents: string): Promise<DatasetSample[]> {
   try {
-    const parsed = JSON.parse(contents);
-    return parsed.samples;
+    const parsed: Record<string, unknown>[] = JSON.parse(contents);
+    const datasetSamples: DatasetSample[] = parsed.map(
+      (inputs: Record<string, unknown>, index: number) => {
+        return {
+          id: `${index + 1}`,
+          inputs,
+        };
+      },
+    );
+    return datasetSamples;
   } catch (e) {
     throw new DatasetError(
       DatasetErrorEnum.JSON_LOADER_FAILED,

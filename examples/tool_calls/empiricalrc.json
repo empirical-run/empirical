@@ -5,192 +5,36 @@
       "type": "model",
       "provider": "openai",
       "model": "gpt-3.5-turbo",
-      "prompt": "{{user_message}}",
+      "prompt": [{
+        "role": "user",
+        "content": "{{question}}"
+      }],
       "parameters": {
         "tools": [
           {
             "type": "function",
             "function": {
-              "name": "extract_data",
-              "description": "extract name age and location from message",
+              "name": "get_transaction",
+              "description": "get details of a transaction",
               "parameters": {
                 "type": "object",
                 "properties": {
-                  "location": {
+                  "trans_id": {
                     "type": "string",
-                    "description": "If not available this should be empty string"
-                  },
-                  "age": {
-                    "type": "number",
-                    "description": "age of the person, e.g. 34, 52"
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "the name of the person, e.g. Alexa"
+                    "description": "id of the transaction"
                   }
                 },
                 "required": [
-                  "location",
-                  "name",
-                  "age"
+                  "trans_id"
                 ]
               }
             }
-          }
-        ]
-      }
-    },
-    {
-      "type": "model",
-      "provider": "google",
-      "model": "gemini-1.0-pro",
-      "prompt": "{{user_message}}",
-      "parameters": {
-        "tools": [
+          },
           {
             "type": "function",
             "function": {
-              "name": "extract_data",
-              "description": "extract name age and location from message",
-              "parameters": {
-                "type": "object",
-                "properties": {
-                  "location": {
-                    "type": "string",
-                    "description": "If not available this should be empty string"
-                  },
-                  "age": {
-                    "type": "number",
-                    "description": "age of the person, e.g. 34, 52"
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "the name of the person, e.g. Alexa"
-                  }
-                },
-                "required": [
-                  "location",
-                  "name",
-                  "age"
-                ]
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "model",
-      "provider": "anthropic",
-      "model": "claude-3-haiku",
-      "prompt": "{{user_message}}",
-      "parameters": {
-        "tools": [
-          {
-            "type": "function",
-            "function": {
-              "name": "extract_data",
-              "description": "extract name age and location from message",
-              "parameters": {
-                "type": "object",
-                "properties": {
-                  "location": {
-                    "type": "string",
-                    "description": "If not available this should be empty string"
-                  },
-                  "age": {
-                    "type": "number",
-                    "description": "age of the person, e.g. 34, 52"
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "the name of the person, e.g. Alexa"
-                  }
-                },
-                "required": [
-                  "location",
-                  "name",
-                  "age"
-                ]
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "model",
-      "provider": "mistral",
-      "model": "mistral-large-latest",
-      "prompt": "{{user_message}}",
-      "parameters": {
-        "tools": [
-          {
-            "type": "function",
-            "function": {
-              "name": "extract_data",
-              "description": "extract name age and location from message",
-              "parameters": {
-                "type": "object",
-                "properties": {
-                  "location": {
-                    "type": "string",
-                    "description": "If not available this should be empty string"
-                  },
-                  "age": {
-                    "type": "number",
-                    "description": "age of the person, e.g. 34, 52"
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "the name of the person, e.g. Alexa"
-                  }
-                },
-                "required": [
-                  "location",
-                  "name",
-                  "age"
-                ]
-              }
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "model",
-      "provider": "fireworks",
-      "model": "firefunction-v1",
-      "prompt": "{{user_message}}",
-      "parameters": {
-        "tools": [
-          {
-            "type": "function",
-            "function": {
-              "name": "extract_data",
-              "description": "extract name age and location from message",
-              "parameters": {
-                "type": "object",
-                "properties": {
-                  "location": {
-                    "type": "string",
-                    "description": "If not available this should be empty string"
-                  },
-                  "age": {
-                    "type": "number",
-                    "description": "age of the person, e.g. 34, 52"
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "the name of the person, e.g. Alexa"
-                  }
-                },
-                "required": [
-                  "location",
-                  "name",
-                  "age"
-                ]
-              }
+              "name": "get_transaction_list",
+              "description": "get list of past transactions"
             }
           }
         ]
@@ -198,18 +42,15 @@
     }
   ],
   "dataset": {
-    "samples": [
-      {
-        "inputs": {
-          "user_message": "Hi my name is John Doe. I'm 26 years old and I work in real estate."
-        }
-      },
-      {
-        "inputs": {
-          "user_message": "This is Alice. I am a nurse from Maryland. I was born in 1990."
-        }
-      }
-    ]
+    "path": "https://docs.google.com/spreadsheets/d/1wn4GJqX2Wpkui4KUGgQZECQyZpvXwgSXWgzvyXruDDI/edit#gid=0"
   },
-  "scorers": []
+  "scorers": [{
+    "type": "py-script",
+    "path": "score.py",
+    "name": "validate tool calls"
+  },{
+    "type": "llm-critic",
+    "criteria": "{{expected_message}}",
+    "name": "validate message" 
+  }]
 }

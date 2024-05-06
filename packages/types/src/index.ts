@@ -38,11 +38,6 @@ export type Scorer = LLMScorer | SyntaxScorer | ScriptScorer;
 
 export type Prompt = string | ChatPrompt[];
 
-export type Provider = {
-  type: string;
-  value: string;
-};
-
 interface RunConfigBase {
   type: string;
   name?: string;

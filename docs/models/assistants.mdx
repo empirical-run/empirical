@@ -1,0 +1,73 @@
+---
+title: 'OpenAI Assistants'
+description: 'Test and compare different OpenAI Assistants'
+---
+
+The [Assistants API from OpenAI](https://platform.openai.com/docs/assistants/overview) combines their
+language models with tools like file search and code interpreter. With Empirical, you can test and
+evaluate your Assistants configuration to increase output response quality.
+
+## Run configuration
+
+In your config file, set `type` to `assistant`, and specify the unique identifier of
+the [OpenAI Assistant](https://platform.openai.com/assistants) in the `assistant_id` field.
+
+The `prompt` key specifies the message that the user sends to the assistant. In the config
+below, we refer to the `user_query` input from the test [dataset](../dataset/basics).
+
+```json empiricalrc.json
+"runs": [
+  {
+    "type": "assistant",
+    "assistant_id": "asst_foobar123",
+    "prompt": "{{user_query}}"
+  }
+]
+```
+
+<ParamField body="type" type="string" required>
+  Should be "assistant"
+</ParamField>
+<ParamField body="assistant_id" type="string" required>
+  Unique identifier of the assistant object, linked to the same account as the
+  `OPENAI_API_KEY` environment variable
+</ParamField>
+<ParamField body="prompt" type="string" required>
+  Incoming message from the user sent as the first message of the thread
+</ParamField>
+<ParamField body="parameters" type="object">
+  JSON object of parameters to customize the Assistant (see more below)
+</ParamField>
+<ParamField body="name" type="string">
+  A a custom name or label for this run
+</ParamField>
+
+## Example
+
+The [Assistants example](https://github.com/empirical-run/empirical/blob/main/examples/assistants/) illustrates a complete configuration.
+
+## Parameters
+
+The `parameters` field in the run configuration allows you to customize the behavior of
+the OpenAI Assistant. These can be modified in the JSON configuration, or in the 
+[web UI](../reporter/basics) to generate run variations.
+
+```json empiricalrc.json
+"runs": [
+  {
+    "type": "assistant",
+    "assistant_id": "asst_foobar123",
+    "prompt": "{{user_query}}",
+    "parameters": {
+      "model": "gpt-3.5-turbo",
+      "temperature": 0.1,
+      "instructions": "New instructions for the assistant"
+    }
+  }
+]
+```
+
+
+## Limitations
+
+Our support for OpenAI Assistants supports single-turn behavior only (one message from the user)

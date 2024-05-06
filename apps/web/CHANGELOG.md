@@ -1,5 +1,15 @@
 # web
 
+## 0.11.0
+
+### Minor Changes
+
+- 973c9b2: feat: add support for tool calls
+
+### Patch Changes
+
+- 73e35c5: feat: support editing of dataset sample in UI
+
 ## 0.10.0
 
 ### Minor Changes

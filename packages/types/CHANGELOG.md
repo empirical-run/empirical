@@ -1,5 +1,11 @@
 # @empiricalrun/types
 
+## 0.8.0
+
+### Minor Changes
+
+- 973c9b2: feat: add support for tool calls
+
 ## 0.7.0
 
 ### Minor Changes

@@ -1,5 +1,19 @@
 # @empiricalrun/cli
 
+## 0.11.0
+
+### Minor Changes
+
+- 973c9b2: feat: add support for tool calls
+
+### Patch Changes
+
+- 73e35c5: feat: support editing of dataset sample in UI
+- 9fae264: fix: scorer row missing in cli summary if scorer was not configured for all runs
+- Updated dependencies [973c9b2]
+  - @empiricalrun/types@0.8.0
+  - @empiricalrun/core@0.8.0
+
 ## 0.10.0
 
 ### Minor Changes

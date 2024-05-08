@@ -1,5 +1,15 @@
 # @empiricalrun/scorer
 
+## 0.3.0
+
+### Minor Changes
+
+- 740a844: feat: add support for merging inputs and add multi-turn chat example
+
+### Patch Changes
+
+- @empiricalrun/ai@0.10.0
+
 ## 0.2.3
 
 ### Patch Changes

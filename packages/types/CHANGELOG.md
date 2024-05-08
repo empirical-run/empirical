@@ -1,5 +1,15 @@
 # @empiricalrun/types
 
+## 0.9.0
+
+### Minor Changes
+
+- 740a844: feat: add support for merging inputs and add multi-turn chat example
+
+### Patch Changes
+
+- 952baa1: docs: add openai assistants support
+
 ## 0.8.0
 
 ### Minor Changes

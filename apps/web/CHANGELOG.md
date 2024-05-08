@@ -1,5 +1,11 @@
 # web
 
+## 0.12.0
+
+### Minor Changes
+
+- 740a844: feat: add support for merging inputs and add multi-turn chat example
+
 ## 0.11.0
 
 ### Minor Changes

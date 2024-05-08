@@ -4,17 +4,17 @@ import json
 from enum import Enum
 
 
-class EvalResultEnum(Enum):
+class ScorerResultEnum(Enum):
     YES = "Yes"
     NO = "No"
 
 
-class EvaluationResult(TypedDict):
-    result: EvalResultEnum
+class ScorerResult(TypedDict):
+    result: ScorerResultEnum
     reason: str
 
 
-async def llm_evaluation(output, criteria) -> EvaluationResult:
+async def llm_score(output, criteria) -> ScorerResult:
     system_prompt = "You are an expert evaluator who grades an output string based on a criteria. The output must fulfil the criteria to pass the evaluation."
     openai = AsyncOpenAI()
     completion = await openai.chat.completions.create(
@@ -40,8 +40,8 @@ async def llm_evaluation(output, criteria) -> EvaluationResult:
                             "result": {
                                 "type": "string",
                                 "enum": [
-                                    EvalResultEnum.YES.value,
-                                    EvalResultEnum.NO.value,
+                                    ScorerResultEnum.YES.value,
+                                    ScorerResultEnum.NO.value,
                                 ],
                             },
                         },
@@ -56,11 +56,11 @@ async def llm_evaluation(output, criteria) -> EvaluationResult:
         },
     )
     response = completion.choices[0].message.tool_calls[0]
-    return EvaluationResult(**json.loads(response.function.arguments))
+    return ScorerResult(**json.loads(response.function.arguments))
 
 
 async def evaluate(output, inputs):
-    thread: list[object] = output.get("metadata", {}).get("thread", [])
+    thread: list[object] = output.get("metadata", {}).get("messages", [])
     assistant_responses: list[object] = [
         obj for obj in thread if obj["role"] == "assistant"
     ]
@@ -68,11 +68,11 @@ async def evaluate(output, inputs):
     message = ""
     total = len(inputs)
     for idx, assistant_response in enumerate(assistant_responses):
-        score = await llm_evaluation(
+        score = await llm_score(
             assistant_response.get("content"),
             inputs[idx].get("acceptable_response", ""),
         )
-        if score["result"] == EvalResultEnum.YES.value:
+        if score["result"] == ScorerResultEnum.YES.value:
             success = success + 1
 
         message = (

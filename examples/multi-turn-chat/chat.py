@@ -20,6 +20,8 @@ async def execute(inputs, parameters):
         openai.chat.completions.create
     thread_length = len(messages)
     return {
+        # setting the last response as the final output of the conversation
         "value": messages[thread_length - 1].get("content", ""),
-        "metadata": {"thread": messages},
+        # saving the thread in metadata for eyeball and scoring output
+        "metadata": {"messages": messages},
     }

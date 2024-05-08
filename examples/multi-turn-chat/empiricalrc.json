@@ -9,5 +9,12 @@
   "dataset": {
     "path": "https://docs.google.com/spreadsheets/d/1fZ_3FFj94SiucglQOTrCHQTZVhrWJwWqfSk-vEIp8_I/edit#gid=0",
     "group_by": "conv_id"
-  }
+  },
+  "scorers": [
+    {
+      "name": "llm-evaluation",
+      "type": "py-script",
+      "path": "score.py"
+    }
+  ]
 }

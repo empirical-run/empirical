@@ -61,6 +61,8 @@ export function JsonAsTab({
   const onChangeTab = useCallback(
     (tab: string) => {
       setActiveTab(tab);
+      console.log(JSON.stringify(data));
+      console.log("setting remote active tab", tab);
       remoteOnChangeTab(tab);
     },
     [remoteOnChangeTab],

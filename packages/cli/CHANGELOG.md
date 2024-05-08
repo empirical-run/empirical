@@ -1,5 +1,18 @@
 # @empiricalrun/cli
 
+## 0.12.0
+
+### Minor Changes
+
+- 740a844: feat: add support for merging inputs and add multi-turn chat example
+
+### Patch Changes
+
+- Updated dependencies [952baa1]
+- Updated dependencies [740a844]
+  - @empiricalrun/types@0.9.0
+  - @empiricalrun/core@0.8.1
+
 ## 0.11.0
 
 ### Minor Changes

@@ -39,23 +39,8 @@ export function useSyncedTabs(tabList: string[], tabStoreKey: string) {
   );
 
   useEffect(() => {
-    if ((tabs || []).length < tabList.length) {
-      // find the missing tab
-      const missingTabs = tabList.filter(
-        // @ts-ignore
-        (tab) => !tabs.includes(tab),
-      );
-      setActiveTab(missingTabs[0]);
-    }
     setTabs(tabList);
-  }, [tabs, setTabs, tabList, activeTab]);
-
-  useEffect(() => {
-    //@ts-ignore
-    if (!tabs.includes(activeTab || "")) {
-      setActiveTab(tabs[0]);
-    }
-  }, [activeTab, tabs]);
+  }, [setTabs, tabList]);
 
   return {
     tabs,

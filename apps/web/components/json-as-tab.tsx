@@ -49,12 +49,6 @@ export function JsonAsTab({
   const { activeTab: remoteActiveTab, onChangeTab: remoteOnChangeTab } =
     useSyncedTabs(tabs, storeKey);
   const [activeTab, setActiveTab] = useState<string | undefined>();
-  const activeTabValue = useMemo(() => {
-    if (activeTab && data) {
-      return data[activeTab];
-    }
-    return undefined;
-  }, [activeTab, data]);
 
   useEffect(() => {
     if (remoteActiveTab && data[remoteActiveTab]) {
@@ -67,6 +61,8 @@ export function JsonAsTab({
   const onChangeTab = useCallback(
     (tab: string) => {
       setActiveTab(tab);
+      console.log(JSON.stringify(data));
+      console.log("setting remote active tab", tab);
       remoteOnChangeTab(tab);
     },
     [remoteOnChangeTab],
@@ -76,7 +72,7 @@ export function JsonAsTab({
     <>
       <div className="flex flex-row space-x-2 justify-end">
         <>
-          {activeTabValue && showExpandOption && (
+          {showExpandOption && (
             <Sheet>
               <SheetTrigger asChild>
                 <Button
@@ -90,15 +86,11 @@ export function JsonAsTab({
               </SheetTrigger>
               <SheetContent className="w-[700px] sm:w-[540px]">
                 <SheetHeader>
-                  <SheetTitle>{activeTab}</SheetTitle>
+                  <SheetTitle>Inputs</SheetTitle>
                 </SheetHeader>
                 <div className="py-4 h-full">
                   <CodeViewer
-                    value={
-                      typeof activeTabValue === "string"
-                        ? activeTabValue
-                        : JSON.stringify(activeTabValue, null, 2)
-                    }
+                    value={JSON.stringify(data, null, 2)}
                     readOnly // expand sheet is readonly
                     scrollable
                     language="json"

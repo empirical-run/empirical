@@ -44,10 +44,6 @@ export default function Page(): JSX.Element {
     () => (dataset?.samples || [])?.map((s) => s.id),
     [dataset],
   );
-  const datasetInputNames = useMemo(
-    () => Object.keys(dataset?.samples?.[0]?.inputs || {}),
-    [dataset],
-  );
   const runColumnHeaders = useMemo(
     () => tableHeaders.filter((h) => h.type == "completion"),
     [tableHeaders],
@@ -202,7 +198,6 @@ export default function Page(): JSX.Element {
                   <div className="flex flex-1 min-w-[500px] overflow-hidden">
                     <SampleCard
                       sample={inputSample!}
-                      inputTabs={datasetInputNames}
                       onSampleAdd={(sample) => addDatasetSample(sample)}
                       onSampleInputUpdate={updateDatasetSampleInput}
                       onSampleRemove={(sample) => {

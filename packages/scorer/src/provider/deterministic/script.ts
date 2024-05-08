@@ -74,7 +74,7 @@ export const scoreWithPythonScript: ScoringFn = async ({
     });
 
     shell.on("pythonError", function (message) {
-      console.error(message);
+      console.error(message.traceback);
       runOutput.push(
         JSON.stringify([
           {

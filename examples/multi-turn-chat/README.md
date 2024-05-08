@@ -6,7 +6,7 @@ The dataset configured is configured in a [Google Sheet](https://docs.google.com
 
 ### Run Configuration
 The run is implemented using python script. The run configuration mentions `chat.py` as part of configuration.
-The implementation of the multi-turn conversation is done in `chat.py`.
+Essentially `chat.py` implements multi-turn conversation.
 
 ### Scorer Configuration
 The scoring mechanism is implemented through a Python script named `score.py`.

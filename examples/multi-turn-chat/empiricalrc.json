@@ -1,0 +1,13 @@
+{
+  "$schema": "https://assets.empirical.run/config/schema/latest.json",
+  "runs": [
+    {
+      "type": "py-script",
+      "path": "chat.py"
+    }
+  ],
+  "dataset": {
+    "path": "https://docs.google.com/spreadsheets/d/1fZ_3FFj94SiucglQOTrCHQTZVhrWJwWqfSk-vEIp8_I/edit#gid=0",
+    "group_by": "conv_id"
+  }
+}

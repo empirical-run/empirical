@@ -160,7 +160,7 @@ export interface RunCompletion {
   created_at: Date;
 }
 
-export type DatasetSampleInputs = { [key: string]: unknown };
+export type DatasetSampleInputs = any;
 
 export type DatasetSample = {
   id: string;
@@ -185,6 +185,7 @@ export type DatasetConfig =
     }
   | {
       path: string;
+      group_by?: string;
     };
 
 // TODO: fix types. text generation and others how does that show up ?

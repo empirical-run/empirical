@@ -67,9 +67,26 @@ export async function loadDataset(config: DatasetConfig): Promise<Dataset> {
     }));
   } else if ("path" in config) {
     contents = await fetchContents(config.path); // wrap and throw if fetching fails
-    const parsed = await parseDataset(config.path, contents);
-    if (parsed) {
-      samples = parsed;
+    samples = (await parseDataset(config.path, contents)) || samples;
+    if (samples && config.group_by) {
+      const updatedSamples: DatasetSample[] = [];
+      for (const idx in samples) {
+        const sample = samples[idx]!;
+        const updateIdx = updatedSamples.findIndex((s) => {
+          return (
+            s.inputs[0][config.group_by!] === sample.inputs[config.group_by!]
+          );
+        });
+        if (updateIdx < 0) {
+          updatedSamples.push({
+            ...sample,
+            inputs: [sample.inputs],
+          });
+        } else {
+          (updatedSamples[updateIdx]?.inputs as any[]).push(sample.inputs);
+        }
+      }
+      samples = updatedSamples;
     }
   } else {
     throw new DatasetError(

@@ -24,18 +24,15 @@ describe.concurrent("test google ai provider", () => {
       messages: [
         {
           role: "user",
-          content: `List a few popular cookie recipes using this JSON schema: {'type': 'object', 'properties': { 'recipe_name': {'type': 'string'}}}`,
+          content: `List a few popular cookie recipes using this JSON schema: {'type': 'array', 'items': { 'type': 'object', 'properties': { 'recipe_name': { 'type': 'string' }}}}`,
         },
       ],
       response_mime_type: "application/json",
     });
     expect(chatCompletion.choices.length).toBeGreaterThan(0);
-    expect(
-      JSON.parse(chatCompletion.choices[0]?.message.content!),
-    ).toBeDefined();
-    expect(
-      JSON.parse(chatCompletion.choices[0]?.message.content!)[0]["recipe_name"],
-    ).toBeDefined();
+    const contents = chatCompletion.choices[0]?.message.content!;
+    expect(JSON.parse(contents)).toBeDefined();
+    expect(JSON.parse(contents)[0]["recipe_name"]).toBeDefined();
   }, 120000);
 
   test("passthrough model parameters works", async () => {

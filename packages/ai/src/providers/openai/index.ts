@@ -31,7 +31,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   });
 
   try {
-    const startedAt = Date.now();
+    let startedAt = Date.now();
     const completions = await promiseRetry<IChatCompletion>(
       (retry, attempt) => {
         return openai.chat.completions.create(body).catch((err) => {
@@ -49,6 +49,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
             console.warn(
               `Retrying request for openai model: ${body.model}. Retry attempt: ${attempt}`,
             );
+            startedAt = Date.now();
             retry(err);
             throw err;
           }

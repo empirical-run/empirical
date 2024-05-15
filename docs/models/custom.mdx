@@ -1,16 +1,15 @@
 ---
 title: 'Custom model or app'
-description: 'Specify your application or model with a Python entrypoint'
+description: 'Specify your application or model with a Python script'
 ---
 
-Using a Python function as entrypoint, you can define a **custom model** to test
+Using a Python function as the entry-point, you can define a **custom model** to test
 with Empirical. This method can be also used to **test an application**, which 
 does pre or post-processing around the LLM call or chains multiple LLM calls together.
 
 ## Run configuration
 
-In your config file, set `type` as `py-script` and specify the Python file
-path in the `path` field.
+A minimal configuration looks like:
 
 ```json
 "runs": [
@@ -20,12 +19,36 @@ path in the `path` field.
   }
 ]
 ```
-You can additional pass following properties in run configuration:
-- **name**: `string` - a custom name to your run
-- **parameters**: `object` - object to pass values to the script to modify its behavior
+
+<ParamField body="type" type="string" required>
+  Should be "py-script"
+</ParamField>
+<ParamField body="path" type="string" required>
+  Specify path to the Python file, which must have a function `def execute` (see [file structure](#file-structure))
+</ParamField>
+<ParamField body="parameters" type="object">
+  JSON object of parameters passed to the `execute` method to customize script behavior
+</ParamField>
+<ParamField body="name" type="string">
+  A custom name or label for this run (auto-generated if not specified)
+</ParamField>
+
+## File structure 
 
 The Python file is expected to have a method called `execute` with the following
 signature:
+
+```python rag.py
+def execute(inputs, parameters):
+    # call the model and other processing here    
+    # ...
+    return {
+        "value": output, # string
+        "metadata": {
+            "key": value # string
+        }
+    }
+```
 
 - **Arguments**
   - inputs: dict of key-value pairs with [sample inputs](../dataset/basics)
@@ -35,21 +58,7 @@ signature:
   - metadata (dict): Custom key-value pairs that are passed on to the scorer and
     web reporter
 
-
-```python rag.py
-def execute(inputs):
-    # ...
-    return {
-        "value": output,
-        "metadata": {
-            "key": value
-        }
-    }
-```
-
-In a RAG application, `metadata` can be used to capture the retrieved context.
-
 ## Example
 
 The [RAG example](https://github.com/empirical-run/empirical/tree/main/examples/rag)
-uses this model provider to test a RAG application.
+uses this model provider to test a RAG application. The `metadata` field is used to capture the retrieved context.

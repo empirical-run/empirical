@@ -7,231 +7,32 @@ Empirical can test how different models and model configurations work for your
 application. You can define which models and configurations to test in the
 [configuration file](../configuration).
 
-Empirical supports three types of model providers:
+Empirical supports a few types of model providers:
 
-- `model`: API calls to LLMs that are hosted by inference platforms, like OpenAI's GPT4
-- `py-script`: Custom models or applications defined as a Python module. See [the Python guide](./custom) to configure this.
-- `assistant`: API calls to OpenAI Assistants. See [the Assistants guide](./assistants) to configure this. 
+## Hosted models
 
-The rest of this guide focuses on the `model` type.
-
-## Run configuration for LLMs
-
-To test an LLM, specify the following properties in the configuration:
-
-- `provider`: Name of the inference provider (e.g. `openai`, or other [supported providers](#supported-providers))
-- `model`: Name of the model (e.g. `gpt-3.5-turbo` or `claude-3-haiku`)
-- `prompt`: [Prompt](#prompt) sent to the model, with optional [placeholders](#placeholders)
-- `name` [optional]: A name or label for this run (auto-generated if not specified)
-
-You can configure as many model providers as you like. These models will be shown in a 
-side-by-side comparison view in the web reporter.
-
-```json empiricalrc.json
-"runs": [
-  {
-    "type": "model",
-    "provider": "openai",
-    "model": "gpt-3.5-turbo",
-    "prompt": "Hey I'm {{user_name}}"
-  }
-]
-```
-
-### Prompt
-The prompt serves as the initial input provided to the model to generate a response. 
-This property accepts either a string or a JSON chat format.
-
-The JSON chat format allows for a sequence of messages comprising the conversation so far. 
-Each message object has two required fields:
-- `role`: Role of the messenger (either `system`, `user` or `assistant`)
-- `content`: The content of the message
-
-```json empiricalrc.json
-{
-  "runs": [
-    {
-      "prompt": [{
-        "role": "system",
-        "content": "You are an SQLite expert who can convert natural language questions to SQL queries...."
-      }, {
-        "role": "user",
-        "content": "How many singers do we have?"
-      }]
-    }
-  ]
-}
-```
-The [Text-to-SQL example](https://github.com/empirical-run/empirical/tree/main/examples/spider)
-uses this prompt format to test conversion of natural language questions to SQL queries.
-
-String based prompts are wrapped in `user` role message before sending to the model.
-```json empiricalrc.json
-{
-  "runs": [
-    {
-      "prompt": "Extract the name, age and location from the message, and respond with a JSON object ..."
-    }
-  ]
-}
-```
-The [basic example](https://github.com/empirical-run/empirical/tree/main/examples/basic) uses this prompt 
-format to test extraction of named entities from natural language text.
-
-
-### Placeholders
-
-Define placeholders in the prompt with Handlebars syntax (like `{{user_name}}`) to inject values
-from the dataset sample. These placeholders will be replaced with the corresponding input value
-during execution.
-
-See [dataset](../dataset/basics) to learn more about sample inputs.
-
-## Supported providers
-
-| Provider | Description |
-|----------|-------------|
-| `openai` | All chat models are supported. Requires `OPENAI_API_KEY` environment variable. |
-| `azure-openai` | All chat models from OpenAI that are hosted on Azure are supported. Requires `AZURE_OPENAI_API_KEY` and either of `AZURE_OPENAI_RESOURCE_NAME` or `AZURE_OPENAI_BASE_URL` environment variables. |
-| `anthropic` | Claude 3 models are supported. Requires `ANTHROPIC_API_KEY` environment variable. |
-| `mistral` | All chat models are supported. Requires `MISTRAL_API_KEY` environment variable. |
-| `google` | Gemini Pro models are supported. Requires `GOOGLE_API_KEY` environment variable. |
-| `fireworks` | Models hosted on Fireworks (e.g. `dbrx-instruct`) are supported. Requires `FIREWORKS_API_KEY` environment variable. |
-
-<AccordionGroup>
-<Accordion title="Using models from Azure OpenAI">
-
-#### Get API key
-
-- `AZURE_OPENAI_API_KEY`: This is the API key to authenticate with Azure. See [their docs](https://learn.microsoft.com/en-us/javascript/api/overview/azure/openai-readme?view=azure-node-preview#using-an-api-key-from-azure) to get the API key.
-
-#### Specify base url
-You can specify the base URL of the Azure OpenAI endpoint by setting **either** one of the following environment variables:
-- `AZURE_OPENAI_RESOURCE_NAME`: This the resource name which is used to create the endpoint base URL with the format `https://$AZURE_OPENAI_RESOURCE_NAME.openai.azure.com`
-- `AZURE_OPENAI_BASE_URL`: This is if you want to specify the entire base URL used to access the chat completions API with the format `$AZURE_OPENAI_BASE_URL/openai/deployments/<model>/chat/completions`. For example - `https://some-custom-url.com`
-
-#### Model configuration
-
-In the configuration file,
-- Set the `provider` to `azure-openai`
-- Set `model` to the name of your model deployment
-
-#### Additional parameters
-
-- By default, the `api-version` parameter is set to "2024-02-15-preview". If you need to override this, set the `apiVersion` parameter
-
+Popular models hosted by inference platforms (e.g. GPT-4o by OpenAI) can be
+directly specified in the Empirical run configuration with type as `model`.
 
 ```json
 "runs": [
   {
     "type": "model",
-    "provider": "azure-openai",
-    "model": "gpt-35-deployment",
-    "prompt": "Hey I'm {{user_name}}",
-    "parameters": {
-      "apiVersion": "2024-02-15-preview"
-    }
-  }
-]
-```
-
-</Accordion>
-<Accordion title="Using models from Google">
-
-#### Get API key
-
-The [Google AI studio](https://aistudio.google.com/) is the easiest way to get API keys. Once you have the key,
-set it as the `GOOGLE_API_KEY` environment variable.
-
-#### Supported models
-
-We support the Gemini model codes, as defined in the [official docs](https://ai.google.dev/models/gemini).
-
-- Gemini 1.5 Pro: set `model` to `gemini-1.5-pro-latest`
-- Gemini 1 Pro: set `model` to `gemini-pro` or `gemini-1.0-pro`
-
-</Accordion>
-</AccordionGroup>
-
-### Environment variables
-
-API calls to model providers require API keys, which are stored as environment variables. The CLI can work with:
-
-- Existing environment variables (using `process.env`)
-- Environment variables defined in `.env` or `.env.local` files, in the current working directory
-  - For .env files that are located elsewhere, you can pass the `--env-file` flag
-
-```sh
-npx @empiricalrun/cli --env-file <PATH_TO_ENV_FILE>
-```
-
-### Model parameters
-
-To override parameters like `temperature` or `max_tokens`, you can pass `parameters` alongwith the provider
-configuration. All OpenAI parameters (see their [API reference](https://platform.openai.com/docs/api-reference/chat/create))
-are supported, except for a few [limitations](#limitations).
-
-For non-OpenAI models, we coerce these parameters to the most appropriate target parameter (e.g. `stop` in OpenAI
-becomes `stop_sequences` for Anthropic.)
-
-You can add other parameters or override this behavior with [passthrough](#passthrough).
-
-```json empiricalrc.json
-"runs": [
-  {
-    "type": "model",
     "provider": "openai",
-    "model": "gpt-3.5-turbo",
-    "prompt": "Hey I'm {{user_name}}",
-    "parameters": {
-      "temperature": 0.1
-    }
+    "model": "gpt-4o",
+    "prompt": "Hey I'm {{user_name}}"
   }
 ]
 ```
 
-#### Passthrough
+- See how to [configure these models](./model)
+- For OpenAI Assistants, see [the Assistant guide](./assistants)
 
-If your models rely on other parameters, you can still specify them in the configuration. These
-parameters will be passed as-is to the model.
+## Custom scripts
 
-For example, Mistral models support a `safePrompt` parameter for [guardrailing](https://docs.mistral.ai/platform/guardrailing/).
+For mature applications, or for those that require pre or post-processing around
+the model API call, it is recommended to write a custom script provider. That way,
+you can reference/import parts of your application and sharing code between your
+app and tests.
 
-```json empiricalrc.json
-"runs": [
-  {
-    "type": "model",
-    "provider": "mistral",
-    "model": "mistral-tiny",
-    "prompt": "Hey I'm {{user_name}}",
-    "parameters": {
-      "temperature": 0.1,
-      "safePrompt": true
-    }
-  }
-]
-```
-
-#### Configuring request timeout
-
-You can set the timeout duration in milliseconds under model parameters in the `empiricalrc.json` file. This might be required for prompt completions that are expected to take more time, for example while running models like Claude Opus. If no specific value is assigned, the default timeout duration of 30 seconds will be applied.
-
-```json empiricalrc.json
-"runs": [
-  {
-    "type": "model",
-    "provider": "anthropic",
-    "model": "claude-3-opus",
-    "prompt": "Hey I'm {{user_name}}",
-    "parameters": {
-      "timeout": 10000
-    }
-  }
-]
-```
-
-#### Limitations
-
-- These parameters are not supported today: `logit_bias`, `user`, `stream`
-
-If this limitation is blocking your use of Empirical, please file a [feature request](https://github.com/empirical-run/empirical/issues/new).
+- See [the Python guide](./custom) to configure models or apps defined as a Python module, with type `py-script`

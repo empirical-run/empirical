@@ -1,0 +1,54 @@
+---
+title: 'Output object'
+description: 'Reference for the output object structure'
+---
+
+All model types return an output object which has the following
+properties. This object is made available to the scoring functions.
+
+## How to use this?
+
+- **Generation**
+  - Hosted models are pre-configured to respond with this object
+  - If you are using [Custom scripts](../models/custom), the `execute` method is
+    expected to return this object
+- **Scoring**: If you are writing a [custom scorer in Python](../scoring/python), you can use this
+  as a reference for the `output` object sent to the scorer.
+
+## Output structure
+
+<ParamField body="value" type="string" required>
+  The value from the model (for chat models, this is the message content from the
+  assistant's response.)
+</ParamField>
+<ParamField body="metadata" type="object">
+  An arbitrary key (string), value (string) object that can be used to store additional metadata
+  (e.g. retrieved context from a RAG pipeline, or result of a pre-processing step). The
+  metadata is shown on the web reporter and can also be scored.
+</ParamField>
+<ParamField body="tool_calls" type="object[]">
+  List of [tool call](#tool-call) objects in the response from the model.
+</ParamField>
+
+## Tool call
+
+This mirrors the OpenAI tool call object.
+
+<ParamField body="id" type="string" required>
+  A unique identifier for the tool call.
+</ParamField>
+<ParamField body="type" type="string">
+  Equal to "function", since only one type is supported.
+</ParamField>
+<ParamField body="function" type="object">
+  The [function](#function) object.
+</ParamField>
+
+### Function
+
+<ParamField body="name" type="string" required>
+  Name of the function
+</ParamField>
+<ParamField body="arguments" type="string" string>
+  The arguments to call the function with in a string-ified JSON format
+</ParamField>

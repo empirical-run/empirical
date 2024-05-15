@@ -93,7 +93,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   const { contents, systemPrompt } = convertOpenAIToAnthropicAI(messages);
   const { executionDone } = await batchTaskManager.waitForTurn();
   try {
-    const startedAt = Date.now();
+    let startedAt = Date.now();
     const response = await promiseRetry<Anthropic.Beta.Tools.ToolsBetaMessage>(
       (retry, attempt) => {
         return anthropic.beta.tools.messages
@@ -122,6 +122,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
               console.warn(
                 `Retrying request for anthropic model: ${body.model}. Retry attempt: ${attempt}`,
               );
+              startedAt = Date.now();
               retry(err);
               throw err;
             }

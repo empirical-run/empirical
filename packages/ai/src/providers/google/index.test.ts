@@ -30,7 +30,6 @@ describe.concurrent("test google ai provider", () => {
       response_mime_type: "application/json",
     });
     expect(chatCompletion.choices.length).toBeGreaterThan(0);
-    console.log(chatCompletion.choices[0]);
     const contents = chatCompletion.choices[0]?.message.content!;
     expect(JSON.parse(contents)).toBeDefined();
     expect(JSON.parse(contents)[0]["recipe_name"]).toBeDefined();

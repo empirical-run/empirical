@@ -1,4 +1,4 @@
-import { RunsConfig } from "../../types";
+import { RunsConfig } from "@empiricalrun/types";
 import { config as OpenAIRunsConfig } from "./defaults";
 
 export enum DefaultRunsConfigType {

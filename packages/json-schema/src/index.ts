@@ -3,8 +3,8 @@ import path from "path";
 import fs from "fs";
 import packageJson from "./../../cli/package.json";
 
-const tsconfigPath = path.join(__dirname, "./../../cli/tsconfig.json");
-const typesPath = path.join(__dirname, "./../../cli/src/types/index.ts");
+const tsconfigPath = path.join(__dirname, "./../../ai/tsconfig.json");
+const typesPath = path.join(__dirname, "./../../ai/src/index.ts");
 
 const config: Config = {
   path: typesPath,

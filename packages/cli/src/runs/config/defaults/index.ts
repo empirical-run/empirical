@@ -1,4 +1,4 @@
-import { RunsConfig } from "../../../types";
+import { RunsConfig } from "@empiricalrun/types";
 
 export const config: RunsConfig = {
   $schema: "https://assets.empirical.run/config/schema/latest.json",

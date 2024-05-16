@@ -1,6 +1,6 @@
 import { DatasetSample } from "@empiricalrun/types";
 import crypto from "crypto";
-import { DatasetError, DatasetErrorEnum } from "../../error";
+import { DatasetError, DatasetErrorEnum } from "../error";
 import csv from "csvtojson";
 
 type LoaderFunction = (contents: string) => Promise<DatasetSample[]>;

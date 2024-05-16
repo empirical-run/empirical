@@ -13,8 +13,8 @@ import {
   getLocalDBInstance,
 } from "@empiricalrun/core";
 import { loadDataset } from "./dataset";
-import { DatasetError } from "../error";
-import { DefaultRunsConfigType, getDefaultRunsConfig } from "../runs";
+import { DatasetError } from "./error";
+import { DefaultRunsConfigType, getDefaultRunsConfig } from "./runs";
 import {
   Dataset,
   RunConfig,
@@ -27,8 +27,8 @@ import {
   failedOutputsSummary,
   printStatsSummary,
   setRunSummary,
-} from "../stats";
-import { reportOnCI } from "../reporters/ci";
+} from "./stats";
+import { reportOnCI } from "./reporters/ci";
 import detect from "detect-port";
 import {
   ProgressBar,

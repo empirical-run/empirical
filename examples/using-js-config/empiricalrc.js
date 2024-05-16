@@ -1,4 +1,4 @@
-/** @type {import('@empiricalrun/types').RunsConfig} */
+/** @type {import("@empiricalrun/types").EmpiricalrunConfig} */
 export default {
   runs: [
     {
@@ -6,17 +6,6 @@ export default {
       provider: "openai",
       model: "gpt-3.5-turbo",
       prompt: "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}"
-    },
-    {
-      type: "model",
-      provider: "openai",
-      model: "gpt-4-turbo-preview",
-      prompt: "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
-      parameters: {
-        response_format: {
-          type: "json_object"
-        }
-      }
     }
   ],
   dataset: {

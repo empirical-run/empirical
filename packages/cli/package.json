@@ -1,5 +1,5 @@
 {
-  "name": "@empiricalrun/cli",
+  "name": "empiricalrun",
   "version": "0.12.0",
   "main": "dist/bin/index.js",
   "publishConfig": {
@@ -7,7 +7,7 @@
     "access": "public"
   },
   "bin": {
-    "@empiricalrun/cli": "./dist/bin/index.js"
+    "empiricalrun": "./dist/bin/index.js"
   },
   "author": "Empirical Team <hey@empirical.run>",
   "license": "MIT",

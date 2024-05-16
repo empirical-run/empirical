@@ -1,6 +1,6 @@
-import { RunsConfig } from "@empiricalrun/types";
+import { EmpiricalrunConfig } from "@empiricalrun/types";
 
-export const config: RunsConfig = {
+export const config: EmpiricalrunConfig = {
   $schema: "https://assets.empirical.run/config/schema/latest.json",
   runs: [
     {

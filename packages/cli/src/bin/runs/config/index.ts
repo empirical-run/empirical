@@ -1,17 +1,17 @@
-import { RunsConfig } from "@empiricalrun/types";
+import { EmpiricalrunConfig } from "@empiricalrun/types";
 import { config as OpenAIRunsConfig } from "./defaults";
 
 export enum DefaultRunsConfigType {
   DEFAULT = "default",
 }
 
-const map = new Map<DefaultRunsConfigType, RunsConfig>([
+const map = new Map<DefaultRunsConfigType, EmpiricalrunConfig>([
   [DefaultRunsConfigType.DEFAULT, OpenAIRunsConfig],
 ]);
 
 export const getDefaultRunsConfig = (
   name: DefaultRunsConfigType,
-): RunsConfig => {
+): EmpiricalrunConfig => {
   if (map.has(name)) {
     return { ...map.get(name)! };
   } else {

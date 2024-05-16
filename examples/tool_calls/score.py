@@ -2,6 +2,10 @@ import json
 
 
 def evaluate(output, inputs):
+    """
+    Returns score=1 if the output has the expected tool calls by checking for their
+    expected name and parameters. Returns score=0 otherwise.
+    """
     expected_output = inputs.get("expected_tool_call", "")
     if expected_output == "":
         return []

@@ -15,13 +15,16 @@ A minimal configuration looks like:
 "runs": [
   {
     "type": "py-script",
-    "path": "rag.py"
+    "path": "rag.py",
+    "parameters": {
+      "feature_flag": "enabled"
+    }
   }
 ]
 ```
 
 <ParamField body="type" type="string" required>
-  Should be "py-script"
+  Set to "py-script"
 </ParamField>
 <ParamField body="path" type="string" required>
   Specify path to the Python file, which must have a function `def execute` (see [file structure](#file-structure))
@@ -40,8 +43,12 @@ signature:
 
 ```python rag.py
 def execute(inputs, parameters):
-    # call the model and other processing here    
+    # call the model and other processing here  
     # ...
+
+    # optionally, use parameters to change script behavior
+    feature_flag = parameters.get("feature_flag", False)
+
     return {
         "value": output, # string
         "metadata": {
@@ -50,13 +57,20 @@ def execute(inputs, parameters):
     }
 ```
 
-- **Arguments**
-  - inputs: dict of key-value pairs with [sample inputs](../dataset/basics)
-  - parameters: dict of key-value pairs with the run parameters
-- **Returns**: an output dict with
-  - value (string): The response from the model/application
-  - metadata (dict): Custom key-value pairs that are passed on to the scorer and
-    web reporter
+### Function arguments
+
+<ParamField body="inputs" type="dict">
+  A dict object of key-value pairs with [inputs](../dataset/basics) picked up from the dataset
+</ParamField>
+<ParamField body="parameters" type="dict">
+  A dict object of key-value pairs that can be used to modify the script's behavior. Parameters are
+  defined in the [run configuration](#run-configuration).
+</ParamField>
+
+### Function return type
+
+The function is expected to return the [output object](./output) with `value` (string) as the
+required field.
 
 ## Example
 

@@ -153,7 +153,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
   };
   const { executionDone } = await batch.waitForTurn();
   try {
-    const startedAt = Date.now();
+    let startedAt = Date.now();
     const completion = await promiseRetry<GenerateContentResult>(
       (retry, attempt) => {
         return modelInstance
@@ -170,6 +170,7 @@ const createChatCompletion: ICreateChatCompletion = async (body) => {
               console.warn(
                 `Retrying request for google model: ${model}. Retry attempt: ${attempt}`,
               );
+              startedAt = Date.now();
               retry(err);
             }
             throw err;

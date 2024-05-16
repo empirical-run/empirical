@@ -44,6 +44,7 @@
         "examples",
         "configuration",
         "running-in-ci",
+        "reporter",
         "telemetry"
       ]
     },
@@ -51,8 +52,16 @@
       "group": "Model providers",
       "pages": [
         "models/basics",
+        {
+          "group": "Hosted models",
+          "pages": [
+            "models/model",
+            "models/providers"
+          ]
+        },
+        "models/assistants",
         "models/custom",
-        "models/assistants"
+        "models/output"
       ]
     },
     {
@@ -67,12 +76,6 @@
         "scoring/basics",
         "scoring/llm",
         "scoring/python"
-      ]
-    },
-    {
-      "group": "Reporter",
-      "pages": [
-        "reporter/basics"
       ]
     }
   ],

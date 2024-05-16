@@ -267,7 +267,7 @@ export interface RuntimeOptions {
   pythonPath: string;
 }
 
-export type EmpiricalrunConfig = {
+export type Config = {
   $schema?: string;
   runs: RunConfig[];
   dataset: DatasetConfig;

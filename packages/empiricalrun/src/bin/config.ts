@@ -1,4 +1,4 @@
-import { EmpiricalrunConfig } from "@empiricalrun/types";
+import { Config } from "@empiricalrun/types";
 import { getFileLoaderForFileName } from "./loaders/file";
 import {
   buildErrorLog,
@@ -6,12 +6,12 @@ import {
   buildWarningLog,
 } from "./logger/cli-logger";
 
-export async function readEmpiricalConfig(): Promise<EmpiricalrunConfig> {
+export async function readEmpiricalConfig(): Promise<Config> {
   const cwd = process.cwd();
   const fileName = "empiricalrc";
   try {
     const loader = await getFileLoaderForFileName(fileName, cwd);
-    const config = await loader<EmpiricalrunConfig>();
+    const config = await loader<Config>();
     console.log(buildSuccessLog(`read ${fileName} file successfully`));
     config.runs.forEach((r) => {
       // if scorers are not set for a run, then override it with the global scorers

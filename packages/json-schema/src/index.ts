@@ -9,7 +9,7 @@ const typesPath = path.join(__dirname, "./../../types/src/index.ts");
 const config: Config = {
   path: typesPath,
   tsconfig: tsconfigPath,
-  type: "EmpiricalrunConfig",
+  type: "Config",
 };
 const schema = createGenerator(config).createSchema(config.type);
 const schemaString = JSON.stringify(schema, null, 2);

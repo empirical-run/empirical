@@ -1,4 +1,4 @@
-/** @type {import("@empiricalrun/types").EmpiricalrunConfig} */
+/** @type {import("empiricalrun").EmpiricalrunConfig} */
 export default {
   runs: [
     {

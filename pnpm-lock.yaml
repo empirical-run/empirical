@@ -169,17 +169,17 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
-  packages/cli:
+  packages/empiricalrun:
     dependencies:
-      '@empiricalrun/core':
-        specifier: workspace:*
-        version: link:../core
+      '@empiricalrun/ai':
+        specifier: workspace:^
+        version: link:../ai
       '@empiricalrun/fetch':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../fetch
-      '@empiricalrun/types':
+      '@empiricalrun/scorer':
         specifier: workspace:*
-        version: link:../types
+        version: link:../scorer
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.21
@@ -198,15 +198,27 @@ importers:
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
+      duckdb-async:
+        specifier: ^0.10.0
+        version: 0.10.0
       express:
         specifier: ^4.19.2
         version: 4.19.2
+      openai:
+        specifier: ^4.29.0
+        version: 4.38.5
       opener:
         specifier: ^1.5.2
         version: 1.5.2
       picocolors:
         specifier: ^1.0.0
         version: 1.0.0
+      posthog-node:
+        specifier: ^4.0.1
+        version: 4.0.1
+      python-shell:
+        specifier: ^5.0.0
+        version: 5.0.0
       table:
         specifier: ^6.8.2
         version: 6.8.2
@@ -214,6 +226,9 @@ importers:
         specifier: ^4.10.2
         version: 4.10.2
     devDependencies:
+      '@empiricalrun/types':
+        specifier: workspace:*
+        version: link:../types
       '@empiricalrun/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -229,37 +244,6 @@ importers:
       '@types/opener':
         specifier: ^1.4.3
         version: 1.4.3
-
-  packages/core:
-    dependencies:
-      '@empiricalrun/ai':
-        specifier: workspace:^
-        version: link:../ai
-      '@empiricalrun/scorer':
-        specifier: workspace:*
-        version: link:../scorer
-      duckdb-async:
-        specifier: ^0.10.0
-        version: 0.10.0
-      openai:
-        specifier: ^4.29.0
-        version: 4.29.0
-      posthog-node:
-        specifier: ^4.0.1
-        version: 4.0.1
-      python-shell:
-        specifier: ^5.0.0
-        version: 5.0.0
-    devDependencies:
-      '@empiricalrun/types':
-        specifier: workspace:*
-        version: link:../types
-      '@empiricalrun/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.4.5
 
   packages/eslint-config:
     devDependencies:
@@ -2261,16 +2245,10 @@ packages:
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
     dev: true
 
-  /@types/node@18.19.24:
-    resolution: {integrity: sha512-eghAz3gnbQbvnHqB+mgB2ZR3aH6RhdEmHGS48BnV75KceQPHqabkxKI0BbUSsqhqy2Ddhc2xD/VAR9ySZd57Lw==}
-    dependencies:
-      undici-types: 5.26.5
-
   /@types/node@18.19.31:
     resolution: {integrity: sha512-ArgCD39YpyyrtFKIqMDvjz79jto5fcI/SVUs2HwB+f0dAzq68yqOdyaSivLiLugSziTpNXLQrVb7RZFmdZzbhA==}
     dependencies:
       undici-types: 5.26.5
-    dev: false
 
   /@types/node@20.11.24:
     resolution: {integrity: sha512-Kza43ewS3xoLgCEpQrsT+xRo/EJej1y0kVYGiLFE1NEODXGzTfwiC6tXTLMQskn1X4/Rjlh0MQUvx9W+L9long==}
@@ -3797,6 +3775,7 @@ packages:
   /dotenv@16.4.5:
     resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
     engines: {node: '>=12'}
+    dev: false
 
   /duckdb-async@0.10.0:
     resolution: {integrity: sha512-YMDYulx5JLzT01CkqfG813h3ikCF3Pf7nV2xH1OZdVB6q0A6Rofrtf0x1CIotXY33fifgFY1jte3WPzD+3708Q==}
@@ -6341,7 +6320,7 @@ packages:
     resolution: {integrity: sha512-ic6C681bSow1XQdKhADthM/OOKqNL05M1gCFLx1mRqLJ+yH49v6qnvaWQ76kwqI/IieCuVTXfRfTk3sz4cB45w==}
     hasBin: true
     dependencies:
-      '@types/node': 18.19.24
+      '@types/node': 18.19.31
       '@types/node-fetch': 2.6.11
       abort-controller: 3.0.0
       agentkeepalive: 4.5.0
@@ -6358,7 +6337,7 @@ packages:
     resolution: {integrity: sha512-mIL9WtrFNOanpx98mJ+X/wkoepcxdqqu0noWFoNQHl/yODQ47YM7NEYda7qp8JfjqpLFVxY9mQhshoS/Fqac0A==}
     hasBin: true
     dependencies:
-      '@types/node': 18.19.24
+      '@types/node': 18.19.31
       '@types/node-fetch': 2.6.11
       abort-controller: 3.0.0
       agentkeepalive: 4.5.0
@@ -6374,7 +6353,7 @@ packages:
     resolution: {integrity: sha512-Ym5GJL98ZhLJJ7enBx53jjG3vwN/fsB+Ozh46nnRZZS9W1NiYqbwkJ+sXd3dkCIiWIgcyyOPL2Zr8SQAzbpj3g==}
     hasBin: true
     dependencies:
-      '@types/node': 18.19.24
+      '@types/node': 18.19.31
       '@types/node-fetch': 2.6.11
       abort-controller: 3.0.0
       agentkeepalive: 4.5.0
@@ -7173,10 +7152,12 @@ packages:
 
   /semver@5.7.2:
     resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
+    hasBin: true
     dev: true
 
   /semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
+    hasBin: true
 
   /semver@7.5.4:
     resolution: {integrity: sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==}
@@ -8424,6 +8405,7 @@ packages:
   /which@2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
     engines: {node: '>= 8'}
+    hasBin: true
     dependencies:
       isexe: 2.0.0
 
@@ -8588,7 +8570,7 @@ packages:
     dependencies:
       '@types/fs-extra': 11.0.4
       '@types/minimist': 1.2.5
-      '@types/node': 18.19.24
+      '@types/node': 18.19.31
       '@types/ps-tree': 1.1.6
       '@types/which': 3.0.3
       chalk: 5.3.0

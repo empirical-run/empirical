@@ -11,5 +11,8 @@
   "license": "ISC",
   "devDependencies": {
     "@empiricalrun/types": "workspace:^"
+  },
+  "dependencies": {
+    "empiricalrun": "workspace:^"
   }
 }

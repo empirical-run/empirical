@@ -1,6 +1,0 @@
-.turbo
-src
-node_modules
-tsconfig*.json
-.eslintrc.js
-*.js.map

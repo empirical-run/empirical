@@ -11,7 +11,9 @@ import {
   EmpiricalStore,
   execute,
   getLocalDBInstance,
-} from "@empiricalrun/core";
+  Telemetry,
+  runEventProperties,
+} from "../index";
 import { loadDataset } from "./dataset";
 import { DatasetError } from "./error";
 import { DefaultRunsConfigType, getDefaultRunsConfig } from "./runs";
@@ -22,7 +24,6 @@ import {
   RunStatsUpdate,
   RuntimeOptions,
 } from "@empiricalrun/types";
-import { Telemetry, runEventProperties } from "@empiricalrun/core";
 import {
   failedOutputsSummary,
   printStatsSummary,

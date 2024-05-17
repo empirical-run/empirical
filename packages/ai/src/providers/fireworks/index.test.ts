@@ -9,7 +9,7 @@ describe("Fireworks provider tool calls", () => {
         {
           role: "user",
           content:
-            "Extract data from message: Hi my name is John Doe. I'm 26 years old and I work in real estate.",
+            "Extract name from the following message: \n\n Message: Hi my name is John Doe. I'm 26 years old and I work in real estate.",
         },
       ],
       tools: [

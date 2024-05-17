@@ -1,7 +1,7 @@
 import { Dataset, DatasetConfig, DatasetSample } from "@empiricalrun/types";
 import { promises as fs } from "fs";
 import { loaders, hashContents, LoaderType } from "./loaders";
-import { DatasetError, DatasetErrorEnum } from "../../error";
+import { DatasetError, DatasetErrorEnum } from "../error";
 import { fetchWithRetry } from "@empiricalrun/fetch";
 
 const googleSheetIdentifier = "https://docs.google.com/spreadsheets/d/";

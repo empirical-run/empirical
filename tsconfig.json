@@ -1,3 +1,4 @@
 {
-  "extends": "@empiricalrun/typescript-config/base.json"
+  "extends": "@empiricalrun/typescript-config/base.json",
+  "exclude": ["examples", "node_modules"]
 }

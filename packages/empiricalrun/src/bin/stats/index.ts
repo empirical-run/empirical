@@ -1,4 +1,4 @@
-import { getStatsForRun } from "@empiricalrun/core";
+import { getStatsForRun } from "../../index";
 import { RunCompletion } from "@empiricalrun/types";
 import { green, yellow, bold, cyan, red } from "picocolors";
 import { table } from "table";

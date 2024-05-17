@@ -266,3 +266,10 @@ export interface RuntimeOptions {
   envFilePath: string | string[];
   pythonPath: string;
 }
+
+export type Config = {
+  $schema?: string;
+  runs: RunConfig[];
+  dataset: DatasetConfig;
+  scorers?: Scorer[];
+};

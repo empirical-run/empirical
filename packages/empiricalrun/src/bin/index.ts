@@ -11,11 +11,12 @@ import {
   EmpiricalStore,
   execute,
   getLocalDBInstance,
-} from "@empiricalrun/core";
-import { RunsConfig } from "../types";
+  Telemetry,
+  runEventProperties,
+} from "../index";
 import { loadDataset } from "./dataset";
-import { DatasetError } from "../error";
-import { DefaultRunsConfigType, getDefaultRunsConfig } from "../runs";
+import { DatasetError } from "./error";
+import { DefaultRunsConfigType, getDefaultRunsConfig } from "./runs";
 import {
   Dataset,
   RunConfig,
@@ -23,13 +24,12 @@ import {
   RunStatsUpdate,
   RuntimeOptions,
 } from "@empiricalrun/types";
-import { Telemetry, runEventProperties } from "@empiricalrun/core";
 import {
   failedOutputsSummary,
   printStatsSummary,
   setRunSummary,
-} from "../stats";
-import { reportOnCI } from "../reporters/ci";
+} from "./stats";
+import { reportOnCI } from "./reporters/ci";
 import detect from "detect-port";
 import {
   ProgressBar,
@@ -38,6 +38,7 @@ import {
   buildWarningLog,
   getCliProgressLoggerInstance,
 } from "./logger/cli-logger";
+import { readEmpiricalConfig } from "./config";
 
 const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
@@ -49,31 +50,6 @@ const outputFilePath = `${cwd}/${cacheDir}/output.json`;
 const runtimeOptionsPath = `${cwd}/${cacheDir}/runtime.json`;
 
 const telemetry = new Telemetry();
-
-const readConfig = async (): Promise<RunsConfig> => {
-  let data: string;
-  try {
-    data = (await fs.readFile(configFileFullPath)).toString();
-    console.log(buildSuccessLog(`read ${configFileName} file successfully`));
-  } catch (err) {
-    console.log(buildErrorLog(`Failed to read ${configFileName} file`));
-    console.log(yellow("Please ensure running init command first"));
-    process.exit(1);
-  }
-  const { runs, dataset, scorers } = JSON.parse(data) as RunsConfig;
-
-  runs.forEach((r) => {
-    // if scorers are not set for a run, then override it with the global scorers
-    if (!r.scorers && scorers) {
-      r.scorers = scorers;
-    }
-  });
-
-  return {
-    runs,
-    dataset,
-  };
-};
 
 program
   .name("Empirical.run CLI")
@@ -100,7 +76,6 @@ program
   });
 
 program
-  .command("run")
   .description("initiate a run to evaluate model completions")
   .option(
     "-pyp, --python-path <char>",
@@ -121,9 +96,8 @@ program
     telemetry.logEvent("run.start");
 
     const startTime = performance.now();
-    const { runs, dataset: datasetConfig } = await readConfig();
+    const { runs, dataset: datasetConfig } = await readEmpiricalConfig();
 
-    // TODO: add check here for empty runs config. Add validator of the file
     let dataset: Dataset;
     const store = new EmpiricalStore();
     try {

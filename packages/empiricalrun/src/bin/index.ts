@@ -76,7 +76,6 @@ program
   });
 
 program
-  .command("run")
   .description("initiate a run to evaluate model completions")
   .option(
     "-pyp, --python-path <char>",

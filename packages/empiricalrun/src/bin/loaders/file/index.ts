@@ -23,7 +23,9 @@ export async function getFileLoaderForFileName(
     }
   }
   if (!matchingLoader) {
-    throw new Error(`No loader found for file ${name}`);
+    throw new Error(
+      `Failed to find ${name} file having either of the extensions ${loaders.map((l) => l.type).join(" ")}`,
+    );
   }
   return matchingLoader.getLoader(name, directory);
 }

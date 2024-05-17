@@ -172,10 +172,10 @@ importers:
   packages/empiricalrun:
     dependencies:
       '@empiricalrun/ai':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../ai
       '@empiricalrun/fetch':
-        specifier: workspace:^
+        specifier: workspace:*
         version: link:../fetch
       '@empiricalrun/scorer':
         specifier: workspace:*

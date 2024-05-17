@@ -48,7 +48,7 @@ Our test will succeed if the model outputs valid JSON.
    execution will cost $0.0026, based on the selected models.
 
     ```sh
-    npx empiricalrun run
+    npx empiricalrun
     ```
 
 3. Use the `ui` command to open the reporter web app and see side-by-side results.

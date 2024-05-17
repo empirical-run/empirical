@@ -147,8 +147,8 @@ importers:
         specifier: workspace:^
         version: link:../fetch
       '@google/generative-ai':
-        specifier: ^0.7.1
-        version: 0.7.1
+        specifier: ^0.11.2
+        version: 0.11.2
       '@mistralai/mistralai':
         specifier: ^0.1.3
         version: 0.1.3
@@ -1018,8 +1018,8 @@ packages:
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
     dev: false
 
-  /@google/generative-ai@0.7.1:
-    resolution: {integrity: sha512-WTjMLLYL/xfA5BW6xAycRPiAX7FNHKAxrid/ayqC1QMam0KAK0NbMeS9Lubw80gVg5xFMLE+H7pw4wdNzTOlxw==}
+  /@google/generative-ai@0.11.2:
+    resolution: {integrity: sha512-/nE5rhIGQqp78+Q/BedH9/rnZOWFTMxAnpw7pkim6W5kOcrntycFlrR6a8Djc2FDTgn6ToPZ2RHbIRk2tg7LyA==}
     engines: {node: '>=18.0.0'}
     dev: false
 

@@ -1,6 +1,6 @@
 {
   "name": "@empiricalrun/ai",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
@@ -26,7 +26,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.20.8",
     "@empiricalrun/fetch": "workspace:^",
-    "@google/generative-ai": "^0.7.1",
+    "@google/generative-ai": "^0.11.2",
     "@mistralai/mistralai": "^0.1.3",
     "anthropic": "^0.0.0",
     "openai": "^4.38.5",

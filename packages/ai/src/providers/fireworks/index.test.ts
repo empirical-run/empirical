@@ -2,7 +2,7 @@ import { expect, test, describe } from "vitest";
 import { FireworksAIProvider } from "./index";
 
 describe("Fireworks provider tool calls", () => {
-  test("handle unavailable model", async () => {
+  test("should respond with tool call", async () => {
     const resp = await FireworksAIProvider.chat({
       model: "firefunction-v1",
       messages: [

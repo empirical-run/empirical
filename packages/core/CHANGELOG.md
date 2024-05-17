@@ -1,5 +1,14 @@
 # @empiricalrun/core
 
+## 0.8.2
+
+### Patch Changes
+
+- Updated dependencies [a9c04d8]
+- Updated dependencies [b379e7f]
+  - @empiricalrun/ai@0.10.1
+  - @empiricalrun/scorer@0.3.1
+
 ## 0.8.1
 
 ### Patch Changes

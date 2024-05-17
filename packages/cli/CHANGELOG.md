@@ -1,5 +1,12 @@
 # @empiricalrun/cli
 
+## 0.12.1
+
+### Patch Changes
+
+- a9c04d8: fix: google ai provider throwing 503 service unavailable
+  - @empiricalrun/core@0.8.2
+
 ## 0.12.0
 
 ### Minor Changes

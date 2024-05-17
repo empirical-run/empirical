@@ -14,7 +14,8 @@
     "AZURE_OPENAI_RESOURCE_NAME",
     "AZURE_OPENAI_BASE_URL",
     "POSTHOG_API_KEY",
-    "EMPIRICAL_TELEMETRY"
+    "EMPIRICAL_TELEMETRY",
+    "npm_config_user_agent"
   ],
   "pipeline": {
     "build": {

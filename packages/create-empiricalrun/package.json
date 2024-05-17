@@ -1,11 +1,14 @@
 {
-  "name": "@empiricalrun/create-empiricalrun",
+  "name": "create-empiricalrun",
   "version": "0.0.0",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
   "main": "dist/index.js",
+  "bin": {
+    "create-empiricalrun": "dist/index.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/empirical-run/empirical.git"
@@ -18,6 +21,11 @@
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "devDependencies": {},
-  "dependencies": {}
+  "dependencies": {
+    "@types/node": "^20.11.24",
+    "enquirer": "^2.4.1"
+  },
+  "devDependencies": {
+    "@empiricalrun/types": "workspace:^"
+  }
 }

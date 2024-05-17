@@ -1,5 +1,12 @@
 # @empiricalrun/ai
 
+## 0.10.1
+
+### Patch Changes
+
+- a9c04d8: fix: google ai provider throwing 503 service unavailable
+- b379e7f: fix: latency calculation for claude, gemini, gpt chat
+
 ## 0.10.0
 
 ### Minor Changes

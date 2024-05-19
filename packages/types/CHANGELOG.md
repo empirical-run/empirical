@@ -1,5 +1,11 @@
 # @empiricalrun/types
 
+## 0.10.0
+
+### Minor Changes
+
+- d45cc70: feat: add support for js and ts config
+
 ## 0.9.0
 
 ### Minor Changes

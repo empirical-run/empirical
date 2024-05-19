@@ -32,11 +32,11 @@ By now you should see a dataset file named `dataset.jsonl` inside `.empiricalrun
 
 1. Evaluate RAG pipeline using Empirical:
     ```
-    npx @empiricalrun/cli run --python-path COPIED_PYTHON_PATH
+    npx empiricalrun --python-path COPIED_PYTHON_PATH
     ```
     >Note: replace `COPIED_PYTHON_PATH` with the python path copied in previous step.
 
 1. Visualize the output:
     ```
-    npx @empiricalrun/cli ui
+    npx empiricalrun ui
     ```

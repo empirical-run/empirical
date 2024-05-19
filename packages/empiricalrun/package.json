@@ -1,6 +1,6 @@
 {
   "name": "empiricalrun",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"

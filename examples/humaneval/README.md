@@ -18,10 +18,10 @@ This example requires Python.
 
 4. Run the dataset with Empirical.
     ```
-    npx @empiricalrun/cli run
+    npx empiricalrun
     ```
 
 5. See results with the Empirical UI.
     ```
-    npx @empiricalrun/cli ui
+    npx empiricalrun ui
     ```

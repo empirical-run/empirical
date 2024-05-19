@@ -24,7 +24,7 @@ jobs:
           node-version: 20
  
       - name: Run Empirical
-        run: npx @empiricalrun/cli run
+        run: npx empiricalrun
         working-directory: ./examples/basic
         id: empirical-run
         env:

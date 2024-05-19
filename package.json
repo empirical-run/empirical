@@ -1,5 +1,5 @@
 {
-  "name": "empiricalrun",
+  "name": "empiricalrun-monorepo",
   "private": true,
   "scripts": {
     "build": "turbo build",

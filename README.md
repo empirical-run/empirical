@@ -1,6 +1,6 @@
 # Empirical
 
-[![npm](https://img.shields.io/npm/v/@empiricalrun/cli)](https://npmjs.com/package/@empiricalrun/cli)
+[![npm](https://img.shields.io/npm/v/empiricalrun)](https://npmjs.com/package/empiricalrun)
 [![Discord](https://img.shields.io/badge/discord-empirical.run-blue?logo=discord&logoColor=white&color=5d68e8)](https://discord.gg/NeR6jj8dw9)
 
 Empirical is the fastest way to test your LLM app and iterate over prompts and other model configuration.
@@ -37,7 +37,7 @@ Our test will succeed if the model outputs valid JSON.
 1. Use the CLI to create a sample configuration file called `empiricalrc.json`.
 
     ```sh
-    npx @empiricalrun/cli init
+    npx empiricalrun init
     cat empiricalrc.json
     ```
 
@@ -46,13 +46,13 @@ Our test will succeed if the model outputs valid JSON.
    execution will cost $0.0026, based on the selected models.
 
     ```sh
-    npx @empiricalrun/cli run
+    npx empiricalrun
     ```
 
 3. Use the `ui` command to open the reporter web app and see side-by-side results.
 
     ```sh
-    npx @empiricalrun/cli ui
+    npx empiricalrun ui
     ```
 
 ### Make it yours

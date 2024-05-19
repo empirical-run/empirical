@@ -17,5 +17,5 @@ To execute the example, follow these steps:
 
 Run the following command:
 ```
-npx @empiricalrun/cli run
+npx empiricalrun
 ```

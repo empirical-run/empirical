@@ -1,5 +1,11 @@
 # web
 
+## 0.12.1
+
+### Patch Changes
+
+- d45cc70: feat: add support for js and ts config
+
 ## 0.12.0
 
 ### Minor Changes

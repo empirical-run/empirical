@@ -1,6 +1,6 @@
 # Empirical CLI
 
-[![npm](https://img.shields.io/npm/v/@empiricalrun/cli)](https://npmjs.com/package/@empiricalrun/cli)
+[![npm](https://img.shields.io/npm/v/empiricalrun)](https://npmjs.com/package/empiricalrun)
 [![Discord](https://img.shields.io/badge/discord-empirical.run-blue?logo=discord&logoColor=white&color=5d68e8)](https://discord.gg/NeR6jj8dw9)
 
 Empirical is the fastest way to test different LLMs, prompts and other model configurations, across all the scenarios

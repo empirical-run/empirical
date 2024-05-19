@@ -28,10 +28,10 @@ This example requires Python.
 
 1. Run with Empirical
   ```sh
-  npx @empiricalrun/cli run
+  npx empiricalrun
   ```
 
 1. See results on the Empirical web reporter
   ```sh
-  npx @empiricalrun/cli ui
+  npx empiricalrun ui
   ```

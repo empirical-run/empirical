@@ -193,6 +193,9 @@ importers:
       '@empiricalrun/scorer':
         specifier: workspace:*
         version: link:../scorer
+      '@empiricalrun/types':
+        specifier: workspace:*
+        version: link:../types
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.21
@@ -239,9 +242,6 @@ importers:
         specifier: ^4.10.2
         version: 4.10.2
     devDependencies:
-      '@empiricalrun/types':
-        specifier: workspace:*
-        version: link:../types
       '@empiricalrun/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config

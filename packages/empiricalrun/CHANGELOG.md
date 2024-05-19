@@ -1,5 +1,11 @@
 # empiricalrun
 
+## 0.13.1
+
+### Patch Changes
+
+- 900432e: docs: update docs with new package name and steps
+
 ## 0.13.0
 
 ### Minor Changes

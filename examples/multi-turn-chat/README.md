@@ -20,10 +20,10 @@ To execute the example:
 
 1. Evaluate multi-turn chat using Empirical:
     ```
-    npx @empiricalrun/cli run --python-path `poetry env info -e`
+    npx empiricalrun --python-path `poetry env info -e`
     ```
     >Note: Ensure `OPENAI_API_KEY` is exported before running above command.
 1. Visualize the output:
     ```
-    npx @empiricalrun/cli ui
+    npx empiricalrun ui
     ```

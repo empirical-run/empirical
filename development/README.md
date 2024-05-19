@@ -25,13 +25,13 @@ Follow these concise steps to set up and contribute to this monorepo:
 - **Start Web App**:
   ```sh
   # Link CLI 
-  pnpm link ./packages/cli
+  pnpm link ./packages/empiricalrun
   # Navigate to an example
   cd ./examples/basic
   # Run against the example
-  npx @empiricalrun/cli run
+  npx empiricalrun run
   # View the output on a web app
-  npx @empiricalrun/cli ui
+  npx empiricalrun ui
   ```
 
   The web app will be accessible at http://localhost:8000 after completing the above steps.

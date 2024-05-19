@@ -23,7 +23,7 @@ Our test will succeed if the model outputs valid JSON.
     Use the CLI to create a sample configuration file in `empiricalrc.json`.
 
     ```sh
-    npx @empiricalrun/cli init
+    npx empiricalrun init
     ```
 
     Read the file to see the configured models and dataset samples that we will test
@@ -38,7 +38,7 @@ Our test will succeed if the model outputs valid JSON.
     Run the test samples against the models with the `run` command.
 
     ```sh
-    npx @empiricalrun/cli run
+    npx empiricalrun
     ```
 
     This step requires the `OPENAI_API_KEY` environment variable to authenticate with
@@ -50,7 +50,7 @@ Our test will succeed if the model outputs valid JSON.
     side-by-side results.
 
     ```sh
-    npx @empiricalrun/cli ui
+    npx empiricalrun ui
     ```
   </Step>
 
@@ -117,7 +117,7 @@ Our test will succeed if the model outputs valid JSON.
     ```
     </Accordion>
 
-    Re-running the test with `npx @empiricalrun/cli run` will give us better results
+    Re-running the test with `npx empiricalrun` will give us better results
     for GPT-4 Turbo.
   </Step>
 </Steps>

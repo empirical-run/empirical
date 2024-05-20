@@ -1,9 +1,4 @@
-import { Generator } from "../interface";
-export class TSGenerator implements Generator {
+import { JSGenerator } from "../js";
+export class TSGenerator extends JSGenerator {
   format = "ts";
-
-  async generate() {
-    // generate json file
-    console.log("generate ts files");
-  }
 }

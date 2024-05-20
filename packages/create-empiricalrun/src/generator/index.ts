@@ -11,7 +11,7 @@ export function getGenerator(
   if (format.includes("Javascript")) {
     return new JSGenerator({ packageManager });
   } else if (format.includes("Typescript")) {
-    return new TSGenerator();
+    return new TSGenerator({ packageManager });
   }
   return new JSONGenerator();
 }

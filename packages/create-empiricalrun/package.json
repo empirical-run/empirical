@@ -15,7 +15,7 @@
   },
   "author": "Empirical Team <hey@empirical.run>",
   "scripts": {
-    "build": "tsc --build",
+    "build": "tsc --build && cp -r src/assets dist",
     "clean": "tsc --build --clean",
     "lint": "eslint .",
     "test": "vitest run",
@@ -26,6 +26,7 @@
     "enquirer": "^2.4.1"
   },
   "devDependencies": {
-    "@empiricalrun/types": "workspace:^"
+    "@empiricalrun/types": "workspace:^",
+    "empiricalrun": "workspace:^"
   }
 }

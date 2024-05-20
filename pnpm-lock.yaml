@@ -181,6 +181,9 @@ importers:
       '@empiricalrun/types':
         specifier: workspace:^
         version: link:../types
+      empiricalrun:
+        specifier: workspace:^
+        version: link:../empiricalrun
 
   packages/empiricalrun:
     dependencies:

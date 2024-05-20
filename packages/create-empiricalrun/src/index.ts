@@ -4,38 +4,17 @@ import { getPackageManager } from "./pkg-managers";
 import { getGenerator } from "./generator";
 import { CustomLogger } from "./logger";
 import { bold, cyan, underline } from "picocolors";
+import { PackageManager } from "./pkg-managers/interface";
 
-interface Config {
-  format: "JSON" | "Javascript" | "Typescript";
+interface GeneratorConfig {
+  type: "JSON" | "Javascript" | "Typescript";
 }
 
 const logger = new CustomLogger();
 
-(async function init() {
-  let config: Config = {
-    format: "JSON",
-  };
-  try {
-    config = await prompt<Config>([
-      {
-        name: "format",
-        type: "select",
-        message: "What kind of format do you want for your configuration file?",
-        choices: ["JSON", "Javascript", "Typescript"],
-      },
-    ]);
-  } catch (e: any) {
-    process.exit(1);
-  }
-
-  try {
-    const packageManager = getPackageManager();
-    logger.log(`Using ${packageManager.name} package manager for setup`);
-    const generator = getGenerator(config!.format, packageManager, logger);
-    await generator.generate();
-    logger.success(`${bold("Empirical setup completed successfully")} ✨`);
-    console.log(
-      `
+function logPostSetupSteps(packageManager: PackageManager) {
+  console.log(
+    `
   You can now run following command to run your first test:
 
   ${bold(cyan(`${packageManager.exec} empiricalrun`))} 
@@ -48,7 +27,38 @@ const logger = new CustomLogger();
 
   Visit ${bold(underline("https://docs.empirical.run"))} for more details
     `,
-    );
+  );
+}
+
+(async function init() {
+  let config: GeneratorConfig = {
+    type: "JSON",
+  };
+  try {
+    config = await prompt<GeneratorConfig>([
+      {
+        name: "type",
+        type: "select",
+        message:
+          "Do you want to use JSON or JavaScript or TypeScript to setup empirical? (Use arrow keys)",
+        choices: [
+          { name: "JSON" },
+          { name: "Javascript" },
+          { name: "Typescript" },
+        ],
+      },
+    ]);
+  } catch (e: any) {
+    process.exit(1);
+  }
+
+  try {
+    const packageManager = getPackageManager();
+    logger.log(`Using ${packageManager.name} package manager for setup`);
+    const generator = getGenerator(config!.type, packageManager, logger);
+    await generator.generate();
+    logger.success(`${bold("Empirical setup completed successfully")} ✨`);
+    logPostSetupSteps(packageManager);
   } catch (e: any) {
     console.log(JSON.stringify(e));
     logger.error(bold("Failed to setup"), e);

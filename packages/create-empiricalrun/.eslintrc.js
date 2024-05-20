@@ -8,4 +8,11 @@ module.exports = {
     project: "./tsconfig.lint.json",
     tsconfigRootDir: __dirname,
   },
+  ignorePatterns: [
+    // Ignore dotfiles
+    ".*.js",
+    "node_modules/",
+    "dist/",
+    "src/assets/"
+  ],
 };

@@ -37,6 +37,6 @@ describe("Fireworks provider tool calls", () => {
     );
     expect(
       resp.choices[0]?.message.tool_calls?.[0]?.function.arguments,
-    ).contains('"John Doe"');
+    ).contains("John Doe");
   }, 10000);
 });

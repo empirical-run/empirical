@@ -1,5 +1,11 @@
 # empiricalrun
 
+## 0.13.2
+
+### Patch Changes
+
+- 98ef6aa: fix: reduce the package size of the empiricalrun cli
+
 ## 0.13.1
 
 ### Patch Changes

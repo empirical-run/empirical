@@ -16,12 +16,12 @@ function logPostSetupSteps(packageManager: PackageManager) {
     `
   You can now run following command to run your first test:
 
-  ${bold(cyan(`${packageManager.exec} empiricalrun`))} 
+  ${bold(cyan(`${packageManager.execCmd} empiricalrun`))} 
 
   
   After running your first test, you can use "ui" command to open test report on your browser:
 
-  ${bold(cyan(`${packageManager.exec} empiricalrun ui`))} 
+  ${bold(cyan(`${packageManager.execCmd} empiricalrun ui`))} 
 
 
   Visit ${bold(underline("https://docs.empirical.run"))} for more details

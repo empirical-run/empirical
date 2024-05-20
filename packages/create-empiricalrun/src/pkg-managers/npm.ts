@@ -3,7 +3,7 @@ import { PackageManager } from "./interface";
 
 export class NPM implements PackageManager {
   name = "npm";
-  exec = "npx";
+  execCmd = "npx";
   static check(userAgent: string): boolean {
     return userAgent.includes("npm");
   }

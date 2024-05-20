@@ -1,6 +1,6 @@
 export interface PackageManager {
   name: string;
-  exec: string;
+  execCmd: string;
   init: () => void;
   install: () => void;
   installDependency: (pkg: string) => void;

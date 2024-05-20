@@ -183,9 +183,6 @@ importers:
       empiricalrun:
         specifier: workspace:^
         version: link:../empiricalrun
-      enquirer:
-        specifier: ^2.4.1
-        version: 2.4.1
       picocolors:
         specifier: ^1.0.0
         version: 1.0.0

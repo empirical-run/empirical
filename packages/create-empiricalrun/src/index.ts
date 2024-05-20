@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { prompt } from "enquirer";
 import { getPackageManager } from "./pkg-managers";
 import { getGenerator } from "./generator";
 import { CustomLogger } from "./logger";
@@ -7,7 +6,7 @@ import { bold, cyan, underline } from "picocolors";
 import { PackageManager } from "./pkg-managers/interface";
 
 interface GeneratorConfig {
-  type: "JSON" | "Javascript" | "Typescript";
+  type: "Javascript" | "Typescript";
 }
 
 const logger = new CustomLogger();
@@ -31,27 +30,10 @@ function logPostSetupSteps(packageManager: PackageManager) {
 }
 
 (async function init() {
+  const usingTS = process.argv.includes("--using-ts");
   let config: GeneratorConfig = {
-    type: "JSON",
+    type: usingTS ? "Typescript" : "Javascript",
   };
-  try {
-    config = await prompt<GeneratorConfig>([
-      {
-        name: "type",
-        type: "select",
-        message:
-          "Do you want to use JSON or JavaScript or TypeScript to setup empirical? (Use arrow keys)",
-        choices: [
-          { name: "JSON" },
-          { name: "Javascript" },
-          { name: "Typescript" },
-        ],
-      },
-    ]);
-  } catch (e: any) {
-    process.exit(1);
-  }
-
   try {
     const packageManager = getPackageManager();
     logger.log(`Using ${packageManager.name} package manager for setup`);

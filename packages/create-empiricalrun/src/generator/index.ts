@@ -2,7 +2,6 @@ import { CustomLogger, Logger } from "../logger";
 import { PackageManager } from "../pkg-managers/interface";
 import { Generator } from "./interface";
 import { JSGenerator } from "./js";
-import { JSONGenerator } from "./json";
 import { TSGenerator } from "./ts";
 
 export function getGenerator(
@@ -15,5 +14,5 @@ export function getGenerator(
   } else if (format.includes("Typescript")) {
     return new TSGenerator({ packageManager, logger });
   }
-  return new JSONGenerator();
+  return new JSGenerator({ packageManager, logger });
 }

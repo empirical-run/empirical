@@ -28,14 +28,14 @@ export class JSGenerator implements Generator {
 
     const isPackageJSONAvailable = await isPackageJSONPresent(cwd);
     if (!isPackageJSONAvailable) {
-      this.logger.log(`Initialized ${this.packageManager.name} project...`);
+      this.logger.log(`Initializing ${this.packageManager.name} project...`);
       this.packageManager.init();
     }
 
-    this.logger.log("Installing empirical dependecies...");
+    this.logger.log("Installing empirical dependencies...");
     this.packageManager.installDevDependency(EMPIRICAL_PKG_NAME);
 
-    this.logger.log("Creating sample empirical configuration file ...");
+    this.logger.log(`Setting up sample ${this.format} configuration file ...`);
     await copyConfigFile({
       source: {
         file: `empiricalrun-config.${this.format}`,

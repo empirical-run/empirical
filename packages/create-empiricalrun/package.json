@@ -25,7 +25,6 @@
     "@empiricalrun/types": "workspace:^",
     "@types/node": "^20.11.24",
     "empiricalrun": "workspace:^",
-    "enquirer": "^2.4.1",
     "picocolors": "^1.0.0"
   }
 }

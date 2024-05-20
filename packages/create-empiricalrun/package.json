@@ -1,0 +1,30 @@
+{
+  "name": "create-empiricalrun",
+  "version": "0.0.0",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "bin": {
+    "create-empiricalrun": "dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/empirical-run/empirical.git"
+  },
+  "author": "Empirical Team <hey@empirical.run>",
+  "scripts": {
+    "build": "tsup src/index.ts && cp -r src/assets dist",
+    "clean": "tsup --build --clean",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@empiricalrun/types": "workspace:^",
+    "@types/node": "^20.11.24",
+    "empiricalrun": "workspace:^",
+    "picocolors": "^1.0.0"
+  }
+}

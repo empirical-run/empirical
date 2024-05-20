@@ -1,5 +1,6 @@
-/** @type {import("empiricalrun").Config} */
-export default {
+import { Config } from "@empiricalrun/types";
+export const config: Config = {
+  $schema: "https://assets.empirical.run/config/schema/latest.json",
   runs: [
     {
       type: "model",
@@ -14,11 +15,6 @@ export default {
       model: "gpt-4-turbo-preview",
       prompt:
         "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}",
-      parameters: {
-        response_format: {
-          type: "json_object",
-        },
-      },
     },
   ],
   dataset: {

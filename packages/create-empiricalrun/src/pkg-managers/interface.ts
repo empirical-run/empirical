@@ -1,9 +1,10 @@
 export interface PackageManager {
   name: string;
-  init: () => Promise<void>;
-  install: () => Promise<void>;
-  installDependency: (pkg: string) => Promise<void>;
-  installDevDependency: (pkg: string) => Promise<void>;
+  exec: string;
+  init: () => void;
+  install: () => void;
+  installDependency: (pkg: string) => void;
+  installDevDependency: (pkg: string) => void;
 }
 
 export interface PackageManagerConstructor {

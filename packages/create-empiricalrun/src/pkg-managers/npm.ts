@@ -1,34 +1,41 @@
 import { execSync } from "child_process";
 import { PackageManager } from "./interface";
-import { execPromisified } from "./utils";
 
 export class NPM implements PackageManager {
+  name = "npm";
+  exec = "npx";
   static check(userAgent: string): boolean {
     return userAgent.includes("npm");
   }
 
-  get name() {
-    return "npm";
-  }
-
-  async install() {
-    await execPromisified("npm install");
-  }
-
-  async init() {
-    await execPromisified(`npm init -y`);
-    await this.install();
-  }
-
-  async installDependency(pkg: string) {
-    execSync(`npm install ${pkg} --save`, {
+  private executeCommand(cmd: string) {
+    execSync(cmd, {
       stdio: "inherit",
     });
   }
 
-  async installDevDependency(pkg: string) {
-    execSync(`npm install ${pkg} --save-dev`, {
-      stdio: "inherit",
-    });
+  private getCommand(cmd: string) {
+    return `${this.name} ${cmd}`;
+  }
+
+  install() {
+    const cmd = this.getCommand("i");
+    this.executeCommand(cmd);
+  }
+
+  init() {
+    const cmd = this.getCommand("init -y");
+    this.executeCommand(cmd);
+    this.install();
+  }
+
+  installDependency(pkg: string) {
+    const cmd = this.getCommand(`i ${pkg} --save`);
+    this.executeCommand(cmd);
+  }
+
+  installDevDependency(pkg: string) {
+    const cmd = this.getCommand(`i ${pkg} --save-dev`);
+    this.executeCommand(cmd);
   }
 }

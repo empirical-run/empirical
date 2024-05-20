@@ -1,6 +1,5 @@
-import { Config } from "empiricalrun";
-
-const config: Config = {
+/** @type {import("empiricalrun").Config} */
+export default {
   runs: [
     {
       type: "model",
@@ -44,5 +43,3 @@ const config: Config = {
     },
   ],
 };
-
-export default config;

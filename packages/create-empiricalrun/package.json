@@ -15,18 +15,17 @@
   },
   "author": "Empirical Team <hey@empirical.run>",
   "scripts": {
-    "build": "tsc --build && cp -r src/assets dist",
-    "clean": "tsc --build --clean",
+    "build": "tsup src/index.ts && cp -r src/assets dist",
+    "clean": "tsup --build --clean",
     "lint": "eslint .",
     "test": "vitest run",
     "test:watch": "vitest"
   },
-  "dependencies": {
-    "@types/node": "^20.11.24",
-    "enquirer": "^2.4.1"
-  },
   "devDependencies": {
     "@empiricalrun/types": "workspace:^",
-    "empiricalrun": "workspace:^"
+    "@types/node": "^20.11.24",
+    "empiricalrun": "workspace:^",
+    "enquirer": "^2.4.1",
+    "picocolors": "^1.0.0"
   }
 }

@@ -1,0 +1,19 @@
+{
+  "name": "spider-using-ts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "empiricalrun": "0.13.2"
+  },
+  "dependencies": {
+    "sqlite3": "^5.1.7",
+    "uuid": "^9.0.1"
+  }
+}

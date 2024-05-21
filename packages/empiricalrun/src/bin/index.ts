@@ -294,6 +294,8 @@ program
         dataset: Dataset;
         persistToFile: boolean;
       };
+      const { runs: actualRuns } = await readEmpiricalConfig();
+      runs[0]!.scorers = actualRuns[0]!.scorers;
       telemetry.logEvent("ui.run.start", {
         ...runEventProperties(runs, dataset),
         persist_to_file: persistToFile,

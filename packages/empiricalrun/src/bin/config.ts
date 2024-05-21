@@ -21,6 +21,7 @@ export async function readEmpiricalConfig(): Promise<Config> {
     });
     return config;
   } catch (err: any) {
+    console.error(err);
     console.log(buildErrorLog(`Failed to read ${fileName} file`));
     console.log(buildWarningLog("Please ensure running init command first"));
     process.exit(1);

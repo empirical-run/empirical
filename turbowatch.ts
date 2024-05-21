@@ -16,6 +16,9 @@ void watch({
           ["match", "*.tsx", "basename"],
           ["match", "*.py", "basename"],
         ],
+        // Posthog API key is written during build time, which
+        // should not trigger another build due to watch
+        ["not", ["match", "constants.ts", "basename"]],
       ],
       name: "build",
       onChange: async ({ spawn }) => {

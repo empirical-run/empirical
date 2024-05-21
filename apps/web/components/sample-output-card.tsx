@@ -22,10 +22,10 @@ import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import EmptySampleCompletion from "./empty-sample-completion";
 import { RunResult } from "../types";
 import SampleCompletionError from "./sample-completion-error";
-import { Separator } from "./ui/separator";
 import { JsonAsTab } from "./json-as-tab";
 import { RunSampleOutputMetric } from "./run-response-metadata";
 import { Scores } from "./scores";
+import { ToolCalls } from "./tool-calls-view";
 
 type Diff = {
   type: string;
@@ -57,12 +57,13 @@ export default function SampleOutputCard({
 
   const showCompareAgainst = useMemo(
     () =>
-      baseSample?.expected?.value ||
-      comparisonSamples?.some(
-        (comparisonSample, index) =>
-          comparisonSample?.output &&
-          comparisonResults?.[index]?.id !== baseResult?.id,
-      ),
+      !baseSample?.output.tool_calls?.length &&
+      (baseSample?.expected?.value ||
+        comparisonSamples?.some(
+          (comparisonSample, index) =>
+            comparisonSample?.output &&
+            comparisonResults?.[index]?.id !== baseResult?.id,
+        )),
     [
       baseResult?.id,
       baseSample?.expected?.value,
@@ -122,100 +123,107 @@ export default function SampleOutputCard({
         : 0,
     [baseSample],
   );
+  const hasMetadata = useMemo(
+    () => !!Object.keys(baseSample?.output.metadata || {}).length,
+    [baseSample?.output.metadata],
+  );
+  const showCardHeader = useMemo(
+    () => baseSample?.scores || showCompareAgainst,
+    [showCompareAgainst, baseSample?.scores],
+  );
   return (
     <Card
-      className={`flex flex-col flex-1 ${
+      className={`flex flex-col flex-1 w-full ${
         isActiveColumn
           ? "border-x border-muted rounded-none"
           : "border-zinc-900 rounded-md"
       }`}
       onClick={onClickCard}
     >
-      <CardHeader className="p-2 mt-2">
-        {baseResult && baseSample && (
-          <CardTitle className="flex flex-row space-x-2 items-center">
-            <Scores scores={baseSample?.scores || []} />
-            <div className="flex flex-row space-x-2 justify-end items-start self-baseline">
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <DotsVerticalIcon />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  {showCompareAgainst ? (
-                    <>
-                      <DropdownMenuLabel className="text-xs">
-                        Compare against
-                      </DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuCheckboxItem
-                        checked={!diffView.enabled}
-                        onCheckedChange={clearDiffView}
-                      >
-                        <span className="text-xs">none</span>
-                      </DropdownMenuCheckboxItem>
-                      {baseSample?.expected?.value && (
+      {showCardHeader && (
+        <CardHeader className="p-2 mt-2">
+          {baseResult && baseSample && (
+            <CardTitle className="flex flex-row space-x-2 items-center">
+              <Scores scores={baseSample?.scores || []} />
+              <div className="flex flex-row space-x-2 justify-end items-start self-baseline">
+                {showCompareAgainst && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <DotsVerticalIcon />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <>
+                        <DropdownMenuLabel className="text-xs">
+                          Compare against
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
                         <DropdownMenuCheckboxItem
-                          checked={
-                            diffView.enabled && diffView.type === "expected"
-                          }
-                          onCheckedChange={() => {
-                            enableDiffView({
-                              type: "expected",
-                              text: baseSample?.expected?.value || "",
-                            });
-                          }}
+                          checked={!diffView.enabled}
+                          onCheckedChange={clearDiffView}
                         >
-                          <span className="text-xs">expected</span>
+                          <span className="text-xs">none</span>
                         </DropdownMenuCheckboxItem>
-                      )}
-                      {comparisonSamples?.map((s, i) => {
-                        const result = comparisonResults?.[i];
-                        if (result?.id === baseResult.id) {
-                          return;
-                        }
-                        return (
+                        {baseSample?.expected?.value && (
                           <DropdownMenuCheckboxItem
-                            key={`${baseResult.id}-${baseSample.id}-comparison-${i}`}
                             checked={
-                              diffView.enabled && diffView.type === result?.id
+                              diffView.enabled && diffView.type === "expected"
                             }
                             onCheckedChange={() => {
                               enableDiffView({
-                                type: result?.id || "",
-                                text: s?.output.value || "",
+                                type: "expected",
+                                text: baseSample?.expected?.value || "",
                               });
                             }}
                           >
-                            <span className="text-xs">
-                              {result?.run_config.name}
-                            </span>
-                            <span className=" text-muted-foreground ml-2 font-light">
-                              {" "}
-                              #{result?.id}
-                            </span>
+                            <span className="text-xs">expected</span>
                           </DropdownMenuCheckboxItem>
-                        );
-                      })}
-                    </>
-                  ) : null}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </CardTitle>
-        )}
+                        )}
+                        {comparisonSamples?.map((s, i) => {
+                          const result = comparisonResults?.[i];
+                          if (result?.id === baseResult.id) {
+                            return;
+                          }
+                          return (
+                            <DropdownMenuCheckboxItem
+                              key={`${baseResult.id}-${baseSample.id}-comparison-${i}`}
+                              checked={
+                                diffView.enabled && diffView.type === result?.id
+                              }
+                              onCheckedChange={() => {
+                                enableDiffView({
+                                  type: result?.id || "",
+                                  text: s?.output.value || "",
+                                });
+                              }}
+                            >
+                              <span className="text-xs">
+                                {result?.run_config.name}
+                              </span>
+                              <span className=" text-muted-foreground ml-2 font-light">
+                                {" "}
+                                #{result?.id}
+                              </span>
+                            </DropdownMenuCheckboxItem>
+                          );
+                        })}
+                      </>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
+              </div>
+            </CardTitle>
+          )}
+        </CardHeader>
+      )}
+      <CardContent
+        className="flex flex-col h-full px-4 py-2"
+        ref={containerWrapper}
+      >
         {isEmptyOutput && <EmptySampleCompletion loading={isLoading} />}
         {baseSample?.error && (
           <SampleCompletionError errorMessage={baseSample.error.message} />
         )}
-      </CardHeader>
-      <CardContent
-        className="flex flex-col h-full p-4 gap-2"
-        ref={containerWrapper}
-      >
         <section className="flex flex-col">
-          {showOutput && baseSample?.output.metadata && (
-            <p className=" text-sm font-medium mb-2">Output</p>
-          )}
           {diffView.enabled && baseSample && (
             <DiffEditor
               original={baseSample?.output.value || ""}
@@ -233,38 +241,45 @@ export default function SampleOutputCard({
             />
           )}
           {showOutput && (
-            <CodeViewer
-              value={baseSample?.output.value || ""}
-              language="json"
-              readOnly
-            />
+            <>
+              {!baseSample?.output.tool_calls && (
+                <CodeViewer
+                  value={baseSample?.output.value || ""}
+                  language="json"
+                  readOnly
+                />
+              )}
+              <ToolCalls toolCalls={baseSample?.output.tool_calls} />
+            </>
           )}
         </section>
         {showOutput && (
-          <div className="flex gap-2 items-center px-2 mt-2">
+          <div className="flex gap-2 items-center mt-2">
             <RunSampleOutputMetric
               title="Total tokens"
               value={baseSample?.output?.tokens_used}
               hideSeparator
             />
-            <RunSampleOutputMetric title="Latency" value={latency} />
+            <RunSampleOutputMetric
+              title="Latency"
+              value={latency}
+              hideSeparator={!baseSample?.output?.tokens_used}
+            />
             <RunSampleOutputMetric
               title="Finish reason"
               value={baseSample?.output?.finish_reason}
             />
           </div>
         )}
-        {!diffView.enabled && baseSample?.output.metadata && (
-          <section className="flex flex-col h-[200px] mt-2">
-            <Separator
-              orientation="horizontal"
-              className="w-[60%] self-center"
-            />
-            <p className=" text-sm font-medium mt-2">Metadata</p>
+        {!diffView.enabled && hasMetadata && (
+          <section className="flex flex-col mt-2">
             <section className="relative flex flex-col flex-1">
               <JsonAsTab
                 storeKey={baseResult?.id!}
                 data={baseSample?.output.metadata!}
+                showExpandOption={false}
+                scrollableContent={false}
+                readonlyContent
               />
             </section>
           </section>

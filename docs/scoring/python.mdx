@@ -10,7 +10,8 @@ the `scorers` section of the configuration. The `path` key should be the path to
 "scorers": [
   {
     "type": "py-script",
-    "path": "eval.py"
+    "path": "score.py",
+    "name": "my-custom-scorer"
   }
 ]
 ```
@@ -21,17 +22,32 @@ In the script, you need to define an `evaluate` method, with the following signa
   - output: dict with key `value` to get the output value (string) and key `metadata` to get metadata (dict)
   - inputs: dict of key-value pairs from the dataset sample
 - **Returns**
-  - List of results: each result is dict with score (0 or 1), message (string) and name (string)
+  - List of results: each result is dict with score (number between 0 to 1), message (optional, string) and name (optional, string)
 
-```python
+```python score.py
 def evaluate(output, inputs):
-    # ...
+    model_response = output["value"]
+    metadata = output["metadata"]
+    # ... score the model response
+    return {
+        "score": 1,
+        "message": "Optional reasoning for this score"
+    }
+```
+
+## Multiple scores
+
+It is possible for the Python script to return an array of scores. Use `name` to distinguish
+between them.
+
+```python score.py
+def evaluate(output, inputs):
+    model_response = output["value"]
+    metadata = output["metadata"]
+    # ... score the model response
     return [
-        {
-            "score": 1,
-            "message": "Reason for this score",
-            "name": "name-for-this-scorer"
-        }
+      { "score": 1, "name": "syntax-score" },
+      { "score": 0, "name": "semantic-score", "message": "failure reason"}
     ]
 ```
 
@@ -49,7 +65,7 @@ using third-party libraries or want to use a specific version of Python, overrid
 the Python path while running the CLI.
 
 ```sh
-npx @empiricalrun/cli run --python-path PATH_TO_PYTHON_BINARY
+npx empiricalrun --python-path PATH_TO_PYTHON_BINARY
 ```
 
 ## Limitations

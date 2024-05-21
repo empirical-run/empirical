@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSyncedTabs } from "../hooks/useSyncedTab";
 import {
   Sheet,
@@ -26,6 +26,9 @@ export function JsonAsTab({
   onSampleRemove,
   onEditorContentUpdate,
   onClickRunAll,
+  showExpandOption = true,
+  readonlyContent = false,
+  scrollableContent = true,
 }: {
   storeKey: string;
   data: { [key: string]: any };
@@ -35,24 +38,41 @@ export function JsonAsTab({
   onSampleRemove?: () => void;
   onEditorContentUpdate?: (key: string, value: string) => void;
   onClickRunAll?: () => void;
+  showExpandOption?: boolean;
+  readonlyContent?: boolean;
+  scrollableContent?: boolean;
 }) {
   const tabs = useMemo(
     () => defaultTabs || Object.keys(data),
     [data, defaultTabs],
   );
-  const { activeTab, onChangeTab } = useSyncedTabs(tabs, storeKey);
-  const activeTabValue = useMemo(() => {
-    if (activeTab && data) {
-      return data[activeTab];
+  const { activeTab: remoteActiveTab, onChangeTab: remoteOnChangeTab } =
+    useSyncedTabs(tabs, storeKey);
+  const [activeTab, setActiveTab] = useState<string | undefined>();
+
+  useEffect(() => {
+    if (remoteActiveTab && data[remoteActiveTab]) {
+      setActiveTab(remoteActiveTab);
+    } else if (!activeTab) {
+      setActiveTab(Object.keys(data)[0]);
     }
-    return undefined;
-  }, [activeTab, data]);
+  }, [remoteActiveTab]);
+
+  const onChangeTab = useCallback(
+    (tab: string) => {
+      setActiveTab(tab);
+      console.log(JSON.stringify(data));
+      console.log("setting remote active tab", tab);
+      remoteOnChangeTab(tab);
+    },
+    [remoteOnChangeTab],
+  );
 
   return (
     <>
       <div className="flex flex-row space-x-2 justify-end">
         <>
-          {activeTabValue && (
+          {showExpandOption && (
             <Sheet>
               <SheetTrigger asChild>
                 <Button
@@ -66,15 +86,11 @@ export function JsonAsTab({
               </SheetTrigger>
               <SheetContent className="w-[700px] sm:w-[540px]">
                 <SheetHeader>
-                  <SheetTitle>{activeTab}</SheetTitle>
+                  <SheetTitle>Inputs</SheetTitle>
                 </SheetHeader>
                 <div className="py-4 h-full">
                   <CodeViewer
-                    value={
-                      typeof activeTabValue === "string"
-                        ? activeTabValue
-                        : JSON.stringify(activeTabValue, null, 2)
-                    }
+                    value={JSON.stringify(data, null, 2)}
                     readOnly // expand sheet is readonly
                     scrollable
                     language="json"
@@ -117,7 +133,12 @@ export function JsonAsTab({
         </>
       </div>
       {tabs.length > 0 && (
-        <Tabs value={activeTab} className="h-full" onValueChange={onChangeTab}>
+        <Tabs
+          value={activeTab}
+          defaultValue={activeTab}
+          className="h-full"
+          onValueChange={onChangeTab}
+        >
           <TabsList className=" rounded-sm w-full overflow-x-scroll justify-start no-scrollbar">
             {tabs.map((name) => (
               <TabsTrigger
@@ -146,8 +167,8 @@ export function JsonAsTab({
                       : JSON.stringify(value, null, 2)
                   }
                   language="text"
-                  readOnly={false}
-                  scrollable
+                  readOnly={readonlyContent}
+                  scrollable={scrollableContent}
                   onChange={(value) => onEditorContentUpdate?.(key, value!)}
                 />
               </TabsContent>

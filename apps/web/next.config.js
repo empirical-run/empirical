@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   output: "export",
-  distDir: "../../packages/cli/dist/webapp",
+  distDir: "../../packages/empiricalrun/dist/webapp",
   productionBrowserSourceMaps: true,
   optimizeFonts: false,
 };

@@ -12,14 +12,9 @@ as you like.
 
 ```json empiricalrc.json
 {
-    "type": "model",
-    "name": "gpt-3.5-turbo run",
-    "provider": "openai",
-    "model": "gpt-3.5-turbo",
-    "prompt": "Always respond with a JSON object.",
     "scorers": [
         {
-            "type": "is-json"
+            "type": "json-syntax"
         }
     ]
 }
@@ -31,12 +26,12 @@ You can choose from a built-in scoring function, or define a custom scorer.
 
 ### Check for structural integrity
 
-- `is-json`: Returns 1 if output is a valid JSON object, 0 otherwise
-- `sql-syntax`: Returns 1 if output is a valid JSON object, 0 otherwise
+- `json-syntax`: Returns 1 if output is a valid JSON object, 0 otherwise
+- `sql-syntax`: Returns 1 if output is a valid SQL query string, 0 otherwise
 
 ## Custom scorers
 
 There are two ways to build a custom scorer.
 
-- `llm-criteria`: Let an LLM score your output, based on your criteria ([configure this](./llm))
+- `llm-critic`: Let an LLM score your output, based on your criteria ([configure this](./llm))
 - `py-script`: Write a custom scoring function in Python ([configure this](./python))

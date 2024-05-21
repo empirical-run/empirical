@@ -7,154 +7,32 @@ Empirical can test how different models and model configurations work for your
 application. You can define which models and configurations to test in the
 [configuration file](../configuration).
 
-Empirical supports two types of model providers:
+Empirical supports a few types of model providers:
 
-- `model`: API calls to off-the-shelf LLMs, like OpenAI's GPT4
-- `py-script`: Custom models or applications defined by a Python module
+## Hosted models
 
-To configure a custom model with Python, see [the Python guide](./custom).
+Popular models hosted by inference platforms (e.g. GPT-4o by OpenAI) can be
+directly specified in the Empirical run configuration with type as `model`.
 
-The rest of this doc focuses on the `model` type.
-
-## Run configuration for LLMs
-
-To test an LLM, specify the following properties in the configuration:
-
-- `provider`: Name of the inference provider (e.g. `openai`, or other [supported providers](#supported-providers))
-- `model`: Name of the model (e.g. `gpt-3.5-turbo` or `claude-3-haiku`)
-- `prompt`: Prompt sent to the model, with optional [placeholders](#placeholders)
-- `name` [optional]: A name or label for this run (auto-generated if not specified)
-
-You can configure as many model providers as you like. These models will be shown in a 
-side-by-side comparison view in the web reporter.
-
-```json empiricalrc.json
+```json
 "runs": [
   {
     "type": "model",
     "provider": "openai",
-    "model": "gpt-3.5-turbo",
+    "model": "gpt-4o",
     "prompt": "Hey I'm {{user_name}}"
   }
 ]
 ```
 
-### Placeholders
+- See how to [configure these models](./model)
+- For OpenAI Assistants, see [the Assistant guide](./assistants)
 
-Define placeholders in the prompt with Handlebars syntax (like `{{user_name}}`) to inject values
-from the dataset sample. These placeholders will be replaced with the corresponding input value
-during execution.
+## Custom scripts
 
-See [dataset](../dataset/basics) to learn more about sample inputs.
+For mature applications, or for those that require pre or post-processing around
+the model API call, it is recommended to write a custom script provider. That way,
+you can reference/import parts of your application and sharing code between your
+app and tests.
 
-## Supported providers
-
-| Provider | Description |
-|----------|-------------|
-| `openai` | All chat models are supported. Requires `OPENAI_API_KEY` environment variable. |
-| `anthropic` | Claude 3 models are supported. Requires `ANTHROPIC_API_KEY` environment variable. |
-| `mistral` | All chat models are supported. Requires `MISTRAL_API_KEY` environment variable. |
-| `google` | Gemini Pro models are supported. Requires `GOOGLE_API_KEY` environment variable. |
-| `fireworks` | Models hosted on Fireworks (e.g. `dbrx-instruct`) are supported. Requires `FIREWORKS_API_KEY` environment variable. |
-
-<AccordionGroup>
-<Accordion title="Using models from Google">
-
-#### Get API key
-
-The [Google AI studio](https://aistudio.google.com/) is the easiest way to get API keys. Once you have the key,
-set it as the `GOOGLE_API_KEY` environment variable.
-
-#### Supported models
-
-We support the Gemini model codes, as defined in the [official docs](https://ai.google.dev/models/gemini).
-
-- Gemini 1.5 Pro: set `model` to `gemini-1.5-pro-latest`
-- Gemini 1 Pro: set `model` to `gemini-pro` or `gemini-1.0-pro`
-
-</Accordion>
-</AccordionGroup>
-
-### Environment variables
-
-API calls to model providers require API keys, which are stored as environment variables. The CLI can work with:
-
-- Existing environment variables (using `process.env`)
-- Environment variables defined in `.env` or `.env.local` files, in the current working directory
-  - For .env files that are located elsewhere, you can pass the `--env-file` flag
-
-```sh
-npx @empiricalrun/cli --env-file <PATH_TO_ENV_FILE>
-```
-
-### Model parameters
-
-To override parameters like `temperature` or `max_tokens`, you can pass `parameters` alongwith the provider
-configuration. All OpenAI parameters (see their [API reference](https://platform.openai.com/docs/api-reference/chat/create))
-are supported, except for a few [limitations](#limitations).
-
-For non-OpenAI models, we coerce these parameters to the most appropriate target parameter (e.g. `stop` in OpenAI
-becomes `stop_sequences` for Anthropic.)
-
-You can add other parameters or override this behavior with [passthrough](#passthrough).
-
-```json empiricalrc.json
-"runs": [
-  {
-    "type": "model",
-    "provider": "openai",
-    "model": "gpt-3.5-turbo",
-    "prompt": "Hey I'm {{user_name}}",
-    "parameters": {
-      "temperature": 0.1
-    }
-  }
-]
-```
-
-#### Passthrough
-
-If your models rely on other parameters, you can still specify them in the configuration. These
-parameters will be passed as-is to the model.
-
-For example, Mistral models support a `safePrompt` parameter for [guardrailing](https://docs.mistral.ai/platform/guardrailing/).
-
-```json empiricalrc.json
-"runs": [
-  {
-    "type": "model",
-    "provider": "mistral",
-    "model": "mistral-tiny",
-    "prompt": "Hey I'm {{user_name}}",
-    "parameters": {
-      "temperature": 0.1,
-      "safePrompt": true
-    }
-  }
-]
-```
-
-#### Configuring request timeout
-
-You can set the timeout duration in milliseconds under model parameters in the `empiricalrc.json` file. This might be required for prompt completions that are expected to take more time, for example while running models like Claude Opus. If no specific value is assigned, the default timeout duration of 30 seconds will be applied.
-
-```json empiricalrc.json
-"runs": [
-  {
-    "type": "model",
-    "provider": "anthropic",
-    "model": "claude-3-opus",
-    "prompt": "Hey I'm {{user_name}}",
-    "parameters": {
-      "timeout": 10000
-    }
-  }
-]
-```
-
-#### Limitations
-
-- These parameters are not supported today: `logit_bias`, `tools`, `tool_choice`, `user`, `stream`
-- The Google Gemini model provider does not support any configuration parameter
-
-If any of these limitations are blocking your use of Empirical, please file a [feature request](https://github.com/empirical-run/empirical/issues/new).
+- See [the Python guide](./custom) to configure models or apps defined as a Python module, with type `py-script`

@@ -1,3 +1,10 @@
+import {
+  ChatCompletionMessageToolCall,
+  ToolCall,
+  FunctionToolCall,
+  ChatCompletionToolChoice,
+} from "./ai";
+
 export * from "./ai";
 
 export enum RoleType {
@@ -7,8 +14,8 @@ export enum RoleType {
 }
 
 export type ChatPrompt = {
-  role: string;
-  comment: string;
+  role: "system" | "user" | "assistant";
+  content: string;
 };
 
 export interface ScorerBase {
@@ -17,13 +24,13 @@ export interface ScorerBase {
 }
 
 export interface LLMScorer extends ScorerBase {
-  type: "llm-criteria";
+  type: "llm-critic";
   name?: string;
   criteria: string;
 }
 
-export interface DeterministicScorer extends ScorerBase {
-  type: "is-json" | "sql-syntax" | "sql-semantic";
+export interface SyntaxScorer extends ScorerBase {
+  type: "json-syntax" | "sql-syntax";
 }
 
 export interface ScriptScorer extends ScorerBase {
@@ -32,14 +39,9 @@ export interface ScriptScorer extends ScorerBase {
   path: string;
 }
 
-export type Scorer = LLMScorer | DeterministicScorer | ScriptScorer;
+export type Scorer = LLMScorer | SyntaxScorer | ScriptScorer;
 
 export type Prompt = string | ChatPrompt[];
-
-export type Provider = {
-  type: string;
-  value: string;
-};
 
 interface RunConfigBase {
   type: string;
@@ -69,6 +71,8 @@ interface ModelParameters {
   stop?: string | Array<string>;
   top_logprobs?: number;
   timeout?: number;
+  tools?: FunctionToolCall[];
+  tool_choice?: ChatCompletionToolChoice;
 
   // For other models, we coerce the above known parameters to appropriate slots
   // If users require other parameters, we support passthrough for other key names
@@ -77,10 +81,33 @@ interface ModelParameters {
 
 export interface ModelRunConfig extends RunConfigBase {
   type: "model";
-  provider: "openai" | "mistral" | "google" | "anthropic" | "fireworks";
+  provider:
+    | "openai"
+    | "mistral"
+    | "google"
+    | "anthropic"
+    | "fireworks"
+    | "azure-openai";
   model: string;
   prompt?: Prompt;
   parameters?: ModelParameters;
+}
+
+export interface AssistantsRunConfig extends RunConfigBase {
+  type: "assistant";
+  assistant_id: string;
+  provider?: "openai";
+  prompt: string;
+  parameters?: {
+    model?: string;
+    temperature?: number;
+    instructions?: string;
+    tool_choice?: any;
+    tools?: ToolCall[];
+
+    // Passthrough
+    [key: string]: any;
+  };
 }
 
 export interface JSScriptRunConfig extends RunConfigBase {
@@ -92,12 +119,16 @@ export interface PyScriptRunConfig extends RunConfigBase {
   type: "py-script";
   path: string;
   parameters?: {
-    pythonPath?: string;
+    concurrency?: number;
     [key: string]: any;
   };
 }
 
-export type RunConfig = ModelRunConfig | PyScriptRunConfig | JSScriptRunConfig;
+export type RunConfig =
+  | ModelRunConfig
+  | PyScriptRunConfig
+  | JSScriptRunConfig
+  | AssistantsRunConfig;
 
 export interface ScoreStats {
   name: string;
@@ -129,7 +160,7 @@ export interface RunCompletion {
   created_at: Date;
 }
 
-export type DatasetSampleInputs = { [key: string]: string };
+export type DatasetSampleInputs = any;
 
 export type DatasetSample = {
   id: string;
@@ -154,6 +185,7 @@ export type DatasetConfig =
     }
   | {
       path: string;
+      group_by?: string;
     };
 
 // TODO: fix types. text generation and others how does that show up ?
@@ -167,6 +199,7 @@ export type RunOutput = {
   finish_reason?: string;
   tokens_used?: number;
   latency?: number;
+  tool_calls?: ChatCompletionMessageToolCall[];
 };
 
 export type RunSampleOutput = {
@@ -233,3 +266,10 @@ export interface RuntimeOptions {
   envFilePath: string | string[];
   pythonPath: string;
 }
+
+export type Config = {
+  $schema?: string;
+  runs: RunConfig[];
+  dataset: DatasetConfig;
+  scorers?: Scorer[];
+};

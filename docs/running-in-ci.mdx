@@ -10,7 +10,7 @@ In your CI config, trigger the Empirical CLI `run` command, after you have set u
 environment with Node.js.
 
 ```sh
-npx @empiricalrun/cli run
+npx empiricalrun
 ```
 
 ## GitHub Actions
@@ -48,7 +48,7 @@ jobs:
           node-version: 20
 
       - name: Run Empirical
-        run: npx @empiricalrun/cli run
+        run: npx empiricalrun
         working-directory: PATH_TO_DIR_WITH_EMPIRICAL_CONFIG # if required
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # pass all secrets
@@ -89,7 +89,7 @@ jobs:
           node-version: 20
 
       - name: Run Empirical
-        run: npx @empiricalrun/cli run
+        run: npx empiricalrun
         working-directory: PATH_TO_DIR_WITH_EMPIRICAL_CONFIG # if required
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # pass all secrets

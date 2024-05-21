@@ -24,11 +24,16 @@ jobs:
           node-version: 20
  
       - name: Run Empirical
-        run: npx @empiricalrun/cli run
+        run: npx empiricalrun
         working-directory: ./examples/basic
         id: empirical-run
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
+          AZURE_OPENAI_RESOURCE_NAME: ${{ secrets.AZURE_OPENAI_RESOURCE_NAME }}
+          AZURE_OPENAI_BASE_URL: ${{ secrets.AZURE_OPENAI_BASE_URL }}
 
       - name: Find Comment
         uses: peter-evans/find-comment@v3

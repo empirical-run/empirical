@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "multi-turn-chat"
+version = "0.1.0"
+description = ""
+authors = ["Empirical Team"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+openai = "^1.26.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

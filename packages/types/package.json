@@ -1,6 +1,6 @@
 {
   "name": "@empiricalrun/types",
-  "version": "0.3.3",
+  "version": "0.10.0",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
@@ -22,6 +22,6 @@
     "@empiricalrun/typescript-config": "workspace:*"
   },
   "dependencies": {
-    "openai": "^4.29.0"
+    "openai": "^4.38.3"
   }
 }

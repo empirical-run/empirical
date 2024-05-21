@@ -1,0 +1,85 @@
+---
+title: 'Supported providers'
+description: 'LLM providers supported out-of-the-box'
+---
+
+Empirical supports a set of popular LLM inference providers out-of-the-box. These
+can be specified as `provider` in the Empirical configuration file.
+
+## Supported providers
+
+| Provider | Description |
+|----------|-------------|
+| `openai` | All chat models are supported. Requires `OPENAI_API_KEY` environment variable. |
+| `azure-openai` | All chat models from OpenAI that are hosted on Azure are supported. Requires `AZURE_OPENAI_API_KEY` and either of `AZURE_OPENAI_RESOURCE_NAME` or `AZURE_OPENAI_BASE_URL` environment variables. |
+| `anthropic` | Claude 3 models are supported. Requires `ANTHROPIC_API_KEY` environment variable. |
+| `mistral` | All chat models are supported. Requires `MISTRAL_API_KEY` environment variable. |
+| `google` | Gemini Pro models are supported. Requires `GOOGLE_API_KEY` environment variable. |
+| `fireworks` | Models hosted on Fireworks (e.g. `dbrx-instruct`) are supported. Requires `FIREWORKS_API_KEY` environment variable. |
+
+<AccordionGroup>
+<Accordion title="Using models from Azure OpenAI">
+
+#### Get API key
+
+- `AZURE_OPENAI_API_KEY`: This is the API key to authenticate with Azure. See [their docs](https://learn.microsoft.com/en-us/javascript/api/overview/azure/openai-readme?view=azure-node-preview#using-an-api-key-from-azure) to get the API key.
+
+#### Specify base url
+You can specify the base URL of the Azure OpenAI endpoint by setting **either** one of the following environment variables:
+- `AZURE_OPENAI_RESOURCE_NAME`: This the resource name which is used to create the endpoint base URL with the format `https://$AZURE_OPENAI_RESOURCE_NAME.openai.azure.com`
+- `AZURE_OPENAI_BASE_URL`: This is if you want to specify the entire base URL used to access the chat completions API with the format `$AZURE_OPENAI_BASE_URL/openai/deployments/<model>/chat/completions`. For example - `https://some-custom-url.com`
+
+#### Model configuration
+
+In the configuration file,
+- Set the `provider` to `azure-openai`
+- Set `model` to the name of your model deployment
+
+#### Additional parameters
+
+- By default, the `api-version` parameter is set to "2024-02-15-preview". If you need to override this, set the `apiVersion` parameter
+
+
+```json
+"runs": [
+  {
+    "type": "model",
+    "provider": "azure-openai",
+    "model": "gpt-35-deployment",
+    "prompt": "Hey I'm {{user_name}}",
+    "parameters": {
+      "apiVersion": "2024-02-15-preview"
+    }
+  }
+]
+```
+
+</Accordion>
+<Accordion title="Using models from Google">
+
+#### Get API key
+
+The [Google AI studio](https://aistudio.google.com/) is the easiest way to get API keys. Once you have the key,
+set it as the `GOOGLE_API_KEY` environment variable.
+
+#### Supported models
+
+We support the Gemini model codes, as defined in the [official docs](https://ai.google.dev/models/gemini).
+
+- Gemini 1.5 Pro: set `model` to `gemini-1.5-pro-latest`
+- Gemini 1 Pro: set `model` to `gemini-pro` or `gemini-1.0-pro`
+
+</Accordion>
+</AccordionGroup>
+
+## Environment variables
+
+API calls to model providers require API keys, which are stored as environment variables. The CLI can work with:
+
+- Existing environment variables (using `process.env`)
+- Environment variables defined in `.env` or `.env.local` files, in the current working directory
+  - For .env files that are located elsewhere, you can pass the `--env-file` flag
+
+```sh
+npx empiricalrun --env-file <PATH_TO_ENV_FILE>
+```

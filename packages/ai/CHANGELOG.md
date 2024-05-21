@@ -1,5 +1,81 @@
 # @empiricalrun/ai
 
+## 0.10.1
+
+### Patch Changes
+
+- a9c04d8: fix: google ai provider throwing 503 service unavailable
+- b379e7f: fix: latency calculation for claude, gemini, gpt chat
+
+## 0.10.0
+
+### Minor Changes
+
+- 973c9b2: feat: add support for tool calls
+- f3b632e: feat: allow passing a base URL for azure-openai provider
+
+### Patch Changes
+
+- 0b2d1c0: fix: handle rate_limit_exceeded in openai assistants
+
+## 0.9.0
+
+### Minor Changes
+
+- bde6bf0: feat: add support for configuring assistant tools
+- 93e12e0: feat: add support for assistant tool calls
+
+### Patch Changes
+
+- d6d8b5c: fix: fireworks error should not get absorbed
+
+## 0.8.0
+
+### Minor Changes
+
+- 2b0cc32: feat: add support for assistant run config defaults
+
+### Patch Changes
+
+- 51f2f52: fix: add retry logs for model api calls
+
+## 0.7.0
+
+### Minor Changes
+
+- 2517c74: feat: add support for openai assistants
+
+### Patch Changes
+
+- bc3aa56: fix: py-script getting timed out
+
+## 0.6.1
+
+### Patch Changes
+
+- ba98ebb: feat: add support for chat format prompt
+- d81cff4: fix: error messaging in case of request timeout
+- 4150b1f: fix: typo in chat prompt type
+- Updated dependencies [d81cff4]
+  - @empiricalrun/fetch@0.3.1
+
+## 0.6.0
+
+### Minor Changes
+
+- 7a67267: feat: add azure-openai model provider
+
+### Patch Changes
+
+- Updated dependencies [7a67267]
+  - @empiricalrun/fetch@0.3.0
+
+## 0.5.0
+
+### Minor Changes
+
+- 66cddb3: feat: support for model parameters in gemini models
+
 ## 0.4.2
 
 ### Patch Changes

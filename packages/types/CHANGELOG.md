@@ -1,5 +1,70 @@
 # @empiricalrun/types
 
+## 0.10.0
+
+### Minor Changes
+
+- d45cc70: feat: add support for js and ts config
+
+## 0.9.0
+
+### Minor Changes
+
+- 740a844: feat: add support for merging inputs and add multi-turn chat example
+
+### Patch Changes
+
+- 952baa1: docs: add openai assistants support
+
+## 0.8.0
+
+### Minor Changes
+
+- 973c9b2: feat: add support for tool calls
+
+## 0.7.0
+
+### Minor Changes
+
+- bde6bf0: feat: add support for configuring assistant tools
+- 93e12e0: feat: add support for assistant tool calls
+
+## 0.6.1
+
+### Patch Changes
+
+- c7e5a4a: chore: remove sql semantic scorer
+
+## 0.6.0
+
+### Minor Changes
+
+- 2517c74: feat: add support for openai assistants
+- 215c54a: chore: change scorer names to json-syntax and llm-critic
+
+### Patch Changes
+
+- bc3aa56: fix: py-script getting timed out
+
+## 0.5.1
+
+### Patch Changes
+
+- ba98ebb: feat: add support for chat format prompt
+- 4150b1f: fix: typo in chat prompt type
+
+## 0.5.0
+
+### Minor Changes
+
+- 7a67267: feat: add azure-openai model provider
+
+## 0.4.0
+
+### Minor Changes
+
+- 65eec6a: feat: get aggregate latency and token numbers for the run
+
 ## 0.3.3
 
 ### Patch Changes

@@ -3,6 +3,12 @@
 module.exports = {
   ignorePatterns: ["apps/**", "packages/**"],
   extends: ["@empiricalrun/eslint-config/library.js"],
+  ignorePatterns: [
+    // Ignore dotfiles
+    ".*.js?(x)",
+    "node_modules/",
+    "examples/"
+  ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: true,

@@ -5,7 +5,6 @@ import { JsonAsTab } from "./json-as-tab";
 
 export default function SampleCard({
   sample,
-  inputTabs,
   onSampleRemove,
   onSampleAdd,
   onSampleInputUpdate,
@@ -13,7 +12,6 @@ export default function SampleCard({
   hasMissingCompletion,
 }: {
   sample: DatasetSample;
-  inputTabs?: string[];
   hasMissingCompletion: boolean;
   onSampleRemove?: (sample: DatasetSample) => void;
   onSampleAdd?: (sample: DatasetSample) => void;
@@ -25,11 +23,10 @@ export default function SampleCard({
 }) {
   return (
     <Card className="flex flex-col rounded-md items-stretch border-zinc-900 w-full">
-      <CardContent className="flex flex-col flex-1 p-2 mt-1 pb-0 items-stretch relative">
+      <CardContent className="flex flex-col flex-1 mt-2 p-2 pb-0 items-stretch relative">
         <JsonAsTab
           storeKey="input"
           data={sample?.inputs}
-          defaultTabs={inputTabs}
           showRunButton={hasMissingCompletion}
           onSampleAdd={() => onSampleAdd?.(sample)}
           onSampleRemove={() => onSampleRemove?.(sample)}

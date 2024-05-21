@@ -74,7 +74,7 @@ export const scoreWithPythonScript: ScoringFn = async ({
     });
 
     shell.on("pythonError", function (message) {
-      console.error(message);
+      console.error(message.traceback);
       runOutput.push(
         JSON.stringify([
           {
@@ -92,6 +92,13 @@ export const scoreWithPythonScript: ScoringFn = async ({
     });
   });
 
-  const result = runOutput[runOutput.length - 1];
-  return JSON.parse(result!);
+  const rawResult = runOutput[runOutput.length - 1];
+  let result = JSON.parse(rawResult!);
+  if (!Array.isArray(result)) {
+    result = {
+      name: config.name || name,
+      ...result,
+    };
+  }
+  return result;
 };

@@ -1,5 +1,90 @@
 # @empiricalrun/scorer
 
+## 0.3.1
+
+### Patch Changes
+
+- Updated dependencies [a9c04d8]
+- Updated dependencies [b379e7f]
+  - @empiricalrun/ai@0.10.1
+
+## 0.3.0
+
+### Minor Changes
+
+- 740a844: feat: add support for merging inputs and add multi-turn chat example
+
+### Patch Changes
+
+- @empiricalrun/ai@0.10.0
+
+## 0.2.3
+
+### Patch Changes
+
+- Updated dependencies [973c9b2]
+- Updated dependencies [f3b632e]
+- Updated dependencies [0b2d1c0]
+  - @empiricalrun/ai@0.10.0
+
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [d6d8b5c]
+- Updated dependencies [bde6bf0]
+- Updated dependencies [93e12e0]
+  - @empiricalrun/ai@0.9.0
+
+## 0.2.1
+
+### Patch Changes
+
+- c7e5a4a: chore: remove sql semantic scorer
+- 9f15c2d: feat: py-script scorer has a simpler return type
+- Updated dependencies [2b0cc32]
+- Updated dependencies [51f2f52]
+  - @empiricalrun/ai@0.8.0
+
+## 0.2.0
+
+### Minor Changes
+
+- 2517c74: feat: add support for openai assistants
+- 215c54a: chore: change scorer names to json-syntax and llm-critic
+
+### Patch Changes
+
+- bc3aa56: fix: py-script getting timed out
+- 2ad19be: chore: better error messages for scorer names
+- Updated dependencies [2517c74]
+- Updated dependencies [bc3aa56]
+  - @empiricalrun/ai@0.7.0
+
+## 0.1.10
+
+### Patch Changes
+
+- 4150b1f: fix: typo in chat prompt type
+- Updated dependencies [ba98ebb]
+- Updated dependencies [d81cff4]
+- Updated dependencies [4150b1f]
+  - @empiricalrun/ai@0.6.1
+
+## 0.1.9
+
+### Patch Changes
+
+- Updated dependencies [7a67267]
+  - @empiricalrun/ai@0.6.0
+
+## 0.1.8
+
+### Patch Changes
+
+- Updated dependencies [66cddb3]
+  - @empiricalrun/ai@0.5.0
+
 ## 0.1.7
 
 ### Patch Changes

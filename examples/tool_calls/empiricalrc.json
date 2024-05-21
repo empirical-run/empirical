@@ -1,0 +1,87 @@
+{
+    "$schema": "https://assets.empirical.run/config/schema/latest.json",
+    "runs": [
+        {
+            "type": "model",
+            "provider": "openai",
+            "model": "gpt-3.5-turbo",
+            "prompt": "You are given multiple functions and a user query.\n\nPlease proceed with generating a function call with the proper arguments that best answers the given prompt.\n\nRespond with nothing but the function call ONLY, such that I can directly execute function call without any post processing.\n\nQuery: {{query}}",
+            "parameters": {
+                "tools": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "get_some_reviews",
+                            "description": "Get reviews for provided restaurant names",
+                            "parameters": {
+                                "type": "object",
+                                "properties": {
+                                    "restaurant_names": {
+                                        "type": "array",
+                                        "description": "The name of the restaurant. This should be a physical location name. You can provide multiple names for the same city.",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "description": "The city  where the restaurant is located. Optional argument."
+                                    }
+                                },
+                                "required": [
+                                    "restaurant_names"
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "model",
+            "provider": "openai",
+            "model": "gpt-4-turbo",
+            "prompt": "You are given multiple functions and a user query.\n\nPlease proceed with generating a function call with the proper arguments that best answers the given prompt.\n\nRespond with nothing but the function call ONLY, such that I can directly execute function call without any post processing.\n\nQuery: {{query}}",
+            "parameters": {
+                "tools": [
+                    {
+                        "type": "function",
+                        "function": {
+                            "name": "get_some_reviews",
+                            "description": "Get reviews for provided restaurant names",
+                            "parameters": {
+                                "type": "object",
+                                "properties": {
+                                    "restaurant_names": {
+                                        "type": "array",
+                                        "description": "The name of the restaurant. This should be a physical location name. You can provide multiple names for the same city.",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "description": "The city  where the restaurant is located. Optional argument."
+                                    }
+                                },
+                                "required": [
+                                    "restaurant_names"
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "dataset": {
+        "path": "dataset.json"
+    },
+    "scorers": [
+        {
+            "type": "py-script",
+            "path": "score.py",
+            "name": "validate tool calls"
+        }
+    ]
+}

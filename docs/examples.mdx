@@ -5,11 +5,30 @@ description: 'Examples for common scenarios'
 
 <CardGroup cols={2}>
   <Card
+    title="Basic"
+    href="https://github.com/empirical-run/empirical/tree/main/examples/basic"
+  >
+    Uses an entity extraction use-case to check for valid JSON outputs.
+  </Card>
+    <Card
+    title="Tool calling"
+    href="https://github.com/empirical-run/empirical/tree/main/examples/tool_calls"
+  >
+    Uses an LLM to grade the output responses and ensure that they do not
+    contain "as a AI language model" in them.
+  </Card>
+  <Card
     title="RAG"
     href="https://github.com/empirical-run/empirical/tree/main/examples/rag"
   >
     Tests a Retrieval-augmented Generation application built with LlamaIndex, scored on
-    metrics from RAGAS.
+    metrics from Ragas.
+  </Card>
+    <Card
+    title="OpenAI Assistants"
+    href="https://github.com/empirical-run/empirical/tree/main/examples/assistants"
+  >
+    Runs Empirical on an OpenAI Assistant.
   </Card>
   <Card
     title="HumanEval"
@@ -25,16 +44,10 @@ description: 'Examples for common scenarios'
     Runs the Spider dataset to demo text-to-SQL and relevant scorer functions.
   </Card>
   <Card
-    title="Chat bot"
+    title="Chat bot with LLM scorer"
     href="https://github.com/empirical-run/empirical/tree/main/examples/chatbot"
   >
     Uses an LLM to grade the output responses and ensure that they do not
     contain "as a AI language model" in them.
-  </Card>
-  <Card
-    title="Basic"
-    href="https://github.com/empirical-run/empirical/tree/main/examples/basic"
-  >
-    Uses an entity extraction use-case to check for valid JSON outputs.
   </Card>
 </CardGroup>

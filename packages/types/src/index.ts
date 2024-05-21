@@ -39,7 +39,20 @@ export interface ScriptScorer extends ScorerBase {
   path: string;
 }
 
-export type Scorer = LLMScorer | SyntaxScorer | ScriptScorer;
+export interface ScoringInputBase {
+  sample: DatasetSample;
+  output: RunOutput;
+  config: Scorer;
+  options?: any;
+}
+
+export interface ScoringFn {
+  (args: ScoringInputBase): Promise<Score[]>;
+}
+
+export interface JSScriptScorer extends ScoringFn {}
+
+export type Scorer = LLMScorer | SyntaxScorer | ScriptScorer | JSScriptScorer;
 
 export type Prompt = string | ChatPrompt[];
 

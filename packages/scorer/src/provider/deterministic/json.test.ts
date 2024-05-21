@@ -4,11 +4,7 @@ import { isJson } from "./json";
 test("json-syntax on empty json", async () => {
   expect(
     await isJson({
-      sample: { id: "1", inputs: {} },
       output: { value: "{}" },
-      config: {
-        type: "json-syntax",
-      },
     }),
   ).toStrictEqual([
     {

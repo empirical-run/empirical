@@ -1,6 +1,6 @@
 import { DatasetSample, RunOutput, Scorer } from "@empiricalrun/types";
 import { expect, test } from "vitest";
-import { scoreWithPythonScript } from "./script";
+import { scoreWithPythonScript } from "./py-script";
 import score from "../../index";
 
 const humanEvalSample = {
@@ -154,12 +154,12 @@ test("py-script scorer works when returning array of scores", async () => {
   };
   const result = await score({ sample, output, scorers: [scorer] });
   expect(result.length).toBe(2);
-  expect(result[0].score).toBe(1);
-  expect(result[0].name).toBe("score_1");
-  expect(result[0].message).toBe(undefined);
-  expect(result[1].score).toBe(0);
-  expect(result[1].name).toBe("score_2");
-  expect(result[1].message).toBe("why this failed");
+  expect(result[0]?.score).toBe(1);
+  expect(result[0]?.name).toBe("score_1");
+  expect(result[0]?.message).toBe(undefined);
+  expect(result[1]?.score).toBe(0);
+  expect(result[1]?.name).toBe("score_2");
+  expect(result[1]?.message).toBe("why this failed");
 });
 
 test("py-script scorer works when returning single score without name", async () => {
@@ -177,7 +177,7 @@ test("py-script scorer works when returning single score without name", async ()
   };
   const result = await score({ sample, output, scorers: [scorer] });
   expect(result.length).toBe(1);
-  expect(result[0].score).toBe(1);
-  expect(result[0].message).toBe(undefined);
-  expect(result[0].name).toBe("single-score");
+  expect(result[0]?.score).toBe(1);
+  expect(result[0]?.message).toBe(undefined);
+  expect(result[0]?.name).toBe("single-score");
 });

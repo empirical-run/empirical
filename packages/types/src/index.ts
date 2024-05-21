@@ -46,11 +46,15 @@ export interface ScoringInputBase {
   options?: any;
 }
 
-export interface ScoringFn {
-  (args: ScoringInputBase): Promise<Score[]>;
+export interface AsyncScoringFn {
+  (args: ScoringInputBase): Promise<Score[] | Score>;
 }
 
-export interface JSScriptScorer extends ScoringFn {}
+export interface SyncScoringFn {
+  (args: ScoringInputBase): Score[] | Score;
+}
+
+export type JSScriptScorer = SyncScoringFn | AsyncScoringFn;
 
 export type Scorer = LLMScorer | SyntaxScorer | ScriptScorer | JSScriptScorer;
 
@@ -236,7 +240,7 @@ export type RunSampleOutput = {
 export type Score = {
   score: number;
   name: string;
-  message: string;
+  message?: string;
 };
 
 export interface RunMetadataUpdate {

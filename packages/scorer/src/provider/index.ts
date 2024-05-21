@@ -4,6 +4,7 @@ import { scoreWithPythonScript } from "./deterministic/py-script";
 import { checkSqlSyntax } from "./deterministic/sql";
 import { checkLlmCriteria } from "./model-graded/llm";
 import { ScorerError, ScorerErrorEnum } from "../error";
+import scoreWithJSScript from "./deterministic/js-script";
 
 function buildErrorMessage(config: Scorer): string {
   let recommendation: string =
@@ -45,6 +46,13 @@ export default async function scoreUsingConfig(
     if (config.type === "sql-syntax") {
       return checkSqlSyntax({ output });
     }
+  }
+  if (typeof config === "function") {
+    return scoreWithJSScript({
+      sample,
+      output,
+      config
+    })
   }
   throw new ScorerError(
     ScorerErrorEnum.INCORRECT_PARAMETERS,

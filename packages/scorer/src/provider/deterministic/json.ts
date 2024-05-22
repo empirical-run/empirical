@@ -1,17 +1,12 @@
-import { ScoringFn } from "../../interface/scorer";
+import { RunOutput, Score } from "@empiricalrun/types";
 
 export const name = "json-syntax";
 
-export const isJson: ScoringFn = async ({ output, config }) => {
-  if (config.type !== name) {
-    return [
-      {
-        score: 0,
-        name,
-        message: "invalid type of scorer detected",
-      },
-    ];
-  }
+export const isJson = async ({
+  output,
+}: {
+  output: RunOutput;
+}): Promise<Score[]> => {
   let isValid = false;
   let invalidMsg = "JSON is invalid";
   if (output !== undefined && output !== null) {

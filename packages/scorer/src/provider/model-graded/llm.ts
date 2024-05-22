@@ -1,6 +1,11 @@
-import { ScoringFn } from "../../interface/scorer";
 import OpenAI from "openai";
 import { EmpiricalAI, replacePlaceholders } from "@empiricalrun/ai";
+import {
+  DatasetSample,
+  LLMScorer,
+  RunOutput,
+  Score,
+} from "@empiricalrun/types";
 
 async function askLlmForEvalResult(
   messages: OpenAI.ChatCompletionMessageParam[],
@@ -45,21 +50,16 @@ export const name = "llm-critic";
 
 const systemPrompt = `You are an expert evaluator who grades an output string based on a criteria. The output must fulfil the criteria to pass the evaluation.`;
 
-export const checkLlmCriteria: ScoringFn = async ({
+export const checkLlmCriteria = async ({
   sample,
   output,
   config,
-}) => {
+}: {
+  sample: DatasetSample;
+  output: RunOutput;
+  config: LLMScorer;
+}): Promise<Score[]> => {
   let criteria = "";
-  if (config.type !== "llm-critic") {
-    return [
-      {
-        name,
-        score: 0,
-        message: "invalid scoring function detected",
-      },
-    ];
-  }
   const scorerName = config.name || name;
   if (config.criteria) {
     let replacements: any = { ...sample.inputs };

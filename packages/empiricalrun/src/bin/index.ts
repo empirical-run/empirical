@@ -16,13 +16,13 @@ import {
 } from "../index";
 import { loadDataset } from "./dataset";
 import { DatasetError } from "./error";
-import { DefaultRunsConfigType, getDefaultRunsConfig } from "./runs";
 import {
   Dataset,
   RunConfig,
   RunCompletion,
   RunStatsUpdate,
   RuntimeOptions,
+  DatasetSample,
 } from "@empiricalrun/types";
 import {
   failedOutputsSummary,
@@ -34,16 +34,13 @@ import detect from "detect-port";
 import {
   ProgressBar,
   buildErrorLog,
-  buildSuccessLog,
   buildWarningLog,
   getCliProgressLoggerInstance,
 } from "./logger/cli-logger";
 import { readEmpiricalConfig } from "./config";
+import { hashContents } from "./dataset/loaders";
 
-const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
-const configFileFullPath = `${cwd}/${configFileName}`;
-const config = getDefaultRunsConfig(DefaultRunsConfigType.DEFAULT);
 
 const cacheDir = ".empiricalrun";
 const outputFilePath = `${cwd}/${cacheDir}/output.json`;
@@ -57,23 +54,6 @@ program
     "CLI to compare and evaluate AI models across all the scenarios that matter",
   )
   .version(packageJSON.version);
-
-program
-  .command("init")
-  .description("initialise empirical")
-  .action(async () => {
-    await fs.writeFile(configFileFullPath, JSON.stringify(config, null, 2));
-    const gitIgnoreFullPath = `${cwd}/.gitignore`;
-    await fs.appendFile(
-      gitIgnoreFullPath,
-      `\n# Ignore outputs from Empirical\n${cacheDir}\n`,
-    );
-    console.log(
-      buildSuccessLog(`created ${bold(`${configFileName}`)} in ${cwd}`),
-    );
-    await telemetry.logEvent("init");
-    await telemetry.shutdown();
-  });
 
 program
   .description("initiate a run to evaluate model completions")
@@ -98,10 +78,19 @@ program
     const startTime = performance.now();
     const { runs, dataset: datasetConfig } = await readEmpiricalConfig();
 
+    let samples: DatasetSample[];
     let dataset: Dataset;
     const store = new EmpiricalStore();
     try {
-      dataset = await loadDataset(datasetConfig);
+      if (typeof datasetConfig === "function") {
+        samples = (await datasetConfig()).samples;
+      } else {
+        samples = (await loadDataset(datasetConfig)).samples;
+      }
+      dataset = {
+        samples,
+        id: hashContents(JSON.stringify(samples)),
+      };
       const datasetRecorder = store.getDatasetRecorder();
       await datasetRecorder(dataset);
     } catch (error) {
@@ -294,6 +283,8 @@ program
         dataset: Dataset;
         persistToFile: boolean;
       };
+      const { runs: actualRuns } = await readEmpiricalConfig();
+      runs[0]!.scorers = actualRuns[0]!.scorers;
       telemetry.logEvent("ui.run.start", {
         ...runEventProperties(runs, dataset),
         persist_to_file: persistToFile,

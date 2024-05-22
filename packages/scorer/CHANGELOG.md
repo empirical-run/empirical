@@ -1,5 +1,15 @@
 # @empiricalrun/scorer
 
+## 0.4.0
+
+### Minor Changes
+
+- f61545c: feat: add support for js/ts scripts as scorers
+
+### Patch Changes
+
+- @empiricalrun/ai@0.10.1
+
 ## 0.3.1
 
 ### Patch Changes

@@ -1,4 +1,4 @@
-import { DatasetSample } from "@empiricalrun/types";
+import { DatasetSample, DatasetSampleInputs } from "@empiricalrun/types";
 import crypto from "crypto";
 import { DatasetError, DatasetErrorEnum } from "../error";
 import csv from "csvtojson";
@@ -7,9 +7,9 @@ type LoaderFunction = (contents: string) => Promise<DatasetSample[]>;
 
 async function jsonLoader(contents: string): Promise<DatasetSample[]> {
   try {
-    const parsed: Record<string, unknown>[] = JSON.parse(contents);
+    const parsed: DatasetSampleInputs[] = JSON.parse(contents);
     const datasetSamples: DatasetSample[] = parsed.map(
-      (inputs: Record<string, unknown>, index: number) => {
+      (inputs, index: number) => {
         return {
           id: `${index + 1}`,
           inputs,

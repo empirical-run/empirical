@@ -1,0 +1,4 @@
+
+# Ignore outputs from Empirical
+.empiricalrun
+db_files

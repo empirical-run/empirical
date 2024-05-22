@@ -38,8 +38,21 @@ export interface ScriptScorer extends ScorerBase {
   name?: string;
   path: string;
 }
+export interface JSScriptScorerParams {
+  inputs: Record<string, any>;
+  output: RunOutput;
+}
 
-export type Scorer = LLMScorer | SyntaxScorer | ScriptScorer;
+export interface JSScriptScorer {
+  (
+    args: JSScriptScorerParams,
+  ):
+    | Score[]
+    | (Partial<Score> & { score: number })
+    | Promise<Score[] | (Partial<Score> & { score: number })>;
+}
+
+export type Scorer = LLMScorer | SyntaxScorer | ScriptScorer | JSScriptScorer;
 
 export type Prompt = string | ChatPrompt[];
 
@@ -89,7 +102,7 @@ export interface ModelRunConfig extends RunConfigBase {
     | "fireworks"
     | "azure-openai";
   model: string;
-  prompt?: Prompt;
+  prompt: Prompt;
   parameters?: ModelParameters;
 }
 
@@ -110,11 +123,6 @@ export interface AssistantsRunConfig extends RunConfigBase {
   };
 }
 
-export interface JSScriptRunConfig extends RunConfigBase {
-  type: "js-script";
-  path: string;
-}
-
 export interface PyScriptRunConfig extends RunConfigBase {
   type: "py-script";
   path: string;
@@ -127,7 +135,6 @@ export interface PyScriptRunConfig extends RunConfigBase {
 export type RunConfig =
   | ModelRunConfig
   | PyScriptRunConfig
-  | JSScriptRunConfig
   | AssistantsRunConfig;
 
 export interface ScoreStats {
@@ -223,7 +230,7 @@ export type RunSampleOutput = {
 export type Score = {
   score: number;
   name: string;
-  message: string;
+  message?: string;
 };
 
 export interface RunMetadataUpdate {
@@ -267,9 +274,13 @@ export interface RuntimeOptions {
   pythonPath: string;
 }
 
+export interface DatasetLoader {
+  (): Promise<{ samples: DatasetSample[] }>;
+}
+
 export type Config = {
   $schema?: string;
   runs: RunConfig[];
-  dataset: DatasetConfig;
+  dataset: DatasetConfig | DatasetLoader;
   scorers?: Scorer[];
 };

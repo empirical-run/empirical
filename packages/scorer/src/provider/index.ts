@@ -51,8 +51,8 @@ export default async function scoreUsingConfig(
     return scoreWithJSScript({
       sample,
       output,
-      config
-    })
+      config,
+    });
   }
   throw new ScorerError(
     ScorerErrorEnum.INCORRECT_PARAMETERS,

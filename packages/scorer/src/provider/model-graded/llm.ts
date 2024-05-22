@@ -63,6 +63,10 @@ export const checkLlmCriteria = async ({
   const scorerName = config.name || name;
   if (config.criteria) {
     let replacements: any = { ...sample.inputs };
+    if (sample.expected) {
+      // llm-critic supports {{expected}} as placeholder
+      replacements.expected = sample.expected;
+    }
     criteria = replacePlaceholders(config.criteria, replacements);
   }
   if (!criteria) {

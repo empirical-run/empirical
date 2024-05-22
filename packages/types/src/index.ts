@@ -172,6 +172,7 @@ export type DatasetSampleInputs = any;
 export type DatasetSample = {
   id: string;
   inputs: DatasetSampleInputs;
+  expected?: string;
 };
 
 export type Dataset = {
@@ -182,6 +183,7 @@ export type Dataset = {
 export type DatasetSampleConfig = {
   id?: string;
   inputs: DatasetSampleInputs;
+  expected?: string;
 };
 
 export type DatasetConfig =
@@ -213,6 +215,9 @@ export type RunSampleOutput = {
   scores?: Score[];
   inputs: DatasetSampleInputs;
   output: RunOutput;
+  expected?: {
+    value: string;
+  };
   error?: {
     code?: string;
     message: string;

@@ -58,18 +58,12 @@ export default function SampleOutputCard({
   const showCompareAgainst = useMemo(
     () =>
       !baseSample?.output.tool_calls?.length &&
-      (baseSample?.expected?.value ||
-        comparisonSamples?.some(
-          (comparisonSample, index) =>
-            comparisonSample?.output &&
-            comparisonResults?.[index]?.id !== baseResult?.id,
-        )),
-    [
-      baseResult?.id,
-      baseSample?.expected?.value,
-      comparisonResults,
-      comparisonSamples,
-    ],
+      comparisonSamples?.some(
+        (comparisonSample, index) =>
+          comparisonSample?.output &&
+          comparisonResults?.[index]?.id !== baseResult?.id,
+      ),
+    [baseResult?.id, comparisonResults, comparisonSamples],
   );
 
   const clearDiffView = useCallback(() => {
@@ -163,21 +157,6 @@ export default function SampleOutputCard({
                         >
                           <span className="text-xs">none</span>
                         </DropdownMenuCheckboxItem>
-                        {baseSample?.expected?.value && (
-                          <DropdownMenuCheckboxItem
-                            checked={
-                              diffView.enabled && diffView.type === "expected"
-                            }
-                            onCheckedChange={() => {
-                              enableDiffView({
-                                type: "expected",
-                                text: baseSample?.expected?.value || "",
-                              });
-                            }}
-                          >
-                            <span className="text-xs">expected</span>
-                          </DropdownMenuCheckboxItem>
-                        )}
                         {comparisonSamples?.map((s, i) => {
                           const result = comparisonResults?.[i];
                           if (result?.id === baseResult.id) {

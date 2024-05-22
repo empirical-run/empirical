@@ -11,7 +11,7 @@ are supported.
 
 <CodeGroup>
 
-```js Inline
+```js Inline function
 export default {
   scorers: [
     function ({ output, inputs }) {
@@ -44,12 +44,9 @@ export default {
 ```
 
 ```js With types
-import { Config, AsyncScoringFn } from "empiricalrun";
+import { Config, JSScriptScorer } from "empiricalrun";
 
-async function customScorer({
-  output,
-  inputs,
-}: Parameters<AsyncScoringFn>[0]): ReturnType<AsyncScoringFn> {
+const customScorer: JSScriptScorer = async({ output, inputs }) => {
   // Use output and inputs to calculate the score
   // ...
   return {
@@ -61,7 +58,6 @@ async function customScorer({
 export default {
   scorers: [customScorer],
 };
-
 ```
 
 </CodeGroup>
@@ -70,14 +66,14 @@ The function has the following signature:
 
 - **Arguments**
   - Object with
-    - output: object with key `value` to get the output value (string) and key `metadata` to get metadata (object)
+    - output: object with key `value` to get the output value (string) and key `metadata` to get metadata (object); see [output object](./../models/output)
     - inputs: object of key-value pairs from the dataset sample
 - **Returns**
-  - List of scores: each result is an object with score (number between 0 to 1), message (optional, string) and name (optional, string)
+  - Score object: object with `score` (number between 0 to 1), `message` (optional, string) and `name` (optional, string)
 
 ## Multiple scores
 
-It is possible for the method to return an array of scores. Use `name` to distinguish
+It is possible for the method to return an array of score objects. Use `name` to distinguish
 between them.
 
 ```js

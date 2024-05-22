@@ -19,7 +19,7 @@ the `scorers` section of the configuration. The `path` key should be the path to
 In the script, you need to define an `evaluate` method, with the following signature:
 
 - **Arguments**
-  - output: dict with key `value` to get the output value (string) and key `metadata` to get metadata (dict)
+  - output: dict with key `value` to get the output value (string) and key `metadata` to get metadata (dict); see [output object](./../models/output)
   - inputs: dict of key-value pairs from the dataset sample
 - **Returns**
   - List of results: each result is dict with score (number between 0 to 1), message (optional, string) and name (optional, string)
@@ -70,5 +70,4 @@ npx empiricalrun --python-path PATH_TO_PYTHON_BINARY
 
 ## Limitations
 
-- The Python script must complete execution within 10 seconds
-- `async` Python functions are not supported
+- The Python script must complete execution within 20 seconds

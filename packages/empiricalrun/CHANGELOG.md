@@ -1,5 +1,19 @@
 # empiricalrun
 
+## 0.14.0
+
+### Minor Changes
+
+- 5cae1df: feat: deprecate init command
+- f61545c: feat: add support for js/ts scripts as scorers
+
+### Patch Changes
+
+- Updated dependencies [f61545c]
+  - @empiricalrun/scorer@0.4.0
+  - @empiricalrun/types@0.11.0
+  - @empiricalrun/ai@0.10.1
+
 ## 0.13.2
 
 ### Patch Changes

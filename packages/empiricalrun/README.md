@@ -36,10 +36,10 @@ Our test will succeed if the model outputs valid JSON.
 1. Use the CLI to create a sample configuration file called `empiricalrc.js`.
 
     ```sh
-    npm init empirical
+    npm init empiricalrun
 
     # For TypeScript
-    npm init empirical -- --using-ts
+    npm init empiricalrun -- --using-ts
     ```
 
 2. Run the example dataset against the selected models.

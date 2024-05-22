@@ -13,7 +13,7 @@ With Empirical, you can
 - Score your outputs with [scoring functions](https://docs.empirical.run/scoring/basics)
 - Run [tests on CI/CD](https://docs.empirical.run/running-in-ci)
 
-https://github.com/empirical-run/empirical/assets/284612/3309283c-ddad-4c4e-8175-08a32460686c
+https://github.com/empirical-run/empirical/assets/284612/65d96ecc-12a2-474d-a81e-bbddb71106b6
 
 ## Usage
 

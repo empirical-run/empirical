@@ -12,8 +12,8 @@ async function createDatabase(
   con: sqlite3.Database,
   dbName: string,
 ): Promise<sqlite3.Database> {
-  return new Promise((resolve, reject) => {
-    const schemaScript = loadJson("./schema.json")[dbName];
+  return new Promise((resolve) => {
+    const schemaScript = dbSchemas[dbName];
     const createScript = loadJson("./create.json")[dbName];
 
     con.serialize(() => {
@@ -32,11 +32,12 @@ export async function getConnection (dbName:string): Promise<sqlite3.Database> {
     if (connectionCache.get(dbName)) {
         return await connectionCache.get(dbName)!
     }
+    const dbFilesDir = "db_files"
     const connectionPromise = new Promise<sqlite3.Database>(async (resolve) => {
-        if(!fs.existsSync("db")){
-            fs.mkdirSync("db");
+        if(!fs.existsSync(dbFilesDir)){
+            fs.mkdirSync(dbFilesDir);
         }
-        const dbfileName = `db/${dbName}.db`
+        const dbfileName = `${dbFilesDir}/${dbName}.db`
         const con = new sqlite3.Database(dbfileName);
         await createDatabase(con, dbName)
         resolve(con)

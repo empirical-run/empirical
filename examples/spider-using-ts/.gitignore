@@ -1,4 +1,4 @@
 
 # Ignore outputs from Empirical
 .empiricalrun
-db
+db_files

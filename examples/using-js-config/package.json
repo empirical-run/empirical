@@ -10,6 +10,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "empiricalrun": "workspace:*"
+    "empiricalrun": "^0.13.1"
   }
 }

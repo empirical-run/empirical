@@ -41,20 +41,16 @@ export interface ScriptScorer extends ScorerBase {
 export interface JSScriptScorerParams {
   inputs: Record<string, any>;
   output: RunOutput;
-  options?: any;
 }
 
-export interface AsyncScoringFn {
+export interface JSScriptScorer {
   (
     args: JSScriptScorerParams,
-  ): Promise<Score[] | (Partial<Score> & { score: number })>;
+  ):
+    | Score[]
+    | (Partial<Score> & { score: number })
+    | Promise<Score[] | (Partial<Score> & { score: number })>;
 }
-
-export interface SyncScoringFn {
-  (args: JSScriptScorerParams): Score[] | (Partial<Score> & { score: number });
-}
-
-export type JSScriptScorer = SyncScoringFn | AsyncScoringFn;
 
 export type Scorer = LLMScorer | SyntaxScorer | ScriptScorer | JSScriptScorer;
 
@@ -106,7 +102,7 @@ export interface ModelRunConfig extends RunConfigBase {
     | "fireworks"
     | "azure-openai";
   model: string;
-  prompt?: Prompt;
+  prompt: Prompt;
   parameters?: ModelParameters;
 }
 
@@ -127,11 +123,6 @@ export interface AssistantsRunConfig extends RunConfigBase {
   };
 }
 
-export interface JSScriptRunConfig extends RunConfigBase {
-  type: "js-script";
-  path: string;
-}
-
 export interface PyScriptRunConfig extends RunConfigBase {
   type: "py-script";
   path: string;
@@ -144,7 +135,6 @@ export interface PyScriptRunConfig extends RunConfigBase {
 export type RunConfig =
   | ModelRunConfig
   | PyScriptRunConfig
-  | JSScriptRunConfig
   | AssistantsRunConfig;
 
 export interface ScoreStats {

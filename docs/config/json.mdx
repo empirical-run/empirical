@@ -1,20 +1,37 @@
 ---
-title: 'Configuration file'
+title: 'JSON'
 description: 'Use a JSON file to configure your tests'
 ---
 
-Empirical uses a JSON configuration file, called `empiricalrc.json`, to describe
+For simpler configurations, you can use a JSON file to configure your tests.
+
+Empirical uses the config file at `empiricalrc.json` to describe
 the test to run. This configuration is declarative, in the sense that you define what you
 want to test, and Empirical will internally implement the expected behavior.
 
 ## Configuration reference
 
-The `empiricalrc.json` configuration file has two high-level properties:
+```json empiricalrc.json
+{
+  "runs": [
+    // Define model providers to run against
+  ],
+  "dataset": {
+    // Define dataset with scenarios to test
+  },
+  "scorers": [
+    // Define scoring functions that evaluate model outputs
+  ]
+}
+```
 
-- `runs`: Use this to define [model providers](./models/basics) and [scoring functions](./scoring/basics)
+The `empiricalrc.json` configuration file has three high-level properties:
+
+- `runs`: Use this to define [model providers](./models/basics)
 - `dataset`: Use this to define the [scenarios to test](./dataset/basics)
+- `scorers`: Use this to define [scoring functions](./scoring/basics)
 
-## Code editor integration
+## Editor helpers
 
 Your code editor can give you auto-completions and detect linting errors for this configuration
 file. This uses a [JSON Schema](https://json-schema.org/) definition which is hosted by Empirical.

@@ -1,0 +1,125 @@
+---
+title: 'Import from file'
+description: 'Load dataset directly from supported files'
+---
+
+If you are maintaining your test dataset in a file, chances are you can import it directly
+into Empirical.
+
+- [Import from Google Sheets](#import-from-google-sheets)
+- [Import from JSONL file](#import-from-jsonl-file)
+- [Import from JSON](#import-from-json)
+- [Import from CSV](#import-from-csv)
+
+## Import from Google Sheets
+Specify a path to the Google sheet in the [configuration file](./../config/javascript). If your file has
+multiple sheets, be sure to use the url that points to the correct sheet (specified with the `gid` query
+parameter).
+
+```json empiricalrc.json
+"dataset": {
+  "path": "https://docs.google.com/spreadsheets/d/1AsMekKCG74m1PbBZQN_sEJgaW0b9Xarg4ms4mhG3i5k"
+}
+```
+
+Refer to our [chatbot example](https://github.com/empirical-run/empirical/tree/main/examples/chatbot) which uses this dataset.
+
+The sheet should contain column headers. The rows of the file are converted into dataset inputs with
+column header names as the name of the parameter. For example:
+
+```md
+| name | age |
+| ---- | --- |
+| John | 25  |
+```
+
+The above table in the sheet gets converted into the following dataset object:
+
+```json
+"dataset": {
+  "samples": [
+    {
+      "inputs": {
+        "name": "John",
+        "age": "25"
+      }
+    }
+  ]
+}
+```
+
+The above conversion enables you to create prompt with placeholders. For example:
+
+```json empiricalrc.json
+{
+  "prompt": "Your name is {{name}} and you are a helpful assistant..."
+}
+```
+
+## Import from JSONL file
+
+Specify a path to the JSONL file. Each line of the file should be a valid JSON object.
+On import, the keys of this JSON will be converted into inputs of the sample.
+
+If using relative paths, the path is treated relative to the configuration file.
+
+```json
+"dataset": {
+  "path": "HumanEval.jsonl"
+}
+```
+
+## Import from JSON
+
+Specify a path to the JSON file. The file should contain array of objects.
+On import, the object keys will be converted into inputs of the sample.
+
+If using relative paths, the path is treated relative to the configuration file.
+
+```json
+"dataset": {
+  "path": "dataset.json"
+}
+```
+Refer to [tool call example](https://github.com/empirical-run/empirical/tree/main/examples/tool_calls) which uses this dataset.
+
+## Import from CSV
+
+Specify a path to the CSV file in the `empiricalrc.json`. If using relative paths, the path is treated
+relative to the configuration file.
+
+```json
+"dataset": {
+  "path": "foo.csv"
+}
+```
+
+The CSV file should contain headers.
+
+The lines of the file are converted into dataset inputs with column header names as the name of the parameter. For example:
+
+```csv foo.csv
+name,age
+John,25
+```
+
+The above CSV gets converted into the following dataset object: 
+```json
+"dataset": {
+  "samples": [
+    {
+      "inputs": {
+        "name": "John",
+        "age": "25"
+      }
+    }
+  ]
+}
+```
+
+The above conversion enables you to create a prompt with placeholders. For example: 
+```json
+{
+  "prompt": "Your name is {{name}} and you are a helpful assistant..."
+}
+```

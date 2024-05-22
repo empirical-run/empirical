@@ -1,0 +1,65 @@
+---
+title: 'Custom dataset loader'
+description: 'JavaScript function to modify how a dataset is loaded'
+---
+
+For granular control on the test dataset, you can write a custom dataset loader function
+JavaScript or TypeScript. This requires a [JS/TS configuration file](../config/javascript).
+
+```ts
+import { Config } from "empiricalrun";
+
+const config: Config = {
+  dataset: function() {
+    // build dataset
+    return dataset;
+  },
+};
+
+export default config;
+```
+
+This can be used to 
+- [Modify source dataset](#modify-source-dataset)
+- [Generate synthetic data](#generate-synthetic-data)
+
+## Modify source dataset
+
+The [Spider using TS example](https://github.com/empirical-run/empirical/tree/main/examples/spider-using-ts) uses
+this loader to add an dynamic input to the dataset sample before running the tests.
+
+```ts
+import { loadDataset } from "empiricalrun";
+
+async function datasetLoader() {
+  let dataset = await loadDataset({
+    path: "https://docs.google.com/spreadsheets/d/1x_p0lX2pJEyGkFoe1A9nY3q87qOJUd547f2lz99ugiM/edit#gid=1000015421"
+  })
+  dataset.samples = dataset.samples.map(sample => {
+    // get DB schema for the mentioned database name
+    sample.inputs.schema = getSchema(sample.inputs.database_name)
+    return sample;
+  })
+  return dataset
+}
+
+export default {
+  dataset: datasetLoader
+};
+```
+
+## Generate synthetic data
+
+With the custom loader, you can write a synthetic data generator for your use-case.
+
+```ts
+import { DatasetSample } from "empiricalrun";
+
+async function datasetLoader(): Promise<DatasetSample[]> {
+  // Custom generator for test data
+}
+
+export default {
+  dataset: datasetLoader
+};
+```

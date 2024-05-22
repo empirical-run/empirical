@@ -1,0 +1,95 @@
+---
+title: 'JavaScript scorer'
+description: 'Write a custom scoring function with JavaScript'
+---
+
+> This requires a [JS/TS configuration file](../config/javascript)
+
+You can configure a custom JS/TS scorer by specifying a function in 
+the `scorers` section of the configuration. Both sync and async functions
+are supported.
+
+<CodeGroup>
+
+```js Inline
+export default {
+  scorers: [
+    function ({ output, inputs }) {
+      // Use output and inputs to calculate the score
+      // ...
+      return {
+        score: 1, // number between 0 and 1
+        message: "Reason for score"
+      }
+    }
+  ]
+}
+```
+
+```js Named function
+async function customScorer({ output, inputs }) {
+  // Use output and inputs to calculate the score
+  // ...
+  return {
+    score,
+    message
+  };
+}
+
+export default {
+  scorers: [
+    customScorer
+  ]
+}
+```
+
+```js With types
+import { Config, AsyncScoringFn } from "empiricalrun";
+
+async function customScorer({
+  output,
+  inputs,
+}: Parameters<AsyncScoringFn>[0]): ReturnType<AsyncScoringFn> {
+  // Use output and inputs to calculate the score
+  // ...
+  return {
+    score,
+    message,
+  };
+}
+
+export default {
+  scorers: [customScorer],
+};
+
+```
+
+</CodeGroup>
+
+The function has the following signature:
+
+- **Arguments**
+  - Object with
+    - output: object with key `value` to get the output value (string) and key `metadata` to get metadata (object)
+    - inputs: object of key-value pairs from the dataset sample
+- **Returns**
+  - List of scores: each result is an object with score (number between 0 to 1), message (optional, string) and name (optional, string)
+
+## Multiple scores
+
+It is possible for the method to return an array of scores. Use `name` to distinguish
+between them.
+
+```js
+function score({ output, inputs }) {
+  // ...
+  return [
+    { score: 1, name: "syntax-score" },
+    { score: 0, name: "semantic-score", message: "failure reason"}
+  ]
+}
+```
+
+## Example
+
+The [Spider using TS](https://github.com/empirical-run/empirical/tree/main/examples/spider-using-ts) uses this scorer.

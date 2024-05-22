@@ -26,12 +26,13 @@ You can choose from a built-in scoring function, or define a custom scorer.
 
 ### Check for structural integrity
 
-- `json-syntax`: Returns 1 if output is a valid JSON object, 0 otherwise
-- `sql-syntax`: Returns 1 if output is a valid SQL query string, 0 otherwise
+- `type: "json-syntax"`: Returns 1 if output is a valid JSON object, 0 otherwise
+- `type: "sql-syntax"`: Returns 1 if output is a valid SQL query string, 0 otherwise
 
 ## Custom scorers
 
-There are two ways to build a custom scorer.
+There are three ways to build a custom scorer.
 
-- `llm-critic`: Let an LLM score your output, based on your criteria ([configure this](./llm))
-- `py-script`: Write a custom scoring function in Python ([configure this](./python))
+- [LLM critic](./llm): Let an LLM score your output, based on a specified criteria
+- [JavaScript function](./javascript): Write a custom scoring function in JS/TS
+- [Python function](./python): Write a custom scoring function in Python

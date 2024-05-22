@@ -1,5 +1,11 @@
 # web
 
+## 0.12.2
+
+### Patch Changes
+
+- f61545c: feat: add support for js/ts scripts as scorers
+
 ## 0.12.1
 
 ### Patch Changes

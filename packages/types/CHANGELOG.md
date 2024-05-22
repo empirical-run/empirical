@@ -1,5 +1,11 @@
 # @empiricalrun/types
 
+## 0.11.0
+
+### Minor Changes
+
+- f61545c: feat: add support for js/ts scripts as scorers
+
 ## 0.10.0
 
 ### Minor Changes

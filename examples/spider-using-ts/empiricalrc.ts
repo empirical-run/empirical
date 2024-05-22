@@ -1,4 +1,4 @@
-import { Config, loadDataset } from "empiricalrun";
+import { Config, loadDataset, JSScriptScorer } from "empiricalrun";
 import { executeQuery, getConnection, getSchema } from "./db";
 
 async function datasetLoader() {
@@ -38,11 +38,17 @@ const config: Config = {
     {
       provider: "openai",
       type: "model",
-      name: "default-prompt-gpt3.5",
       model: "gpt-3.5-turbo",
       prompt:
         "You are an SQLite expert who can convert natural language questions to SQL queries for the database schema given below.\n\nDatabase schema:\n{{schema}}\n\nAnswer the following question with only the SQL query.\n\nQuestion: {{question}}",
     },
+    {
+      type: "model",
+      provider: "fireworks",
+      model: "llama-v3-8b-instruct",
+      prompt:
+        "You are an SQLite expert who can convert natural language questions to SQL queries for the database schema given below.\n\nDatabase schema:\n{{schema}}\n\nAnswer the following question with only the SQL query.\n\nQuestion: {{question}}",
+    }
   ],
   dataset: datasetLoader,
   scorers: [

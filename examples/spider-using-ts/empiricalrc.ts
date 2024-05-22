@@ -13,6 +13,26 @@ async function datasetLoader() {
   return dataset
 }
 
+async function execAccuracy ({ output, inputs }) {
+  let score = 0;
+  let message: string;
+  try {
+    const dbName = inputs.database_name;
+    const con = await getConnection(dbName);
+    const res = await executeQuery(con, output.value!);
+    const [firstRow] = res;
+    score = firstRow ? 1 : 0.5;
+    message = firstRow ? "Result preview: " + firstRow.join(", "): "No results found"
+  } catch (e) {
+    score = 0;
+    message = String(e);
+  }
+  return {
+    score,
+    message
+  };
+}
+
 const config: Config = {
   runs: [
     {
@@ -29,26 +49,8 @@ const config: Config = {
     {
       type: "sql-syntax",
     },
-    async function execAccuracy ({ output, inputs }) {
-      let score = 0;
-      let message: string;
-      try {
-        const dbName = inputs.database_name;
-        const con = await getConnection(dbName);
-        const res = await executeQuery(con, output.value!);
-        const [firstRow] = res;
-        score = firstRow ? 1 : 0;
-        message = firstRow ? "Result preview: " + firstRow.join(", "): "No results found"
-      } catch (e) {
-        score = 0;
-        message = String(e);
-      }
-      return {
-        score,
-        message
-      };
-    },
-  ],
+    execAccuracy
+  ]
 };
 
 export default config;

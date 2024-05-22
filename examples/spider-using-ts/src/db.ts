@@ -2,7 +2,7 @@ import sqlite3 from "sqlite3";
 import { cleanClosingBraces, loadJson, removeBackticks } from "./utils";
 import fs from "fs";
 
-const dbSchemas = loadJson("./schema.json");
+const dbSchemas = loadJson("./src/scripts/schema.json");
 
 export function getSchema(dbName: string): string {
     return dbSchemas[dbName];
@@ -14,7 +14,7 @@ async function createDatabase(
 ): Promise<sqlite3.Database> {
   return new Promise((resolve) => {
     const schemaScript = dbSchemas[dbName];
-    const createScript = loadJson("./create.json")[dbName];
+    const createScript = loadJson("./src/scripts/insert.json")[dbName];
 
     con.serialize(() => {
       con.exec(schemaScript, () => {

@@ -1,5 +1,5 @@
 import { Config, loadDataset, JSScriptScorer } from "empiricalrun";
-import { executeQuery, getConnection, getSchema } from "./db";
+import { executeQuery, getConnection, getSchema } from "./src/db";
 
 async function datasetLoader() {
   let dataset = await loadDataset({

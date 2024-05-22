@@ -42,7 +42,14 @@
         "introduction",
         "quickstart",
         "examples",
-        "configuration",
+        {
+          "group": "Configuration file",
+          "pages": [
+            "config/javascript",
+            "config/typescript",
+            "config/json"
+          ]
+        },
         "running-in-ci",
         "reporter",
         "telemetry"
@@ -67,7 +74,9 @@
     {
       "group": "Test dataset",
       "pages": [
-        "dataset/basics"
+        "dataset/basics",
+        "dataset/file",
+        "dataset/loader"
       ]
     },
     {
@@ -75,6 +84,7 @@
       "pages": [
         "scoring/basics",
         "scoring/llm",
+        "scoring/javascript",
         "scoring/python"
       ]
     }

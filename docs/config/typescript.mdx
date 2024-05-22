@@ -1,0 +1,45 @@
+---
+title: 'TypeScript'
+description: 'Configure your test config in TypeScript'
+---
+
+Empirical can rely on a TypeScript file as config located at `empiricalrc.ts`. This file
+needs to export a config object as shown below.
+
+We recommend using TypeScript as your code editor can help with type checks and 
+auto-completions out-of-the-box as you edit the config.
+
+## Create sample config
+
+Use this shell command to create a sample TS config file which can
+be edited.
+
+```sh
+npm init empiricalrun -- --using-ts
+```
+
+## Configuration reference
+
+```ts empiricalrc.ts
+import { Config } from "empiricalrun";
+
+const config: Config = {
+  "runs": [
+    // Define model providers to run against
+  ],
+  "dataset": {
+    // Define dataset with scenarios to test
+  },
+  "scorers": [
+    // Define scoring functions that evaluate model outputs
+  ]
+}
+
+export default config;
+```
+
+The exported configuration object has three high-level properties:
+
+- `runs`: Use this to define [model providers](./models/basics)
+- `dataset`: Use this to define the [scenarios to test](./dataset/basics)
+- `scorers`: Use this to define [scoring functions](./scoring/basics)

@@ -3,129 +3,60 @@ title: 'Quick start'
 description: 'Try Empirical in 3 steps'
 ---
 
-Empirical bundles together a CLI and a web app. The CLI handles running tests and
-the web app visualizes results.
+Empirical bundles together a test runner and a web app, as the [test reporter](./reporter). These
+can be used through the CLI in your terminal window.
 
-Everything runs locally, with a JSON configuration file, `empiricalrc.json`.
+Empirical relies on a configuration file, typically located at `empiricalrc.js`
+which describes the test to run. This configuration is declarative, which means
+that you define what you want to test, and Empirical will internally implement
+the expected behavior.
 
-Required: Node.js 20+ needs to be installed on your system.
+> Required: Node.js 20+ needs to be installed on your system.
 
 ## Start with a basic example
 
-In this example, we will ask an LLM to parse user messages to extract entities and
+In this example, we will ask an LLM to extract entities from user messages and
 give us a structured JSON output. For example, "I'm Alice from Maryland" will
-become `"{name: 'Alice', location: 'Maryland'}"`.
+become `{name: 'Alice', location: 'Maryland'}`.
 
 Our test will succeed if the model outputs valid JSON.
 
 <Steps>
   <Step title="Set up Empirical">
-    Use the CLI to create a sample configuration file in `empiricalrc.json`.
+    Use the CLI to create a sample configuration file in `empiricalrc.js`.
 
     ```sh
-    npx empiricalrun init
-    ```
+    npm init empiricalrun
 
-    Read the file to see the configured models and dataset samples that we will test
-    for. The default configuration uses models from OpenAI.
-
-    ```sh
-    cat empiricalrc.json
+    # For TypeScript
+    npm init empiricalrun -- --using-ts
     ```
   </Step>
 
   <Step title="Run the test">
-    Run the test samples against the models with the `run` command.
+    Run the example dataset against the selected models.
 
     ```sh
     npx empiricalrun
     ```
 
     This step requires the `OPENAI_API_KEY` environment variable to authenticate with
-    OpenAI. This execution will cost $0.0026, based on the selected models.
+    OpenAI. This run will cost $0.0026, based on the selected models.
   </Step>
 
   <Step title="See results">
-    Use the `ui` command to open the reporter web app in your web browser and see
-    side-by-side results.
+    Use the `ui` command to open the reporter web app and see side-by-side results.
 
     ```sh
     npx empiricalrun ui
     ```
-  </Step>
-
-  <Step title="[Bonus] Fix GPT-4 Turbo">
-    GPT-4 Turbo tends to fail our JSON syntax check, because it returns outputs
-   in markdown syntax (with backticks ` ```json `). We can fix this behavior by enabling
-   [JSON mode](https://platform.openai.com/docs/guides/text-generation/json-mode).
-   
-    ```json
-    {
-      "model": "gpt-4-turbo-preview",
-      // ...
-      // Existing properties
-      "parameters": {
-        "response_format": {
-          "type": "json_object"
-        }
-      }
-    }
-    ```
-
-    <Accordion title="empiricalrc.json: Updated with JSON mode">
-    ```json empiricalrc.json
-    {
-      "runs": [
-        {
-          "type": "model",
-          "provider": "openai",
-          "model": "gpt-3.5-turbo",
-          "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}"
-        },
-        {
-          "type": "model",
-          "provider": "openai",
-          "model": "gpt-4-turbo-preview",
-          "parameters": {
-            "response_format": {
-              "type": "json_object"
-            }
-          },
-          "prompt": "Extract the name, age and location from the message, and respond with a JSON object. If an entity is missing, respond with null.\n\nMessage: {{user_message}}"
-        }
-      ],
-      "dataset": {
-        "samples": [
-          {
-            "inputs": {
-              "user_message": "Hi my name is John Doe. I'm 26 years old and I work in real estate."
-            }
-          },
-          {
-            "inputs": {
-              "user_message": "This is Alice. I am a nurse from Maryland. I was born in 1990."
-            }
-          }
-        ]
-      },
-      "scorers": [
-        {
-          "type": "json-syntax"
-        }
-      ]
-    }
-    ```
-    </Accordion>
-
-    Re-running the test with `npx empiricalrun` will give us better results
-    for GPT-4 Turbo.
   </Step>
 </Steps>
 
 
 ## Make it yours
 
-Edit the `empiricalrc.json` file to make Empirical work for your use-case.
+Edit the `empiricalrc.js` file to make Empirical work for your use-case.
 
 - Configure which [models to use](./models/basics)
 - Configure [your test dataset](./dataset/basics)

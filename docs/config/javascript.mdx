@@ -1,0 +1,42 @@
+---
+title: 'JavaScript'
+description: 'Configure your test config in JavaScript'
+---
+
+Empirical can rely on a JavaScript file as config located at `empiricalrc.js`. This file
+needs to export a config object as shown below.
+
+You can use type checking with [JSDoc](https://jsdoc.app/about-getting-started) to assist with auto-completions and type
+checks in your editor.
+
+## Create sample config
+
+Use this shell command to create a sample JS config file which can
+be edited.
+
+```sh
+npm init empiricalrun
+```
+
+## Configuration reference
+
+```js
+/** @type {import("empiricalrun").Config} */
+export default {
+  runs: [
+    //
+  ],
+  dataset: {
+    // 
+  },
+  scorers: [
+    //
+  ],
+};
+```
+
+The exported configuration object has three high-level properties:
+
+- `runs`: Use this to define [model providers](./models/basics)
+- `dataset`: Use this to define the [scenarios to test](./dataset/basics)
+- `scorers`: Use this to define [scoring functions](./scoring/basics)

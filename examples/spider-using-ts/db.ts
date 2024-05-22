@@ -26,7 +26,7 @@ async function createDatabase(
   });
 }
 
-let connectionCache: Map<string, Promise<sqlite3.Database>> = new Map();
+const connectionCache: Map<string, Promise<sqlite3.Database>> = new Map();
 
 export async function getConnection (dbName:string): Promise<sqlite3.Database> {
     if (connectionCache.get(dbName)) {

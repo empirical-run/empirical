@@ -22,6 +22,7 @@ import {
   RunCompletion,
   RunStatsUpdate,
   RuntimeOptions,
+  DatasetSample,
 } from "@empiricalrun/types";
 import {
   failedOutputsSummary,
@@ -37,6 +38,7 @@ import {
   getCliProgressLoggerInstance,
 } from "./logger/cli-logger";
 import { readEmpiricalConfig } from "./config";
+import { hashContents } from "./dataset/loaders";
 
 const cwd = process.cwd();
 
@@ -76,10 +78,19 @@ program
     const startTime = performance.now();
     const { runs, dataset: datasetConfig } = await readEmpiricalConfig();
 
+    let samples: DatasetSample[];
     let dataset: Dataset;
     const store = new EmpiricalStore();
     try {
-      dataset = await loadDataset(datasetConfig);
+      if (typeof datasetConfig === "function") {
+        samples = (await datasetConfig()).samples;
+      } else {
+        samples = (await loadDataset(datasetConfig)).samples;
+      }
+      dataset = {
+        samples,
+        id: hashContents(JSON.stringify(samples)),
+      };
       const datasetRecorder = store.getDatasetRecorder();
       await datasetRecorder(dataset);
     } catch (error) {
@@ -272,6 +283,8 @@ program
         dataset: Dataset;
         persistToFile: boolean;
       };
+      const { runs: actualRuns } = await readEmpiricalConfig();
+      runs[0]!.scorers = actualRuns[0]!.scorers;
       telemetry.logEvent("ui.run.start", {
         ...runEventProperties(runs, dataset),
         persist_to_file: persistToFile,

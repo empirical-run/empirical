@@ -1,7 +1,11 @@
-import { ScoringFn } from "../../interface/scorer";
 import { PythonShell } from "python-shell";
 import path from "path";
-import { Score } from "@empiricalrun/types";
+import {
+  DatasetSample,
+  RunOutput,
+  Score,
+  ScriptScorer,
+} from "@empiricalrun/types";
 
 export const name = "py-script";
 
@@ -10,11 +14,16 @@ const wrapperScriptDirectory = path.join(__dirname, "..", "..", "python");
 const wrapperScriptFile = "wrapper.py";
 const executionOutputIdentifier = "scorer_output:";
 
-export const scoreWithPythonScript: ScoringFn = async ({
+export const scoreWithPythonScript = async ({
   sample,
   output,
   config,
   options,
+}: {
+  sample: DatasetSample;
+  output: RunOutput;
+  config: ScriptScorer;
+  options?: any;
 }): Promise<Score[]> => {
   if (config.type !== "py-script") {
     return [

@@ -4,12 +4,8 @@ import { checkSqlSyntax } from "./sql";
 test("sql-syntax works with backticks", async () => {
   expect(
     await checkSqlSyntax({
-      sample: { id: "1", inputs: {} },
       output: {
         value: "SELECT `column` FROM `table`",
-      },
-      config: {
-        type: "sql-syntax",
       },
     }),
   ).toStrictEqual([
@@ -24,12 +20,8 @@ test("sql-syntax works with backticks", async () => {
 test("sql-syntax fails with empty output", async () => {
   expect(
     await checkSqlSyntax({
-      sample: { id: "1", inputs: {} },
       output: {
         value: "",
-      },
-      config: {
-        type: "sql-syntax",
       },
     }),
   ).toStrictEqual([
@@ -44,11 +36,7 @@ test("sql-syntax fails with empty output", async () => {
 test("sql-syntax works with markdown", async () => {
   expect(
     await checkSqlSyntax({
-      sample: { id: "1", inputs: {} },
       output: { value: "```SELECT table * FROM" },
-      config: {
-        type: "sql-syntax",
-      },
     }),
   ).toStrictEqual([
     {
@@ -73,12 +61,8 @@ WHERE stadium_id = (
 );`;
   expect(
     await checkSqlSyntax({
-      sample: { id: "1", inputs: {} },
       output: {
         value: query,
-      },
-      config: {
-        type: "sql-syntax",
       },
     }),
   ).toStrictEqual([

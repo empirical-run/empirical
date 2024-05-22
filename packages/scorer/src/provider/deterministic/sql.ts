@@ -1,9 +1,13 @@
 import { Parser } from "node-sql-parser";
-import { ScoringFn } from "../../interface/scorer";
+import { RunOutput, Score } from "@empiricalrun/types";
 
 export const syntaxName = "sql-syntax";
 
-export const checkSqlSyntax: ScoringFn = async ({ output }) => {
+export const checkSqlSyntax = async ({
+  output,
+}: {
+  output: RunOutput;
+}): Promise<Score[]> => {
   let isSQLQuery = false;
   let errorMsg = "SQL is invalid";
   const parser = new Parser();

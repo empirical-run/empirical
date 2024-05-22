@@ -16,7 +16,6 @@ enum RunConfigTab {
 const defaultTabMap: Record<RunConfigType, RunConfigTab> = {
   model: RunConfigTab.prompt,
   "py-script": RunConfigTab.parameters,
-  "js-script": RunConfigTab.parameters,
   assistant: RunConfigTab.instructions,
 };
 

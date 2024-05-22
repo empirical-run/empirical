@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "empiricalrun": "../../packages/empiricalrun"
+    "empiricalrun": "latest"
   },
   "dependencies": {
     "sqlite3": "^5.1.7",

@@ -1,5 +1,5 @@
 import sqlite3 from "sqlite3";
-import { cleanClosingBraces, getFileName, loadJson, removeBackticks } from "./utils";
+import { cleanClosingBraces, loadJson, removeBackticks } from "./utils";
 import fs from "fs";
 
 const dbSchemas = loadJson("./schema.json");

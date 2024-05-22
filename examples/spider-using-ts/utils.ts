@@ -1,11 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
 
-
-export function getFileName(): string {
-  return `${uuidv4().slice(0, 6)}.db`;
-}
-
 export function loadJson(name: string): any {
   const file = fs.readFileSync(name, "utf-8");
   return JSON.parse(file);

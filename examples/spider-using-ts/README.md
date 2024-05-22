@@ -16,6 +16,11 @@ This example requires Typescript.
 
 ## Usage
 
+1. Install npm dependencies
+  ```sh
+  npm i
+  ```
+
 1. Review the `empiricalrc.ts` configuration, and make changes if any. The current configuration runs models
    from OpenAI, and Llama and thus, requires [relevant environment variables](https://docs.empirical.run/models/basic).
   ```sh

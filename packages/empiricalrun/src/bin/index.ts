@@ -16,7 +16,6 @@ import {
 } from "../index";
 import { loadDataset } from "./dataset";
 import { DatasetError } from "./error";
-import { DefaultRunsConfigType, getDefaultRunsConfig } from "./runs";
 import {
   Dataset,
   RunConfig,
@@ -35,17 +34,13 @@ import detect from "detect-port";
 import {
   ProgressBar,
   buildErrorLog,
-  buildSuccessLog,
   buildWarningLog,
   getCliProgressLoggerInstance,
 } from "./logger/cli-logger";
 import { readEmpiricalConfig } from "./config";
 import { hashContents } from "./dataset/loaders";
 
-const configFileName = "empiricalrc.json";
 const cwd = process.cwd();
-const configFileFullPath = `${cwd}/${configFileName}`;
-const config = getDefaultRunsConfig(DefaultRunsConfigType.DEFAULT);
 
 const cacheDir = ".empiricalrun";
 const outputFilePath = `${cwd}/${cacheDir}/output.json`;
@@ -59,23 +54,6 @@ program
     "CLI to compare and evaluate AI models across all the scenarios that matter",
   )
   .version(packageJSON.version);
-
-program
-  .command("init")
-  .description("initialise empirical")
-  .action(async () => {
-    await fs.writeFile(configFileFullPath, JSON.stringify(config, null, 2));
-    const gitIgnoreFullPath = `${cwd}/.gitignore`;
-    await fs.appendFile(
-      gitIgnoreFullPath,
-      `\n# Ignore outputs from Empirical\n${cacheDir}\n`,
-    );
-    console.log(
-      buildSuccessLog(`created ${bold(`${configFileName}`)} in ${cwd}`),
-    );
-    await telemetry.logEvent("init");
-    await telemetry.shutdown();
-  });
 
 program
   .description("initiate a run to evaluate model completions")

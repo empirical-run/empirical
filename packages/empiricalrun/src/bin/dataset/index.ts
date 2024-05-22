@@ -1,6 +1,6 @@
-import { Dataset, DatasetConfig, DatasetSample } from "@empiricalrun/types";
+import { DatasetConfig, DatasetSample } from "@empiricalrun/types";
 import { promises as fs } from "fs";
-import { loaders, hashContents, LoaderType } from "./loaders";
+import { loaders, LoaderType } from "./loaders";
 import { DatasetError, DatasetErrorEnum } from "../error";
 import { fetchWithRetry } from "@empiricalrun/fetch";
 
@@ -55,7 +55,9 @@ async function fetchContents(path: string): Promise<string> {
   }
 }
 
-export async function loadDataset(config: DatasetConfig): Promise<Dataset> {
+export async function loadDataset(
+  config: DatasetConfig,
+): Promise<{ samples: DatasetSample[] }> {
   let samples: DatasetSample[] = [];
   let contents: string;
 
@@ -96,7 +98,6 @@ export async function loadDataset(config: DatasetConfig): Promise<Dataset> {
   }
 
   return {
-    id: hashContents(contents),
     samples,
   };
 }

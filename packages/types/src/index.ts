@@ -38,20 +38,20 @@ export interface ScriptScorer extends ScorerBase {
   name?: string;
   path: string;
 }
-
-export interface ScoringInputBase {
-  sample: DatasetSample;
+export interface JSScriptScorerParams {
+  inputs: Record<string, any>;
   output: RunOutput;
-  config: Scorer;
   options?: any;
 }
 
 export interface AsyncScoringFn {
-  (args: ScoringInputBase): Promise<Score[] | Score>;
+  (
+    args: JSScriptScorerParams,
+  ): Promise<Score[] | (Partial<Score> & { score: number })>;
 }
 
 export interface SyncScoringFn {
-  (args: ScoringInputBase): Score[] | Score;
+  (args: JSScriptScorerParams): Score[] | (Partial<Score> & { score: number });
 }
 
 export type JSScriptScorer = SyncScoringFn | AsyncScoringFn;
@@ -284,9 +284,13 @@ export interface RuntimeOptions {
   pythonPath: string;
 }
 
+export interface DatasetLoader {
+  (): Promise<{ samples: DatasetSample[] }>;
+}
+
 export type Config = {
   $schema?: string;
   runs: RunConfig[];
-  dataset: DatasetConfig;
+  dataset: DatasetConfig | DatasetLoader;
   scorers?: Scorer[];
 };

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://assets.empirical.run/config/schema/latest.json",
+  "runs": [
+    {
+      "type": "py-script",
+      "path": "cohere.py"
+    },
+    {
+      "type": "py-script",
+      "path": "cohere-async.py"
+    }
+  ],
+  "dataset": {
+    "path": "https://docs.google.com/spreadsheets/d/1U8fBQ9TxtR5pUS0Bg0n1xcU_6EXkhGUOj1CS-TAAHmU/edit#gid=0"
+  },
+  "scorers": [
+    {
+      "type": "llm-critic",
+      "criteria": "{{ success criteria }}",
+      "name": "success-criteria"
+    }
+  ]
+}
